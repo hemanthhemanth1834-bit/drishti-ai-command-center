@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
-import { isInsideGeofence, HYDERABAD_GEOFENCE } from '@/utils/geofenceDetection';
 import {
   searchPlaces,
   reverseGeocode,
@@ -70,6 +69,16 @@ export default function LocationPage() {
     };
   }, [query]);
 
+  // Live location is the main view: auto-locate once on load.
+  // Falls back to the default viewport if permission is denied.
+  const autoGps = useRef(false);
+  useEffect(() => {
+    if (autoGps.current) return;
+    autoGps.current = true;
+    useMyLocation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function select(p: Place) {
     setPlace(p);
     setResults([]);
@@ -102,9 +111,6 @@ export default function LocationPage() {
     place && droneLat !== undefined && droneLon !== undefined
       ? bearingDeg(droneLat, droneLon, place.lat, place.lon)
       : null;
-  const insideOps = place
-    ? isInsideGeofence({ lat: place.lat, lon: place.lon }, HYDERABAD_GEOFENCE)
-    : null;
 
   const addr = place?.address ?? {};
   const addrRows = [
@@ -224,12 +230,6 @@ export default function LocationPage() {
                     <span className="text-slate-200 text-right">{v}</span>
                   </div>
                 ))}
-                <div className="flex justify-between py-1">
-                  <span className="text-slate-500">Ops geofence</span>
-                  <span className={insideOps ? 'text-emerald-400' : 'text-amber-300'}>
-                    {insideOps ? 'INSIDE Hyderabad polygon' : 'OUTSIDE Hyderabad polygon'}
-                  </span>
-                </div>
               </div>
               <Link
                 href={`/drones?lat=${place.lat}&lon=${place.lon}&name=${encodeURIComponent(shortName(place.name))}`}
