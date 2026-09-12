@@ -1,5 +1,8 @@
 # DRISHTI-X — Sovereign Real-Time Disaster Intelligence Command Center
 
+🌐 **Live Demo:** https://drishti-ai-command-center.vercel.app
+📡 **Live API:** https://backend-production-47f1.up.railway.app/api/health
+
 Offline-first drone mesh HUD: **Next.js 14 (App Router) + Three.js + Leaflet + FastAPI WebSockets**.
 Zero paid APIs — CartoDB/OSM tiles only. Tactical dark HUD (`#051424`, `#00d2ff` cyan).
 
