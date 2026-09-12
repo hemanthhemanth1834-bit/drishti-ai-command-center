@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
 import DemoConsole from '@/components/DemoConsole';
+import SystemHealth from '@/components/SystemHealth';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps } from '@/store/opsStore';
 import { evaluateAlerts } from '@/utils/alertRules';
@@ -101,6 +102,7 @@ export default function OpsPage() {
             </div>
           </div>
         </div>
+        <SystemHealth wsConnected={connected} demoActive={ops.demo !== null} />
         <DemoConsole />
       </div>
     </main>

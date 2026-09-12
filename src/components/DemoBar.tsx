@@ -1,5 +1,5 @@
 'use client';
-import { useOps, demoStep, stopDemo, DEMO_META, DEMO_PHASES } from '@/store/opsStore';
+import { useOps, demoStep, stopDemo, DEMO_META, DEMO_PHASES, DEMO_NARRATIVE } from '@/store/opsStore';
 
 /** Persistent demo-scenario strip (mounted in layout; visible on every route while active). */
 export default function DemoBar() {
@@ -19,6 +19,9 @@ export default function DemoBar() {
       </span>
       <span className="text-slate-300 whitespace-nowrap">
         {ops.demo.phase + 1}/{DEMO_PHASES.length} · {phaseName}
+      </span>
+      <span className="hidden lg:inline text-slate-400 truncate max-w-[320px]">
+        {DEMO_NARRATIVE[ops.demo.id][ops.demo.phase]}
       </span>
       <span className="hidden sm:flex gap-0.5" aria-hidden>
         {DEMO_PHASES.map((p, i) => (

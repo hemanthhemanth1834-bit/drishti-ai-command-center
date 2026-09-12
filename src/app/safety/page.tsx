@@ -44,13 +44,33 @@ export default function SafetyPage() {
     <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
       <div className="p-4 max-w-6xl mx-auto flex flex-col gap-4">
-        <section className="flex items-center gap-2">
+        <section className="flex items-center gap-2 flex-wrap">
           <HeartPulse className="w-5 h-5 text-emerald-400" />
           <h1 className="text-xl font-extrabold text-white">MY SAFETY</h1>
           <TrustBadge kind="SIMULATION" source="demo hazard cells" />
         </section>
 
-        <RiskChecker />
+        <nav aria-label="Five safety questions" className="grid grid-cols-1 sm:grid-cols-5 gap-1.5 text-[11px]">
+          {[
+            ['AM I SAFE?', '#risk-check'],
+            ['WHAT IS HAPPENING?', '/alerts'],
+            ['WHAT SHOULD I DO?', '/learn'],
+            ['WHERE SHOULD I GO?', '/evacuate'],
+            ['HOW DO I GET HELP?', '/emergency'],
+          ].map(([q, href]) => (
+            <a
+              key={q}
+              href={href}
+              className="px-2.5 py-2 rounded-lg bg-[#091a2e] border border-[#1b314b] text-center text-slate-100 font-bold hover:border-[#00d2ff]/60"
+            >
+              {q}
+            </a>
+          ))}
+        </nav>
+
+        <div id="risk-check">
+          <RiskChecker />
+        </div>
 
         <section>
           <h2 className="text-sm font-bold text-white">HAZARD CARDS</h2>

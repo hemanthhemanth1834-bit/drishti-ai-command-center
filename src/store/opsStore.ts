@@ -93,6 +93,52 @@ export function demoStep(dir: 1 | -1) {
   applyDemo(state.demo.id, next);
 }
 
+/** Jump straight to a phase (Mission Replay scrubber). Same engine, no duplicate. */
+export function demoGoto(phase: number) {
+  if (!state.demo) return;
+  applyDemo(state.demo.id, Math.max(0, Math.min(DEMO_PHASES.length - 1, phase)));
+}
+
+/** Per-phase story captions. Flood = Vijayawada flood response narrative. */
+export const DEMO_NARRATIVE: Record<DemoId, string[]> = {
+  flood: [
+    'Vijayawada normal ops. Barrage gates metered, river steady.',
+    'Heavy rain upstream. Inflow rising, bund patrols out.',
+    'Water rising past watch marks. Low wards alerted.',
+    'CRITICAL: discharge over 45k cusecs. NH-65 underpass flooding.',
+    'Evacuation: buses PB-08/PB-11 to City Sports Complex.',
+    'Drone search: FLIR over Ward 14 bund riverbed. Boats RB-07/RB-11 out.',
+    'Water receding. Relief + damage audit begin.',
+  ],
+  cyclone: [
+    'Coast normal. Bay watch routine.',
+    'Depression forms. Fishermen recalled, control room active.',
+    'Storm track converging. Coastal wards alerted.',
+    'CRITICAL: landfall window. Surge + destructive winds.',
+    'Evacuation: coastal villages to cyclone shelters.',
+    'Drone survey of surge damage. Rescue columns moving.',
+    'Stand down. Power + road restoration.',
+  ],
+  fire: [
+    'Industrial belt normal. Audits current.',
+    'Heat + dry spell. Extra watch on chemical cluster.',
+    'Smoke reported. Tenders staged, siren drill route open.',
+    'CRITICAL: smoke + comms degraded. Dead-reckoning ops.',
+    'Evacuation: downwind blocks to Riverbend Hall.',
+    'Drone FLIR mapping hotspots. Fire lines holding.',
+    'Cooling + air-quality watch. Audit resumes.',
+  ],
+  quake: [
+    'Region normal. Seismic Zone II baseline.',
+    'Tremor swarm. Structures check, comms tested.',
+    'Strong tremor. GPS degraded, dead-reckoning on.',
+    'CRITICAL: damage reports inbound. Hospitals on standby.',
+    'Evacuation: unsafe blocks to open grounds.',
+    'Drone + dog-squad search. Triage at District General.',
+    'Aftershock watch. PDNA audit opens.',
+  ],
+};
+
 export function stopDemo() {
   state = { ...state, demo: null, scenario: 'nominal', spillwayK: 45, acked: [] };
   emit();

@@ -145,7 +145,7 @@ export default function LocationPage() {
   useEffect(() => {
     if (autoGps.current) return;
     autoGps.current = true;
-    useMyLocation();
+    locateMe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -164,7 +164,7 @@ export default function LocationPage() {
       .finally(() => setGloading(false));
   }
 
-  async function useMyLocation() {
+  async function locateMe() {
     setLocating(true);
     setGpsNote('');
     try {
@@ -277,7 +277,7 @@ export default function LocationPage() {
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
               <button
-                onClick={useMyLocation}
+                onClick={locateMe}
                 disabled={locating}
                 className="text-[10px] px-2 py-1 rounded bg-[#00d2ff] text-black font-bold flex items-center gap-1 disabled:opacity-60"
               >
@@ -520,7 +520,7 @@ export default function LocationPage() {
           <div className="bg-[#051424] border border-[#1b314b] rounded-xl overflow-hidden">
             <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] text-xs font-bold text-white flex items-center gap-2 flex-wrap">
               <span>
-                {place ? shortName(place.name).toUpperCase() : 'NO FIX — SEARCH A PLACE'} //{' '}
+                {place ? shortName(place.name).toUpperCase() : 'NO FIX — SEARCH A PLACE'}{' '}
                 {place ? `${place.lat.toFixed(4)}°N, ${place.lon.toFixed(4)}°E` : '—.————°N, —.————°E'}
               </span>
               <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">

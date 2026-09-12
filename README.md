@@ -188,8 +188,9 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
 
 ## Testing
 - Backend contract tests: `cd backend` → `python -m pytest tests/ -q`
-  (health, auth 401/200, packet shape, scenario round-trip, WS frame).
-- Frontend type gate: `npx tsc --noEmit` (also enforced in CI).
+  (health, auth 401/200, packet shape, scenario, sensors, WS frames — 9 tests).
+- Frontend type gate: `npm run typecheck` (tsc, also enforced in CI).
+- Lint: `npx next lint --dir src` (ESLint + next/core-web-vitals, clean).
 - Production build: `npm run build` with the dev server stopped (shared `.next/`).
 
 ## Citizen access (no login, no keys, no cost)
@@ -219,8 +220,12 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
   Console lives on `/platform` and `/ops`; the DemoBar persists on every route and
   auto-plays. Scenario + spillway flow through the shared ops store, so map, risk,
   alerts, drones, shelters, hospitals and both dashboards stay synchronized.
+  Mission Replay (`/platform`) scrubs a timestamped flood timeline through the same engine.
 - **Operator KPIs** (`/ops`): incidents (live), people at risk, shelters, ICU beds,
-  drones, evacuations, unresolved reports, drill response metrics — all trust-badged.
+  drones, evacuations, unresolved reports, drill response metrics — all trust-badged —
+  plus a live SYSTEM HEALTH panel (API, WS, tiles, GPS, WebGL, PWA, providers).
+- **System map + data honesty** (`/platform`, `/sources`): visual architecture diagram,
+  full free-stack + future-feed tables.
 - **Learn** is fully trilingual (EN/TE/HI): all 8 topics carry BEFORE/DURING/AFTER,
   EMERGENCY ACTIONS, DO and DON'T.
 - **Notifications**: critical web alerts are opt-in on `/alerts` (granted/denied/

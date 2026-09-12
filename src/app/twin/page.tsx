@@ -197,6 +197,9 @@ export default function TwinPage() {
                   {selected.risk && (
                     <div className="text-amber-300 text-[11px] mt-1">RISK: {selected.risk}</div>
                   )}
+                  <div className="text-slate-500 text-[10px] mt-1">
+                    SOURCE: SIMULATION · Twin markers · action: {selected.kind === 'hazard' ? 'avoid + report' : 'track + dispatch'}
+                  </div>
                 </div>
               ) : (
                 <div className="text-slate-500 text-[11px]">No entity selected — click a marker.</div>
