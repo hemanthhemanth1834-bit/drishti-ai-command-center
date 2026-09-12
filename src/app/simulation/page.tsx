@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
+import { useOps, setOps } from '@/store/opsStore';
+import { evaluateAlerts } from '@/utils/alertRules';
+import AlertBanner from '@/components/alerts/AlertBanner';
+import { ackAlert } from '@/store/opsStore';
 import { setScenario } from '@/utils/apiClient';
 import { Cpu, Droplets, FlaskConical } from 'lucide-react';
 
@@ -10,14 +14,22 @@ const SCENARIOS = ['nominal', 'storm', 'swarm-surge', 'gps-denied'] as const;
 
 export default function SimulationPage() {
   const { live, connected } = useTelemetrySocket();
-  const [scenario, setScenarioState] = useState<string>('nominal');
-  const [spillway, setSpillway] = useState(45); // thousand cusecs
+  const ops = useOps();
+  const scenario = ops.scenario;
+  const spillway = ops.spillwayK;
+  const setSpillway = (v: number) => setOps({ spillwayK: v });
   const [msg, setMsg] = useState('');
 
   const inundation = Math.min(100, Math.round(30 + spillway * 1.1 + (scenario === 'storm' ? 18 : 0)));
 
+  const previewBreach = evaluateAlerts({
+    scenario,
+    spillwayK: spillway,
+    geofenceBreach: false,
+  });
+
   async function applyScenario(s: string) {
-    setScenarioState(s);
+    setOps({ scenario: s, acked: [] });
     try {
       await setScenario(s);
       setMsg(`backend scenario → ${s}`);
@@ -70,6 +82,12 @@ export default function SimulationPage() {
             Physics-informed surrogate: inundation ≈ f(discharge, rainfall scenario). Move the
             slider to preview downstream impact before issuing gate orders.
           </p>
+          <div className="mt-3">
+            <div className="text-[10px] text-slate-500 mb-1">
+              COMMAND-CENTER BANNER PREVIEW (same live rules as /)
+            </div>
+            <AlertBanner alerts={previewBreach} acked={ops.acked} onAck={ackAlert} />
+          </div>
         </section>
 
         <section className="lg:col-span-5 flex flex-col gap-4">

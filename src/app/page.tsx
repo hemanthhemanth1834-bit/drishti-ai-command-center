@@ -4,10 +4,13 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
+import AlertBanner from '@/components/alerts/AlertBanner';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
+import { useOps, setOps, ackAlert } from '@/store/opsStore';
+import { evaluateAlerts } from '@/utils/alertRules';
+import { checkGeofenceBreach } from '@/utils/geofenceDetection';
 import { setScenario } from '@/utils/apiClient';
 import {
-  AlertTriangle,
   Activity,
   Radio,
   Compass,
@@ -28,16 +31,26 @@ const SCENARIOS = ['nominal', 'storm', 'swarm-surge', 'gps-denied'];
 export default function MasterCommandCenter() {
   const { packets: telemetryLogs, live, connected: wsConnected } =
     useTelemetrySocket();
+  const ops = useOps();
+  const scenario = ops.scenario;
   const [activeTab, setActiveTab] = useState<'3D' | 'RADAR'>('3D');
-  const [scenario, setScenarioState] = useState('nominal');
   const [notice, setNotice] = useState('');
 
   const lat = live?.lat ?? 17.385;
   const lon = live?.lon ?? 78.4867;
   const alt = live?.alt_m ?? 120;
 
+  const alerts = evaluateAlerts({
+    scenario,
+    spillwayK: ops.spillwayK,
+    batteryPct: live?.battery_pct,
+    signalPct: live?.signal_pct,
+    geofenceBreach: checkGeofenceBreach({ lat, lon }),
+    droneId: live?.drone_id,
+  });
+
   async function changeScenario(s: string) {
-    setScenarioState(s);
+    setOps({ scenario: s, acked: [] });
     try {
       await setScenario(s);
       setNotice(`scenario → ${s}`);
@@ -148,20 +161,8 @@ export default function MasterCommandCenter() {
             </div>
           </div>
 
-          {/* Breaches & Tactical Warning Banner */}
-          <div className="bg-[#140608] border border-rose-500/40 p-3.5 rounded-xl flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5 animate-bounce" />
-            <div>
-              <div className="text-xs font-bold text-rose-300">
-                CRITICAL HAZARD BREACH: PRAKASAM BARRAGE DISCHARGE EXCEEDED 45,000 CUSECS
-              </div>
-              <div className="text-[11px] text-rose-200/80 mt-1 leading-relaxed">
-                NH-65 Underpass submerged at 1.85m depth. All ground traffic diverted to
-                elevated Bypass Route B. Evacuee transit buses PB-08 and PB-11 en route to
-                City Sports Complex.
-              </div>
-            </div>
-          </div>
+          {/* Live rule-driven hazard banner */}
+          <AlertBanner alerts={alerts} acked={ops.acked} onAck={ackAlert} />
         </section>
 
         {/* Right Column: Live Telemetry & AI Decision Recommendations (5 Cols) */}
