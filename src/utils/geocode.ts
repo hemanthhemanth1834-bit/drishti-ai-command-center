@@ -71,6 +71,20 @@ export function compass16(deg: number): string {
   return COMPASS[Math.round(deg / 22.5) % 16];
 }
 
+/** Decimal degrees → DMS strings, e.g. 17°21'41.8"N. */
+export function toDMS(lat: number, lon: number): { lat: string; lon: string } {
+  function conv(v: number, pos: string, neg: string): string {
+    const dir = v >= 0 ? pos : neg;
+    const a = Math.abs(v);
+    const d = Math.floor(a);
+    const mFloat = (a - d) * 60;
+    const m = Math.floor(mFloat);
+    const s = ((mFloat - m) * 60).toFixed(1);
+    return `${d}°${m}'${s}"${dir}`;
+  }
+  return { lat: conv(lat, 'N', 'S'), lon: conv(lon, 'E', 'W') };
+}
+
 type ReverseRow = {
   place_id: number;
   display_name: string;

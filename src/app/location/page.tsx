@@ -12,9 +12,10 @@ import {
   haversineKm,
   bearingDeg,
   compass16,
+  toDMS,
   type Place,
 } from '@/utils/geocode';
-import { MapPin, Search, Crosshair, History, Navigation, LocateFixed } from 'lucide-react';
+import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check } from 'lucide-react';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -42,6 +43,12 @@ export default function LocationPage() {
   const [recent, setRecent] = useState<Place[]>([]);
   const [locating, setLocating] = useState(false);
   const [gpsNote, setGpsNote] = useState('');
+  const [liveFix, setLiveFix] = useState<{
+    placeId: string;
+    accuracyM: number;
+    at: number;
+  } | null>(null);
+  const [copied, setCopied] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced search (~1 req/sec per Nominatim policy)
@@ -93,8 +100,10 @@ export default function LocationPage() {
       const fix = await getLivePosition();
       const p = await reverseGeocode(fix.lat, fix.lon);
       select(p);
+      setLiveFix({ placeId: p.id, accuracyM: fix.accuracyM, at: Date.now() });
       setGpsNote(`GPS fix ±${Math.round(fix.accuracyM)}m — showing your live position`);
     } catch (e: unknown) {
+      setLiveFix(null);
       setGpsNote((e as Error).message);
     } finally {
       setLocating(false);
@@ -113,6 +122,39 @@ export default function LocationPage() {
       : null;
 
   const addr = place?.address ?? {};
+  const showReport = place !== null && liveFix !== null && place.id === liveFix.placeId;
+  const dms = place ? toDMS(place.lat, place.lon) : null;
+  const etaMin =
+    distKm !== null && live && live.speed_ms > 0.5
+      ? (distKm / (live.speed_ms * 3.6)) * 60
+      : null;
+
+  function reportText(): string {
+    if (!place || !liveFix) return '';
+    const lines = [
+      `DRISHTI-X LIVE LOCATION REPORT — ${new Date(liveFix.at).toLocaleString()}`,
+      `Place: ${place.name}`,
+      `Coords: ${place.lat.toFixed(6)}, ${place.lon.toFixed(6)} (${dms?.lat}, ${dms?.lon})`,
+      `GPS accuracy: ±${Math.round(liveFix.accuracyM)}m`,
+      `Type: ${place.kind} / ${place.category}`,
+      distKm !== null && brg !== null
+        ? `Nearest drone: ${live?.drone_id ?? '—'} — ${distKm.toFixed(2)} km ${compass16(brg)}` +
+          (etaMin !== null ? ` — ETA ~${etaMin.toFixed(0)} min` : '')
+        : 'Nearest drone: no live fix',
+      `Scenario: ${live?.scenario ?? '—'} | Link: ${live ? `${live.signal_pct.toFixed(0)}%` : '—'}`,
+    ];
+    return lines.join('\n');
+  }
+
+  async function copyReport() {
+    try {
+      await navigator.clipboard.writeText(reportText());
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setGpsNote('clipboard blocked by browser — long-press to copy manually');
+    }
+  }
   const addrRows = [
     ['Road / Area', addr.road ?? addr.suburb ?? addr.neighbourhood ?? '—'],
     ['City', addr.city ?? addr.town ?? addr.village ?? addr.county ?? '—'],
@@ -237,6 +279,54 @@ export default function LocationPage() {
               >
                 <Crosshair className="w-3.5 h-3.5" /> TRACK ON SAR RADAR
               </Link>
+            </div>
+          )}
+
+          {showReport && place && liveFix && dms && (
+            <div className="bg-[#051424] border border-[#00d2ff]/40 rounded-xl p-4">
+              <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
+                <FileText className="w-4 h-4 text-[#00d2ff]" /> LIVE LOCATION DETAIL REPORT
+              </div>
+              <div className="mt-2 text-[11px] space-y-1">
+                <div className="flex justify-between border-b border-[#132d4a] py-1">
+                  <span className="text-slate-500">Fix time</span>
+                  <span className="text-slate-200">{new Date(liveFix.at).toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between border-b border-[#132d4a] py-1">
+                  <span className="text-slate-500">GPS accuracy</span>
+                  <span className="text-slate-200">±{Math.round(liveFix.accuracyM)}m</span>
+                </div>
+                <div className="flex justify-between border-b border-[#132d4a] py-1">
+                  <span className="text-slate-500">Decimal</span>
+                  <span className="text-slate-200">{place.lat.toFixed(6)}, {place.lon.toFixed(6)}</span>
+                </div>
+                <div className="flex justify-between border-b border-[#132d4a] py-1">
+                  <span className="text-slate-500">DMS</span>
+                  <span className="text-slate-200">{dms.lat}, {dms.lon}</span>
+                </div>
+                <div className="flex justify-between border-b border-[#132d4a] py-1">
+                  <span className="text-slate-500">Nearest drone</span>
+                  <span className="text-[#00d2ff] font-bold">
+                    {distKm !== null && brg !== null
+                      ? `${live?.drone_id ?? '—'} • ${distKm.toFixed(2)} km ${compass16(brg)}` +
+                        (etaMin !== null ? ` • ETA ~${etaMin.toFixed(0)} min` : '')
+                      : 'awaiting live fix…'}
+                  </span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Scenario / Link</span>
+                  <span className="text-slate-200">
+                    {live?.scenario ?? '—'} / {live ? `${live.signal_pct.toFixed(0)}%` : '—'}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={copyReport}
+                className="mt-3 w-full py-2 rounded text-xs font-bold border border-[#00d2ff]/50 text-[#00d2ff] hover:bg-[#00d2ff]/10 flex items-center justify-center gap-1.5"
+              >
+                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? 'COPIED ✓' : 'COPY FULL REPORT'}
+              </button>
             </div>
           )}
         </section>
