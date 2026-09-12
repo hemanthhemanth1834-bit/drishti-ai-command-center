@@ -16,6 +16,10 @@ type Props = {
   spotlight?: boolean;
   height?: number;
   dropFlash?: number;
+  /** Live battery % — tints the drone body green/amber/red. */
+  batteryPct?: number;
+  /** Live signal % — drives spotlight cone opacity. */
+  signalPct?: number;
   onSelect?: (e: TwinEntity | null) => void;
 };
 
@@ -26,11 +30,13 @@ export default function TwinViewport({
   spotlight = true,
   height = 460,
   dropFlash = 0,
+  batteryPct = 100,
+  signalPct = 90,
   onSelect,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const live = useRef({ alt, surgeM, spotlight, dropFlash });
-  live.current = { alt, surgeM, spotlight, dropFlash };
+  const live = useRef({ alt, surgeM, spotlight, dropFlash, batteryPct, signalPct });
+  live.current = { alt, surgeM, spotlight, dropFlash, batteryPct, signalPct };
   const selectRef = useRef(onSelect);
   selectRef.current = onSelect;
 
@@ -153,6 +159,15 @@ export default function TwinViewport({
       drone.position.y = 1.2 + ((s.alt % 50) / 25) * 0.8 + Math.sin(t * 1.4) * 0.08;
       drone.rotation.y += 0.004;
       cone.visible = s.spotlight;
+      // Spotlight brightness follows live link margin
+      (cone.material as THREE.MeshBasicMaterial).opacity = s.spotlight
+        ? 0.08 + (Math.max(0, Math.min(100, s.signalPct)) / 100) * 0.22
+        : 0;
+      // Drone body tint follows live battery: cyan → amber → red
+      const batt = Math.max(0, Math.min(100, s.batteryPct));
+      (body.material as THREE.MeshStandardMaterial).color.setHex(
+        batt > 50 ? 0x0aa4c4 : batt > 20 ? 0xd97706 : 0xdc2626
+      );
       // Surge plane height: 0..3.8m mapped to 0..1.6 scene units
       surge.position.y = 0.02 + (Math.min(3.8, Math.max(0, s.surgeM)) / 3.8) * 1.6;
       // Drop flash pulse

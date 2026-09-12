@@ -43,15 +43,76 @@ export default function TwinPage() {
               SPATIAL ELEVATION TWIN // DRONE ALT {alt.toFixed(1)}m • SURGE +{surgeM.toFixed(1)}m
             </span>
           </div>
-          <div className="bg-black">
+          <div className="bg-black relative">
             <TwinViewport
               alt={alt}
               surgeM={surgeM}
               spotlight={spotlight}
               height={480}
               dropFlash={drops}
+              batteryPct={live?.battery_pct ?? 100}
+              signalPct={live?.signal_pct ?? 90}
               onSelect={setSelected}
             />
+            {/* Live telemetry HUD pinned inside the 3D viewport */}
+            <div className="absolute top-3 right-3 w-52 bg-[#030d17]/85 backdrop-blur border border-[#00d2ff]/40 rounded-lg p-2.5 text-[10px] font-mono pointer-events-none">
+              <div className="flex items-center justify-between pb-1.5 border-b border-[#1b314b]">
+                <span className="font-bold text-white">{live?.drone_id ?? 'ACQUIRING…'}</span>
+                <span className="flex items-center gap-1">
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      connected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+                    }`}
+                  />
+                  <span className={connected ? 'text-emerald-400' : 'text-rose-400'}>
+                    {connected ? 'LIVE' : 'OFFLINE'}
+                  </span>
+                </span>
+              </div>
+              <div className="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1 text-slate-300">
+                <span className="text-slate-500">ALT</span>
+                <span className="text-right text-white">{alt.toFixed(1)} m</span>
+                <span className="text-slate-500">SPD</span>
+                <span className="text-right text-white">{(live?.speed_ms ?? 0).toFixed(1)} m/s</span>
+                <span className="text-slate-500">MODE</span>
+                <span className="text-right text-[#00d2ff]">{live?.mode ?? '—'}</span>
+                <span className="text-slate-500">TICK</span>
+                <span className="text-right text-white">#{live?.tick ?? '—'}</span>
+              </div>
+              <div className="mt-1.5">
+                <div className="flex justify-between text-slate-500">
+                  <span>BATT</span>
+                  <span className="text-white">{(live?.battery_pct ?? 100).toFixed(0)}%</span>
+                </div>
+                <div className="h-1.5 mt-0.5 rounded bg-[#091a2e]">
+                  <div
+                    className={`h-full rounded ${
+                      (live?.battery_pct ?? 100) > 50
+                        ? 'bg-emerald-400'
+                        : (live?.battery_pct ?? 100) > 20
+                          ? 'bg-amber-400'
+                          : 'bg-rose-500'
+                    }`}
+                    style={{ width: `${Math.max(0, Math.min(100, live?.battery_pct ?? 100))}%` }}
+                  />
+                </div>
+              </div>
+              <div className="mt-1.5">
+                <div className="flex justify-between text-slate-500">
+                  <span>SIG</span>
+                  <span className="text-white">{(live?.signal_pct ?? 0).toFixed(0)}%</span>
+                </div>
+                <div className="h-1.5 mt-0.5 rounded bg-[#091a2e]">
+                  <div
+                    className="h-full rounded bg-[#00d2ff]"
+                    style={{ width: `${Math.max(0, Math.min(100, live?.signal_pct ?? 0))}%` }}
+                  />
+                </div>
+              </div>
+              <div className="mt-1.5 pt-1.5 border-t border-[#1b314b] text-slate-500">
+                {(live?.lat ?? 0).toFixed(4)}°N, {(live?.lon ?? 0).toFixed(4)}°E
+              </div>
+            </div>
           </div>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">
             <MousePointerClick className="w-3.5 h-3.5 text-[#00d2ff]" />
