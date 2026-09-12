@@ -61,3 +61,43 @@ export function nearestFacilities(
     .sort((a, b) => a.distKm - b.distKm)
     .slice(0, n);
 }
+
+export type PathExposure = {
+  /** Highest hazard level touched along the straight-line path. */
+  maxLevel: RiskLevel;
+  /** Zones the path passes through, with distance along path. */
+  crossed: { zone: HazardZone; atKm: number }[];
+  pathKm: number;
+};
+
+/**
+ * Hazard exposure along the straight-line path A→B, sampled every ~2 km
+ * against mapped cells. Honest estimate — not road routing.
+ */
+export function pathExposure(
+  aLat: number,
+  aLon: number,
+  bLat: number,
+  bLon: number,
+  zones: HazardZone[] = DEMO_HAZARDS
+): PathExposure {
+  const pathKm = haversineKm(aLat, aLon, bLat, bLon);
+  const samples = Math.max(8, Math.min(60, Math.ceil(pathKm / 2)));
+  const crossed = new Map<string, { zone: HazardZone; atKm: number }>();
+  for (let i = 0; i <= samples; i++) {
+    const t = i / samples;
+    const la = aLat + (bLat - aLat) * t;
+    const lo = aLon + (bLon - aLon) * t;
+    for (const z of zones) {
+      if (haversineKm(la, lo, z.lat, z.lon) <= z.radiusKm && !crossed.has(z.id)) {
+        crossed.set(z.id, { zone: z, atKm: pathKm * t });
+      }
+    }
+  }
+  const list = Array.from(crossed.values()).sort((a, b) => a.atKm - b.atKm);
+  let maxLevel: RiskLevel = 'low';
+  for (const c of list) {
+    if (RANK[c.zone.level] > RANK[maxLevel]) maxLevel = c.zone.level;
+  }
+  return { maxLevel, crossed: list, pathKm };
+}
