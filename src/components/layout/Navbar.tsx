@@ -10,11 +10,13 @@ import {
   Users,
   BarChart3,
   Globe,
+  MapPin,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Command Center', icon: Activity },
   { href: '/drones', label: 'Drone Swarm & SAR', icon: Plane },
+  { href: '/location', label: 'Location Intel', icon: MapPin },
   { href: '/simulation', label: 'What-If Copilot', icon: Cpu },
   { href: '/resources', label: 'Hospital ICU Command', icon: Building2 },
   { href: '/shelter', label: 'Shelter Scanner', icon: Users },

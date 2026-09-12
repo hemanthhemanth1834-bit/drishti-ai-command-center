@@ -1,10 +1,11 @@
 // src/app/drones/page.tsx — Drone Swarm & SAR Radar
 'use client';
-import { useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket, type TelemetryPacket } from '@/hooks/useTelemetrySocket';
-import { Plane, Thermometer, Package } from 'lucide-react';
+import { Plane, Thermometer, Package, Crosshair } from 'lucide-react';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -19,7 +20,26 @@ const PAYLOADS = [
 ];
 
 export default function DronesPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#020b14]" />}>
+      <DronesContent />
+    </Suspense>
+  );
+}
+
+function DronesContent() {
   const { packets, live, connected } = useTelemetrySocket();
+  const params = useSearchParams();
+
+  // Deep-link focus from /location (e.g. /drones?lat=..&lon=..&name=..)
+  const focusLat = Number(params.get('lat'));
+  const focusLon = Number(params.get('lon'));
+  const focusName = params.get('name') ?? '';
+  const hasFocus =
+    Number.isFinite(focusLat) && Number.isFinite(focusLon) && focusName.length > 0;
+
+  const mapLat = hasFocus ? focusLat : (live?.lat ?? 17.385);
+  const mapLon = hasFocus ? focusLon : (live?.lon ?? 78.4867);
 
   const fleet = useMemo(() => {
     const seen = new Map<string, TelemetryPacket>();
@@ -35,12 +55,16 @@ export default function DronesPage() {
           <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] flex items-center gap-2">
             <Plane className="w-4 h-4 text-[#00d2ff]" />
             <span className="text-xs font-bold text-white tracking-wider">
-              SWARM SAR RADAR // {(live?.lat ?? 17.385).toFixed(4)}°N,{' '}
-              {(live?.lon ?? 78.4867).toFixed(4)}°E
+              SWARM SAR RADAR // {mapLat.toFixed(4)}°N, {mapLon.toFixed(4)}°E
             </span>
+            {hasFocus && (
+              <span className="ml-auto flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-[#00d2ff]/20 text-[#00d2ff] border border-[#00d2ff]/40">
+                <Crosshair className="w-3 h-3" /> TRACKING: {focusName.toUpperCase()}
+              </span>
+            )}
           </div>
           <div className="h-[420px] bg-black">
-            <DroneLeafletTracker lat={live?.lat ?? 17.385} lon={live?.lon ?? 78.4867} />
+            <DroneLeafletTracker lat={mapLat} lon={mapLon} />
           </div>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">
             <Thermometer className="w-3.5 h-3.5 text-orange-400" />

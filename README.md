@@ -22,12 +22,15 @@ drishti-ai-command-center/
 │   ├── Dockerfile + requirements.txt
 ├── src/                 # Next.js 14 frontend
 │   ├── app/page.tsx               # Master Command Operations Deck
+│   ├── app/{drones,location,simulation,resources,shelter,recovery,portal}/
+│   │                               # 7 tactical sub-routes + Location Intel (OSM geocode)
 │   ├── components/DigitalTwin.tsx + RadarMap.tsx + TelemetryFeed.tsx (canonical)
 │   ├── components/3d/DigitalTwinCanvas.tsx / maps/DroneLeafletTracker.tsx
 │   ├── components/dashboard/LiveTelemetryTable.tsx + HeaderBar.tsx
 │   ├── components/alerts/GeofenceBreachModal.tsx
 │   ├── hooks/useTelemetrySocket.ts # reconnecting WS client
 │   └── utils/apiClient.ts + geofenceDetection.ts (point-in-polygon)
+│       + geocode.ts (Nominatim search, haversine/bearing)
 ├── public/              # static assets
 ├── docker-compose.yml   # one-click launcher
 ```
