@@ -30,6 +30,7 @@ const DICT: Record<string, Record<Lang, string>> = {
   nav_welcome: { en: 'Welcome', te: 'స్వాగతం', hi: 'स्वागत' },
   nav_ops: { en: 'Ops Overview', te: 'ఆపరేషన్లు', hi: 'ऑपरेशन' },
   nav_sources: { en: 'Data Sources', te: 'దత్తాంశ వనరులు', hi: 'डेटा स्रोत' },
+  nav_demo: { en: 'Demo Presenter', te: 'డెమో ప్రదర్శన', hi: 'डेमो प्रस्तुति' },
   // Modes
   mode_public: { en: 'PUBLIC MODE', te: 'పబ్లిక్ మోడ్', hi: 'पब्लिक मोड' },
   mode_command: { en: 'COMMAND MODE', te: 'కమాండ్ మోడ్', hi: 'कमांड मोड' },

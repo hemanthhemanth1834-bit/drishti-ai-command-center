@@ -20,6 +20,9 @@ export default function SystemHealth({ wsConnected, demoActive }: { wsConnected:
     const out: Row[] = [];
     const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
 
+    // Frontend: this panel rendered, so the client bundle is alive.
+    out.push({ name: 'Frontend', status: 'ONLINE', detail: 'this client rendered', badge: 'LOCAL' });
+
     // API (open health endpoint, no key needed)
     try {
       const r = await fetch(`${base}/api/health`, { signal: AbortSignal.timeout(8000) });

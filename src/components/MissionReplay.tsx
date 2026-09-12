@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { useOps, startDemo, demoGoto, stopDemo, DEMO_META, DEMO_PHASES, type DemoId } from '@/store/opsStore';
+import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import TrustBadge from '@/components/TrustBadge';
 
 /** Mission Replay: timestamped timeline driving the SAME demo engine (no second sim). */
@@ -177,6 +178,11 @@ export default function MissionReplay() {
       </div>
       <div className="mt-1 text-[10px] text-slate-500">
         {DEMO_META.flood.emoji} {ops.demo ? `Phase: ${ops.demo.phase + 1}/7` : 'Press PLAY to run the flood mission.'} All pages follow the same engine.
+        {ops.demo && (
+          <span className="ml-2 text-slate-300">
+            RISK NOW: {incidentLevel(evaluateAlerts({ scenario: ops.scenario, spillwayK: ops.spillwayK, geofenceBreach: false })).label}
+          </span>
+        )}
       </div>
     </div>
   );

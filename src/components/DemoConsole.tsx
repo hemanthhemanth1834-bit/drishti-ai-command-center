@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useOps, startDemo, demoStep, stopDemo, DEMO_META, DEMO_PHASES, type DemoId } from '@/store/opsStore';
+import { useOps, startDemo, demoStep, stopDemo, DEMO_META, DEMO_PHASES, DEMO_NARRATIVE, type DemoId } from '@/store/opsStore';
 import TrustBadge from '@/components/TrustBadge';
 
 /** Presentation console: pick a scenario, step or auto-play its 7 phases. */
@@ -46,6 +46,7 @@ export default function DemoConsole() {
         ))}
       </div>
       {ops.demo ? (
+        <>
         <div className="mt-3 flex items-center gap-2 flex-wrap">
           <button onClick={() => demoStep(-1)} className="px-3 py-1.5 rounded border border-[#1b314b] text-xs">
             ‹ BACK
@@ -66,6 +67,12 @@ export default function DemoConsole() {
             Phase {ops.demo.phase + 1}/{DEMO_PHASES.length} — {DEMO_PHASES[ops.demo.phase]}
           </span>
         </div>
+        {ops.demo && (
+          <div className="mt-2 text-[12px] text-rose-200/90 bg-[#140608] border border-rose-500/30 rounded-lg p-2">
+            {DEMO_NARRATIVE[ops.demo.id][ops.demo.phase]}
+          </div>
+        )}
+        </>
       ) : (
         <div className="mt-2 text-[11px] text-slate-500">
           Pick a scenario — map, risk, alerts, drones and both dashboards follow the phases.

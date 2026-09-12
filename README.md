@@ -4,7 +4,7 @@
 📡 **Live API:** https://backend-production-47f1.up.railway.app/api/health
 
 **Routes:** `/` → cinematic welcome poster · `/command` → operator deck ·
-`/safety` → citizen dashboard · 25 routes total (see tree below).
+`/safety` → citizen dashboard · 28 routes total (see tree below).
 
 Offline-first drone mesh HUD: **Next.js 14 (App Router) + Three.js + Leaflet + FastAPI WebSockets**.
 Zero paid APIs — CartoDB/OSM tiles only. Tactical dark HUD (`#051424`, `#00d2ff` cyan).
@@ -31,6 +31,7 @@ drishti-ai-command-center/
 │   │                               # 10 tactical routes: pillars + Location Intel, Citizen Portal, Platform Specs
 │   ├── app/{safety,risk,emergency,alerts,nearby,evacuate,report,family,plan,kit,learn,talk}/
 │   │                               # 12 citizen routes: public-safety platform (see below)
+│   ├── app/{ops,demo,sources}/     # Ops KPIs + health · demo presenter · data sources
 │   ├── components/DigitalTwin.tsx + RadarMap.tsx (circles/grid/target overlays) + TelemetryFeed.tsx
 │   ├── components/3d/DigitalTwinCanvas.tsx + TwinViewport.tsx (surge, spotlight, satellite, zoom, VFX)
 │   ├── components/maps/DroneLeafletTracker.tsx (overlay forwarding)
@@ -39,7 +40,10 @@ drishti-ai-command-center/
 │   ├── components/layout/Navbar.tsx (public/command modes, EN/TE/HI, live incident badge)
 │   ├── components/RiskChecker.tsx + Checklist.tsx + TrustBadge.tsx
 │   ├── components/EmergencyFab.tsx + MobileQuickBar.tsx + A11yBar.tsx + OfflineBanner.tsx + SwRegister.tsx
+│   ├── components/DemoBar.tsx (persistent strip) + DemoConsole.tsx + MissionReplay.tsx (timeline scrubber)
+│   ├── components/SystemHealth.tsx (real probes) + ArchitectureDiagram.tsx (system map)
 │   ├── data/providers.ts          # 8 provider interfaces + labeled demo datasets
+│   ├── data/learn.ts              # trilingual disaster-education content
 │   ├── store/opsStore.ts (scenario/spillway/acks) + appStore.ts (mode/lang/a11y)
 │   ├── hooks/useTelemetrySocket.ts (reconnecting WS) + useLocalList.ts (localStorage)
 │   ├── i18n/dict.ts               # central EN/TE/HI dictionary
@@ -193,6 +197,32 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
 - Lint: `npx next lint --dir src` (ESLint + next/core-web-vitals, clean).
 - Production build: `npm run build` with the dev server stopped (shared `.next/`).
 
+## Problem → Solution
+Disasters drown citizens in rumor while operators drown in dashboards. DRISHTI-X
+is one platform with two faces: a **citizen app** that answers AM I SAFE? / WHAT
+SHOULD I DO? / WHERE SHOULD I GO? / HOW DO I GET HELP? in plain language, and a
+**command deck** that answers WHAT / WHERE / HOW SEVERE / WHO IS AFFECTED / WHAT
+NEXT? with live telemetry, maps, 3D twin, drones and simulations. Everything runs
+on free/open-source tech (OSM, Leaflet, Three.js, FastAPI, browser APIs) with
+labeled demo providers standing in for future official feeds.
+
+## 60-second demo script (judges)
+1. `/welcome` → press ENTER (poster → safety). 2. `/demo` → START flood scenario.
+3. Watch the badge flip STABLE → CRITICAL, banner escalate, ticker move.
+4. `/safety` → CHECK MY RISK → VIEW SAFE ROUTE. 5. `/evacuate` → ★ SAFEST PICK +
+   WHY THIS ROUTE. 6. `/drones` → SAR grid + radius. 7. `/twin` → surge + pick a
+   hazard → RISK. 8. `/ops` → KPIs + SYSTEM HEALTH. 9. END DEMO → all nominal.
+Arrow keys step phases; Mission Replay scrubs the timeline on `/platform`.
+
+## Screenshots
+The hero artwork is the real `public/poster.jpg` (also the repo's visual identity).
+No mockups: every screen in this README is a live route listed above.
+
+## Future official integrations
+IMD weather, NDMA/CAP alerts, HMIS beds, shelter registry, river/IoT sensors,
+Bhuvan tiles, MAVLink drone link — each maps 1:1 onto an existing provider
+interface in `src/data/providers.ts`. No page changes required.
+
 ## Citizen access (no login, no keys, no cost)
 - **Welcome poster** (`/welcome`): cinematic entry — press ENTER to enter.
 - **Public mode** (toggle in the top bar): My Safety (`/safety`), Check My Risk (`/risk`),
@@ -232,8 +262,9 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
   unsupported states handled). Emergency numbers are configurable in one place
   (`EMERGENCY_NUMBERS`); personal data stays in localStorage; shared coordinates
   are rounded to ~100 m.
-- **Testing**: `npm run typecheck` (tsc, also in CI) + `cd backend` →
+- **Testing**: `npm run typecheck` (tsc, also in CI) + `npx next lint --dir src`
+  (ESLint `next/core-web-vitals`, zero warnings) + `cd backend` →
   `python -m pytest tests/ -q` (9 contract tests: health, auth, packet shape,
-  scenario, sensors, WS frames). `next lint` is not configured. Local `npm run
-  build` requires the dev server stopped (shared `.next/`); every `vercel --prod`
-  runs the production build in the cloud, which is the standing build proof.
+  scenario, sensors, WS frames). Local `npm run build` requires the dev server
+  stopped (shared `.next/`); every `vercel --prod` runs the production build in
+  the cloud, which is the standing build proof.

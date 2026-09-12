@@ -51,6 +51,12 @@ export default function MasterCommandCenter() {
     droneId: live?.drone_id,
   });
 
+  // Live drill blend for the hero ticker (same surrogate as What-If).
+  const tickerRisk = Math.min(100, Math.round(30 + ops.spillwayK * 1.1 + (scenario === 'storm' ? 18 : 0)));
+  const tickerPeople =
+    ({ storm: 24860, 'swarm-surge': 5200, 'gps-denied': 800, nominal: 120 } as Record<string, number>)[scenario] ?? 120;
+  const tickerBlocked = Math.round((tickerRisk / 100) * 62);
+
   async function changeScenario(s: string) {
     setOps({ scenario: s, acked: [] });
     try {
@@ -104,26 +110,26 @@ export default function MasterCommandCenter() {
         </section>
       )}
 
-      {/* KPI Ticker Bar */}
+      {/* KPI Ticker Bar — live drill blend: risk/closures/units follow scenario + spillway */}
       <section className="bg-[#051424] border-b border-[#1b314b] px-4 py-2.5 grid grid-cols-2 md:grid-cols-6 gap-3">
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
           <div className="text-[10px] text-slate-400 uppercase">Flood Inundation Risk</div>
           <div className="text-xl font-bold text-rose-400 flex items-baseline gap-1">
-            78<span className="text-xs text-rose-500">/100</span>
-            <span className="text-[10px] text-rose-400 font-normal ml-auto">+14% / 3h</span>
+            {tickerRisk}<span className="text-xs text-rose-500">/100</span>
+            <span className="text-[10px] text-rose-400 font-normal ml-auto">live drill</span>
           </div>
         </div>
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
           <div className="text-[10px] text-slate-400 uppercase">Citizens At Risk</div>
-          <div className="text-xl font-bold text-amber-300">24,860</div>
+          <div className="text-xl font-bold text-amber-300">{tickerPeople.toLocaleString()}</div>
         </div>
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
-          <div className="text-[10px] text-slate-400 uppercase">Critical Corridors</div>
-          <div className="text-xl font-bold text-[#00d2ff]">07 Sectors</div>
+          <div className="text-[10px] text-slate-400 uppercase">Active Incidents</div>
+          <div className="text-xl font-bold text-[#00d2ff]">{alerts.length} live</div>
         </div>
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
           <div className="text-[10px] text-slate-400 uppercase">Arterial Blockages</div>
-          <div className="text-xl font-bold text-orange-400">18 / 62</div>
+          <div className="text-xl font-bold text-orange-400">{tickerBlocked} / 62</div>
         </div>
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
           <div className="text-[10px] text-slate-400 uppercase">Shelter Capacity</div>
@@ -131,7 +137,7 @@ export default function MasterCommandCenter() {
         </div>
         <div className="bg-[#091a2e] p-2 rounded border border-[#1b314b]">
           <div className="text-[10px] text-slate-400 uppercase">Active Air/Boat Units</div>
-          <div className="text-xl font-bold text-cyan-300">32 Units</div>
+          <div className="text-xl font-bold text-cyan-300">{26 + alerts.length * 3} Units</div>
         </div>
       </section>
 

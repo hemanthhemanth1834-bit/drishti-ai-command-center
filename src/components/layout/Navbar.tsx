@@ -33,11 +33,13 @@ import {
   House,
   Gauge,
   Database,
+  Clapperboard,
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
   { href: '/command', labelKey: 'nav_command', icon: Activity },
   { href: '/ops', labelKey: 'nav_ops', icon: Gauge },
+  { href: '/demo', labelKey: 'nav_demo', icon: Clapperboard },
   { href: '/sources', labelKey: 'nav_sources', icon: Database },
   { href: '/drones', labelKey: 'nav_drones', icon: Plane },
   { href: '/twin', labelKey: 'nav_twin', icon: Box },
