@@ -147,6 +147,8 @@ export default function TwinPage() {
               ['#a78bfa', 'Shelter'],
               ['#f59e0b', 'Bridge'],
               ['#ef4444', 'Fire tender'],
+              ['#fb923c', 'Flood cell'],
+              ['#f87171', 'Fire cell'],
             ].map(([c, l]) => (
               <span key={l} className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full inline-block" style={{ background: c }} />
@@ -192,6 +194,9 @@ export default function TwinPage() {
                 <div className="bg-[#091a2e] p-2.5 rounded border border-[#00d2ff]/40">
                   <div className="text-[#00d2ff] font-bold">{selected.label}</div>
                   <div className="text-slate-400 text-[11px] mt-0.5">kind: {selected.kind}</div>
+                  {selected.risk && (
+                    <div className="text-amber-300 text-[11px] mt-1">RISK: {selected.risk}</div>
+                  )}
                 </div>
               ) : (
                 <div className="text-slate-500 text-[11px]">No entity selected — click a marker.</div>

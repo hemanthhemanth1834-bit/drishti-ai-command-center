@@ -178,10 +178,19 @@ git push origin main
 Stage everything, snapshot it with a message, and upload to GitHub. CI
 (`.github/workflows/`) type-checks, builds and containerizes each push.
 
-## Auth (dev only)
-`GATEWAY_KEY=drishti-mesh-dev-key-2025` must match
-`NEXT_PUBLIC_GATEWAY_KEY`. Frontend sends `Authorization: Bearer <key>` for REST.
-WS stream stays open for local HUD.
+## Auth (use your own keys — never commit them)
+1. Pick a long random value and put it in `backend/.env` as `GATEWAY_KEY=...`.
+2. Put the **same** value in `.env.local` as `NEXT_PUBLIC_GATEWAY_KEY=...`.
+3. The web app sends `Authorization: Bearer <key>` on REST calls; the WS stream
+   stays open for the local HUD. The `.example` files ship with `CHANGE_ME`
+   placeholders on purpose — real keys live only in git-ignored `.env` files
+   and hosting dashboards (Railway/Vercel env vars).
+
+## Testing
+- Backend contract tests: `cd backend` → `python -m pytest tests/ -q`
+  (health, auth 401/200, packet shape, scenario round-trip, WS frame).
+- Frontend type gate: `npx tsc --noEmit` (also enforced in CI).
+- Production build: `npm run build` with the dev server stopped (shared `.next/`).
 
 ## Citizen access (no login, no keys, no cost)
 - **Welcome poster** (`/welcome`): cinematic entry — press ENTER to enter.

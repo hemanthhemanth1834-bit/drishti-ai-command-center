@@ -2,7 +2,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
-export type TwinEntity = { id: string; label: string; kind: string };
+export type TwinEntity = { id: string; label: string; kind: string; risk?: string };
 
 const ENTITIES: (TwinEntity & { pos: [number, number, number]; color: number })[] = [
   { id: "RB-07", label: "NDRF Boat RB-07", kind: "boat", pos: [-2.5, 0.1, 1.5], color: 0x34d399 },
@@ -12,6 +12,8 @@ const ENTITIES: (TwinEntity & { pos: [number, number, number]; color: number })[
   { id: "SH-01", label: "City Sports Shelter", kind: "shelter", pos: [-3.6, 0.15, -2.3], color: 0xa78bfa },
   { id: "BRG-02", label: "Railway Bridge Pier P-18", kind: "bridge", pos: [0.6, 0.45, -3.2], color: 0xf59e0b },
   { id: "FRT-03", label: "Fire Tender FRT-03", kind: "vehicle", pos: [-1.6, 0.1, -2.7], color: 0xef4444 },
+  { id: "HZ-FL", label: "Flood cell — riverside wards", kind: "hazard", risk: "HIGH (simulated): discharge >45k cusecs may inundate low streets. Prepare evacuation.", pos: [1.8, 0.15, 2.6], color: 0xfb923c },
+  { id: "HZ-FR", label: "Fire-risk cell — industrial belt", kind: "hazard", risk: "MODERATE (simulated): chemical storage + dry spell. No active fire.", pos: [-3.0, 0.15, 0.6], color: 0xf87171 },
 ];
 
 export type TerrainMode = 'grid' | 'satellite';
@@ -253,7 +255,7 @@ export default function TwinViewport({
         new THREE.MeshStandardMaterial({ color: e.color, emissive: e.color, emissiveIntensity: 0.5 })
       );
       m.position.set(...e.pos);
-      m.userData.entity = { id: e.id, label: e.label, kind: e.kind };
+      m.userData.entity = { id: e.id, label: e.label, kind: e.kind, risk: e.risk };
       scene.add(m);
       return m;
     });

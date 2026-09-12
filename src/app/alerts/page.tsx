@@ -1,5 +1,6 @@
 // ALERT CENTER — WHAT / WHERE / WHEN / SEVERITY / ACTION per alert.
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
@@ -27,14 +28,51 @@ export default function AlertsPage() {
     geofenceBreach: false,
     droneId: live?.drone_id,
   });
+  const [notify, setNotify] = useState(false);
+  const seenCritical = useRef<Set<string>>(new Set());
+
+  async function enableNotify() {
+    try {
+      if (!('Notification' in window)) return;
+      const perm = await Notification.requestPermission();
+      setNotify(perm === 'granted');
+    } catch {
+      /* unsupported */
+    }
+  }
+
+  // Fire a browser notification once per new critical mesh alert (opt-in only).
+  useEffect(() => {
+    if (!notify || !('Notification' in window)) return;
+    for (const a of liveAlerts) {
+      if (a.level === 'critical' && !seenCritical.current.has(a.id)) {
+        seenCritical.current.add(a.id);
+        try {
+          new Notification(`DRISHTI-X CRITICAL — ${a.title.slice(0, 80)}`, { body: a.detail.slice(0, 140) });
+        } catch {
+          /* blocked */
+        }
+      }
+    }
+  });
 
   return (
     <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
       <div className="p-4 max-w-4xl mx-auto flex flex-col gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Bell className="w-5 h-5 text-[#00d2ff]" />
           <h1 className="text-xl font-extrabold text-white">ALERT CENTER</h1>
+          <button
+            onClick={enableNotify}
+            className={`ml-auto px-3 py-1.5 rounded-lg text-[11px] font-bold border ${
+              notify
+                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                : 'border-[#1b314b] text-slate-300 hover:border-[#00d2ff]/60'
+            }`}
+          >
+            {notify ? '🔔 CRITICAL NOTIFY ON' : '🔕 NOTIFY ME OF CRITICAL'}
+          </button>
         </div>
 
         <section>

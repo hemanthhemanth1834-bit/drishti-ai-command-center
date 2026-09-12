@@ -41,6 +41,21 @@ export default function WelcomePage() {
   const [bgOk, setBgOk] = useState(true);
   const langs = ['en', 'te', 'hi'] as const;
   const router = useRouter();
+  const [seqStep, setSeqStep] = useState(0);
+
+  // Cinematic opening sequence (skipped when reduced motion is preferred).
+  useEffect(() => {
+    try {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        setSeqStep(5);
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
+    const t = setInterval(() => setSeqStep((s) => (s >= 5 ? 5 : s + 1)), 450);
+    return () => clearInterval(t);
+  }, []);
 
   // Press ENTER anywhere to enter the site (same as INITIALIZING).
   useEffect(() => {
@@ -139,8 +154,13 @@ export default function WelcomePage() {
               </kbd>{' '}
               to enter
             </div>
-            <div className="mt-3 text-[10px] tracking-[0.3em] text-slate-400">
-              DETECT&nbsp;&nbsp;•&nbsp;&nbsp;ANALYZE&nbsp;&nbsp;•&nbsp;&nbsp;SIMULATE&nbsp;&nbsp;•&nbsp;&nbsp;RESPOND&nbsp;&nbsp;•&nbsp;&nbsp;RECOVER
+            <div className="mt-3 text-[10px] tracking-[0.3em] text-slate-400" aria-label="Detect, analyze, predict, alert, respond, recover">
+              {['DETECT', 'ANALYZE', 'PREDICT', 'ALERT', 'RESPOND', 'RECOVER'].map((s, i) => (
+                <span key={s}>
+                  <span className={seqStep >= i ? 'text-[#00d2ff] font-bold' : ''}>{s}</span>
+                  {i < 5 && <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>}
+                </span>
+              ))}
             </div>
           </div>
         </div>

@@ -28,6 +28,7 @@ const DICT: Record<string, Record<Lang, string>> = {
   nav_learn: { en: 'Learn', te: 'నేర్చుకోండి', hi: 'सीखें' },
   nav_talk: { en: 'Talk to Drishti', te: 'దృష్టితో మాట్లాడండి', hi: 'दृष्टि से बात करें' },
   nav_welcome: { en: 'Welcome', te: 'స్వాగతం', hi: 'स्वागत' },
+  nav_ops: { en: 'Ops Overview', te: 'ఆపరేషన్లు', hi: 'ऑपरेशन' },
   // Modes
   mode_public: { en: 'PUBLIC MODE', te: 'పబ్లిక్ మోడ్', hi: 'पब्लिक मोड' },
   mode_command: { en: 'COMMAND MODE', te: 'కమాండ్ మోడ్', hi: 'कमांड मोड' },
@@ -61,6 +62,17 @@ const DICT: Record<string, Record<Lang, string>> = {
   common_demo: { en: 'DEMO DATA', te: 'డెమో డేటా', hi: 'डेमो डेटा' },
   common_sim: { en: 'SIMULATION', te: 'అనుకరణ', hi: 'सिमुलेशन' },
   common_live: { en: 'LIVE', te: 'ప్రత్యక్షం', hi: 'लाइव' },
+  safety_mine: { en: 'MY SAFETY', te: 'నా భద్రత', hi: 'मेरी सुरक्षा' },
+  phase_before: { en: 'BEFORE DISASTER', te: 'విపత్తుకు ముందు', hi: 'आपदा से पहले' },
+  phase_during: { en: 'DURING DISASTER', te: 'విపత్తు సమయంలో', hi: 'आपदा के दौरान' },
+  phase_after: { en: 'AFTER DISASTER', te: 'విపత్తు తర్వాత', hi: 'आपदा के बाद' },
+  alerts_live: { en: 'LIVE MESH ALERTS', te: 'ప్రత్యక్ష హెచ్చరికలు', hi: 'लाइव अलर्ट' },
+  alerts_official: { en: 'OFFICIAL-STYLE FEED', te: 'అధికారిక తరహా సమాచారం', hi: 'आधिकारिक फ़ीड' },
+  view_map: { en: 'VIEW MAP', te: 'మ్యాప్ చూడండి', hi: 'नक्शा देखें' },
+  safe_route: { en: 'SAFE ROUTE', te: 'సురక్షిత మార్గం', hi: 'सुरक्षित मार्ग' },
+  learn_before: { en: 'BEFORE', te: 'ముందు', hi: 'पहले' },
+  learn_during: { en: 'DURING', te: 'సమయంలో', hi: 'दौरान' },
+  learn_after: { en: 'AFTER', te: 'తర్వాత', hi: 'बाद में' },
 };
 
 export function t(lang: Lang, key: string): string {

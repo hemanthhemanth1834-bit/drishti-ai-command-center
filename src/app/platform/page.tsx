@@ -2,6 +2,7 @@
 'use client';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
+import DemoConsole from '@/components/DemoConsole';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import {
   Activity, Box, Plane, Cpu, Building2, Users, ScanFace, BarChart3,
@@ -43,6 +44,7 @@ export default function PlatformPage() {
     <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
       <div className="p-4 max-w-6xl mx-auto flex flex-col gap-4">
+        <DemoConsole />
         <section>
           <div className="text-xs font-bold text-white flex items-center gap-1.5">
             <Landmark className="w-4 h-4 text-[#00d2ff]" /> 8 OPERATIONAL PILLARS

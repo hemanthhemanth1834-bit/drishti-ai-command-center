@@ -31,10 +31,12 @@ import {
   Mic,
   Languages,
   House,
+  Gauge,
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
   { href: '/command', labelKey: 'nav_command', icon: Activity },
+  { href: '/ops', labelKey: 'nav_ops', icon: Gauge },
   { href: '/drones', labelKey: 'nav_drones', icon: Plane },
   { href: '/twin', labelKey: 'nav_twin', icon: Box },
   { href: '/location', labelKey: 'nav_location', icon: MapPin },

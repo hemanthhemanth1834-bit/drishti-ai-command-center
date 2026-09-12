@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
+import TrustBadge from '@/components/TrustBadge';
 import { fetchTelemetryData } from '@/utils/apiClient';
 import { Building2, BedDouble, Wind } from 'lucide-react';
 
@@ -34,6 +35,12 @@ export default function ResourcesPage() {
           <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
             <BedDouble className="w-4 h-4 text-[#00d2ff]" />
             ICU VENTILATOR BED REGISTRY — MULTI-AGENCY TRIAGE
+            <span className="ml-auto">
+              <TrustBadge kind="DEMO" source="SIMULATED CAPACITY — replace with live feed" />
+            </span>
+          </div>
+          <div className="mt-1 text-[10px] text-slate-500">
+            Drill figures for coordination practice. Never treat as real bed availability.
           </div>
           <div className="mt-3 space-y-2 text-xs">
             {ICU_REGISTRY.map((h) => (

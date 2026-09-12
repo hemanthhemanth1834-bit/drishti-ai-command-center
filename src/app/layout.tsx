@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import EmergencyFab from "@/components/EmergencyFab";
 import MobileQuickBar from "@/components/MobileQuickBar";
 import A11yBar from "@/components/A11yBar";
+import DemoBar from "@/components/DemoBar";
 import OfflineBanner from "@/components/OfflineBanner";
 import SwRegister from "@/components/SwRegister";
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <EmergencyFab />
         <MobileQuickBar />
         <A11yBar />
+        <DemoBar />
         <SwRegister />
       </body>
     </html>

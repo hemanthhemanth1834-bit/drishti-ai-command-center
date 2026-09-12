@@ -178,6 +178,9 @@ export default function EvacuatePage() {
                   {isSafest && exposure && expoMeta && (
                     <div className={`mt-2 p-2 rounded-lg border text-[11px] ${expoMeta.bg}`}>
                       <div className={`font-bold ${expoMeta.color}`}>
+                        WHY THIS ROUTE? Lowest cell exposure of all {dests.length} options.
+                      </div>
+                      <div className={`font-bold ${expoMeta.color} mt-0.5`}>
                         PATH EXPOSURE: {expoMeta.label}
                       </div>
                       <div className="text-slate-300 mt-0.5">
