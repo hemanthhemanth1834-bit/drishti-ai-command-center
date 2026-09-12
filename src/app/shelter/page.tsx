@@ -1,0 +1,111 @@
+// src/app/shelter/page.tsx — Shelter Evacuee Scanner
+'use client';
+import { useMemo, useState } from 'react';
+import Navbar from '@/components/layout/Navbar';
+import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
+import { Users, ScanLine, Search } from 'lucide-react';
+
+type Evacuee = { id: string; name: string; shelter: string; verified: boolean };
+
+const SEED: Evacuee[] = [
+  { id: 'EV-1042', name: 'Anitha Rao', shelter: 'City Sports Complex', verified: true },
+  { id: 'EV-1043', name: 'Ravi Kumar', shelter: 'City Sports Complex', verified: true },
+  { id: 'EV-1077', name: 'Meera S.', shelter: 'Riverbend Hall', verified: false },
+];
+
+export default function ShelterPage() {
+  const { connected } = useTelemetrySocket();
+  const [log, setLog] = useState<Evacuee[]>(SEED);
+  const [name, setName] = useState('');
+  const [query, setQuery] = useState('');
+
+  const matches = useMemo(
+    () =>
+      query.trim()
+        ? log.filter((e) => e.name.toLowerCase().includes(query.toLowerCase()))
+        : log,
+    [log, query]
+  );
+  const occupancy = Math.min(100, 74.2 + log.length * 0.1);
+
+  function checkIn() {
+    if (!name.trim()) return;
+    setLog((l) => [
+      { id: `EV-${1080 + l.length}`, name: name.trim(), shelter: 'City Sports Complex', verified: false },
+      ...l,
+    ]);
+    setName('');
+  }
+
+  return (
+    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+      <Navbar wsConnected={connected} />
+      <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <section className="lg:col-span-5 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+          <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
+            <ScanLine className="w-4 h-4 text-[#00d2ff]" /> KIOSK CHECK-IN SCANNER
+          </div>
+          <div className="mt-3 text-[11px] text-slate-400">
+            Optical QR scan • offline Aadhaar verification (mock) • family cross-match
+          </div>
+          <div className="mt-3 flex gap-2">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Evacuee name…"
+              className="flex-1 bg-[#020b14] border border-[#1b314b] rounded px-3 py-2 text-xs text-white"
+            />
+            <button
+              onClick={checkIn}
+              className="px-4 py-2 bg-[#00d2ff] text-black text-xs font-bold rounded"
+            >
+              CHECK-IN
+            </button>
+          </div>
+          <div className="mt-4">
+            <div className="text-[10px] text-slate-400 flex justify-between">
+              <span>SHELTER CAPACITY</span>
+              <span className="text-emerald-400">{occupancy.toFixed(1)}% OCCUPIED</span>
+            </div>
+            <div className="h-2 mt-1 rounded bg-[#091a2e] border border-[#1b314b]">
+              <div className="h-full rounded bg-emerald-400" style={{ width: `${occupancy}%` }} />
+            </div>
+          </div>
+        </section>
+
+        <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+          <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
+            <Users className="w-4 h-4 text-[#00d2ff]" /> FAMILY REUNIFICATION CROSS-MATCH
+          </div>
+          <div className="mt-3 flex items-center gap-2 bg-[#020b14] border border-[#1b314b] rounded px-3 py-2">
+            <Search className="w-3.5 h-3.5 text-slate-500" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search registered evacuees…"
+              className="flex-1 bg-transparent text-xs text-white outline-none"
+            />
+          </div>
+          <div className="mt-2 space-y-1 text-[11px] max-h-[300px] overflow-y-auto">
+            {matches.map((e) => (
+              <div
+                key={e.id}
+                className="p-2 rounded bg-[#081a2c] border border-[#132d4a] flex items-center justify-between"
+              >
+                <span className="text-[#00d2ff] font-bold">{e.id}</span>
+                <span>{e.name}</span>
+                <span className="text-slate-400">{e.shelter}</span>
+                <span className={e.verified ? 'text-emerald-400' : 'text-amber-300'}>
+                  {e.verified ? 'VERIFIED' : 'PENDING'}
+                </span>
+              </div>
+            ))}
+            {matches.length === 0 && (
+              <div className="text-slate-500 py-4 text-center">No matches found.</div>
+            )}
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}

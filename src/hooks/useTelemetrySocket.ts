@@ -12,6 +12,8 @@ export type TelemetryPacket = {
   speed_ms: number;
   battery_pct: number;
   signal_pct: number;
+  temp_c: number;
+  mode: string;
   scenario: string;
   ts: number;
 };
