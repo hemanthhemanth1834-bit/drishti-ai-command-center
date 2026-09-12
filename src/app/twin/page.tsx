@@ -4,7 +4,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
-import type { TwinEntity } from '@/components/3d/TwinViewport';
+import type { TwinEntity, TerrainMode } from '@/components/3d/TwinViewport';
 import { Box, Waves, Flashlight, MousePointerClick, Package } from 'lucide-react';
 
 const TwinViewport = dynamic(() => import('@/components/3d/TwinViewport'), {
@@ -18,8 +18,11 @@ export default function TwinPage() {
   const [selected, setSelected] = useState<TwinEntity | null>(null);
   const [drops, setDrops] = useState(0);
   const [events, setEvents] = useState<string[]>([]);
+  const [terrain, setTerrain] = useState<TerrainMode>('satellite');
 
   const alt = live?.alt_m ?? 120;
+  const tLat = live?.lat ?? 17.385;
+  const tLon = live?.lon ?? 78.4867;
 
   function actuateDrop() {
     setDrops((d) => d + 1);
@@ -42,6 +45,19 @@ export default function TwinPage() {
             <span className="text-xs font-bold text-white tracking-wider">
               SPATIAL ELEVATION TWIN // DRONE ALT {alt.toFixed(1)}m • SURGE +{surgeM.toFixed(1)}m
             </span>
+            <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">
+              {(['satellite', 'grid'] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setTerrain(m)}
+                  className={`px-2.5 py-0.5 text-[10px] rounded transition-all ${
+                    terrain === m ? 'bg-[#00d2ff] text-black font-bold' : 'text-slate-400'
+                  }`}
+                >
+                  {m === 'satellite' ? 'SATELLITE' : 'GRID'}
+                </button>
+              ))}
+            </span>
           </div>
           <div className="bg-black relative">
             <TwinViewport
@@ -52,6 +68,9 @@ export default function TwinPage() {
               dropFlash={drops}
               batteryPct={live?.battery_pct ?? 100}
               signalPct={live?.signal_pct ?? 90}
+              terrain={terrain}
+              mapLat={tLat}
+              mapLon={tLon}
               onSelect={setSelected}
             />
             {/* Live telemetry HUD pinned inside the 3D viewport */}

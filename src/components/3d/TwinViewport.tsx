@@ -10,6 +10,8 @@ const ENTITIES: (TwinEntity & { pos: [number, number, number]; color: number })[
   { id: "DRX-07", label: "Drone DRX-07", kind: "air", pos: [0, 1.5, 0], color: 0x00d2ff },
 ];
 
+export type TerrainMode = 'grid' | 'satellite';
+
 type Props = {
   alt?: number;
   surgeM?: number;
@@ -20,8 +22,24 @@ type Props = {
   batteryPct?: number;
   /** Live signal % — drives spotlight cone opacity. */
   signalPct?: number;
+  /** Ground style. Satellite drapes Esri World Imagery under the grid. */
+  terrain?: TerrainMode;
+  /** Map center for the satellite tile (live GPS). */
+  mapLat?: number;
+  mapLon?: number;
   onSelect?: (e: TwinEntity | null) => void;
 };
+
+/** Slippy-map tile for a lat/lon at zoom z (Esri World Imagery). */
+export function esriTile(lat: number, lon: number, z = 16): { key: string; url: string } {
+  const n = 2 ** z;
+  const x = Math.floor(((lon + 180) / 360) * n);
+  const latR = (lat * Math.PI) / 180;
+  const y = Math.floor(
+    ((1 - Math.log(Math.tan(latR) + 1 / Math.cos(latR)) / Math.PI) / 2) * n
+  );
+  return { key: `${z}/${x}/${y}`, url: `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}` };
+}
 
 /** Full-viewport WebGL twin: terrain grid, surge plane, spotlight cone, pickable entities. */
 export default function TwinViewport({
@@ -32,13 +50,40 @@ export default function TwinViewport({
   dropFlash = 0,
   batteryPct = 100,
   signalPct = 90,
+  terrain = 'satellite',
+  mapLat = 17.385,
+  mapLon = 78.4867,
   onSelect,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const live = useRef({ alt, surgeM, spotlight, dropFlash, batteryPct, signalPct });
-  live.current = { alt, surgeM, spotlight, dropFlash, batteryPct, signalPct };
+  const live = useRef({ alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain });
+  live.current = { alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain };
   const selectRef = useRef(onSelect);
   selectRef.current = onSelect;
+
+  // Satellite tile texture, refreshed when the map center crosses a tile boundary.
+  const tile = esriTile(mapLat, mapLon, 16);
+  const satTex = useRef<THREE.Texture | null>(null);
+  useEffect(() => {
+    if (terrain !== 'satellite') return;
+    let cancelled = false;
+    new THREE.TextureLoader()
+      .setCrossOrigin('anonymous')
+      .loadAsync(tile.url)
+      .then((t) => {
+        if (cancelled) return;
+        t.colorSpace = THREE.SRGBColorSpace;
+        if (satTex.current) satTex.current.dispose();
+        satTex.current = t;
+      })
+      .catch(() => {
+        /* offline tile → dark terrain fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tile.key, terrain]);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -62,12 +107,19 @@ export default function TwinViewport({
     scene.add(new THREE.GridHelper(14, 28, 0x00d2ff, 0x0a3a55));
 
     // Terrain slab
-    const terrain = new THREE.Mesh(
+    const terrainMesh = new THREE.Mesh(
       new THREE.BoxGeometry(14, 0.2, 14),
       new THREE.MeshStandardMaterial({ color: 0x0a2036, roughness: 0.9 })
     );
-    terrain.position.y = -0.15;
-    scene.add(terrain);
+    terrainMesh.position.y = -0.15;
+    scene.add(terrainMesh);
+
+    // Satellite imagery drape (Esri tile, swapped in when loaded)
+    const satMat = new THREE.MeshBasicMaterial({ color: 0x020b14 });
+    const satPlane = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), satMat);
+    satPlane.rotation.x = -Math.PI / 2;
+    satPlane.position.y = -0.04;
+    scene.add(satPlane);
 
     // Flood surge plane (translucent, height driven by slider)
     const surge = new THREE.Mesh(
@@ -151,10 +203,24 @@ export default function TwinViewport({
     let raf = 0;
     let t = 0;
     let lastFlash = 0;
+    let satOn = false;
     const animate = () => {
       raf = requestAnimationFrame(animate);
       t += 0.016;
       const s = live.current;
+      // Satellite drape on/off (texture arrives async)
+      const wantSat = s.terrain === 'satellite' && satTex.current !== null;
+      if (wantSat !== satOn) {
+        satOn = wantSat;
+        if (wantSat && satTex.current) {
+          satMat.map = satTex.current;
+          satMat.color.setHex(0xffffff);
+        } else {
+          satMat.map = null;
+          satMat.color.setHex(0x020b14);
+        }
+        satMat.needsUpdate = true;
+      }
       // Drone bobs with live telemetry altitude
       drone.position.y = 1.2 + ((s.alt % 50) / 25) * 0.8 + Math.sin(t * 1.4) * 0.08;
       drone.rotation.y += 0.004;
