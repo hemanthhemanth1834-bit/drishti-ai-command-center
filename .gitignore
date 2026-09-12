@@ -38,3 +38,6 @@ npm-debug.log*
 # Build info
 tsconfig.tsbuildinfo
 .vercel
+
+# Local artwork sources (web copy lives in public/)
+ChatGPT Image*.png
