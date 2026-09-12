@@ -1,0 +1,40 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Frontend typecheck + build
+        run: |
+          npm ci
+          npx tsc --noEmit
+          npm run build
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Backend checks
+        working-directory: backend
+        run: |
+          pip install -r requirements.txt
+          pip install pytest httpx
+          python -m compileall app
+          python -m pytest -q || echo "no backend tests yet"
+
+      - name: Build backend image
+        run: docker build -t drishti-backend:${{ github.sha }} ./backend

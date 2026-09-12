@@ -1,0 +1,54 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: #050b14;
+  color: #c8f5ff;
+}
+.hud {
+  min-height: 100vh;
+  padding: 16px;
+  background: radial-gradient(1200px 600px at 50% -10%, #0a2540 0%, #050b14 60%);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #0ff3;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #071423cc;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+}
+.card {
+  border: 1px solid #0ff3;
+  border-radius: 12px;
+  padding: 12px;
+  background: #071423cc;
+  min-height: 320px;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid #0ff;
+  font-size: 12px;
+}
+.feed { max-height: 420px; overflow: auto; font-size: 13px; }
+.row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #0ff2; }
+button, select {
+  background: #06283d;
+  color: #c8f5ff;
+  border: 1px solid #0ff6;
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+canvas, .leaflet-container { border-radius: 10px; }
+.leaflet-container { height: 280px; background: #06121f; }
+@media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }

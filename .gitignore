@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+backend/venv/
+backend/.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Production Builds
+.next/
+out/
+build/
+dist/
+
+# Environment Variables & Secrets — never commit real keys
+.env
+.env.local
+.env*.local
+backend/.env
+!**/.env.example
+!**/.env.local.example
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build info
+tsconfig.tsbuildinfo
