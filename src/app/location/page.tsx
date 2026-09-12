@@ -15,7 +15,7 @@ import {
   toDMS,
   type Place,
 } from '@/utils/geocode';
-import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check } from 'lucide-react';
+import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check, ExternalLink } from 'lucide-react';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -49,6 +49,16 @@ export default function LocationPage() {
     at: number;
   } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [mapSrc, setMapSrc] = useState<'OSM' | 'GOOGLE'>('OSM');
+  const gmapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY ?? '';
+  const gmapsEmbed = place
+    ? gmapsKey
+      ? `https://www.google.com/maps/embed/v1/place?key=${gmapsKey}&q=${place.lat},${place.lon}&zoom=15`
+      : `https://maps.google.com/maps?q=${place.lat},${place.lon}&z=15&output=embed`
+    : '';
+  const gmapsLink = place
+    ? `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lon}`
+    : 'https://www.google.com/maps';
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced search (~1 req/sec per Nominatim policy)
@@ -279,6 +289,20 @@ export default function LocationPage() {
               >
                 <Crosshair className="w-3.5 h-3.5" /> TRACK ON SAR RADAR
               </Link>
+              <a
+                href={gmapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 flex items-center justify-center gap-1.5 w-full py-2 rounded text-xs font-bold border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60"
+              >
+                <ExternalLink className="w-3.5 h-3.5" /> OPEN IN GOOGLE MAPS
+              </a>
+              {!gmapsKey && (
+                <div className="mt-1.5 text-[10px] text-slate-500">
+                  Keyless Google embed. Ratings, hours & photos need a billing-enabled
+                  Maps key (set NEXT_PUBLIC_GOOGLE_MAPS_KEY).
+                </div>
+              )}
             </div>
           )}
 
@@ -334,15 +358,42 @@ export default function LocationPage() {
         {/* Map + drone proximity */}
         <section className="lg:col-span-7 flex flex-col gap-4">
           <div className="bg-[#051424] border border-[#1b314b] rounded-xl overflow-hidden">
-            <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] text-xs font-bold text-white">
-              {place ? shortName(place.name).toUpperCase() : 'NO FIX — SEARCH A PLACE'} //{' '}
-              {place ? `${place.lat.toFixed(4)}°N, ${place.lon.toFixed(4)}°E` : '—.————°N, —.————°E'}
+            <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] text-xs font-bold text-white flex items-center gap-2 flex-wrap">
+              <span>
+                {place ? shortName(place.name).toUpperCase() : 'NO FIX — SEARCH A PLACE'} //{' '}
+                {place ? `${place.lat.toFixed(4)}°N, ${place.lon.toFixed(4)}°E` : '—.————°N, —.————°E'}
+              </span>
+              <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">
+                {(['OSM', 'GOOGLE'] as const).map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => setMapSrc(s)}
+                    className={`px-2.5 py-0.5 text-[10px] rounded transition-all ${
+                      mapSrc === s ? 'bg-[#00d2ff] text-black font-bold' : 'text-slate-400'
+                    }`}
+                  >
+                    {s === 'OSM' ? 'OSM RADAR' : 'GOOGLE MAPS'}
+                  </button>
+                ))}
+              </span>
             </div>
             <div className="h-[380px] bg-black">
-              <DroneLeafletTracker
-                lat={place?.lat ?? 17.385}
-                lon={place?.lon ?? 78.4867}
-              />
+              {mapSrc === 'OSM' || !place ? (
+                <DroneLeafletTracker
+                  lat={place?.lat ?? 17.385}
+                  lon={place?.lon ?? 78.4867}
+                />
+              ) : (
+                <iframe
+                  title={`Google Maps — ${shortName(place.name)}`}
+                  src={gmapsEmbed}
+                  className="w-full border-0"
+                  style={{ height: 380 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              )}
             </div>
           </div>
 
