@@ -11,17 +11,23 @@ import {
   BarChart3,
   Globe,
   MapPin,
+  Box,
+  ScanFace,
+  Landmark,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
   { href: '/', label: 'Command Center', icon: Activity },
   { href: '/drones', label: 'Drone Swarm & SAR', icon: Plane },
+  { href: '/twin', label: '3D Digital Twin', icon: Box },
   { href: '/location', label: 'Location Intel', icon: MapPin },
   { href: '/simulation', label: 'What-If Copilot', icon: Cpu },
   { href: '/resources', label: 'Hospital ICU Command', icon: Building2 },
   { href: '/shelter', label: 'Shelter Scanner', icon: Users },
+  { href: '/reunion', label: 'OP-MILAN Reunion', icon: ScanFace },
   { href: '/recovery', label: 'Recovery & Audit', icon: BarChart3 },
   { href: '/portal', label: 'Citizen Portal', icon: Globe },
+  { href: '/platform', label: 'Platform Specs', icon: Landmark },
 ];
 
 export default function Navbar({ wsConnected }: { wsConnected: boolean }) {
