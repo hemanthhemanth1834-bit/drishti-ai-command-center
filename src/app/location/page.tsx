@@ -8,12 +8,14 @@ import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { isInsideGeofence, HYDERABAD_GEOFENCE } from '@/utils/geofenceDetection';
 import {
   searchPlaces,
+  reverseGeocode,
+  getLivePosition,
   haversineKm,
   bearingDeg,
   compass16,
   type Place,
 } from '@/utils/geocode';
-import { MapPin, Search, Crosshair, History, Navigation } from 'lucide-react';
+import { MapPin, Search, Crosshair, History, Navigation, LocateFixed } from 'lucide-react';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -39,6 +41,8 @@ export default function LocationPage() {
   const [error, setError] = useState('');
   const [place, setPlace] = useState<Place | null>(null);
   const [recent, setRecent] = useState<Place[]>([]);
+  const [locating, setLocating] = useState(false);
+  const [gpsNote, setGpsNote] = useState('');
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced search (~1 req/sec per Nominatim policy)
@@ -71,6 +75,21 @@ export default function LocationPage() {
     setResults([]);
     setQuery(shortName(p.name));
     setRecent((r) => [p, ...r.filter((x) => x.id !== p.id)].slice(0, 5));
+  }
+
+  async function useMyLocation() {
+    setLocating(true);
+    setGpsNote('');
+    try {
+      const fix = await getLivePosition();
+      const p = await reverseGeocode(fix.lat, fix.lon);
+      select(p);
+      setGpsNote(`GPS fix ±${Math.round(fix.accuracyM)}m — showing your live position`);
+    } catch (e: unknown) {
+      setGpsNote((e as Error).message);
+    } finally {
+      setLocating(false);
+    }
   }
 
   const droneLat = live?.lat;
@@ -135,6 +154,14 @@ export default function LocationPage() {
               )}
             </div>
             <div className="mt-3 flex flex-wrap gap-1.5">
+              <button
+                onClick={useMyLocation}
+                disabled={locating}
+                className="text-[10px] px-2 py-1 rounded bg-[#00d2ff] text-black font-bold flex items-center gap-1 disabled:opacity-60"
+              >
+                <LocateFixed className="w-3 h-3" />
+                {locating ? 'READING GPS…' : 'USE MY LIVE LOCATION'}
+              </button>
               {QUICK_PICKS.map((q) => (
                 <button
                   key={q}
@@ -145,6 +172,9 @@ export default function LocationPage() {
                 </button>
               ))}
             </div>
+            {gpsNote && (
+              <div className="mt-2 text-[11px] text-[#00d2ff]">{gpsNote}</div>
+            )}
             {recent.length > 0 && (
               <div className="mt-3 text-[11px]">
                 <div className="text-slate-500 flex items-center gap-1 mb-1">
