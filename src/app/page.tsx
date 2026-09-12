@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
@@ -35,6 +36,7 @@ export default function MasterCommandCenter() {
   const scenario = ops.scenario;
   const [activeTab, setActiveTab] = useState<'3D' | 'RADAR'>('3D');
   const [notice, setNotice] = useState('');
+  const [posterOk, setPosterOk] = useState(true);
 
   const lat = live?.lat ?? 17.385;
   const lon = live?.lon ?? 78.4867;
@@ -63,6 +65,44 @@ export default function MasterCommandCenter() {
     <main className="min-h-screen bg-[#020b14] text-slate-200 flex flex-col font-mono">
       <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
       <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
+
+      {/* Cinematic poster hero — official artwork, hides gracefully if missing */}
+      {posterOk && (
+        <section className="relative overflow-hidden border-b border-[#1b314b]">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/poster.jpg"
+            alt="DRISHTI-X — for a safer, stronger, resilient India"
+            onError={() => setPosterOk(false)}
+            className="w-full h-52 sm:h-72 object-cover object-top"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#020b14] via-[#020b14]/25 to-transparent pointer-events-none" />
+          <div className="absolute bottom-3 left-4 right-4 flex items-end justify-between gap-3 flex-wrap">
+            <div className="pointer-events-none">
+              <div className="text-lg sm:text-2xl font-black text-white tracking-wide drop-shadow-[0_0_12px_rgba(0,0,0,0.9)]">
+                DRISHTI-X <span className="text-[#00d2ff]">COMMAND CENTER</span>
+              </div>
+              <div className="text-[10px] sm:text-[11px] text-slate-200 tracking-[0.2em] drop-shadow">
+                SEE EARLY • UNDERSTAND BETTER • ACT FASTER • SAVE LIVES
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Link
+                href="/safety"
+                className="px-4 py-2 rounded-lg bg-[#00d2ff] hover:bg-[#00b0d6] text-black text-xs font-extrabold"
+              >
+                CHECK MY RISK
+              </Link>
+              <Link
+                href="/welcome"
+                className="px-4 py-2 rounded-lg border border-[#00d2ff]/60 text-[#00d2ff] text-xs font-bold hover:bg-[#00d2ff]/10"
+              >
+                FULL POSTER
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* KPI Ticker Bar */}
       <section className="bg-[#051424] border-b border-[#1b314b] px-4 py-2.5 grid grid-cols-2 md:grid-cols-6 gap-3">
