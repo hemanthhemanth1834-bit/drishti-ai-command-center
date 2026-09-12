@@ -61,6 +61,17 @@ export default function TwinViewport({
   const selectRef = useRef(onSelect);
   selectRef.current = onSelect;
 
+  // --- Simple zoom state (shared by wheel, buttons, pinch) ---
+  const HOME_DIST = 9;
+  const distRef = useRef(HOME_DIST);
+  const clampDist = (d: number) => Math.max(4, Math.min(20, d));
+  function zoomBy(factor: number) {
+    distRef.current = clampDist(distRef.current * factor);
+  }
+  function resetZoom() {
+    distRef.current = HOME_DIST;
+  }
+
   // Satellite tile texture, refreshed when the map center crosses a tile boundary.
   const tile = esriTile(mapLat, mapLon, 16);
   const satTex = useRef<THREE.Texture | null>(null);
@@ -190,6 +201,8 @@ export default function TwinViewport({
 
     const ray = new THREE.Raycaster();
     const ptr = new THREE.Vector2();
+    const FOCUS = new THREE.Vector3(0, 0.5, 0);
+    const tmpDir = new THREE.Vector3();
     const onPick = (ev: PointerEvent) => {
       const r = renderer.domElement.getBoundingClientRect();
       ptr.x = ((ev.clientX - r.left) / r.width) * 2 - 1;
@@ -199,6 +212,44 @@ export default function TwinViewport({
       selectRef.current?.((hit?.object.userData.entity as TwinEntity) ?? null);
     };
     renderer.domElement.addEventListener("pointerdown", onPick);
+
+    // --- Simple zoom: wheel + pinch, smoothly applied in the loop ---
+    const cvs = renderer.domElement;
+    cvs.style.touchAction = "none";
+    const onWheel = (ev: WheelEvent) => {
+      ev.preventDefault();
+      distRef.current = Math.max(4, Math.min(20, distRef.current * Math.exp(ev.deltaY * 0.0012)));
+    };
+    cvs.addEventListener("wheel", onWheel, { passive: false });
+    const pinch = new Map<number, { x: number; y: number }>();
+    let pinchD0 = 0;
+    const onPtrDown = (ev: PointerEvent) => {
+      pinch.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (pinch.size === 2) {
+        const [a, b] = Array.from(pinch.values());
+        pinchD0 = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+    };
+    const onPtrMove = (ev: PointerEvent) => {
+      if (!pinch.has(ev.pointerId)) return;
+      pinch.set(ev.pointerId, { x: ev.clientX, y: ev.clientY });
+      if (pinch.size === 2 && pinchD0 > 0) {
+        const [a, b] = Array.from(pinch.values());
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d > 0) {
+          distRef.current = Math.max(4, Math.min(20, (distRef.current * pinchD0) / d));
+          pinchD0 = d;
+        }
+      }
+    };
+    const onPtrUp = (ev: PointerEvent) => {
+      pinch.delete(ev.pointerId);
+      pinchD0 = 0;
+    };
+    cvs.addEventListener("pointerdown", onPtrDown);
+    cvs.addEventListener("pointermove", onPtrMove);
+    cvs.addEventListener("pointerup", onPtrUp);
+    cvs.addEventListener("pointercancel", onPtrUp);
 
     let raf = 0;
     let t = 0;
@@ -247,6 +298,13 @@ export default function TwinViewport({
         const sc = 1 + (0.9 - rm.opacity) * 3;
         ring.scale.set(sc, sc, 1);
       }
+      // Smooth dolly toward the requested zoom distance
+      tmpDir.copy(cam.position).sub(FOCUS);
+      const curD = tmpDir.length() || HOME_DIST;
+      tmpDir.normalize();
+      const nextD = curD + (Math.max(4, Math.min(20, distRef.current)) - curD) * 0.18;
+      cam.position.copy(FOCUS).addScaledVector(tmpDir, nextD);
+      cam.lookAt(FOCUS);
       renderer.render(scene, cam);
     };
     animate();
@@ -262,9 +320,41 @@ export default function TwinViewport({
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
       renderer.domElement.removeEventListener("pointerdown", onPick);
+      cvs.removeEventListener("wheel", onWheel);
+      cvs.removeEventListener("pointerdown", onPtrDown);
+      cvs.removeEventListener("pointermove", onPtrMove);
+      cvs.removeEventListener("pointerup", onPtrUp);
+      cvs.removeEventListener("pointercancel", onPtrUp);
       renderer.dispose();
     };
   }, [height]);
 
-  return <div ref={ref} style={{ width: "100%", height }} />;
+  return (
+    <div style={{ position: "relative", width: "100%", height }}>
+      <div ref={ref} style={{ width: "100%", height: "100%" }} />
+      <div className="absolute bottom-3 right-3 flex gap-1.5">
+        <button
+          onClick={() => zoomBy(1 / 1.3)}
+          title="Zoom in"
+          className="w-8 h-8 rounded-lg bg-[#030d17]/85 border border-[#00d2ff]/50 text-[#00d2ff] font-bold text-lg leading-none hover:bg-[#00d2ff]/20"
+        >
+          +
+        </button>
+        <button
+          onClick={() => zoomBy(1.3)}
+          title="Zoom out"
+          className="w-8 h-8 rounded-lg bg-[#030d17]/85 border border-[#00d2ff]/50 text-[#00d2ff] font-bold text-lg leading-none hover:bg-[#00d2ff]/20"
+        >
+          −
+        </button>
+        <button
+          onClick={resetZoom}
+          title="Reset view"
+          className="w-8 h-8 rounded-lg bg-[#030d17]/85 border border-[#00d2ff]/50 text-[#00d2ff] font-bold text-sm leading-none hover:bg-[#00d2ff]/20"
+        >
+          ⌂
+        </button>
+      </div>
+    </div>
+  );
 }
