@@ -1,5 +1,6 @@
 // src/app/portal/page.tsx — Citizen Advisory Lifeline (low-bandwidth public view)
 import Link from 'next/link';
+import TrustBadge from '@/components/TrustBadge';
 import { Globe, AlertTriangle, Truck, MapPin } from 'lucide-react';
 
 export const metadata = {
@@ -28,6 +29,9 @@ export default function PortalPage() {
           <div>
             <div className="font-extrabold tracking-wider text-sm">DRISHTI-X CITIZEN ADVISORY</div>
             <div className="text-[11px] text-slate-400">Official public lifeline • updated 10 min ago</div>
+            <div className="mt-1">
+              <TrustBadge kind="DEMO" source="drill corridors + schedules" />
+            </div>
           </div>
         </div>
         <Link href="/command" className="text-[11px] text-[#00d2ff] underline">

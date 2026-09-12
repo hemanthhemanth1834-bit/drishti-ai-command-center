@@ -7,6 +7,8 @@ export type MapCircle = {
   radiusM: number;
   color: string;
   label?: string;
+  /** Drill level — high/critical rings pulse (see .hz-pulse in globals.css). */
+  level?: string;
 };
 
 type Props = {
@@ -71,6 +73,7 @@ export default function RadarMap({ lat = 17.385, lon = 78.4867, circles = [], gr
           weight: 2,
           fillColor: c.color,
           fillOpacity: 0.18,
+          className: c.level === 'high' || c.level === 'critical' ? 'hz-pulse' : '',
         })
           .bindTooltip(c.label ?? "", { direction: "top" })
           .addTo(overlayRef.current);

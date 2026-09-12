@@ -69,4 +69,17 @@ button, select {
 }
 canvas, .leaflet-container { border-radius: 10px; }
 .leaflet-container { height: 280px; background: #06121f; }
+
+/* Pulsing drill rings for high/critical hazard cells (disabled under reduced motion) */
+@keyframes hz-ping {
+  0%, 100% { stroke-opacity: 0.9; }
+  50% { stroke-opacity: 0.25; }
+}
+.hz-pulse { animation: hz-ping 2.2s ease-in-out infinite; }
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid #00d2ff;
+  outline-offset: 2px;
+}
 @media (max-width: 1000px) { .grid { grid-template-columns: 1fr; } }

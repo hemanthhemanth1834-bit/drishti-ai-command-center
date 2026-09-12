@@ -18,7 +18,7 @@ export const RISK_META: Record<
 
 export type HazardType =
   | 'flood' | 'cyclone' | 'earthquake' | 'fire'
-  | 'landslide' | 'heat' | 'lightning' | 'industrial';
+  | 'landslide' | 'heat' | 'lightning' | 'industrial' | 'dam';
 
 export type HazardZone = {
   id: string;
@@ -35,7 +35,7 @@ export type HazardZone = {
   updated: string;
 };
 
-export type FacilityKind = 'shelter' | 'hospital' | 'police' | 'fire' | 'relief';
+export type FacilityKind = 'shelter' | 'hospital' | 'police' | 'fire' | 'relief' | 'dam' | 'bridge';
 
 export type Facility = {
   id: string;
@@ -80,6 +80,8 @@ export const DEMO_HAZARDS: HazardZone[] = [
   { id: 'hz-land-1', type: 'landslide', label: 'Hill-slope watch', lat: 17.45, lon: 78.38, radiusKm: 2, level: 'low', note: 'No slide reported. Avoid cut slopes after heavy rain.', factors: ['Steep cut slopes'], confidence: 61, source: 'DEMO', updated: STAMP },
   { id: 'hz-light-1', type: 'lightning', label: 'Thunderstorm cell (demo)', lat: 17.3, lon: 78.55, radiusKm: 10, level: 'moderate', note: 'Demo storm cell; stay indoors during lightning.', factors: ['Convective cell (simulated)'], confidence: 55, source: 'DEMO', updated: STAMP },
   { id: 'hz-ind-1', type: 'industrial', label: 'Chemical cluster buffer', lat: 17.43, lon: 78.51, radiusKm: 2, level: 'low', note: 'No leak reported. Know the siren drill route.', factors: ['Hazmat storage'], confidence: 66, source: 'DEMO', updated: STAMP },
+  { id: 'hz-dam-1', type: 'dam', label: 'Prakasam Barrage gates', lat: 16.508, lon: 80.646, radiusKm: 3, level: 'high', note: 'Simulated gate discharge; downstream wards on watch.', factors: ['Gate discharge (simulated)', 'Upstream inflow'], confidence: 81, source: 'SIMULATION', updated: STAMP },
+  { id: 'hz-dam-2', type: 'dam', label: 'Hussain Sagar surplus weir', lat: 17.423, lon: 78.473, radiusKm: 2, level: 'moderate', note: 'Simulated surplus flow after heavy rain.', factors: ['Surplus flow (simulated)', 'Lake level'], confidence: 69, source: 'SIMULATION', updated: STAMP },
 ];
 
 export const DEMO_FACILITIES: Facility[] = [
@@ -91,6 +93,9 @@ export const DEMO_FACILITIES: Facility[] = [
   { id: 'po-1', kind: 'police', name: 'Central Control Room', lat: 17.385, lon: 78.47, status: 'Dial 100 / 112', detail: '24×7 dispatch', source: 'DEMO' },
   { id: 'fs-1', kind: 'fire', name: 'Fire Station No. 4', lat: 17.378, lon: 78.478, status: 'Dial 101', detail: '2 tenders ready (demo)', source: 'DEMO' },
   { id: 'rc-1', kind: 'relief', name: 'Ward 14 Relief Depot', lat: 17.382, lon: 78.465, status: 'OPEN 8am–8pm', detail: 'Ration + water + tarps (demo)', source: 'DEMO' },
+  { id: 'dm-1', kind: 'dam', name: 'Prakasam Barrage Control', lat: 16.508, lon: 80.646, status: 'GATES METERED (demo)', detail: 'Discharge telemetry (simulated)', source: 'DEMO' },
+  { id: 'br-1', kind: 'bridge', name: 'Railway Bridge Pier P-18', lat: 17.39, lon: 78.475, status: 'SCOUR WATCH (demo)', detail: '1.10m exposure · inspect after floods', source: 'DEMO' },
+  { id: 'br-2', kind: 'bridge', name: 'NH-65 Underpass', lat: 17.381, lon: 78.469, status: 'FLOODS FIRST (demo)', detail: 'Submerges at 1.85m · use Bypass B', source: 'DEMO' },
 ];
 
 export const DEMO_ALERTS: OfficialAlert[] = [

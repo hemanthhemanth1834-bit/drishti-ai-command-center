@@ -71,6 +71,34 @@ export default function ShelterPage() {
               <div className="h-full rounded bg-emerald-400" style={{ width: `${occupancy}%` }} />
             </div>
           </div>
+          <div className="mt-3 text-[11px]">
+            <div className="text-slate-400 font-bold mb-1">
+              SHELTER STATUS <span className="font-normal">(DEMO DATA — call ahead)</span>
+            </div>
+            {[
+              { n: 'City Sports Complex', cap: 2000, occ: 1480, lat: 17.395, lon: 78.472 },
+              { n: 'Riverbend Hall', cap: 800, occ: 328, lat: 17.368, lon: 78.49 },
+              { n: 'Cantonment Ground', cap: 1200, occ: 0, lat: 17.42, lon: 78.47 },
+            ].map((s) => (
+              <div key={s.n} className="py-1.5 border-b border-[#132d4a] last:border-0">
+                <div className="flex justify-between">
+                  <span className="text-slate-100 font-bold">{s.n}</span>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${s.lat},${s.lon}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#00d2ff]"
+                  >
+                    NAVIGATE →
+                  </a>
+                </div>
+                <div className="text-slate-400">
+                  Capacity {s.cap.toLocaleString()} · Occupied {s.occ.toLocaleString()} ·{' '}
+                  <span className="text-emerald-300">Remaining {(s.cap - s.occ).toLocaleString()}</span>
+                </div>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">

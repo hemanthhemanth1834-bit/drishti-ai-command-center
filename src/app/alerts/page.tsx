@@ -29,15 +29,20 @@ export default function AlertsPage() {
     droneId: live?.drone_id,
   });
   const [notify, setNotify] = useState(false);
+  const [notifyState, setNotifyState] = useState<'unknown' | 'granted' | 'denied' | 'unsupported'>('unknown');
   const seenCritical = useRef<Set<string>>(new Set());
 
   async function enableNotify() {
     try {
-      if (!('Notification' in window)) return;
+      if (!('Notification' in window)) {
+        setNotifyState('unsupported');
+        return;
+      }
       const perm = await Notification.requestPermission();
+      setNotifyState(perm === 'granted' ? 'granted' : perm === 'denied' ? 'denied' : 'unknown');
       setNotify(perm === 'granted');
     } catch {
-      /* unsupported */
+      setNotifyState('unsupported');
     }
   }
 
@@ -71,7 +76,13 @@ export default function AlertsPage() {
                 : 'border-[#1b314b] text-slate-300 hover:border-[#00d2ff]/60'
             }`}
           >
-            {notify ? '🔔 CRITICAL NOTIFY ON' : '🔕 NOTIFY ME OF CRITICAL'}
+            {notify
+              ? '🔔 CRITICAL NOTIFY ON'
+              : notifyState === 'denied'
+                ? '🔕 BLOCKED — ALLOW IN BROWSER SETTINGS'
+                : notifyState === 'unsupported'
+                  ? '🔕 NOT SUPPORTED IN THIS BROWSER'
+                  : '🔕 NOTIFY ME OF CRITICAL'}
           </button>
         </div>
 

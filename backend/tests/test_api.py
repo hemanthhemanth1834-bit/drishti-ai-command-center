@@ -56,3 +56,16 @@ def test_ws_stream_frame():
     with client.websocket_connect("/ws/telemetry") as ws:
         pkt = ws.receive_json()
         assert "drone_id" in pkt and "tick" in pkt
+
+
+def test_v1_sensors_open():
+    r = client.get("/api/v1/sensors")
+    assert r.status_code == 200
+    assert len(r.json()["sensors"]) >= 1
+
+
+def test_v1_scenario_guarded_and_roundtrip():
+    assert client.post("/api/v1/scenario", json={"scenario": "storm"}).status_code == 401
+    r = client.post("/api/v1/scenario", headers=AUTH, json={"scenario": "storm"})
+    assert r.status_code == 200
+    assert r.json()["api"] == "v1"

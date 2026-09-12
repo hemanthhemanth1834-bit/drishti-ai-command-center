@@ -148,8 +148,10 @@ export default function SimulationPage() {
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
             {[
               { q: 'Rainfall +50%?', run: () => { applyScenario('storm'); setSpillway(Math.min(80, spillway + 10)); } },
+              { q: 'River level +1m?', run: () => setSpillway(Math.min(80, spillway + 8)) },
               { q: 'River level +2m?', run: () => setSpillway(Math.min(80, spillway + 15)) },
               { q: 'Cyclone landfall?', run: () => { applyScenario('storm'); setSpillway(65); } },
+              { q: 'Fire spread?', run: () => { applyScenario('gps-denied'); setSpillway(44); } },
               { q: 'Evacuation drill?', run: () => { applyScenario('swarm-surge'); setSpillway(50); } },
             ].map((p) => (
               <button

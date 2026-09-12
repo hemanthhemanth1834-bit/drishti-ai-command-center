@@ -104,6 +104,12 @@ export default function EmergencyPage() {
             >
               <Share2 className="w-4 h-4" /> {shared ? 'COPIED ✓' : tr('emg_share')}
             </button>
+            <a
+              href="/family"
+              className="px-4 py-2.5 rounded-lg border border-emerald-500/50 text-emerald-300 text-sm font-bold flex items-center"
+            >
+              👪 FAMILY CHECK-IN
+            </a>
           </div>
           {note && <div className="mt-2 text-[12px] text-amber-300">{note}</div>}
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">

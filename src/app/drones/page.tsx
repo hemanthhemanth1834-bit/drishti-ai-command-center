@@ -81,6 +81,11 @@ function DronesContent() {
               lon={mapLon}
               grid={showGrid}
               target={hasFocus ? { lat: focusLat, lon: focusLon, label: focusName } : null}
+              circles={
+                showGrid
+                  ? [{ lat: mapLat, lon: mapLon, radiusM: 2000, color: '#00d2ff', label: 'Search radius 2 km (sim)' }]
+                  : []
+              }
             />
           </div>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">

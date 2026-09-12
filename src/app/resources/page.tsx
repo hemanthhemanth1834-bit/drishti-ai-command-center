@@ -10,10 +10,10 @@ import { Building2, BedDouble, Wind } from 'lucide-react';
 type Sensor = { sensor_id: string; kind: string; value: number; unit: string };
 
 const ICU_REGISTRY = [
-  { hospital: 'District General #07', icuFree: 3, ventFree: 2, oxygenKL: 4.2, status: 'ACCEPTING' },
-  { hospital: 'City Care Center', icuFree: 0, ventFree: 1, oxygenKL: 1.8, status: 'DIVERT' },
-  { hospital: 'Riverside Medical', icuFree: 5, ventFree: 4, oxygenKL: 6.5, status: 'ACCEPTING' },
-  { hospital: 'Cantonment Hospital', icuFree: 1, ventFree: 0, oxygenKL: 2.4, status: 'LIMITED' },
+  { hospital: 'District General #07', icuFree: 3, ventFree: 2, oxygenKL: 4.2, ed: 'OPEN · 6 bays', status: 'ACCEPTING' },
+  { hospital: 'City Care Center', icuFree: 0, ventFree: 1, oxygenKL: 1.8, ed: 'DIVERT · trauma only', status: 'DIVERT' },
+  { hospital: 'Riverside Medical', icuFree: 5, ventFree: 4, oxygenKL: 6.5, ed: 'OPEN · 9 bays', status: 'ACCEPTING' },
+  { hospital: 'Cantonment Hospital', icuFree: 1, ventFree: 0, oxygenKL: 2.4, ed: 'LIMITED · walk-in', status: 'LIMITED' },
 ];
 
 export default function ResourcesPage() {
@@ -46,11 +46,12 @@ export default function ResourcesPage() {
             {ICU_REGISTRY.map((h) => (
               <div
                 key={h.hospital}
-                className="p-3 rounded bg-[#091a2e] border border-[#1b314b] grid grid-cols-2 md:grid-cols-5 gap-2 items-center"
+                className="p-3 rounded bg-[#091a2e] border border-[#1b314b] grid grid-cols-2 md:grid-cols-6 gap-2 items-center"
               >
                 <span className="font-bold text-white md:col-span-2">{h.hospital}</span>
                 <span>ICU free: <b className={h.icuFree ? 'text-emerald-400' : 'text-rose-400'}>{h.icuFree}</b></span>
                 <span>Vent free: <b className={h.ventFree ? 'text-emerald-400' : 'text-rose-400'}>{h.ventFree}</b></span>
+                <span className="text-[11px] text-slate-300">ED: {h.ed}</span>
                 <span className="flex items-center gap-1">
                   <Wind className="w-3.5 h-3.5 text-[#00d2ff]" /> O₂ {h.oxygenKL}kL
                   <span

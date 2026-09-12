@@ -45,6 +45,9 @@ export default function PlatformPage() {
       <Navbar wsConnected={connected} />
       <div className="p-4 max-w-6xl mx-auto flex flex-col gap-4">
         <DemoConsole />
+        <div className="text-[10px] tracking-[0.2em] text-slate-400 text-center" aria-label="Disaster lifecycle">
+          NORMAL → WATCH → WARNING → CRITICAL → EVACUATION → RESCUE → RECOVERY
+        </div>
         <section>
           <div className="text-xs font-bold text-white flex items-center gap-1.5">
             <Landmark className="w-4 h-4 text-[#00d2ff]" /> 8 OPERATIONAL PILLARS

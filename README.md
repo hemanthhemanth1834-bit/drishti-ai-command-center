@@ -212,3 +212,23 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
 - PWA shell (`public/manifest.json` + `sw.js`) caches safety/emergency pages for offline use.
 - Poster art: replace `public/poster.jpg` with any 16:9 JPG to re-skin the
   welcome hero and homepage banner (auto-detected, no code change).
+
+## DRISHTI-X V5 notes
+- **Demo Scenario Mode**: Flood / Cyclone / Fire / Earthquake scripts walk all seven
+  phases NORMAL → WATCH → WARNING → CRITICAL → EVACUATION → RESCUE → RECOVERY.
+  Console lives on `/platform` and `/ops`; the DemoBar persists on every route and
+  auto-plays. Scenario + spillway flow through the shared ops store, so map, risk,
+  alerts, drones, shelters, hospitals and both dashboards stay synchronized.
+- **Operator KPIs** (`/ops`): incidents (live), people at risk, shelters, ICU beds,
+  drones, evacuations, unresolved reports, drill response metrics — all trust-badged.
+- **Learn** is fully trilingual (EN/TE/HI): all 8 topics carry BEFORE/DURING/AFTER,
+  EMERGENCY ACTIONS, DO and DON'T.
+- **Notifications**: critical web alerts are opt-in on `/alerts` (granted/denied/
+  unsupported states handled). Emergency numbers are configurable in one place
+  (`EMERGENCY_NUMBERS`); personal data stays in localStorage; shared coordinates
+  are rounded to ~100 m.
+- **Testing**: `npm run typecheck` (tsc, also in CI) + `cd backend` →
+  `python -m pytest tests/ -q` (9 contract tests: health, auth, packet shape,
+  scenario, sensors, WS frames). `next lint` is not configured. Local `npm run
+  build` requires the dev server stopped (shared `.next/`); every `vercel --prod`
+  runs the production build in the cloud, which is the standing build proof.

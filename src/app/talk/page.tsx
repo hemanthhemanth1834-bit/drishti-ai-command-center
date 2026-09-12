@@ -66,6 +66,32 @@ export default function TalkPage() {
         link: { href: '/alerts', label: 'Open Alert Center' },
       };
     }
+    if (/(flood|rain|water|inundat)/.test(s)) {
+      const r = assessRisk(lat, lon);
+      const flood = r.nearby.find((x) => x.zone.type === 'flood' || x.zone.type === 'dam');
+      return {
+        text: flood
+          ? `Simulated flood exposure near you is ${flood.zone.level.toUpperCase()}: ${flood.zone.label}, about ${flood.distKm.toFixed(1)} kilometres away. ${r.action} Demo data only.`
+          : 'No simulated flood cells near your location right now. This is demo data, not an official warning.',
+        link: { href: '/safety', label: 'Open My Safety' },
+      };
+    }
+    if (/(do|action|advice|should)/.test(s)) {
+      const r = assessRisk(lat, lon);
+      return {
+        text: `For a ${r.level.toUpperCase()} simulated risk: ${r.action} Main factors: ${r.factors.slice(0, 3).join('; ')}.`,
+        link: { href: '/safety', label: 'Open My Safety' },
+      };
+    }
+    if (/(evacuat|leave|go where|where.*go)/.test(s)) {
+      const n = nearestFacilities(lat, lon, 'shelter', 1)[0];
+      return {
+        text: n
+          ? `Head to ${n.f.name}, about ${n.distKm.toFixed(1)} kilometres away. Open the evacuation page for route options with simulated risk labels.`
+          : 'No demo shelter mapped near you. Open Help Near Me for real mapped options.',
+        link: { href: '/evacuate', label: 'Plan evacuation' },
+      };
+    }
     if (/(emergency|sos|help|rescue)/.test(s)) {
       return {
         text: 'Opening emergency options. If anyone is in danger right now, call 112 first.',
@@ -73,7 +99,7 @@ export default function TalkPage() {
       };
     }
     return {
-      text: 'I understand: safety checks, shelters, hospitals, alerts, or emergency. Please ask one of those.',
+      text: 'I understand: safety checks, flood risk, shelters, hospitals, alerts, evacuation, or emergency. Please ask one of those.',
     };
   }
 
@@ -176,7 +202,7 @@ export default function TalkPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && send(input)}
-            placeholder='Ask: "Am I safe?" / "Find a shelter"'
+            placeholder='Ask: "Am I safe?" / "Show flood risk" / "Where should I evacuate?"'
             aria-label="Type your question"
             className="flex-1 bg-[#051424] border border-[#1b314b] rounded-xl px-3 py-2.5 text-sm text-white"
           />

@@ -72,9 +72,11 @@ export default function LocationPage() {
     police: '#a78bfa',
     fire: '#f87171',
     relief: '#fbbf24',
+    dam: '#22d3ee',
+    bridge: '#f59e0b',
   };
-  const HAZ_TYPES = ['flood', 'cyclone', 'fire', 'earthquake', 'landslide', 'heat', 'lightning', 'industrial'];
-  const FAC_KINDS = ['shelter', 'hospital', 'police', 'fire', 'relief'];
+  const HAZ_TYPES = ['flood', 'cyclone', 'fire', 'earthquake', 'landslide', 'heat', 'lightning', 'industrial', 'dam'];
+  const FAC_KINDS = ['shelter', 'hospital', 'police', 'fire', 'relief', 'dam', 'bridge'];
 
   const layerCircles: MapCircle[] = useMemo(
     () => [
@@ -84,6 +86,7 @@ export default function LocationPage() {
         radiusM: z.radiusKm * 1000,
         color: LEVEL_COLOR[z.level],
         label: `${z.label} (${z.level}, SIM)`,
+        level: z.level,
       })),
       ...DEMO_FACILITIES.filter((f) => !layersOff[f.kind]).map((f) => ({
         lat: f.lat,
@@ -585,10 +588,33 @@ export default function LocationPage() {
                       : 'border-emerald-500/60 text-emerald-300'
                   }`}
                 >
-                  {k === 'shelter' ? '🏕' : k === 'hospital' ? '🏥' : k === 'police' ? '🚔' : k === 'fire' ? '🚒' : '📦'} {k.toUpperCase()}
+                  {k === 'shelter' ? '🏕' : k === 'hospital' ? '🏥' : k === 'police' ? '🚔' : k === 'fire' ? '🚒' : k === 'dam' ? '🌊' : k === 'bridge' ? '🌉' : '📦'} {k.toUpperCase()}
                 </button>
               ))}
             </div>
+            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400" aria-label="Map legend">
+              <span className="font-bold text-slate-300">LEGEND:</span>
+              {[
+                ['#34d399', 'Safe / open'],
+                ['#facc15', 'Watch'],
+                ['#fb923c', 'Warning'],
+                ['#fb7185', 'Critical'],
+              ].map(([c, l]) => (
+                <span key={l} className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-full inline-block" style={{ background: c }} />
+                  {l}
+                </span>
+              ))}
+            </div>
+            <details className="mt-2 text-[11px] text-slate-400">
+              <summary className="cursor-pointer text-[#00d2ff]">EXPLAIN THIS MAP</summary>
+              <div className="mt-1 leading-relaxed">
+                Circles are labeled demo/simulation hazard cells and facility markers — not live
+                official data. Colors show the cell&apos;s drill level (green→red). Pulsing rings
+                mark high/critical cells. Tap any circle for its label. Your GPS fix never leaves
+                this browser.
+              </div>
+            </details>
           </div>
 
           <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
