@@ -137,6 +137,23 @@ export default function TwinPage() {
             <MousePointerClick className="w-3.5 h-3.5 text-[#00d2ff]" />
             Click a marker to pick an entity • drag-free orbit cam • fog depth 12–30u
           </div>
+          <div className="px-4 py-2 border-t border-[#1b314b] text-[10px] text-slate-400 flex flex-wrap gap-x-3 gap-y-1">
+            <span className="font-bold text-slate-300">LEGEND:</span>
+            {[
+              ['#00d2ff', 'Drone'],
+              ['#34d399', 'Boat'],
+              ['#fbbf24', 'Ambulance'],
+              ['#38bdf8', 'Hospital'],
+              ['#a78bfa', 'Shelter'],
+              ['#f59e0b', 'Bridge'],
+              ['#ef4444', 'Fire tender'],
+            ].map(([c, l]) => (
+              <span key={l} className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full inline-block" style={{ background: c }} />
+                {l}
+              </span>
+            ))}
+          </div>
         </section>
 
         <section className="lg:col-span-4 flex flex-col gap-4">

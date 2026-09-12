@@ -161,3 +161,16 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
 `GATEWAY_KEY=drishti-mesh-dev-key-2025` must match
 `NEXT_PUBLIC_GATEWAY_KEY`. Frontend sends `Authorization: Bearer <key>` for REST.
 WS stream stays open for local HUD.
+
+## Citizen access (no login, no keys, no cost)
+- **Public mode** (toggle in the top bar): My Safety (`/safety`), Check My Risk (`/risk`),
+  Alert Center (`/alerts`), Help Near Me (`/nearby`, real OSM data via Overpass),
+  Safe Evacuation (`/evacuate`), Emergency (`/emergency`), Report (`/report`),
+  Family (`/family`), Plan (`/plan`), Kit (`/kit`), Learn (`/learn`), Talk (`/talk`).
+- **Command mode**: the full operator deck (default view).
+- Every data panel carries a trust badge: LIVE / SIMULATION / DEMO + source.
+  Demo hazard cells, shelters and alerts live in `src/data/providers.ts` behind
+  provider interfaces (`Hazard/Shelter/Alert/Weather/Hospital/Evacuation/Incident/Drone`),
+  so official APIs can replace them later without touching pages.
+- Personal data (reports, family, checklists) stays in the browser's localStorage.
+- PWA shell (`public/manifest.json` + `sw.js`) caches safety/emergency pages for offline use.

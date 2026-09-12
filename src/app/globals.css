@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accessibility prefs (toggled by A11yBar, persisted in appStore) */
+.a11y-large { font-size: 112.5%; }
+.a11y-large .text-\[10px\] { font-size: 12px; }
+.a11y-large .text-\[11px\] { font-size: 13px; }
+.a11y-contrast body, body.a11y-contrast { background: #000; color: #fff; }
+.a11y-contrast .text-slate-400, .a11y-contrast .text-slate-500 { color: #cbd5e1; }
+.a11y-still *, .a11y-still *::before, .a11y-still *::after {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
 :root { color-scheme: dark; }
 * { box-sizing: border-box; }
 body {

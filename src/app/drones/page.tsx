@@ -1,9 +1,10 @@
 // src/app/drones/page.tsx — Drone Swarm & SAR Radar
 'use client';
-import { Suspense, useMemo } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
+import TrustBadge from '@/components/TrustBadge';
 import { useTelemetrySocket, type TelemetryPacket } from '@/hooks/useTelemetrySocket';
 import { Plane, Thermometer, Package, Crosshair } from 'lucide-react';
 
@@ -40,6 +41,7 @@ function DronesContent() {
 
   const mapLat = hasFocus ? focusLat : (live?.lat ?? 17.385);
   const mapLon = hasFocus ? focusLon : (live?.lon ?? 78.4867);
+  const [showGrid, setShowGrid] = useState(true);
 
   const fleet = useMemo(() => {
     const seen = new Map<string, TelemetryPacket>();
@@ -52,19 +54,34 @@ function DronesContent() {
       <Navbar wsConnected={connected} />
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl overflow-hidden">
-          <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] flex items-center gap-2">
+          <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] flex items-center gap-2 flex-wrap">
             <Plane className="w-4 h-4 text-[#00d2ff]" />
             <span className="text-xs font-bold text-white tracking-wider">
               SWARM SAR RADAR // {mapLat.toFixed(4)}°N, {mapLon.toFixed(4)}°E
             </span>
+            <TrustBadge kind="SIMULATION" source="local telemetry simulator — not real hardware" />
+            <button
+              onClick={() => setShowGrid((g) => !g)}
+              aria-pressed={showGrid}
+              className={`ml-auto px-2.5 py-0.5 text-[10px] rounded border ${
+                showGrid ? 'border-[#00d2ff]/60 text-[#00d2ff]' : 'border-[#1b314b] text-slate-500'
+              }`}
+            >
+              SEARCH GRID {showGrid ? 'ON' : 'OFF'}
+            </button>
             {hasFocus && (
-              <span className="ml-auto flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-[#00d2ff]/20 text-[#00d2ff] border border-[#00d2ff]/40">
+              <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded bg-[#00d2ff]/20 text-[#00d2ff] border border-[#00d2ff]/40">
                 <Crosshair className="w-3 h-3" /> TRACKING: {focusName.toUpperCase()}
               </span>
             )}
           </div>
           <div className="h-[420px] bg-black">
-            <DroneLeafletTracker lat={mapLat} lon={mapLon} />
+            <DroneLeafletTracker
+              lat={mapLat}
+              lon={mapLon}
+              grid={showGrid}
+              target={hasFocus ? { lat: focusLat, lon: focusLon, label: focusName } : null}
+            />
           </div>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">
             <Thermometer className="w-3.5 h-3.5 text-orange-400" />

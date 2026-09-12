@@ -1,6 +1,6 @@
 // src/app/location/page.tsx — Location Intel: search any place, inspect details
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -22,6 +22,8 @@ import {
   type GooglePlaceDetails,
 } from '@/utils/googlePlaces';
 import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check, ExternalLink, Star, Phone, Clock } from 'lucide-react';
+import { DEMO_FACILITIES, DEMO_HAZARDS } from '@/data/providers';
+import type { MapCircle } from '@/components/RadarMap';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -55,6 +57,45 @@ export default function LocationPage() {
     at: number;
   } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [layersOff, setLayersOff] = useState<Record<string, boolean>>({});
+  const toggleLayer = (k: string) => setLayersOff((o) => ({ ...o, [k]: !o[k] }));
+
+  const LEVEL_COLOR: Record<string, string> = {
+    low: '#34d399',
+    moderate: '#facc15',
+    high: '#fb923c',
+    critical: '#fb7185',
+  };
+  const FAC_COLOR: Record<string, string> = {
+    shelter: '#34d399',
+    hospital: '#38bdf8',
+    police: '#a78bfa',
+    fire: '#f87171',
+    relief: '#fbbf24',
+  };
+  const HAZ_TYPES = ['flood', 'cyclone', 'fire', 'earthquake', 'landslide', 'heat', 'lightning', 'industrial'];
+  const FAC_KINDS = ['shelter', 'hospital', 'police', 'fire', 'relief'];
+
+  const layerCircles: MapCircle[] = useMemo(
+    () => [
+      ...DEMO_HAZARDS.filter((z) => !layersOff[z.type]).map((z) => ({
+        lat: z.lat,
+        lon: z.lon,
+        radiusM: z.radiusKm * 1000,
+        color: LEVEL_COLOR[z.level],
+        label: `${z.label} (${z.level}, SIM)`,
+      })),
+      ...DEMO_FACILITIES.filter((f) => !layersOff[f.kind]).map((f) => ({
+        lat: f.lat,
+        lon: f.lon,
+        radiusM: 600,
+        color: FAC_COLOR[f.kind],
+        label: `${f.name} — ${f.status}`,
+      })),
+    ],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [layersOff]
+  );
   const [gplace, setGplace] = useState<GooglePlaceDetails | null>(null);
   const [gloading, setGloading] = useState(false);
   const [gerror, setGerror] = useState('');
@@ -498,6 +539,7 @@ export default function LocationPage() {
                 <DroneLeafletTracker
                   lat={place?.lat ?? 17.385}
                   lon={place?.lon ?? 78.4867}
+                  circles={mapSrc === 'OSM' ? layerCircles : []}
                 />
               ) : (
                 <iframe
@@ -510,6 +552,42 @@ export default function LocationPage() {
                   allowFullScreen
                 />
               )}
+            </div>
+          </div>
+
+          <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+            <div className="text-xs font-bold text-white pb-2">
+              HAZARD LAYERS <span className="font-normal text-slate-500">(OSM view · SIMULATION zones)</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {HAZ_TYPES.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => toggleLayer(t)}
+                  aria-pressed={!layersOff[t]}
+                  className={`px-2 py-1 rounded text-[10px] border ${
+                    layersOff[t]
+                      ? 'border-[#1b314b] text-slate-500'
+                      : 'border-[#00d2ff]/60 text-[#00d2ff]'
+                  }`}
+                >
+                  {t.toUpperCase()}
+                </button>
+              ))}
+              {FAC_KINDS.map((k) => (
+                <button
+                  key={k}
+                  onClick={() => toggleLayer(k)}
+                  aria-pressed={!layersOff[k]}
+                  className={`px-2 py-1 rounded text-[10px] border ${
+                    layersOff[k]
+                      ? 'border-[#1b314b] text-slate-500'
+                      : 'border-emerald-500/60 text-emerald-300'
+                  }`}
+                >
+                  {k === 'shelter' ? '🏕' : k === 'hospital' ? '🏥' : k === 'police' ? '🚔' : k === 'fire' ? '🚒' : '📦'} {k.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import TrustBadge from '@/components/TrustBadge';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps } from '@/store/opsStore';
 import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
@@ -135,6 +136,55 @@ export default function SimulationPage() {
               )}
             </div>
           </div>
+        </section>
+      </div>
+
+      {/* What-if presets + projected impact (SIMULATION — model output, not a forecast) */}
+      <div className="px-4 pb-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <section className="lg:col-span-5 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+          <div className="text-xs font-bold text-white pb-3 border-b border-[#1b314b]">
+            WHAT-IF QUESTIONS
+          </div>
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {[
+              { q: 'Rainfall +50%?', run: () => { applyScenario('storm'); setSpillway(Math.min(80, spillway + 10)); } },
+              { q: 'River level +2m?', run: () => setSpillway(Math.min(80, spillway + 15)) },
+              { q: 'Cyclone landfall?', run: () => { applyScenario('storm'); setSpillway(65); } },
+              { q: 'Evacuation drill?', run: () => { applyScenario('swarm-surge'); setSpillway(50); } },
+            ].map((p) => (
+              <button
+                key={p.q}
+                onClick={p.run}
+                className="py-2.5 px-3 rounded-lg bg-[#091a2e] border border-[#1b314b] text-left text-slate-100 hover:border-[#00d2ff]/60"
+              >
+                “{p.q}”
+              </button>
+            ))}
+          </div>
+        </section>
+        <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+          <div className="text-xs font-bold text-white pb-3 border-b border-[#1b314b] flex items-center gap-2">
+            PROJECTED IMPACT <TrustBadge kind="SIMULATION" source="surrogate model" confidence={71} />
+          </div>
+          <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2 text-center text-[11px]">
+            {[
+              ['AFFECTED POPULATION', `~${(inundation * 420).toLocaleString()}`],
+              ['ROADS BLOCKED', `${Math.round((inundation / 100) * 62)} / 62`],
+              ['BUILDINGS EXPOSED', `~${(inundation * 38).toLocaleString()}`],
+              ['HOSPITALS AFFECTED', inundation > 70 ? '2' : inundation > 40 ? '1' : '0'],
+              ['SHELTERS NEEDED', `${Math.max(1, Math.ceil((inundation * 420) / 2000))}`],
+              ['EVAC ZONES', inundation > 70 ? 'Wards 12, 14, 18' : inundation > 40 ? 'Ward 14 bund' : 'None'],
+            ].map(([k, v]) => (
+              <div key={k} className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">
+                <div className="text-slate-500 text-[10px]">{k}</div>
+                <div className="text-white font-bold text-sm mt-0.5">{v}</div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-2 text-[10px] text-slate-500">
+            CURRENT → SCENARIO → PROJECTED IMPACT · toy multipliers on the inundation index for
+            drill planning. Not a forecast.
+          </p>
         </section>
       </div>
     </main>

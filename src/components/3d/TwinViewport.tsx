@@ -8,6 +8,10 @@ const ENTITIES: (TwinEntity & { pos: [number, number, number]; color: number })[
   { id: "RB-07", label: "NDRF Boat RB-07", kind: "boat", pos: [-2.5, 0.1, 1.5], color: 0x34d399 },
   { id: "AMB-12", label: "Ambulance AMB-12", kind: "ground", pos: [2.2, 0.1, -1.8], color: 0xfbbf24 },
   { id: "DRX-07", label: "Drone DRX-07", kind: "air", pos: [0, 1.5, 0], color: 0x00d2ff },
+  { id: "HSP-01", label: "District General Hospital", kind: "hospital", pos: [3.4, 0.15, 2.1], color: 0x38bdf8 },
+  { id: "SH-01", label: "City Sports Shelter", kind: "shelter", pos: [-3.6, 0.15, -2.3], color: 0xa78bfa },
+  { id: "BRG-02", label: "Railway Bridge Pier P-18", kind: "bridge", pos: [0.6, 0.45, -3.2], color: 0xf59e0b },
+  { id: "FRT-03", label: "Fire Tender FRT-03", kind: "vehicle", pos: [-1.6, 0.1, -2.7], color: 0xef4444 },
 ];
 
 export type TerrainMode = 'grid' | 'satellite';
