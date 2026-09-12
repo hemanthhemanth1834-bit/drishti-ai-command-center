@@ -1,7 +1,10 @@
 # DRISHTI-X — Sovereign Real-Time Disaster Intelligence Command Center
 
-🌐 **Live Demo:** https://drishti-ai-command-center.vercel.app
+🌐 **Live Demo:** https://drishti-ai-command-center.vercel.app/welcome
 📡 **Live API:** https://backend-production-47f1.up.railway.app/api/health
+
+**Routes:** `/` → cinematic welcome poster · `/command` → operator deck ·
+`/safety` → citizen dashboard · 20+ tactical + citizen routes (see tree below).
 
 Offline-first drone mesh HUD: **Next.js 14 (App Router) + Three.js + Leaflet + FastAPI WebSockets**.
 Zero paid APIs — CartoDB/OSM tiles only. Tactical dark HUD (`#051424`, `#00d2ff` cyan).
@@ -21,9 +24,13 @@ drishti-ai-command-center/
 │   ├── app/routers/ws_telemetry.py# /ws/telemetry-v1 (legacy /ws/telemetry in main.py)
 │   ├── Dockerfile + requirements.txt
 ├── src/                 # Next.js 14 frontend
-│   ├── app/page.tsx               # Master Command Operations Deck
-│   ├── app/{drones,twin,location,simulation,resources,shelter,reunion,recovery,portal,platform,command}/
-│   │                               # 11 tactical routes: 8 pillars + Location Intel, Citizen Portal, Platform Specs
+│   ├── app/page.tsx               # → redirects / to /welcome (poster front door)
+│   ├── app/welcome/page.tsx       # Cinematic poster landing (ENTER-to-enter)
+│   ├── app/command/page.tsx       # Master Command Operations Deck (moved from /)
+│   ├── app/{drones,twin,location,simulation,resources,shelter,reunion,recovery,portal,platform}/
+│   │                               # 10 tactical routes: pillars + Location Intel, Citizen Portal, Platform Specs
+│   ├── app/{safety,risk,emergency,alerts,nearby,evacuate,report,family,plan,kit,learn,talk}/
+│   │                               # 12 citizen routes: public-safety platform (see below)
 │   ├── components/DigitalTwin.tsx + RadarMap.tsx + TelemetryFeed.tsx (canonical)
 │   ├── components/3d/DigitalTwinCanvas.tsx / maps/DroneLeafletTracker.tsx
 │   ├── components/dashboard/LiveTelemetryTable.tsx + HeaderBar.tsx
@@ -95,9 +102,11 @@ npm run dev
 - Runs the Next.js development server with hot-reload (edits appear instantly).
 - Success: `✓ Ready in ... ms` followed by `○ Local: http://localhost:3000`.
 - Open http://localhost:3000 and press **Ctrl+F5** (hard reload) so the fresh
-  stylesheet, map tiles and 3D canvas load. You should see ● LIVE WS plus all
-  11 routes in the top nav (`/drones`, `/twin`, `/location`, `/simulation`,
-  `/resources`, `/shelter`, `/reunion`, `/recovery`, `/portal`, `/platform`).
+  stylesheet, map tiles and 3D canvas load. `/` lands on the welcome poster —
+  press ENTER (or INITIALIZING) to enter; the operator deck lives at
+  `/command`, citizen dashboard at `/safety`. Command nav carries 11 routes
+  (`/command`, `/drones`, `/twin`, `/location`, `/simulation`, `/resources`,
+  `/shelter`, `/reunion`, `/recovery`, `/portal`, `/platform`).
 
 ### C. Verify everything still works
 

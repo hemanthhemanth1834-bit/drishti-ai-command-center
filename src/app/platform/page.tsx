@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 
 const PILLARS = [
-  { href: '/', icon: Activity, id: '01', name: 'Master Command Center', desc: 'Tactical HUD, Sector-04 telemetry, alert triage, Hydra-Net inference + dispatch authorization.' },
+  { href: '/command', icon: Activity, id: '01', name: 'Master Command Center', desc: 'Tactical HUD, Sector-04 telemetry, alert triage, Hydra-Net inference + dispatch authorization.' },
   { href: '/twin', icon: Box, id: '02', name: '3D Digital Twin & Topography', desc: 'WebGL elevation twin, +3.8m surge plane, entity picking, spotlight cones, air-drop actuators.' },
   { href: '/drones', icon: Plane, id: '03', name: 'Drone Swarm & Satellite SAR', desc: 'Optical/thermal FLIR recon, RISAT-1A / Sentinel-1 change cells, RTH fail-safe, waypoints.' },
   { href: '/simulation', icon: Cpu, id: '04', name: 'What-If Dam Breach Copilot', desc: 'Saint-Venant hydraulics, spillway controls, 72-h surge curve, DeepSeek-R1 local advisory.' },

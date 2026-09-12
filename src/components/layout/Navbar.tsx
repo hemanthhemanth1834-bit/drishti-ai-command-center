@@ -34,7 +34,7 @@ import {
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
-  { href: '/', labelKey: 'nav_command', icon: Activity },
+  { href: '/command', labelKey: 'nav_command', icon: Activity },
   { href: '/drones', labelKey: 'nav_drones', icon: Plane },
   { href: '/twin', labelKey: 'nav_twin', icon: Box },
   { href: '/location', labelKey: 'nav_location', icon: MapPin },
@@ -94,7 +94,7 @@ export default function Navbar({
     <header className="sticky top-0 z-50 select-none">
       <div className="bg-[#030d17] border-b border-[#1b314b] px-4 py-2 flex items-center justify-between text-xs font-mono gap-2">
         {/* Brand Identity */}
-        <Link href={mode === 'public' ? '/safety' : '/'} className="flex items-center gap-3 shrink-0">
+        <Link href={mode === 'public' ? '/safety' : '/command'} className="flex items-center gap-3 shrink-0">
           <div className="w-8 h-8 rounded bg-[#00d2ff]/10 border border-[#00d2ff]/40 flex items-center justify-center text-[#00d2ff] font-bold text-base shadow-[0_0_12px_rgba(0,210,255,0.3)]">
             DX
           </div>

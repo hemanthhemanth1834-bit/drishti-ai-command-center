@@ -30,7 +30,7 @@ export default function PortalPage() {
             <div className="text-[11px] text-slate-400">Official public lifeline • updated 10 min ago</div>
           </div>
         </div>
-        <Link href="/" className="text-[11px] text-[#00d2ff] underline">
+        <Link href="/command" className="text-[11px] text-[#00d2ff] underline">
           Command login →
         </Link>
       </header>
