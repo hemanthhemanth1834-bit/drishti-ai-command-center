@@ -115,7 +115,7 @@ export default function TwinViewport({
     el.innerHTML = "";
     el.appendChild(renderer.domElement);
 
-    scene.add(new THREE.GridHelper(14, 28, 0x00d2ff, 0x0a3a55));
+    scene.add(new THREE.GridHelper(14, 32, 0x66f6ff, 0x0e5068));
 
     // Terrain slab
     const terrainMesh = new THREE.Mesh(
@@ -131,6 +131,81 @@ export default function TwinViewport({
     satPlane.rotation.x = -Math.PI / 2;
     satPlane.position.y = -0.04;
     scene.add(satPlane);
+
+    // --- Synthwave VFX rig (visible in grid mode) ---
+    const vfx = new THREE.Group();
+    scene.add(vfx);
+
+    // Horizon glow bar + halo
+    const glowBar = new THREE.Mesh(
+      new THREE.BoxGeometry(14, 0.05, 0.05),
+      new THREE.MeshBasicMaterial({ color: 0x8cf7ff })
+    );
+    glowBar.position.set(0, 0.06, -7);
+    vfx.add(glowBar);
+    const gc = document.createElement("canvas");
+    gc.width = 4;
+    gc.height = 64;
+    const g2 = gc.getContext("2d");
+    if (g2) {
+      const grad = g2.createLinearGradient(0, 0, 0, 64);
+      grad.addColorStop(0, "rgba(0,210,255,0)");
+      grad.addColorStop(0.75, "rgba(0,210,255,0.45)");
+      grad.addColorStop(1, "rgba(160,250,255,0.85)");
+      g2.fillStyle = grad;
+      g2.fillRect(0, 0, 4, 64);
+    }
+    const halo = new THREE.Mesh(
+      new THREE.PlaneGeometry(14, 1.4),
+      new THREE.MeshBasicMaterial({
+        map: new THREE.CanvasTexture(gc),
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      })
+    );
+    halo.position.set(0, 0.7, -7.02);
+    vfx.add(halo);
+
+    // Radar sweep band looping across the floor
+    const sweep = new THREE.Mesh(
+      new THREE.PlaneGeometry(14, 0.9),
+      new THREE.MeshBasicMaterial({
+        color: 0x00d2ff,
+        transparent: true,
+        opacity: 0.16,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      })
+    );
+    sweep.rotation.x = -Math.PI / 2;
+    sweep.position.y = 0.03;
+    vfx.add(sweep);
+
+    // Rising dust particles
+    const P_COUNT = 150;
+    const pGeo = new THREE.BufferGeometry();
+    const pArr = new Float32Array(P_COUNT * 3);
+    for (let i = 0; i < P_COUNT; i++) {
+      pArr[i * 3] = (Math.random() - 0.5) * 14;
+      pArr[i * 3 + 1] = Math.random() * 3;
+      pArr[i * 3 + 2] = (Math.random() - 0.5) * 14;
+    }
+    pGeo.setAttribute("position", new THREE.BufferAttribute(pArr, 3));
+    const points = new THREE.Points(
+      pGeo,
+      new THREE.PointsMaterial({
+        color: 0x66eaff,
+        size: 0.05,
+        transparent: true,
+        opacity: 0.7,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      })
+    );
+    vfx.add(points);
 
     // Flood surge plane (translucent, height driven by slider)
     const surge = new THREE.Mesh(
@@ -305,6 +380,19 @@ export default function TwinViewport({
       const nextD = curD + (Math.max(4, Math.min(20, distRef.current)) - curD) * 0.18;
       cam.position.copy(FOCUS).addScaledVector(tmpDir, nextD);
       cam.lookAt(FOCUS);
+      // Synthwave VFX rig (grid mode only)
+      vfx.visible = s.terrain !== "satellite";
+      if (vfx.visible) {
+        sweep.position.z -= 0.045;
+        if (sweep.position.z < -7) sweep.position.z = 7;
+        const pp = points.geometry.attributes.position as THREE.BufferAttribute;
+        for (let i = 0; i < pp.count; i++) {
+          let y = pp.getY(i) + 0.008;
+          if (y > 3) y = 0;
+          pp.setY(i, y);
+        }
+        pp.needsUpdate = true;
+      }
       renderer.render(scene, cam);
     };
     animate();
