@@ -30,6 +30,7 @@ import {
   BookOpen,
   Mic,
   Languages,
+  House,
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
@@ -47,6 +48,7 @@ const COMMAND_ITEMS = [
 ];
 
 const PUBLIC_ITEMS = [
+  { href: '/welcome', labelKey: 'nav_welcome', icon: House },
   { href: '/safety', labelKey: 'nav_safety', icon: HeartPulse },
   { href: '/risk', labelKey: 'nav_risk', icon: Crosshair },
   { href: '/alerts', labelKey: 'nav_alerts', icon: Bell },

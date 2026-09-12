@@ -27,6 +27,7 @@ const DICT: Record<string, Record<Lang, string>> = {
   nav_kit: { en: 'Emergency Kit', te: 'అత్యవసర కిట్', hi: 'आपात किट' },
   nav_learn: { en: 'Learn', te: 'నేర్చుకోండి', hi: 'सीखें' },
   nav_talk: { en: 'Talk to Drishti', te: 'దృష్టితో మాట్లాడండి', hi: 'दृष्टि से बात करें' },
+  nav_welcome: { en: 'Welcome', te: 'స్వాగతం', hi: 'स्वागत' },
   // Modes
   mode_public: { en: 'PUBLIC MODE', te: 'పబ్లిక్ మోడ్', hi: 'पब्लिक मोड' },
   mode_command: { en: 'COMMAND MODE', te: 'కమాండ్ మోడ్', hi: 'कमांड मोड' },
