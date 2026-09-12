@@ -4,7 +4,7 @@
 📡 **Live API:** https://backend-production-47f1.up.railway.app/api/health
 
 **Routes:** `/` → cinematic welcome poster · `/command` → operator deck ·
-`/safety` → citizen dashboard · 20+ tactical + citizen routes (see tree below).
+`/safety` → citizen dashboard · 25 routes total (see tree below).
 
 Offline-first drone mesh HUD: **Next.js 14 (App Router) + Three.js + Leaflet + FastAPI WebSockets**.
 Zero paid APIs — CartoDB/OSM tiles only. Tactical dark HUD (`#051424`, `#00d2ff` cyan).
@@ -31,14 +31,24 @@ drishti-ai-command-center/
 │   │                               # 10 tactical routes: pillars + Location Intel, Citizen Portal, Platform Specs
 │   ├── app/{safety,risk,emergency,alerts,nearby,evacuate,report,family,plan,kit,learn,talk}/
 │   │                               # 12 citizen routes: public-safety platform (see below)
-│   ├── components/DigitalTwin.tsx + RadarMap.tsx + TelemetryFeed.tsx (canonical)
-│   ├── components/3d/DigitalTwinCanvas.tsx / maps/DroneLeafletTracker.tsx
+│   ├── components/DigitalTwin.tsx + RadarMap.tsx (circles/grid/target overlays) + TelemetryFeed.tsx
+│   ├── components/3d/DigitalTwinCanvas.tsx + TwinViewport.tsx (surge, spotlight, satellite, zoom, VFX)
+│   ├── components/maps/DroneLeafletTracker.tsx (overlay forwarding)
 │   ├── components/dashboard/LiveTelemetryTable.tsx + HeaderBar.tsx
-│   ├── components/alerts/GeofenceBreachModal.tsx
-│   ├── hooks/useTelemetrySocket.ts # reconnecting WS client
+│   ├── components/alerts/GeofenceBreachModal.tsx + AlertBanner.tsx (live rule engine)
+│   ├── components/layout/Navbar.tsx (public/command modes, EN/TE/HI, live incident badge)
+│   ├── components/RiskChecker.tsx + Checklist.tsx + TrustBadge.tsx
+│   ├── components/EmergencyFab.tsx + MobileQuickBar.tsx + A11yBar.tsx + OfflineBanner.tsx + SwRegister.tsx
+│   ├── data/providers.ts          # 8 provider interfaces + labeled demo datasets
+│   ├── store/opsStore.ts (scenario/spillway/acks) + appStore.ts (mode/lang/a11y)
+│   ├── hooks/useTelemetrySocket.ts (reconnecting WS) + useLocalList.ts (localStorage)
+│   ├── i18n/dict.ts               # central EN/TE/HI dictionary
 │   └── utils/apiClient.ts + geofenceDetection.ts (point-in-polygon)
-│       + geocode.ts (Nominatim search, haversine/bearing)
-├── public/              # static assets
+│       + geocode.ts (Nominatim, GPS, haversine/bearing/DMS)
+│       + overpass.ts (free OSM amenities/shelters) + riskEngine.ts (risk + path exposure)
+│       + alertRules.ts (hazard rules + incident level) + googlePlaces.ts (keyed place data)
+├── public/              # poster.jpg (hero art) + manifest.json + sw.js + icon.svg (PWA)
+├── tailwind.config.js + postcss.config.js + vercel.json
 ├── docker-compose.yml   # one-click launcher
 ```
 
@@ -69,7 +79,9 @@ copy .env.local.example .env.local
 Same idea as above, for the web app: creates `.env.local` holding
 `NEXT_PUBLIC_API_BASE` (where the API lives), `NEXT_PUBLIC_WS_URL` (where the
 live stream lives) and `NEXT_PUBLIC_GATEWAY_KEY` (must match the server's
-`GATEWAY_KEY`). Also git-ignored.
+`GATEWAY_KEY`). Also git-ignored. Optional: `NEXT_PUBLIC_GOOGLE_MAPS_KEY` —
+a billing-enabled key that unlocks Google ratings/hours/photos/reviews on the
+Location page; leave it empty for the free keyless map view.
 
 ```powershell
 npm install
@@ -172,10 +184,16 @@ Stage everything, snapshot it with a message, and upload to GitHub. CI
 WS stream stays open for local HUD.
 
 ## Citizen access (no login, no keys, no cost)
+- **Welcome poster** (`/welcome`): cinematic entry — press ENTER to enter.
 - **Public mode** (toggle in the top bar): My Safety (`/safety`), Check My Risk (`/risk`),
   Alert Center (`/alerts`), Help Near Me (`/nearby`, real OSM data via Overpass),
-  Safe Evacuation (`/evacuate`), Emergency (`/emergency`), Report (`/report`),
-  Family (`/family`), Plan (`/plan`), Kit (`/kit`), Learn (`/learn`), Talk (`/talk`).
+  Safe Evacuation (`/evacuate`, shelters ≤ 30 km + hazard-exposure safest pick),
+  Emergency (`/emergency`), Report (`/report`),
+  Family (`/family`), Plan (`/plan`), Kit (`/kit`), Learn (`/learn`), Talk (`/talk`, Web Speech).
+- **Location Intel** (`/location`): GPS-first + Nominatim search, OSM/Google map tabs,
+  13 hazard & facility layers, live-location detail report (DMS, ETA, copy), Google place data (keyed).
+- **3D Twin** (`/twin`): satellite/grid terrain, live HUD overlay, zoom, synthwave VFX,
+  battery/signal-driven scene, entity picking, air-drop actuator.
 - **Command mode**: the full operator deck (default view).
 - Every data panel carries a trust badge: LIVE / SIMULATION / DEMO + source.
   Demo hazard cells, shelters and alerts live in `src/data/providers.ts` behind
@@ -183,3 +201,5 @@ WS stream stays open for local HUD.
   so official APIs can replace them later without touching pages.
 - Personal data (reports, family, checklists) stays in the browser's localStorage.
 - PWA shell (`public/manifest.json` + `sw.js`) caches safety/emergency pages for offline use.
+- Poster art: replace `public/poster.jpg` with any 16:9 JPG to re-skin the
+  welcome hero and homepage banner (auto-detected, no code change).
