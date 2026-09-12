@@ -79,6 +79,24 @@ export default function WelcomePage() {
               'radial-gradient(900px 420px at 50% 0%, rgba(0,210,255,0.16), transparent 60%), radial-gradient(700px 380px at 85% 100%, rgba(244,63,94,0.10), transparent 60%), radial-gradient(700px 380px at 8% 100%, rgba(52,211,153,0.08), transparent 60%), linear-gradient(#020b14, #020b14)',
           }}
         />
+        {/* Perspective synthwave grid floor */}
+        <div aria-hidden className="absolute inset-x-0 bottom-0 h-40 overflow-hidden pointer-events-none">
+          <div
+            className="absolute -inset-x-1/4 bottom-[-60%] h-[220%] mx-auto"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(0,210,255,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(0,210,255,0.35) 1px, transparent 1px)',
+              backgroundSize: '44px 44px',
+              transform: 'perspective(320px) rotateX(62deg)',
+              maskImage: 'linear-gradient(to top, black 30%, transparent 95%)',
+              WebkitMaskImage: 'linear-gradient(to top, black 30%, transparent 95%)',
+            }}
+          />
+          <div
+            className="absolute inset-x-0 top-0 h-px"
+            style={{ background: 'linear-gradient(90deg, transparent, #8cf7ff, transparent)', boxShadow: '0 0 24px 2px rgba(0,210,255,0.7)' }}
+          />
+        </div>
         <div className="relative max-w-6xl mx-auto px-4 pt-10 pb-8 text-center">
           <div className="text-[10px] sm:text-xs tracking-[0.3em] text-slate-400">
             PEOPLE&nbsp;&nbsp;|&nbsp;&nbsp;PLANET&nbsp;&nbsp;|&nbsp;&nbsp;PREPARE&nbsp;&nbsp;|&nbsp;&nbsp;RESPOND&nbsp;&nbsp;|&nbsp;&nbsp;RECOVER
