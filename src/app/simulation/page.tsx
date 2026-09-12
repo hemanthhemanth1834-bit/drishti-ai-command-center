@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps } from '@/store/opsStore';
-import { evaluateAlerts } from '@/utils/alertRules';
+import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import AlertBanner from '@/components/alerts/AlertBanner';
 import { ackAlert } from '@/store/opsStore';
 import { setScenario } from '@/utils/apiClient';
@@ -40,7 +40,7 @@ export default function SimulationPage() {
 
   return (
     <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
-      <Navbar wsConnected={connected} />
+      <Navbar wsConnected={connected} incident={incidentLevel(previewBreach)} />
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
           <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">

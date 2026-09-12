@@ -7,7 +7,7 @@ import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps, ackAlert } from '@/store/opsStore';
-import { evaluateAlerts } from '@/utils/alertRules';
+import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import { checkGeofenceBreach } from '@/utils/geofenceDetection';
 import { setScenario } from '@/utils/apiClient';
 import {
@@ -61,7 +61,7 @@ export default function MasterCommandCenter() {
 
   return (
     <main className="min-h-screen bg-[#020b14] text-slate-200 flex flex-col font-mono">
-      <Navbar wsConnected={wsConnected} />
+      <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
       <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
 
       {/* KPI Ticker Bar */}

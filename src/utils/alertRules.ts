@@ -92,3 +92,14 @@ export function evaluateAlerts(inp: AlertInput): Alert[] {
   const rank: Record<AlertLevel, number> = { critical: 0, warning: 1, info: 2 };
   return alerts.sort((a, b) => rank[a.level] - rank[b.level]);
 }
+
+export type IncidentTone = 'critical' | 'elevated' | 'stable';
+
+/** Roll a set of alerts up into one incident posture for badges/headers. */
+export function incidentLevel(alerts: Alert[]): { label: string; tone: IncidentTone } {
+  if (alerts.some((a) => a.level === 'critical'))
+    return { label: 'LEVEL-3 CRITICAL', tone: 'critical' };
+  if (alerts.some((a) => a.level === 'warning'))
+    return { label: 'LEVEL-2 ELEVATED', tone: 'elevated' };
+  return { label: 'LEVEL-1 STABLE', tone: 'stable' };
+}

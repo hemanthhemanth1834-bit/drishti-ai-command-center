@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useOps } from '@/store/opsStore';
+import { evaluateAlerts, incidentLevel, type IncidentTone } from '@/utils/alertRules';
 import {
   ShieldAlert,
   Activity,
@@ -30,8 +32,41 @@ const NAV_ITEMS = [
   { href: '/platform', label: 'Platform Specs', icon: Landmark },
 ];
 
-export default function Navbar({ wsConnected }: { wsConnected: boolean }) {
+const TONE_STYLES: Record<IncidentTone, { box: string; text: string; icon: string }> = {
+  critical: {
+    box: 'bg-rose-500/20 border-rose-500/50',
+    text: 'text-rose-300',
+    icon: 'text-rose-400',
+  },
+  elevated: {
+    box: 'bg-amber-500/20 border-amber-500/50',
+    text: 'text-amber-300',
+    icon: 'text-amber-400',
+  },
+  stable: {
+    box: 'bg-emerald-500/20 border-emerald-500/50',
+    text: 'text-emerald-300',
+    icon: 'text-emerald-400',
+  },
+};
+
+export default function Navbar({
+  wsConnected,
+  incident,
+}: {
+  wsConnected: boolean;
+  /** Full telemetry-aware posture (homepage/simulation pass this). */
+  incident?: { label: string; tone: IncidentTone };
+}) {
   const pathname = usePathname();
+  const ops = useOps();
+  // Fallback: posture from shared ops state (scenario + spillway rules need no telemetry).
+  const posture =
+    incident ??
+    incidentLevel(
+      evaluateAlerts({ scenario: ops.scenario, spillwayK: ops.spillwayK, geofenceBreach: false })
+    );
+  const tone = TONE_STYLES[posture.tone];
   return (
     <header className="bg-[#030d17] border-b border-[#1b314b] px-4 py-2 flex items-center justify-between text-xs font-mono select-none sticky top-0 z-50">
       {/* Brand Identity */}
@@ -82,9 +117,11 @@ export default function Navbar({ wsConnected }: { wsConnected: boolean }) {
             {wsConnected ? 'LIVE 868MHz WS' : 'OFFLINE'}
           </span>
         </div>
-        <div className="px-2 py-1 rounded bg-rose-500/20 border border-rose-500/50 text-rose-300 font-bold flex items-center gap-1">
-          <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
-          <span>LEVEL-3 CRITICAL</span>
+        <div
+          className={`px-2 py-1 rounded border font-bold flex items-center gap-1 whitespace-nowrap ${tone.box} ${tone.text}`}
+        >
+          <ShieldAlert className={`w-3.5 h-3.5 ${tone.icon}`} />
+          <span>{posture.label}</span>
         </div>
       </div>
     </header>
