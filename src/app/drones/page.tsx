@@ -5,8 +5,18 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import HudPanel from '@/components/cinematic/HudPanel';
+import AnimatedCounter from '@/components/cinematic/AnimatedCounter';
+import RadarSweep from '@/components/cinematic/RadarSweep';
 import { useTelemetrySocket, type TelemetryPacket } from '@/hooks/useTelemetrySocket';
 import { Plane, Thermometer, Package, Crosshair } from 'lucide-react';
+
+const DroneSwarmScene = dynamic(
+  () => import('@/components/three/DroneSwarmScene'),
+  { ssr: false }
+);
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -50,10 +60,21 @@ function DronesContent() {
   }, [packets]);
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.7} label="Drone swarm and SAR">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader dronesActive={Math.max(6, fleet.length)} wsConnected={connected} />
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl overflow-hidden">
+        <section className="lg:col-span-7 flex flex-col gap-4">
+        <HudPanel micro="3D SWARM VISUALIZATION · SIMULATION" title="DRONE SWARM & SAR — CINEMATIC TWIN" right={<span className="dx-sim">SIMULATION</span>}>
+          <DroneSwarmScene height={380} />
+          <div className="mt-2 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[10px]">
+            {[['FORMATION', 'ECHELON'], ['ALTITUDE', `${(live?.alt_m ?? 42).toFixed(0)}M`], ['BATTERY', `${(live?.battery_pct ?? 78).toFixed(0)}%`], ['LINK', `${(live?.signal_pct ?? 92).toFixed(0)}%`]].map(([k, v]) => (
+              <div key={k} className="bg-[#091a2e] rounded p-2 border border-[#1b314b]"><div className="text-slate-500">{k}</div><div className="text-white font-bold text-sm">{v}</div></div>
+            ))}
+          </div>
+        </HudPanel>
+        <section className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl overflow-hidden">
           <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] flex items-center gap-2 flex-wrap">
             <Plane className="w-4 h-4 text-[#00d2ff]" />
             <span className="text-xs font-bold text-white tracking-wider">
@@ -93,12 +114,10 @@ function DronesContent() {
             FLIR overlay: 3 thermal signatures • ISRO RISAT / Sentinel-1 change cells: 12
           </div>
         </section>
+        </section>
 
         <section className="lg:col-span-5 flex flex-col gap-4">
-          <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
-            <div className="text-xs font-bold text-white pb-2 border-b border-[#1b314b]">
-              LIVE FLEET ({fleet.length} CONTACTS)
-            </div>
+          <HudPanel micro="TELEMETRY RING · SIMULATION" title={<span>LIVE FLEET (<AnimatedCounter value={fleet.length} /> CONTACTS)</span>}>
             <div className="mt-2 space-y-1 text-[11px] max-h-[220px] overflow-y-auto">
               {fleet.length === 0 && (
                 <div className="text-slate-500 py-4 text-center">Awaiting swarm packets…</div>
@@ -115,9 +134,13 @@ function DronesContent() {
                 </div>
               ))}
             </div>
-          </div>
+          </HudPanel>
 
-          <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+          <HudPanel micro="SEARCH GRID · 2 KM RADIUS" title="RADAR / SCANNER">
+            <RadarSweep />
+          </HudPanel>
+
+          <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4">
             <div className="text-xs font-bold text-white pb-2 border-b border-[#1b314b] flex items-center gap-1.5">
               <Package className="w-4 h-4 text-[#00d2ff]" /> PAYLOAD DEPLOYMENT MATRIX
             </div>
@@ -138,5 +161,6 @@ function DronesContent() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

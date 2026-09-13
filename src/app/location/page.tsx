@@ -22,6 +22,8 @@ import {
   type GooglePlaceDetails,
 } from '@/utils/googlePlaces';
 import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check, ExternalLink, Star, Phone, Clock } from 'lucide-react';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
 import { DEMO_FACILITIES, DEMO_HAZARDS } from '@/data/providers';
 import type { MapCircle } from '@/components/RadarMap';
 
@@ -238,8 +240,13 @@ export default function LocationPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.55} label="Location intelligence">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
+      <div className="px-4 pt-3 text-[10px] tracking-[0.14em] text-slate-500">
+        OPENSTREETMAP + LEAFLET · FREE TILES · <span className="text-slate-300">IF TILES FAIL → LOCAL GRID FALLBACK (2D COMMAND MAP)</span>
+      </div>
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Search + details */}
         <section className="lg:col-span-5 flex flex-col gap-4">
@@ -647,5 +654,6 @@ export default function LocationPage() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

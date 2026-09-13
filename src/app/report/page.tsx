@@ -3,11 +3,14 @@
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import HudPanel from '@/components/cinematic/HudPanel';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useLocalList, cleanText } from '@/hooks/useLocalList';
 import { getLivePosition } from '@/utils/geocode';
 import type { StoredIncident } from '@/data/providers';
-import { FileWarning, Camera } from 'lucide-react';
+import { Camera } from 'lucide-react';
 
 const TYPES = ['Flood', 'Fire', 'Road blocked', 'Building collapse', 'Power outage', 'Landslide', 'Medical emergency', 'Missing person', 'Other'];
 const SEV = ['low', 'moderate', 'high', 'critical'] as const;
@@ -64,14 +67,17 @@ export default function ReportPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.55} label="Citizen reporting portal">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
       <div className="p-4 max-w-3xl mx-auto flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <FileWarning className="w-5 h-5 text-amber-300" />
-          <h1 className="text-xl font-extrabold text-white">REPORT INCIDENT</h1>
-          <TrustBadge kind="DEMO" source="stored on this device only" />
-        </div>
+        <HudPanel micro="CITIZEN PORTAL · SIMULATED INTAKE" title="REPORT INCIDENT" right={<TrustBadge kind="DEMO" source="stored on this device only" />}>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[10px] mb-3">
+            {[['LOW', '#34d399'], ['MEDIUM', '#00d2ff'], ['HIGH', '#ffb020'], ['CRITICAL', '#ff5470']].map(([k, c]) => (
+              <div key={k} className="rounded-lg border border-[#1b314b] bg-[#091a2e] p-2 font-extrabold" style={{ color: c }}>{k}</div>
+            ))}
+          </div>
         <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
           <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })} className="bg-[#020b14] border border-[#1b314b] rounded px-3 py-2 text-white" aria-label="Incident type">
             {TYPES.map((t) => (
@@ -95,7 +101,8 @@ export default function ReportPage() {
           <button onClick={submit} className="sm:col-span-2 py-2.5 rounded bg-[#00d2ff] text-black font-bold">SUBMIT REPORT</button>
           {note && <div className="sm:col-span-2 text-[12px] text-amber-300">{note}</div>}
         </div>
-        <div className="space-y-2">
+        </HudPanel>
+        <div className="dx-timeline space-y-2">
           {items.map((r) => (
             <div key={r.id} className="p-3 rounded-xl bg-[#051424] border border-[#1b314b] text-[12px]">
               <div className="flex items-center justify-between gap-2 flex-wrap">
@@ -127,5 +134,6 @@ export default function ReportPage() {
         </div>
       </div>
     </main>
+    </CinematicShell>
   );
 }

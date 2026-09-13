@@ -3,6 +3,10 @@
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import AnimatedCounter from '@/components/cinematic/AnimatedCounter';
+import FloodTimeline from '@/components/three/FloodTimeline';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps } from '@/store/opsStore';
 import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
@@ -40,10 +44,32 @@ export default function SimulationPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.7} label="What-if copilot">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} incident={incidentLevel(previewBreach)} />
+      <StatusHeader wsConnected={connected} />
+      {/* Animated flood forecast — drives twin + stats */}
+      <div className="px-4 pt-4">
+        <FloodTimeline
+          baseSurgeM={0}
+          onChange={(_h, w) => setSpillway(Math.round(45 + w * 9))}
+        />
+      </div>
+      {/* BEFORE / SIMULATION / AFTER scenario strip */}
+      <div className="px-4 pt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px]">
+        {[
+          ['BEFORE', `Spillway ${spillway}k cusecs · risk ${inundation}/100`, '#34d399'],
+          ['SIMULATION', scenario.toUpperCase() + ' + surge model · SIMULATION', '#00d2ff'],
+          ['AFTER', `Evac lead ${Math.max(1, Math.round(12 - spillway / 10))}h · NH-65 ${(spillway * 0.041).toFixed(2)}m`, '#ffb020'],
+        ].map(([k, v, c]) => (
+          <div key={k} className="dx-hud !p-3">
+            <div className="dx-micro">{k}</div>
+            <div className="mt-1 font-bold" style={{ color: c }}>{v}</div>
+          </div>
+        ))}
+      </div>
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
+        <section className="lg:col-span-7 bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4">
           <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
             <Droplets className="w-4 h-4 text-[#00d2ff]" />
             HYDRAULIC TWIN — PRAKASAM BARRAGE SPILLWAY CONTROL
@@ -60,10 +86,10 @@ export default function SimulationPage() {
             className="w-full mt-2 accent-cyan-400"
           />
           <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-            <div className="bg-[#091a2e] p-3 rounded border border-[#1b314b]">
+            <div className="dx-kpi bg-[#091a2e] p-3 rounded border border-[#1b314b]">
               <div className="text-[10px] text-slate-400">PROJECTED INUNDATION</div>
               <div className={`text-2xl font-bold ${inundation > 70 ? 'text-rose-400' : 'text-emerald-400'}`}>
-                {inundation}/100
+                <AnimatedCounter value={inundation} />/100
               </div>
             </div>
             <div className="bg-[#091a2e] p-3 rounded border border-[#1b314b]">
@@ -190,5 +216,6 @@ export default function SimulationPage() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

@@ -2,6 +2,10 @@
 'use client';
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import HudPanel from '@/components/cinematic/HudPanel';
+import AnimatedCounter from '@/components/cinematic/AnimatedCounter';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { BarChart3, Link2, Activity } from 'lucide-react';
 
@@ -52,8 +56,31 @@ export default function RecoveryPage() {
   const total = ledger.reduce((a, e) => a + e.amount, 0);
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.6} label="Recovery and audit">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
+      {/* Professional incident timeline */}
+      <div className="px-4 pt-4">
+        <HudPanel micro="EVENT · TIME · ACTION · RESPONDER · RESULT · STATUS" title="INCIDENT TIMELINE — ANIMATED" right={<span className="dx-sim">SIMULATION</span>}>
+          <div className="dx-timeline text-[11px] grid grid-cols-1 md:grid-cols-2 gap-x-6">
+            {[
+              ['10:42:18', 'Flood alert generated', 'RULE ENGINE', 'RISK 72/100', 'DONE'],
+              ['10:43:04', 'AI prediction completed', 'HYDRA-NET', 'CONF 98.4%', 'DONE'],
+              ['10:44:17', 'Drone DRX-07 dispatched', 'OPS', 'AIRBORNE', 'DONE'],
+              ['10:47:31', 'Civilian detected · Ward 14', 'FLIR SIM', '3 CONTACTS', 'ACTIVE'],
+              ['10:48:02', 'Rescue approved · RB-07', 'COMMANDER', 'ETA 04:48', 'QUEUED'],
+              ['10:52:40', 'ICU-03 reserved · AMB-12 rolling', 'MEDICAL', 'O₂ OK', 'QUEUED'],
+            ].map(([t, what, who, res, st]) => (
+              <div key={t} className="dx-tl-item">
+                <div className="text-[#00d2ff] font-bold">{t} · {st}</div>
+                <div className="text-slate-100">{what}</div>
+                <div className="text-slate-500">{who} · {res}</div>
+              </div>
+            ))}
+          </div>
+        </HudPanel>
+      </div>
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-7 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
           <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
@@ -112,9 +139,9 @@ export default function RecoveryPage() {
               ))}
             </div>
           </div>
-          <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4 text-xs">
+          <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4 text-xs">
             <div className="font-bold text-white flex items-center gap-1.5">
-              <BarChart3 className="w-4 h-4 text-[#00d2ff]" /> PDNA SNAPSHOT
+              <BarChart3 className="w-4 h-4 text-[#00d2ff]" /> PDNA SNAPSHOT · <AnimatedCounter value={4800000} prefix="₹" />
             </div>
             <div className="mt-2 text-slate-400 leading-relaxed">
               Housing: 312 units affected • Roads: 18/62 blocked • Power: 6 feeders down •
@@ -124,5 +151,6 @@ export default function RecoveryPage() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

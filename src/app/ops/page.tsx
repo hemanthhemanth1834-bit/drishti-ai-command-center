@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import TrustBadge from '@/components/TrustBadge';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import { Sparkline } from '@/components/cinematic/AnimatedCounter';
 import DemoConsole from '@/components/DemoConsole';
 import SystemHealth from '@/components/SystemHealth';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
@@ -53,8 +56,10 @@ export default function OpsPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.55} label="Operations overview">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
       <div className="p-4 max-w-6xl mx-auto flex flex-col gap-4">
         <div className="flex items-center gap-2 flex-wrap">
           <Gauge className="w-5 h-5 text-[#00d2ff]" />
@@ -63,7 +68,7 @@ export default function OpsPage() {
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
           {kpis.map((k) => (
-            <div key={k.label} className="p-2.5 rounded-xl bg-[#051424] border border-[#1b314b]">
+            <div key={k.label} className="dx-kpi p-2.5 rounded-xl bg-[#051424]/85 backdrop-blur border border-[#1b314b]">
               <div className="text-[9px] text-slate-500">{k.label}</div>
               <div className="text-lg font-extrabold text-white">{k.value}</div>
               <div className="mt-1">{k.badge}</div>
@@ -71,9 +76,10 @@ export default function OpsPage() {
           ))}
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
-            <div className="text-xs font-bold text-white pb-2 border-b border-[#1b314b]">
+          <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4">
+            <div className="text-xs font-bold text-white pb-2 border-b border-[#1b314b] flex items-center gap-2">
               RESPONSE METRICS <TrustBadge kind="SIMULATION" source="drill averages" />
+              <span className="ml-auto"><Sparkline data={[8, 6.5, 5.8, 5.1, 4.8]} /></span>
             </div>
             {[
               ['Alert → Response', '4.8 min'],
@@ -106,5 +112,6 @@ export default function OpsPage() {
         <DemoConsole />
       </div>
     </main>
+    </CinematicShell>
   );
 }

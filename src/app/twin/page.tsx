@@ -3,6 +3,9 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import FloodTimeline from '@/components/three/FloodTimeline';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import type { TwinEntity, TerrainMode } from '@/components/3d/TwinViewport';
 import { Box, Waves, Flashlight, MousePointerClick, Package } from 'lucide-react';
@@ -36,8 +39,13 @@ export default function TwinPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.65} label="3D digital twin">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
+      <div className="px-4 pt-4">
+        <FloodTimeline baseSurgeM={0} onChange={(_h, w) => setSurgeM(Math.round(w * 10) / 10)} />
+      </div>
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-8 bg-[#051424] border border-[#1b314b] rounded-xl overflow-hidden">
           <div className="bg-[#081b2e] px-4 py-2 border-b border-[#1b314b] flex items-center gap-2">
@@ -231,5 +239,6 @@ export default function TwinPage() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

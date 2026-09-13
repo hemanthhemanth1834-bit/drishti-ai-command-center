@@ -2,6 +2,10 @@
 'use client';
 import { useMemo, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import CinematicShell from '@/components/cinematic/CinematicShell';
+import StatusHeader from '@/components/cinematic/StatusHeader';
+import HudPanel from '@/components/cinematic/HudPanel';
+import AnimatedCounter, { RadialGauge } from '@/components/cinematic/AnimatedCounter';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { Users, ScanLine, Search } from 'lucide-react';
 
@@ -38,8 +42,33 @@ export default function ShelterPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
+    <CinematicShell intensity={0.6} label="Shelter scanner">
+    <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <StatusHeader wsConnected={connected} />
+      {/* Holographic shelter nodes */}
+      <div className="px-4 pt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+        {[
+          { n: 'SHELTER 07 · SPORTS COMPLEX', cap: 2000, occ: 1480, eta: '12 MIN', risk: 'LOW' },
+          { n: 'RIVERBEND HALL', cap: 800, occ: 328, eta: '8 MIN', risk: 'WATCH' },
+          { n: 'CANTONMENT GROUND', cap: 1200, occ: 96, eta: '18 MIN', risk: 'LOW' },
+        ].map((s) => {
+          const pct = Math.round((s.occ / s.cap) * 100);
+          return (
+            <HudPanel key={s.n} micro={`HOLOGRAPHIC NODE · ${s.risk}`} title={s.n} tone={pct > 85 ? 'critical' : pct > 60 ? 'warn' : 'ok'}>
+              <div className="flex items-center gap-3">
+                <RadialGauge value={pct} label="OCCUPIED" tone={pct > 85 ? '#ff5470' : pct > 60 ? '#ffb020' : '#34d399'} />
+                <div className="text-[11px] space-y-1">
+                  <div>CAPACITY <b className="text-white"><AnimatedCounter value={s.cap} /></b></div>
+                  <div>OCCUPIED <b className="text-white"><AnimatedCounter value={s.occ} /></b></div>
+                  <div>AVAILABLE <b className="text-emerald-300"><AnimatedCounter value={s.cap - s.occ} /></b></div>
+                  <div>ETA <b className="text-[#00d2ff]">{s.eta}</b> · STATUS <b>{pct > 85 ? 'FULL' : 'STABLE'}</b></div>
+                </div>
+              </div>
+            </HudPanel>
+          );
+        })}
+      </div>
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-5 bg-[#051424] border border-[#1b314b] rounded-xl p-4">
           <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
@@ -135,5 +164,6 @@ export default function ShelterPage() {
         </section>
       </div>
     </main>
+    </CinematicShell>
   );
 }

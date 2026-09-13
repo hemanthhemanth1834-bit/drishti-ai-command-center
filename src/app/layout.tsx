@@ -7,6 +7,7 @@ import A11yBar from "@/components/A11yBar";
 import DemoBar from "@/components/DemoBar";
 import OfflineBanner from "@/components/OfflineBanner";
 import SwRegister from "@/components/SwRegister";
+import BootSequence from "@/components/cinematic/BootSequence";
 
 export const metadata: Metadata = {
   title: "DRISHTI-X Command Center",
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         <OfflineBanner />
+        <BootSequence />
         <div id="main" className="pb-14 md:pb-0">
           {children}
         </div>

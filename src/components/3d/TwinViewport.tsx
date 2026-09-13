@@ -123,13 +123,133 @@ export default function TwinViewport({
 
     scene.add(new THREE.GridHelper(14, 32, 0x66f6ff, 0x0e5068));
 
-    // Terrain slab
+    // Terrain slab with subtle elevation noise (procedural city base)
     const terrainMesh = new THREE.Mesh(
       new THREE.BoxGeometry(14, 0.2, 14),
       new THREE.MeshStandardMaterial({ color: 0x0a2036, roughness: 0.9 })
     );
     terrainMesh.position.y = -0.15;
     scene.add(terrainMesh);
+
+    // --- Procedural city: river, glowing roads, extruded buildings, corridor ---
+    const city = new THREE.Group();
+    scene.add(city);
+    // Animated river (Krishna reach) — diagonal translucent band
+    const riverMat = new THREE.MeshStandardMaterial({
+      color: 0x0e7fa8, transparent: true, opacity: 0.55, roughness: 0.25, metalness: 0.35,
+    });
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 14), riverMat);
+    river.rotation.x = -Math.PI / 2;
+    river.rotation.z = 0.5;
+    river.position.set(-0.6, 0.005, 0);
+    city.add(river);
+    // Bridge deck over river + edge lighting (cyan runway dots)
+    const bridge = new THREE.Mesh(
+      new THREE.BoxGeometry(4.6, 0.08, 0.7),
+      new THREE.MeshStandardMaterial({ color: 0x274b63, roughness: 0.6 })
+    );
+    bridge.position.set(0.5, 0.32, -3.1);
+    bridge.rotation.y = -0.18;
+    city.add(bridge);
+    const bridgeLightGeo = new THREE.SphereGeometry(0.05, 8, 8);
+    const bridgeLightMat = new THREE.MeshBasicMaterial({ color: 0x7de9ff });
+    for (let bi = 0; bi < 6; bi++) {
+      const bl = new THREE.Mesh(bridgeLightGeo, bridgeLightMat);
+      const bx = 0.5 - 2 + bi * 0.8;
+      bl.position.set(bx, 0.42, -3.1 - 0.18 * (bx - 0.5) + 0.32);
+      city.add(bl);
+    }
+    // River shimmer stripe — bright band travelling downstream (reflection feel)
+    const shimmer = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.0, 0.5),
+      new THREE.MeshBasicMaterial({ color: 0xbfefff, transparent: true, opacity: 0.18, blending: THREE.AdditiveBlending, depthWrite: false })
+    );
+    shimmer.rotation.x = -Math.PI / 2;
+    shimmer.rotation.z = 0.5;
+    shimmer.position.set(-0.6, 0.012, 0);
+    city.add(shimmer);
+    // Glowing road network
+    const roadMat = new THREE.MeshBasicMaterial({ color: 0x22d3ee, transparent: true, opacity: 0.5 });
+    const roadMat2 = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.55 });
+    const road = (w: number, l: number, x: number, z: number, ry = 0, mat = roadMat) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, l), mat);
+      m.rotation.x = -Math.PI / 2;
+      m.rotation.z = ry;
+      m.position.set(x, 0.012, z);
+      city.add(m);
+      return m;
+    };
+    road(0.35, 13, -3.4, 0);
+    road(0.35, 13, 2.6, 0.4);
+    road(12, 0.35, 0, -1.2);
+    road(12, 0.3, 0.2, 2.4);
+    const corridor = road(0.5, 9, 0.6, 0, 0.5, roadMat2); // emergency corridor — amber, animated
+    // Extruded building blocks (low-poly, emissive edges + window strips)
+    const bColors = [0x0e2c46, 0x123a5c, 0x0c2740];
+    const bGeo = new THREE.BoxGeometry(1, 1, 1);
+    const blocks: [number, number, number, number][] = [
+      [-4.6, -3.4, 0.9, 0.7], [-2.2, -4.2, 1.2, 0.9], [1.6, -4.4, 0.8, 1.1],
+      [4.2, -3.0, 1.0, 0.6], [-5.0, 0.4, 0.7, 1.2], [-2.4, 1.8, 1.1, 0.5],
+      [2.0, 0.6, 1.3, 0.8], [4.6, 1.2, 0.9, 0.9], [-4.4, 4.2, 1.0, 0.6],
+      [-1.4, 4.6, 1.4, 0.7], [3.6, 4.4, 0.8, 1.0],
+    ];
+    blocks.forEach(([x, z, w, hh], i) => {
+      // deterministic height variation for a realistic skyline
+      const jitter = 0.75 + ((i * 37) % 10) / 22;
+      const H = hh * jitter;
+      const m = new THREE.Mesh(
+        bGeo,
+        new THREE.MeshStandardMaterial({ color: bColors[i % 3], roughness: 0.7, emissive: 0x00d2ff, emissiveIntensity: 0.06 })
+      );
+      m.scale.set(w, H, w);
+      m.position.set(x, H / 2, z);
+      city.add(m);
+      const edge = new THREE.Mesh(
+        new THREE.BoxGeometry(w + 0.02, 0.04, w + 0.02),
+        new THREE.MeshBasicMaterial({ color: 0x38e1ff, transparent: true, opacity: 0.5 })
+      );
+      edge.position.set(x, H + 0.02, z);
+      city.add(edge);
+      // lit window strip on the south face (single cheap plane per block)
+      const win = new THREE.Mesh(
+        new THREE.PlaneGeometry(w * 0.7, Math.max(0.06, H * 0.22)),
+        new THREE.MeshBasicMaterial({ color: 0xffe9a8, transparent: true, opacity: 0.5 })
+      );
+      win.position.set(x, H * 0.55, z + w / 2 + 0.006);
+      city.add(win);
+    });
+    // Holographic emergency-zone boundary
+    const zoneWall = new THREE.Mesh(
+      new THREE.CylinderGeometry(2.4, 2.4, 1.1, 40, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0xffb020, transparent: true, opacity: 0.10, side: THREE.DoubleSide, depthWrite: false })
+    );
+    zoneWall.position.set(1.4, 0.55, 2.0);
+    city.add(zoneWall);
+    // Moving emergency vehicles (amber body + white headlight beam + red tail)
+    const vehicles: THREE.Group[] = [];
+    for (let i = 0; i < 3; i++) {
+      const v = new THREE.Group();
+      const vbody = new THREE.Mesh(
+        new THREE.BoxGeometry(0.22, 0.1, 0.34),
+        new THREE.MeshBasicMaterial({ color: 0xffb020 })
+      );
+      v.add(vbody);
+      const beam = new THREE.Mesh(
+        new THREE.ConeGeometry(0.09, 0.5, 10, 1, true),
+        new THREE.MeshBasicMaterial({ color: 0xfff6d8, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
+      );
+      beam.rotation.x = Math.PI / 2;
+      beam.position.set(0, 0.02, 0.4);
+      v.add(beam);
+      const tail = new THREE.Mesh(
+        new THREE.BoxGeometry(0.2, 0.04, 0.02),
+        new THREE.MeshBasicMaterial({ color: 0xff2d55 })
+      );
+      tail.position.set(0, 0.02, -0.18);
+      v.add(tail);
+      city.add(v);
+      vehicles.push(v);
+    }
 
     // Satellite imagery drape (Esri tile, swapped in when loaded)
     const satMat = new THREE.MeshBasicMaterial({ color: 0x020b14 });
@@ -247,6 +367,14 @@ export default function TwinViewport({
     cone.rotation.x = Math.PI;
     drone.add(cone);
     scene.add(drone);
+    // soft drone shadow blob (cheap grounding cue, follows x/z)
+    const droneShadow = new THREE.Mesh(
+      new THREE.CircleGeometry(0.55, 20),
+      new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.35, depthWrite: false })
+    );
+    droneShadow.rotation.x = -Math.PI / 2;
+    droneShadow.position.y = 0.02;
+    scene.add(droneShadow);
 
     // Pickable entity markers
     const pickables: THREE.Mesh[] = ENTITIES.filter((e) => e.kind !== "air").map((e) => {
@@ -386,6 +514,35 @@ export default function TwinViewport({
       const nextD = curD + (Math.max(4, Math.min(20, distRef.current)) - curD) * 0.18;
       cam.position.copy(FOCUS).addScaledVector(tmpDir, nextD);
       cam.lookAt(FOCUS);
+      // Procedural city life: river shimmer, corridor vehicles, zone pulse
+      riverMat.opacity = 0.45 + Math.sin(t * 1.8) * 0.1 + (Math.min(3.8, Math.max(0, s.surgeM)) / 3.8) * 0.25;
+      // travelling shimmer stripe along the river
+      shimmer.position.z = Math.sin(t * 0.7) * 5.5;
+      (shimmer.material as THREE.MeshBasicMaterial).opacity = 0.12 + Math.sin(t * 2.2) * 0.05;
+      // animated emergency corridor (breathing amber path)
+      (corridor.material as THREE.MeshBasicMaterial).opacity = 0.42 + Math.sin(t * 2.4) * 0.16;
+      zoneWall.rotation.y += 0.003;
+      (zoneWall.material as THREE.MeshBasicMaterial).opacity = 0.08 + Math.sin(t * 2) * 0.03;
+      vehicles.forEach((v, i) => {
+        const p = (t * 0.35 + i / vehicles.length) % 1;
+        v.position.x = -2.2 + p * 5.6;
+        v.position.z = 0.4 + (v.position.x - 0.6) * 0.18;
+        v.position.y = 0.08;
+        v.rotation.y = -0.5; // align with corridor heading
+      });
+      // drone shadow tracks x/z, fades with altitude
+      droneShadow.position.x = drone.position.x;
+      droneShadow.position.z = drone.position.z;
+      (droneShadow.material as THREE.MeshBasicMaterial).opacity =
+        Math.max(0.08, 0.42 - drone.position.y * 0.09);
+      // Pulsing incident markers (hazards breathe)
+      pickables.forEach((m) => {
+        const kind = (m.userData.entity as { kind?: string })?.kind;
+        if (kind === "hazard") {
+          const s = 1 + Math.sin(t * 2.6 + m.position.x) * 0.22;
+          m.scale.set(s, s, s);
+        }
+      });
       // Synthwave VFX rig (grid mode only)
       vfx.visible = s.terrain !== "satellite";
       if (vfx.visible) {
