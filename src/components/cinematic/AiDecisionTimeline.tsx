@@ -68,6 +68,7 @@ function EventRow({
       >
         <span className={`dx-dtl-node dx-dtl-node-${event.severity}`} aria-hidden="true" />
         <span className="dx-dtl-action">{action}</span>
+        {event.source === "demo-mode" ? <span className="dx-dtl-demo">DEMO</span> : null}
         <span className={`dx-dtl-sev dx-dtl-sev-${event.severity}`}>{SEV_LABEL[event.severity]}</span>
         <span className="dx-dtl-time">{fmtTime(event.ts)}</span>
         <span className={`dx-dtl-caret${open ? " dx-dtl-caret-open" : ""}`} aria-hidden="true">▸</span>

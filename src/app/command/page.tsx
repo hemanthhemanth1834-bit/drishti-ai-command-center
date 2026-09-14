@@ -16,6 +16,7 @@ import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
 import AiDecisionTimeline from '@/components/cinematic/AiDecisionTimeline';
+import DemoMode from '@/components/cinematic/DemoMode';
 import AnimatedCounter, { Sparkline, Waveform } from '@/components/cinematic/AnimatedCounter';
 import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
@@ -74,6 +75,22 @@ export default function MasterCommandCenter() {
   const [notice, setNotice] = useState('');
   const [posterOk, setPosterOk] = useState(true);
   const [floodWater, setFloodWater] = useState(0);
+  const [demoOpen, setDemoOpen] = useState(false);
+
+  // Presentation Mode shortcut: P (guarded — never hijacks form fields).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName ?? "";
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || t?.isContentEditable) return;
+      if ((e.key === "p" || e.key === "P") && !e.metaKey && !e.ctrlKey && !e.altKey && !demoOpen) {
+        e.preventDefault();
+        setDemoOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [demoOpen]);
 
   const lat = live?.lat ?? 17.385;
   const lon = live?.lon ?? 78.4867;
@@ -120,6 +137,12 @@ export default function MasterCommandCenter() {
 
   return (
     <CinematicShell label="DRISHTI-X command center" tone={aiTone} focusKind={intel.focus?.kind ?? null}>
+      {demoOpen && (
+        <DemoMode
+          onExit={() => setDemoOpen(false)}
+          live={live ? { drone_id: live.drone_id, lat: live.lat, lon: live.lon } : null}
+        />
+      )}
       <main className="min-h-screen text-slate-200 flex flex-col font-mono">
         <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
         <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
@@ -257,6 +280,15 @@ export default function MasterCommandCenter() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    id="dx-present-btn"
+                    onClick={() => setDemoOpen(true)}
+                    className="dx-present-btn"
+                    title="Start guided presentation (shortcut: P)"
+                    aria-label="Start presentation mode"
+                  >
+                    ▶ PRESENT
+                  </button>
                   <SoundToggle />
                   <select
                     value={scenario}
