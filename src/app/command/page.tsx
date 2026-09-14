@@ -15,6 +15,7 @@ import { setScenario } from '@/utils/apiClient';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
+import AiDecisionTimeline from '@/components/cinematic/AiDecisionTimeline';
 import AnimatedCounter, { Sparkline, Waveform } from '@/components/cinematic/AnimatedCounter';
 import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
@@ -389,6 +390,9 @@ export default function MasterCommandCenter() {
                 </div>
               </div>
             </HudPanel>
+
+            {/* AI Decision Timeline (V3.1): live view of the shared event stream */}
+            <AiDecisionTimeline />
 
             {/* Live Telemetry Feed Log */}
             <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4 flex-1 flex flex-col">
