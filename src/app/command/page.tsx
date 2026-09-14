@@ -8,6 +8,7 @@ import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps, ackAlert } from '@/store/opsStore';
+import { useIntel, pushEvent } from '@/store/intelStore';
 import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import { checkGeofenceBreach } from '@/utils/geofenceDetection';
 import { setScenario } from '@/utils/apiClient';
@@ -27,6 +28,10 @@ const DigitalTwinCanvas = dynamic(
 );
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
+  { ssr: false }
+);
+const AiCoreScene = dynamic(
+  () => import('@/components/cinematic/AiCoreScene'),
   { ssr: false }
 );
 
@@ -59,6 +64,10 @@ export default function MasterCommandCenter() {
   const { packets: telemetryLogs, live, connected: wsConnected } =
     useTelemetrySocket();
   const ops = useOps();
+  // Shared DRISHTI-X intelligence truth (V3): risk, SOS, focus, tone and
+  // events are the same objects every route reads — one coherent system.
+  const intel = useIntel();
+  const aiTone = intel.aiTone;
   const scenario = ops.scenario;
   const [activeTab, setActiveTab] = useState<'3D' | 'RADAR'>('3D');
   const [notice, setNotice] = useState('');
@@ -78,8 +87,9 @@ export default function MasterCommandCenter() {
     droneId: live?.drone_id,
   });
 
-  // Live drill blend for the hero ticker (same surrogate as What-If).
-  const tickerRisk = Math.min(100, Math.round(30 + ops.spillwayK * 1.1 + (scenario === 'storm' ? 18 : 0)));
+  // Live drill blend for the hero ticker. Single definition of truth lives in
+  // intelStore.scenarioScore — this is the SAME number every route derives.
+  const tickerRisk = intel.scenarioScore;
   const tickerPeople =
     ({ storm: 24860, 'swarm-surge': 5200, 'gps-denied': 800, nominal: 120 } as Record<string, number>)[scenario] ?? 120;
   const tickerBlocked = Math.round((tickerRisk / 100) * 62);
@@ -92,6 +102,13 @@ export default function MasterCommandCenter() {
 
   async function changeScenario(s: string) {
     setOps({ scenario: s, acked: [] });
+    pushEvent({
+      id: `scenario-${s}-${ops.spillwayK}`,
+      type: 'SYSTEM',
+      severity: s === 'storm' ? 'warning' : 'info',
+      title: `Scenario → ${s} (spillway ${ops.spillwayK}k cusecs)`,
+      source: 'command',
+    });
     try {
       await setScenario(s);
       setNotice(`scenario → ${s}`);
@@ -101,12 +118,12 @@ export default function MasterCommandCenter() {
   }
 
   return (
-    <CinematicShell label="DRISHTI-X command center">
+    <CinematicShell label="DRISHTI-X command center" tone={aiTone} focusKind={intel.focus?.kind ?? null}>
       <main className="min-h-screen text-slate-200 flex flex-col font-mono">
         <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
         <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
 
-        {/* Command status strip */}
+        {/* Command status strip — live values flow into shared ticker */}
         <StatusHeader
           system={wsConnected || true ? 'ONLINE' : 'OFFLINE'}
           network={wsConnected ? 'STABLE' : 'SIM LINK'}
@@ -114,7 +131,36 @@ export default function MasterCommandCenter() {
           dronesActive={units}
           dataHz={2.0}
           wsConnected={wsConnected}
+          riskScore={intel.riskCheckScore}
+          alertCount={alerts.length}
+          sosActive={intel.sos.phase !== 'idle'}
         />
+
+        {/* Shared-intelligence banners: SOS + citizen risk-check follow the
+            operator across routes — same state as /emergency and /risk. */}
+        {intel.sos.phase !== 'idle' && (
+          <div className="dx-shared-sos mx-4 mt-3" role="alert">
+            <span className="dx-sos-live">◉ SOS {intel.sos.phase.toUpperCase()}</span>
+            <span>
+              Emergency beacon {intel.sos.phase === 'active' ? 'broadcasting' : 'locking'}
+              {intel.sos.lat != null && intel.sos.lon != null
+                ? ` — ${intel.sos.lat.toFixed(3)}°N ${intel.sos.lon.toFixed(3)}°E`
+                : ''}
+              {' · '}
+              <Link href="/emergency" className="dx-shared-link">OPEN SOS COMMAND →</Link>
+            </span>
+          </div>
+        )}
+        {intel.risk && (
+          <div className="dx-shared-risk mx-4 mt-3" role="status">
+            <span className="dx-micro">SHARED RISK CHECK · LIVE FROM /RISK</span>
+            <span className="dx-shared-risk-main">
+              {intel.risk.placeName} → <b>{intel.risk.level.toUpperCase()}</b> ({intel.risk.score})
+              {' · '}conf {intel.risk.confidence}%{' · '}
+              <Link href="/risk" className="dx-shared-link">OPEN RISK →</Link>
+            </span>
+          </div>
+        )}
 
         {/* Cinematic poster hero — official artwork, hides gracefully if missing */}
         {posterOk && (
@@ -297,10 +343,21 @@ export default function MasterCommandCenter() {
             <HudPanel
               micro="HYDRA-NET · PREDICTIVE INFERENCE · LOCAL"
               title="AI INTELLIGENCE PANEL"
-              tone={tickerRisk > 70 ? 'critical' : tickerRisk > 40 ? 'warn' : 'ok'}
+              tone={aiTone}
               right={<span className="text-[10px] bg-[#00d2ff]/20 text-[#00d2ff] px-2 py-0.5 rounded border border-[#00d2ff]/40">98.4% CONFIDENCE</span>}
             >
               <AiInferenceStatus cycleKey={`${scenario}-${ops.spillwayK}`} />
+              <AiCoreScene
+                tone={aiTone}
+                height={210}
+              />
+              <div className="dx-aicore-meta" aria-label="AI core status">
+                <span><i className="dx-dot dx-dot-ok dx-pulse" aria-hidden="true" />AI ONLINE</span>
+                <span>HEALTH 99.2%</span>
+                <span>THREAT: {aiTone === 'critical' ? 'CRITICAL' : aiTone === 'warn' ? 'ELEVATED' : 'NOMINAL'}</span>
+                <span>NET: {wsConnected ? 'LIVE' : 'SIM'}</span>
+                {intel.risk && <span>RISK CHECK: {intel.risk.level.toUpperCase()} {intel.risk.score}</span>}
+              </div>
               <Waveform />
               <div className="mt-3 space-y-2 text-xs">
                 <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">

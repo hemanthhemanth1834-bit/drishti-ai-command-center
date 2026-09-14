@@ -2,15 +2,15 @@
 import { useEffect, useState } from "react";
 
 const STEPS = [
-  "NETWORK",
-  "SATELLITE",
-  "DRONE SWARM",
-  "AI CORE",
-  "DIGITAL TWIN",
-  "COMMAND CENTER",
+  "INITIALIZING CORE",
+  "CALIBRATING AI",
+  "CONNECTING NETWORK",
+  "SYNCING GEOINT",
+  "ACTIVATING THREAT ENGINE",
+  "SYSTEM ONLINE",
 ];
 
-const BOOT_KEY = "drishti-boot-seen-v1";
+const BOOT_KEY = "drishti-boot-seen-v2";
 
 /** Cinematic startup overlay. Session-scoped, skippable, reduced-motion aware. */
 export default function BootSequence() {
@@ -68,6 +68,7 @@ export default function BootSequence() {
       <div className="dx-boot-inner">
         <div className="dx-boot-logo">DRISHTI-X</div>
         <div className="dx-boot-sub">DISASTER INTELLIGENCE COMMAND · INITIALIZING</div>
+        <div className="dx-boot-pct" aria-hidden="true">{Math.round((done / STEPS.length) * 100)}%</div>
         <div className="dx-boot-steps" aria-live="polite">
           {STEPS.map((s, idx) => (
             <div key={s} className="dx-boot-row">
@@ -88,6 +89,10 @@ export default function BootSequence() {
             className="dx-boot-fill"
             style={{ width: `${Math.round((done / STEPS.length) * 100)}%` }}
           />
+        </div>
+        <div className="dx-boot-foot">
+          <span>DRISHTI-X · CINEMATIC V2.5</span>
+          <span>SESSION-SCOPED · SKIPPABLE</span>
         </div>
         <button onClick={skip} className="dx-boot-skip" autoFocus>
           SKIP INTRO →

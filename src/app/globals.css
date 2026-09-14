@@ -247,3 +247,244 @@ nav a:hover { transform: translateY(-1px); }
 }
 .a11y-still .dx-bg-canvas { display: none; }
 .a11y-still .dx-reveal, .a11y-still .dx-tl-item, .a11y-still .dx-hud-critical { animation: none; }
+
+/* ============ DRISHTI-X CINEMATIC 3D UPGRADE LAYER (additive, v2) ============ */
+
+/* --- AI CORE 3D --- */
+.dx-aicore { position: relative; border-radius: 12px; overflow: hidden; background: radial-gradient(circle at 50% 45%, #0a2540 0%, #020b14 72%); border: 1px solid #1b314b; }
+.dx-aicore-canvas, .dx-aicore-canvas canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.dx-aicore-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.dx-aicore-orb { width: 84px; height: 84px; border-radius: 999px; background: radial-gradient(circle at 35% 30%, #bfefff 0%, #00d2ff 38%, #06283d 78%); box-shadow: 0 0 34px rgba(0,210,255,.55), inset 0 0 18px rgba(0,0,0,.5); animation: dx-core-breathe 3.4s ease-in-out infinite; }
+.dx-aicore-warn { background: radial-gradient(circle at 35% 30%, #ffe9bd 0%, #ffb020 42%, #3a2404 80%); box-shadow: 0 0 34px rgba(255,176,32,.5), inset 0 0 18px rgba(0,0,0,.5); }
+.dx-aicore-critical { background: radial-gradient(circle at 35% 30%, #ffc2cd 0%, #ff5470 42%, #3a0a14 80%); box-shadow: 0 0 34px rgba(255,84,112,.55), inset 0 0 18px rgba(0,0,0,.5); }
+.dx-aicore-ring { position: absolute; border: 1px solid rgba(0,210,255,.4); border-radius: 999px; pointer-events: none; }
+.dx-aicore-ring-a { width: 130px; height: 44px; transform: rotate(-18deg); animation: dx-core-spin 9s linear infinite; }
+.dx-aicore-ring-b { width: 160px; height: 54px; transform: rotate(14deg); opacity: .6; animation: dx-core-spin 13s linear infinite reverse; }
+.dx-aicore-scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.025) 0 1px, transparent 1px 4px); pointer-events: none; }
+.dx-aicore-vignette { position: absolute; inset: 0; background: radial-gradient(90% 80% at 50% 50%, transparent 55%, rgba(0,0,0,.5) 100%); pointer-events: none; }
+.dx-aicore-meta { display: flex; gap: 10px; flex-wrap: wrap; font-size: 9px; letter-spacing: .14em; color: #7d93a8; margin: 8px 0 6px; }
+.dx-aicore-meta span { display: inline-flex; align-items: center; gap: 5px; background: rgba(9,26,46,.7); border: 1px solid #1b314b; border-radius: 6px; padding: 3px 8px; }
+@keyframes dx-core-breathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes dx-core-spin { from { rotate: 0deg; } to { rotate: 360deg; } }
+
+/* --- SOS CINEMATIC MODE --- */
+.dx-sos-mode { background: radial-gradient(1000px 600px at 50% -10%, #3a0a14 0%, #1a0505 55%, #0a0204 100%); }
+.dx-sos-radar { background: #050308; border: 1px solid rgba(255,84,112,.4); border-radius: 12px; overflow: hidden; }
+.dx-sos-active { border-color: rgba(255,84,112,.65); box-shadow: 0 0 28px rgba(255,84,112,.18); animation: dx-crit-breathe 3.2s ease-in-out infinite; }
+.dx-sos-live { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: #ff8ba0; background: rgba(255,84,112,.14); border: 1px solid rgba(255,84,112,.5); border-radius: 999px; padding: 3px 10px; animation: dx-blink 1.8s infinite; }
+.dx-sos-timer { font-size: 13px; font-weight: 900; color: #ff8ba0; background: rgba(255,84,112,.12); border: 1px solid rgba(255,84,112,.5); border-radius: 8px; padding: 3px 10px; font-variant-numeric: tabular-nums; }
+.dx-sos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; }
+.dx-sos-grid div { background: rgba(9,26,46,.7); border: 1px solid #1b314b; border-radius: 8px; padding: 7px 8px; }
+.dx-sos-grid span { display: block; font-size: 9px; letter-spacing: .14em; color: #64748b; }
+.dx-sos-grid b { font-size: 12px; color: #fff; }
+.dx-sos-on { color: #ff8ba0 !important; }
+.dx-sos-btn { margin-top: 12px; width: 100%; padding: 14px; border-radius: 12px; background: linear-gradient(180deg, #ff5470, #c81e3a); color: #fff; font-weight: 900; letter-spacing: .12em; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgba(255,255,255,.2); box-shadow: 0 0 24px rgba(255,84,112,.35); }
+.dx-sos-btn:hover { filter: brightness(1.08); box-shadow: 0 0 32px rgba(255,84,112,.5); }
+.dx-sos-btn-share { background: linear-gradient(180deg, #00d2ff, #0a6d8a); color: #001018; box-shadow: 0 0 24px rgba(0,210,255,.3); }
+.dx-sos-standdown { margin-top: 12px; padding: 14px 18px; border-radius: 12px; border: 1px solid rgba(255,84,112,.6); color: #ff8ba0; font-weight: 800; letter-spacing: .12em; font-size: 12px; background: rgba(255,84,112,.08); }
+.dx-sos-standdown:hover { background: rgba(255,84,112,.16); }
+.dx-sos-locking { margin-top: 12px; display: flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .14em; color: #ffd88a; background: rgba(255,176,32,.08); border: 1px solid rgba(255,176,32,.4); border-radius: 10px; padding: 12px; }
+.dx-sos-lock-ring { width: 22px; height: 22px; border-radius: 999px; border: 2px solid rgba(255,176,32,.3); border-top-color: #ffb020; animation: dx-spin 0.9s linear infinite; flex-shrink: 0; }
+.dx-sos-note { font-size: 10px; color: #64748b; letter-spacing: .04em; margin-top: 8px; }
+.dx-sos-call { transition: transform .15s, filter .2s; }
+.dx-sos-call:hover { transform: translateY(-2px); filter: brightness(1.06); }
+@keyframes dx-spin { to { transform: rotate(360deg); } }
+
+/* --- RISK VISUALIZER --- */
+.dx-riskviz { background: rgba(9,26,46,.55); border: 1px solid #1b314b; border-radius: 12px; padding: 14px; margin-bottom: 12px; overflow: hidden; position: relative; }
+.dx-riskviz::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 4px); pointer-events: none; }
+.dx-riskviz-top { display: flex; gap: 16px; flex-wrap: wrap; }
+.dx-riskviz-gauge { position: relative; width: 140px; height: 140px; flex-shrink: 0; }
+.dx-riskviz-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.dx-riskviz-num { font-size: 34px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+.dx-riskviz-den { font-size: 10px; color: #64748b; }
+.dx-riskviz-lvl { font-size: 11px; font-weight: 800; letter-spacing: .14em; margin-top: 2px; }
+.dx-riskviz-meta { flex: 1; min-width: 200px; }
+.dx-riskviz-place { font-size: 15px; font-weight: 800; color: #fff; margin-top: 4px; }
+.dx-riskviz-coords { font-size: 11px; color: #00d2ff; }
+.dx-riskviz-rows { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.dx-riskviz-row { display: flex; justify-content: space-between; gap: 10px; font-size: 11px; background: rgba(2,11,20,.6); border: 1px solid #1b314b; border-radius: 7px; padding: 5px 9px; }
+.dx-riskviz-row span { color: #64748b; letter-spacing: .1em; font-size: 10px; }
+.dx-riskviz-row b { color: #fff; text-align: right; }
+.dx-riskviz-pulse { color: #7de9ff !important; animation: dx-blink 2s infinite; }
+.dx-confbar { height: 6px; border-radius: 999px; background: #0a2036; border: 1px solid #1b314b; margin-top: 8px; overflow: hidden; }
+.dx-confbar-fill { height: 100%; border-radius: 999px; transition: width .8s cubic-bezier(.2,.7,.2,1); box-shadow: 0 0 10px currentColor; }
+.dx-riskviz-bottom { display: flex; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+.dx-heatmap { position: relative; display: grid; grid-template-columns: repeat(7, 18px); gap: 3px; padding: 10px; background: rgba(2,11,20,.6); border: 1px solid #1b314b; border-radius: 10px; }
+.dx-heat { width: 18px; height: 18px; border-radius: 4px; animation: dx-reveal .5s both; }
+.dx-heat-you { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; text-shadow: 0 0 10px #00d2ff; pointer-events: none; }
+.dx-riskviz-factors { flex: 1; min-width: 200px; font-size: 12px; color: #cbd5e1; }
+.dx-riskviz-factors ul { list-style: disc; margin: 6px 0 0 18px; display: flex; flex-direction: column; gap: 3px; }
+.dx-riskviz-empty { text-align: center; }
+.dx-riskviz-empty-core { position: relative; display: inline-flex; align-items: center; justify-content: center; margin: 10px 0; }
+.dx-riskviz-empty-core span { position: absolute; font-size: 34px; font-weight: 900; color: #334155; }
+.dx-riskviz-hint { font-size: 12px; color: #7d93a8; max-width: 420px; margin: 0 auto; }
+
+/* --- ALERT STREAM --- */
+.dx-alert-count { font-size: 10px; font-weight: 800; letter-spacing: .12em; background: rgba(0,210,255,.12); color: #7de9ff; border: 1px solid rgba(0,210,255,.4); border-radius: 999px; padding: 2px 9px; }
+.dx-alert { animation: dx-reveal .45s cubic-bezier(.2,.7,.2,1) both; transition: transform .2s, box-shadow .2s; }
+.dx-alert:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,.4); }
+.dx-alert-pip { width: 9px; height: 9px; border-radius: 999px; flex-shrink: 0; display: inline-block; }
+.dx-pip-info { background: #00d2ff; box-shadow: 0 0 8px #00d2ff; }
+.dx-pip-watch, .dx-pip-warning { background: #ffb020; box-shadow: 0 0 8px #ffb020; animation: dx-blink 2.2s infinite; }
+.dx-pip-critical { background: #ff5470; box-shadow: 0 0 10px #ff5470; animation: dx-blink 1.4s infinite; }
+.dx-alert-critical { box-shadow: 0 0 20px rgba(255,84,112,.12); }
+.dx-alert-time { font-size: 9px; letter-spacing: .12em; opacity: .6; }
+
+/* --- responsive trims for new layer --- */
+@media (max-width: 720px) {
+  .dx-sos-grid { grid-template-columns: repeat(2, 1fr); }
+  .dx-riskviz-top { flex-direction: column; align-items: center; text-align: center; }
+  .dx-riskviz-row { text-align: left; }
+  .dx-heatmap { grid-template-columns: repeat(7, 15px); }
+  .dx-heat { width: 15px; height: 15px; }
+  .dx-aicore-meta { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dx-alert, .dx-heat, .dx-aicore-orb, .dx-aicore-ring-a, .dx-aicore-ring-b,
+  .dx-sos-live, .dx-riskviz-pulse, .dx-sos-lock-ring, .dx-pip-watch,
+  .dx-pip-warning, .dx-pip-critical, .dx-sos-active { animation: none !important; }
+  .dx-aicore-canvas, .dx-sos-radar canvas { opacity: 1; }
+  .dx-confbar-fill, .dx-gauge-arc { transition: none !important; }
+}
+.a11y-still .dx-alert, .a11y-still .dx-heat, .a11y-still .dx-aicore-orb,
+.a11y-still .dx-aicore-ring-a, .a11y-still .dx-aicore-ring-b, .a11y-still .dx-sos-live { animation: none !important; }
+.a11y-still .dx-aicore-canvas { display: none; }
+
+/* ============ DRISHTI-X CINEMATIC V2.5 POLISH LAYER (additive) ============ */
+/* Goal: real operational intelligence feel — depth, light, restraint. No neon excess. */
+
+/* --- 1. 3D DEPTH: layered space, panels float above the world --- */
+.dx-shell { perspective: 1400px; }
+.dx-shell-content { position: relative; z-index: 1; transform-style: preserve-3d; }
+.dx-shell-content > main { max-width: 1600px; margin-inline: auto; }
+.dx-bg { z-index: -2; }
+.dx-bg-gradient { background: radial-gradient(900px 480px at 50% 30%, rgba(0,210,255,.07), transparent 60%), linear-gradient(180deg, rgba(2,11,20,.18), rgba(2,11,20,.66)); }
+
+/* --- 12. CINEMATIC PAGE TRANSITIONS: fade + scale + depth + blur, <700ms --- */
+@keyframes dx-page-in {
+  from { opacity: 0; filter: blur(10px); transform: translateY(14px) scale(.992) translateZ(-30px); }
+  60% { opacity: 1; filter: blur(0); }
+  to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1) translateZ(0); }
+}
+.dx-reveal { animation: dx-page-in .55s cubic-bezier(.2,.7,.2,1) both; }
+
+/* --- 5. HUD PREMIUM GLASS: darker, calmer; glow on interaction, not at rest --- */
+.dx-hud { background: linear-gradient(180deg, rgba(8,22,38,.82), rgba(4,12,22,.86)); }
+.dx-hud-edge { position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,210,255,.55), transparent); opacity: .35; pointer-events: none; transition: opacity .3s; }
+.dx-hud:hover .dx-hud-edge { opacity: .9; animation: dx-edge-travel 2.6s ease-in-out infinite; }
+.dx-hud-warn .dx-hud-edge { background: linear-gradient(90deg, transparent, rgba(255,176,32,.6), transparent); }
+.dx-hud-critical .dx-hud-edge { background: linear-gradient(90deg, transparent, rgba(255,84,112,.65), transparent); }
+.dx-hud-ok .dx-hud-edge { background: linear-gradient(90deg, transparent, rgba(52,211,153,.55), transparent); }
+@keyframes dx-edge-travel { 0%,100% { left: 8%; right: 8%; opacity: .5; } 50% { left: 22%; right: 22%; opacity: 1; } }
+/* scan-line drift: only while interacting, never at rest */
+.dx-hud-body { position: relative; overflow: hidden; border-radius: 0 0 10px 10px; }
+.dx-hud:hover .dx-hud-body::after, .dx-hud:focus-within .dx-hud-body::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  background: repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px);
+  animation: dx-scan-drift 7s linear infinite;
+}
+@keyframes dx-scan-drift { from { background-position: 0 0; } to { background-position: 0 60px; } }
+
+/* --- 6. NAVIGATION: animated indicator + progress line + holographic highlight --- */
+.dx-nav { position: relative; }
+.dx-nav-link { position: relative; }
+.dx-nav-active::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 2px; height: 2px; border-radius: 999px;
+  background: linear-gradient(90deg, transparent, currentColor, transparent);
+  animation: dx-nav-progress 2.8s ease-in-out infinite;
+}
+@keyframes dx-nav-progress { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+.dx-nav-link:not(.dx-nav-active):hover { box-shadow: 0 0 0 1px rgba(0,210,255,.18), 0 4px 14px rgba(0,0,0,.35); }
+
+/* --- 11. MICRO-INTERACTIONS: physical buttons, spring easing --- */
+button, .dx-sos-btn, .dx-sos-standdown {
+  transition: transform .16s cubic-bezier(.34,1.56,.64,1), box-shadow .25s, background .2s, border-color .2s, filter .2s;
+}
+button:hover { transform: translateY(-1px); }
+button:active { transform: translateY(1px) scale(.975); }
+a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transform: scale(.96); box-shadow: 0 0 0 3px rgba(0,210,255,.25); }
+/* loading scan + controlled confirm/warn states (opt-in classes) */
+.dx-loading { position: relative; overflow: hidden; }
+.dx-loading::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(0,210,255,.25) 50%, transparent 70%); animation: dx-load-scan 1.4s ease-in-out infinite; pointer-events: none; }
+@keyframes dx-load-scan { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.dx-confirm { border-color: rgba(52,211,153,.7) !important; box-shadow: 0 0 0 2px rgba(52,211,153,.2) !important; }
+.dx-warn-flash { border-color: rgba(255,176,32,.7) !important; box-shadow: 0 0 0 2px rgba(255,176,32,.2) !important; }
+
+/* --- 3. AI CORE TAG: authentic engine label --- */
+.dx-aicore-tag { position: absolute; top: 8px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; gap: 8px; pointer-events: none; font-size: 9px; letter-spacing: .16em; color: #7de9ff; }
+.dx-aicore-tag-title { font-weight: 800; text-shadow: 0 0 12px rgba(0,210,255,.4); }
+.dx-aicore-tag-status { display: inline-flex; align-items: center; gap: 6px; background: rgba(3,13,23,.72); border: 1px solid rgba(0,210,255,.35); border-radius: 6px; padding: 2px 8px; font-weight: 700; }
+.dx-aicore-tag-warn { color: #ffd88a; border-color: rgba(255,176,32,.45); }
+.dx-aicore-tag-critical { color: #ff8ba0; border-color: rgba(255,84,112,.5); }
+.dx-aicore-tag-dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; box-shadow: 0 0 8px currentColor; animation: dx-blink 1.8s infinite; display: inline-block; }
+
+/* --- 13. BOOT polish: readout + footer --- */
+.dx-boot-pct { font-size: 30px; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; text-shadow: 0 0 18px rgba(0,210,255,.5); margin: 4px 0 2px; }
+.dx-boot-foot { display: flex; justify-content: space-between; gap: 8px; font-size: 9px; letter-spacing: .14em; color: #475569; margin-top: 10px; }
+
+/* --- 14/18. STATUS TICKER: uptime, UTC, AI load, sensors, nodes (all derived, real) --- */
+.dx-status { grid-template-columns: repeat(7, 1fr); }
+.dx-status-ticker { grid-column: 1 / -1; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 9px; letter-spacing: .14em; color: #7d93a8; background: rgba(9,26,46,.55); border: 1px solid #1b314b; border-radius: 8px; padding: 6px 12px; font-variant-numeric: tabular-nums; }
+.dx-status-ticker span { display: inline-flex; align-items: center; gap: 6px; }
+.dx-ticker-load { gap: 8px; }
+.dx-ticker-bar { width: 64px; height: 4px; border-radius: 999px; background: #0a2036; border: 1px solid #1b314b; overflow: hidden; display: inline-block; }
+.dx-ticker-bar i { display: block; height: 100%; background: linear-gradient(90deg, #00d2ff, #2f7bff); box-shadow: 0 0 8px rgba(0,210,255,.6); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+
+/* --- 9. RISK: threat scale segments + heat transitions --- */
+.dx-threatbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 8px; }
+.dx-threat-seg { font-size: 8px; font-weight: 800; letter-spacing: .1em; text-align: center; padding: 4px 2px; border-radius: 6px; border: 1px solid #1b314b; color: #475569; background: rgba(2,11,20,.6); transition: all .5s cubic-bezier(.2,.7,.2,1); }
+.dx-threat-on { color: #fff !important; border-color: transparent; }
+.dx-heat { transition: background .6s, opacity .6s, transform .3s; }
+
+/* --- 8. SOS: staged lock checklist + deeper red environment --- */
+.dx-sos-mode::before { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; background: radial-gradient(80% 50% at 50% 0%, rgba(255,84,112,.08), transparent 70%); }
+.dx-sos-stages { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
+.dx-sos-stage { display: flex; justify-content: space-between; gap: 10px; font-size: 10px; letter-spacing: .12em; background: rgba(2,11,20,.6); border: 1px solid #1b314b; border-radius: 7px; padding: 6px 10px; color: #94a3b8; opacity: 0; animation: dx-reveal .4s both; }
+.dx-sos-stage b { color: #ffd88a; }
+.dx-sos-stage-1 { animation-delay: .1s; } .dx-sos-stage-2 { animation-delay: .45s; } .dx-sos-stage-3 { animation-delay: .8s; }
+
+/* --- 10. ALERT STREAM: subtle vertical data drift + stronger critical --- */
+.dx-alerts-stream { position: relative; }
+.dx-alerts-stream::before { content: ""; position: absolute; top: 0; bottom: 0; left: -6px; width: 2px; border-radius: 999px; background: linear-gradient(180deg, transparent, rgba(0,210,255,.35), transparent); background-size: 100% 120px; animation: dx-stream-drift 5s linear infinite; pointer-events: none; }
+@keyframes dx-stream-drift { from { background-position: 0 -120px; } to { background-position: 0 120px; } }
+.dx-alert-critical { border-left: 3px solid rgba(255,84,112,.8); background-blend-mode: screen; }
+
+/* --- V3 SHARED-INTELLIGENCE BANNERS: same state on every route --- */
+.dx-shared-sos { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 11px; letter-spacing: .06em; color: #ffc2cd; background: rgba(60,8,16,.72); backdrop-filter: blur(10px); border: 1px solid rgba(255,84,112,.55); border-radius: 10px; padding: 9px 12px; animation: dx-crit-breathe 3.2s ease-in-out infinite; }
+.dx-shared-risk { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 11px; color: #cbd5e1; background: rgba(9,26,46,.78); backdrop-filter: blur(10px); border: 1px solid rgba(0,210,255,.35); border-radius: 10px; padding: 9px 12px; }
+.dx-shared-risk-main b { color: #fff; }
+.dx-shared-link { color: #7de9ff; font-weight: 800; white-space: nowrap; }
+.dx-shared-link:hover { text-decoration: underline; }
+.dx-ticker-sos { color: #ff8ba0 !important; font-weight: 800; }
+
+/* --- 7. COMMAND CENTERPIECE: negative space + hierarchy (layout preserved) --- */
+.dx-aicore { box-shadow: 0 18px 50px rgba(0,0,0,.5), 0 0 30px rgba(0,210,255,.06); }
+.dx-status-ticker + * { margin-top: 2px; }
+
+/* --- 15. MOBILE: intentionally designed, reduced cost --- */
+@media (max-width: 720px) {
+  .dx-hud { backdrop-filter: blur(6px); }
+  .dx-hud:hover { transform: none; }
+  .dx-shell-content > main { max-width: 100%; }
+  .dx-status-ticker { gap: 8px; font-size: 8px; }
+  .dx-status-ticker span:nth-child(n+5) { display: none; }
+  .dx-aicore-tag { font-size: 8px; }
+  .dx-threatbar { grid-template-columns: repeat(4, 1fr); }
+  .dx-alerts-stream::before { display: none; }
+  button:hover { transform: none; }
+}
+@media (max-width: 1100px) {
+  .dx-status { grid-template-columns: repeat(4, 1fr); }
+}
+/* --- 16/17. PERFORMANCE + ACCESSIBILITY: park everything when reduced --- */
+@media (prefers-reduced-motion: reduce) {
+  .dx-shared-sos, .dx-reveal, .dx-page-in, .dx-alert, .dx-sos-stage, .dx-hud-edge,
+  .dx-nav-active::after, .dx-scan-drift, .dx-stream-drift, .dx-load-scan,
+  .dx-edge-travel, .dx-aicore-tag-dot { animation: none !important; }
+  .dx-hud:hover .dx-hud-body::after { display: none; }
+  .dx-hud, button { transition: none !important; }
+  .dx-ticker-bar i, .dx-heat, .dx-threat-seg, .dx-confbar-fill { transition: none !important; }
+}
+.a11y-still .dx-hud-edge, .a11y-still .dx-nav-active::after, .a11y-still .dx-aicore-tag-dot { animation: none !important; }
+.a11y-still .dx-hud:hover .dx-hud-body::after, .a11y-still .dx-alerts-stream::before { display: none; }

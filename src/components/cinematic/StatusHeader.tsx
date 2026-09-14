@@ -9,6 +9,12 @@ type Props = {
   dronesActive?: number;
   dataHz?: number;
   wsConnected?: boolean;
+  /** V3 shared state: citizen risk-check score (null = no check this session). */
+  riskScore?: number | null;
+  /** V3 shared state: live evaluated alert count (null = unknown here). */
+  alertCount?: number | null;
+  /** V3 shared state: SOS beacon phase is not idle. */
+  sosActive?: boolean;
 };
 
 /** Command-center status header: SYSTEM / NETWORK / SAT / DRONE / AI / DATA / CLOCK */
@@ -19,6 +25,9 @@ export default function StatusHeader({
   dronesActive = 32,
   dataHz = 2.0,
   wsConnected = false,
+  riskScore = null,
+  alertCount = null,
+  sosActive = false,
 }: Props) {
   return (
     <section aria-label="System status" className="dx-status">
@@ -40,7 +49,66 @@ export default function StatusHeader({
       </div>
       <StatusCell label="DATA STREAM" value={`${dataHz.toFixed(1)} Hz`} tone="info" />
       <ClockCell />
+      <StatusTicker
+        wsConnected={wsConnected}
+        dronesActive={dronesActive}
+        aiConfidence={aiConfidence}
+        riskScore={riskScore}
+        alertCount={alertCount}
+        sosActive={sosActive}
+      />
     </section>
+  );
+}
+
+function StatusTicker({
+  wsConnected,
+  dronesActive,
+  aiConfidence,
+  riskScore,
+  alertCount,
+  sosActive,
+}: {
+  wsConnected: boolean;
+  dronesActive: number;
+  aiConfidence: number;
+  riskScore: number | null;
+  alertCount: number | null;
+  sosActive: boolean;
+}) {
+  const [uptime, setUptime] = useState("00:00:00");
+  const [utc, setUtc] = useState("--:--:--");
+  useEffect(() => {
+    const t0 = Date.now();
+    const tick = () => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      const hh = String(Math.floor(s / 3600)).padStart(2, "0");
+      const mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
+      const ss = String(s % 60).padStart(2, "0");
+      setUptime(`${hh}:${mm}:${ss}`);
+      setUtc(new Date().toISOString().slice(11, 19));
+    };
+    tick();
+    const t = window.setInterval(tick, 1000);
+    return () => window.clearInterval(t);
+  }, []);
+  // deterministic load estimate from live fleet size (labeled EST — not a backend metric)
+  const aiLoad = Math.min(96, 34 + (dronesActive % 40) + Math.round((100 - aiConfidence) * 2));
+  return (
+    <div className="dx-status-ticker" aria-label="Command telemetry details">
+      <span><i className={`dx-dot ${wsConnected ? "dx-dot-ok" : "dx-dot-warn"}`} aria-hidden="true" />LINK {wsConnected ? "LIVE" : "SIM"}</span>
+      <span>UPTIME {uptime}</span>
+      <span>UTC {utc}</span>
+      <span className="dx-ticker-load">AI LOAD {aiLoad}% EST<span className="dx-ticker-bar" aria-hidden="true"><i style={{ width: `${aiLoad}%` }} /></span></span>
+      <span>SENSORS {wsConnected ? "STREAMING" : "STANDBY"}</span>
+      <span>NODES {dronesActive}</span>
+      <span>ALERTS {alertCount ?? "—"}</span>
+      <span>RISK {riskScore ?? "—"}</span>
+      <span className={sosActive ? "dx-ticker-sos" : undefined}>
+        <i className={`dx-dot ${sosActive ? "dx-dot-bad dx-pulse" : "dx-dot-ok"}`} aria-hidden="true" />
+        SOS {sosActive ? "ACTIVE" : "READY"}
+      </span>
+    </div>
   );
 }
 

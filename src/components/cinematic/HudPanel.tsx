@@ -15,6 +15,7 @@ type Props = {
 export default function HudPanel({ title, micro, right, tone = "default", children, className = "", id }: Props) {
   return (
     <section id={id} className={`dx-hud dx-hud-${tone} ${className}`}>
+      <span className="dx-hud-edge" aria-hidden="true" />
       {(title || micro || right) && (
         <header className="dx-hud-head">
           <div>

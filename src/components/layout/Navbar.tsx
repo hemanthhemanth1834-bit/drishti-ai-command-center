@@ -116,7 +116,7 @@ export default function Navbar({
         </Link>
         {/* Navigation Links */}
         <nav
-          className="flex items-center gap-1 bg-[#051424] p-1 rounded-lg border border-[#1b314b] overflow-x-auto"
+          className="dx-nav flex items-center gap-1 bg-[#051424] p-1 rounded-lg border border-[#1b314b] overflow-x-auto"
           aria-label="Primary"
         >
           {items.map((item) => {
@@ -126,9 +126,10 @@ export default function Navbar({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded transition-all whitespace-nowrap ${
+                aria-current={isActive ? "page" : undefined}
+                className={`dx-nav-link flex items-center gap-1.5 px-3 py-1.5 rounded transition-all whitespace-nowrap ${
                   isActive
-                    ? 'bg-[#00d2ff] text-[#030d17] font-bold shadow-[0_0_10px_rgba(0,210,255,0.4)]'
+                    ? 'dx-nav-active bg-[#00d2ff] text-[#030d17] font-bold shadow-[0_0_10px_rgba(0,210,255,0.4)]'
                     : 'text-slate-400 hover:text-white hover:bg-[#0d2238]'
                 }`}
               >
