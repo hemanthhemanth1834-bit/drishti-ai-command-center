@@ -1,408 +1,1418 @@
 <div align="center">
 
-# DRISHTI-X
+# 🛰️ DRISHTI-X
 
-### A Cinematic 3D Disaster Intelligence & Emergency Response Command Center
+### **Cinematic 3D Disaster Intelligence & Emergency Response Command Center**
 
-A unified disaster-intelligence operating system connecting citizens, geospatial risk intelligence, emergency response, drone SAR, hospitals, shelters, 3D digital twins, flood simulation, and recovery — presented as one connected command experience, not a collection of dashboard cards.
+**Detect • Analyze • Alert • Evacuate • Respond • Rescue • Recover**
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black)
-![React](https://img.shields.io/badge/React-18-61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6)
-![Three.js](https://img.shields.io/badge/Three.js-WebGL-black)
-![Leaflet](https://img.shields.io/badge/Leaflet-OSM-green)
-![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688)
-![PWA](https://img.shields.io/badge/PWA-offline-purple)
-![A11y](https://img.shields.io/badge/Accessibility-WCAG-orange)
-![i18n](https://img.shields.io/badge/EN-%E0%B0%A4%E0%B1%86%E0%B0%B2%E0%B1%81%E0%B0%97%E0%B1%81-hotpink)
-![Free](https://img.shields.io/badge/Paid_dependencies-none-brightgreen)
+A unified disaster-intelligence platform that connects **citizen safety, risk intelligence, emergency response, drone SAR, hospitals, shelters, geospatial intelligence, 3D digital twins, flood simulation, AI decision support, and recovery operations** into one connected command experience.
 
-**[🚀 LIVE DEMO](https://drishti-ai-command-center.vercel.app/welcome) · [🛰️ COMMAND CENTER](https://drishti-ai-command-center.vercel.app/command) · [🛡️ CITIZEN SAFETY](https://drishti-ai-command-center.vercel.app/safety) · [🎬 DEMO MODE](https://drishti-ai-command-center.vercel.app/demo) · [💻 GITHUB](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center)**
+<br/>
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-black?logo=three.js)](https://threejs.org/)
+[![Leaflet](https://img.shields.io/badge/Leaflet-OpenStreetMap-green?logo=leaflet)](https://leafletjs.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688?logo=fastapi)](https://fastapi.tiangolo.com/)
+[![PWA](https://img.shields.io/badge/PWA-Offline-purple)](https://web.dev/progressive-web-apps/)
+[![Accessibility](https://img.shields.io/badge/Accessibility-WCAG-orange)](https://www.w3.org/WAI/standards-guidelines/wcag/)
+[![Multilingual](https://img.shields.io/badge/i18n-EN%20%7C%20TE%20%7C%20HI-hotpink)](#-accessibility--localization)
+[![No Paid Dependencies](https://img.shields.io/badge/Paid%20Dependencies-None-brightgreen)](#-technology-stack)
+
+<br/>
+
+### 🌐 Live Experience
+
+**[🚀 LIVE DEMO](https://drishti-ai-command-center.vercel.app/welcome)**
+**[🛰️ COMMAND CENTER](https://drishti-ai-command-center.vercel.app/command)**
+**[🛡️ CITIZEN SAFETY](https://drishti-ai-command-center.vercel.app/safety)**
+**[🎬 DEMO MODE](https://drishti-ai-command-center.vercel.app/demo)**
+**[💻 SOURCE CODE](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center)**
+
+<br/>
+
+**Current Release: V3.2 — Cinematic Presentation Mode**
 
 </div>
 
 ---
 
-## 🚀 Release Status
+# 🌍 What is DRISHTI-X?
 
-| Area | Status |
-|---|---|
-| Routes | ✅ 28/28 verified (27 pages + root redirect) |
-| TypeScript | ✅ PASS (`tsc --noEmit` clean) |
-| ESLint | ✅ PASS (`next/core-web-vitals`, zero warnings) |
-| Backend Tests | ✅ 9/9 PASS (pytest contract suite) |
-| Production Build | ✅ PASS (all routes prerendered) |
-| Cinematic 3D layer | ✅ Vanilla Three.js, zero new dependencies |
-| Security Audit | ✅ CLEAN (no secrets in repo, CHANGE_ME examples) |
-| PWA / Offline | ✅ Service worker + offline banner |
-| Accessibility | ✅ Toolbar, skip link, reduced-motion, read-aloud |
-| Multilingual | ✅ EN / TE / HI dictionary + full Learn translation |
+DRISHTI-X is a **cinematic 3D disaster intelligence and emergency-response command center** designed to demonstrate how fragmented disaster information can be transformed into one connected operational workflow.
 
----
+Instead of presenting isolated dashboards, DRISHTI-X connects:
 
-## 🖼️ Hero Visual
-
-![DRISHTI-X — for a safer, stronger, resilient India](public/poster.jpg)
-
-*Official project artwork (`public/poster.jpg`) — also the live welcome hero. Replace it with any 16:9 JPG to re-skin; no code change needed.*
-
----
-
-## 🎬 Hackathon Presentation Flow (90 seconds)
-
-One connected narrative. Open these in order — the shared ops store keeps every screen synchronized:
-
-`SYSTEM BOOT → COMMAND CENTER → FLOOD EVENT → DRONE DEPLOYMENT → TARGET DETECTION → AI RECOMMENDATION → DIGITAL TWIN → RESPONSE → RECOVERY`
-
-| # | Beat | Do this | Audience sees |
-|---|---|---|---|
-| 1 | BOOT | Open [/command](https://drishti-ai-command-center.vercel.app/command) fresh (clear sessionStorage to replay) | Cinematic init: NETWORK → SATELLITE → DRONE SWARM → AI CORE → DIGITAL TWIN → READY |
-| 2 | COMMAND | Land on the deck | Holographic Earth, status header (SYSTEM / NETWORK / SAT / DRONE / AI / DATA / CLOCK), animated KPI ticker |
-| 3 | FLOOD EVENT | Move the T-0h → T+24h forecast slider | Water expansion, affected-zone chips, risk tone shift, twin surge rising |
-| 4 | DRONE DEPLOYMENT | Open [/drones](https://drishti-ai-command-center.vercel.app/drones) | 3D swarm in echelon formation, SAR grid, radar sweep, telemetry rings |
-| 5 | TARGET DETECTION | Wait ~7 seconds | ANALYZING → **TARGET DETECTED** with confidence, distance, ETA, thermal, coordinates (labeled SIMULATION) |
-| 6 | AI RECOMMENDATION | Back on `/command`, AI panel | ANALYZING → INFERENCE COMPLETE · dispatch order, reason, ETA, risk, resources |
-| 7 | DIGITAL TWIN | Open [/twin](https://drishti-ai-command-center.vercel.app/twin) | Procedural city: river shimmer, emergency corridor, moving response vehicles, pulsing hazards — click any marker |
-| 8 | RESPONSE | Open [/demo](https://drishti-ai-command-center.vercel.app/demo) → START flood | DemoBar drives scenario + spillway through 7 phases on every route |
-| 9 | RECOVERY | Open [/recovery](https://drishti-ai-command-center.vercel.app/recovery) | Animated incident timeline + hash-chained relief ledger |
-
-> ⚠️ **DEMO/SIMULATION DATA IS NOT LIVE EMERGENCY DATA.** Every drill number on screen carries a LIVE / DEMO / SIMULATION / LOCAL / OFFLINE badge with its source.
-
----
-
-## 🖥️ Showcase Gallery
-
-Real captures live in [`docs/screenshots/`](docs/screenshots/) — every image is captured from the running app (capture guide inside; no mockups are committed). Filenames below are the canonical set; missing files render as checklist items until captured.
-
-| Command Center | 3D Digital Twin |
-|---|---|
-| `command.png` — holographic Earth, status header, AI panel | `twin.png` — procedural city, surge plane, picked entity |
-
-| Drone SAR | Flood Simulation |
-|---|---|
-| `drones.png` — swarm formation, TARGET DETECTED, radar | `simulation.png` — T+ timeline, BEFORE/SIM/AFTER, impact grid |
-
-| Hydra-Net AI | Hospital ICU Command |
-|---|---|
-| `command.png` (AI panel crop) — inference ribbon, recommendation | `resources.png` — ECG waveforms, triage gauges, dispatch pairing |
-
-| Shelter Scanner | Citizen Portal |
-|---|---|
-| `shelter.png` — holographic capacity nodes, check-in | `report.png` — priority intake, animated report pipeline |
-
-**Capture checklist (1280×800, each under ~500 KB):** `welcome` · `command` · `twin` · `drones` · `simulation` · `resources` · `shelter` · `report` · `recovery` · `ops` · `location` · `safety` · `demo` (scenario running). See [`docs/screenshots/README.md`](docs/screenshots/README.md) for the one-line headless-capture commands.
-
-**Demo flow (text diagram — no fabricated GIF):**
-
-```
-NORMAL → WATCH → WARNING → CRITICAL → EVACUATION → RESCUE → RECOVERY
-  │        │         │          │            │           │         │
-  ▼        ▼         ▼          ▼            ▼           ▼         ▼
- calm   rain cell  risk↑   discharge   buses out   FLIR+boats  audit
+```text
+SENSORS
+   ↓
+DETECTION
+   ↓
+RISK ANALYSIS
+   ↓
+ALERT GENERATION
+   ↓
+GEOINT
+   ↓
+AI DECISION SUPPORT
+   ↓
+DRONE SAR
+   ↓
+HOSPITAL / SHELTER RESPONSE
+   ↓
+EVACUATION
+   ↓
+RESCUE
+   ↓
+RECOVERY & AUDIT
 ```
 
----
+The platform contains two complementary experiences:
 
-## 🎯 The Problem
+### 🛡️ Citizen Experience
 
-Disaster information is fragmented across weather bulletins, paper maps, WhatsApp rumors, hospital phone lines, shelter lists, rescue teams and sensor silos. Citizens get noise; operators get dashboards that don't talk to each other.
+Designed around:
 
-## ⚡ The DRISHTI-X Solution
+> **Am I safe? What happened? What should I do? Where should I go? How do I get help?**
 
-One unified intelligence layer:
+### 🛰️ Command Experience
 
-```
-DETECT → ANALYZE → ALERT → EVACUATE → RESPOND → RESCUE → RECOVER
-```
+Designed around:
 
-Live telemetry where it exists, clearly-labeled simulation where it doesn't, and provider interfaces so official feeds plug in later without touching a single page.
+> **What is happening? Where? How severe is it? Who is affected? What should responders do next?**
 
 ---
 
-## 👥 Two Experiences. One Platform.
+# 🎯 The Problem
 
-### 🛡️ Citizen Mode
+Disaster response information is frequently fragmented across:
 
-Answers **AM I SAFE? · WHAT HAPPENED? · WHAT SHOULD I DO? · WHERE SHOULD I GO? · HOW DO I GET HELP?**
+* Weather information
+* Maps
+* Sensor systems
+* Emergency teams
+* Hospitals
+* Shelter registries
+* Rescue operations
+* Citizen reports
+* Communication channels
 
-Routes: `/welcome` `/safety` `/risk` `/alerts` `/nearby` `/evacuate` `/emergency` `/report` `/family` `/plan` `/kit` `/learn` `/talk` — big buttons, plain language, no operator telemetry.
+This creates two major problems:
 
-### 🛰️ Command Mode
+### For citizens
 
-Answers **WHAT IS HAPPENING? · WHERE? · HOW SEVERE? · WHO IS AFFECTED? · WHAT SHOULD RESPONDERS DO NEXT?**
+Information can become difficult to understand during a crisis.
 
-Routes: `/command` `/ops` `/demo` `/drones` `/twin` `/location` `/simulation` `/resources` `/shelter` `/reunion` `/recovery` `/portal` `/platform` `/sources` — telemetry, 3D, SAR, ICU, simulation, KPIs.
+### For operators
 
----
-
-## 🌐 Cinematic 3D Command Environment
-
-Zero new dependencies — vanilla Three.js + Canvas 2D + CSS, procedural geometry only, no purchased models, footage, or fonts.
-
-| Layer | What it is | File |
-|---|---|---|
-| Holographic Earth | Rotating globe, atmosphere rim shell, lat/long grid, data arcs, hazard pulses, orbital traces, drone orbiters, adaptive particles | `src/components/cinematic/CommandBackground.tsx` |
-| Status header | SYSTEM / NETWORK / SAT / DRONE LINK / AI / DATA / IST clock with live pulses | `src/components/cinematic/StatusHeader.tsx` |
-| HUD system | Glass panels, corner ticks, hover/focus/active, warn/critical tones | `src/components/cinematic/HudPanel.tsx` |
-| Data viz | Count-ups, radial gauges, sparklines, waveforms (park offscreen) | `src/components/cinematic/AnimatedCounter.tsx` |
-| Radar | Sweep gradient, contact trails, signal bars, coords, pulses | `src/components/cinematic/RadarSweep.tsx` |
-| Boot sequence | Skippable init, session-scoped, reduced-motion aware | `src/components/cinematic/BootSequence.tsx` |
-| Sound | Muted-by-default Web Audio blips, toggle persisted | `src/components/cinematic/SoundToggle.tsx` |
-
-Performance is budgeted, not hoped for: adaptive particle counts, pixel-ratio caps, offscreen/tab-hidden render parking, GPU-friendly particles, reduced effects on mobile, full WebGL fallback to a 2D command experience, and `prefers-reduced-motion` support throughout.
+Important information can exist in disconnected systems that do not share a common operational state.
 
 ---
 
-## 🛰️ Drone Swarm & SAR (`/drones`)
+# ⚡ The DRISHTI-X Approach
 
-Cinematic swarm twin (`src/components/three/DroneSwarmScene.tsx`): procedural airframes with nav lights + strobes, telemetry rings, signal discs, FLIR cones, motion trails, eased formation flight with banking, SAR search grid, plus the staged detection beat — SCAN → ANALYZING → **TARGET DETECTED** (ID, coordinates, confidence, distance, ETA, thermal signature), always labeled SIMULATION. The Leaflet SAR map (2 km radius, FLIR overlay note, payload matrix, live fleet list) is preserved underneath.
+DRISHTI-X introduces a unified intelligence layer:
 
-## 🏙️ 3D Digital Twin (`/twin`)
-
-`TwinViewport.tsx` renders a procedural response city: terrain, animated river with travelling shimmer, lit bridge, glowing roads, breathing amber emergency corridor, extruded buildings with window strips, holographic zone wall, moving response vehicles with headlights, pulsing hazard markers, telemetry-driven drone with spotlight cone and ground shadow, flood-surge plane, click-to-pick entities, satellite/grid terrain modes, and a T-0h→T+24h flood forecast driver.
-
-## 🌊 Flood Simulation (`/simulation`)
-
-`FloodTimeline.tsx` turns the hydraulic surrogate into a cinematic control: T-0h / T+1h / T+3h / T+6h / T+12h / T+24h with eased water expansion, sequential affected-zone chips, risk-toned framing, and BEFORE → SIMULATION → AFTER impact framing (population, roads, buildings, hospitals, shelters, evac zones). Spillway slider, scenario injector, banner preview, and local AI advisor remain fully functional.
-
-## 🧠 Hydra-Net Decision Support (`/command`)
-
-The AI panel behaves like a serious decision-support engine: ANALYZING → INFERENCE COMPLETE ribbon (re-runs per scenario change), 98.4% confidence, recommended intervention, reasoning summary, affected population, resource requirement, response ETA, risk state, and dispatch approval — with SIMULATION labeling on all model output.
-
-## 🏥 Hospital ICU Command (`/resources`)
-
-Medical-operations treatment: live ECG/SpO2/resp waveforms (demo), ICU/ventilator/O₂ radial gauges, CRITICAL/WARNING/STABLE triage states, DEMO-labeled registry, field-sensor buffer, and ambulance→ICU auto-dispatch pairing.
-
-## 🏕️ Shelter Intelligence (`/shelter`)
-
-Holographic shelter nodes with animated capacity rings (capacity / occupied / available / ETA / risk / status), kiosk check-in scanner, occupancy bar, DEMO-labeled registry with navigation links, and family reunification cross-match.
-
-## 🧾 Recovery & Audit (`/recovery`)
-
-Animated EVENT → TIME → ACTION → RESPONDER → RESULT → STATUS incident timeline, Merkle-chained relief disbursement ledger with running total, structural sensor diagnostics, and PDNA snapshot.
-
-## 📣 Citizen Portal (`/report`, `/portal`)
-
-Simulated citizen intake across flood / trapped-person / blocked-road / fire / medical / missing-person types with LOW → CRITICAL priority framing and an animated status pipeline (SUBMITTED → RESOLVED), plus the low-bandwidth public advisory lifeline (`/portal`) with corridors and relief schedules.
-
----
-
-## 🧩 Core Capabilities
-
-| Capability | Status |
-|---|---|
-| Citizen Safety dashboard | ✅ `/safety` |
-| Risk Intelligence + WHY factors | ✅ `/safety` `/risk` |
-| Multi-Hazard Alerts + notifications | ✅ `/alerts` |
-| Safe Evacuation (≤30 km, exposure-ranked) | ✅ `/evacuate` |
-| Location Intelligence (GPS, OSM, layers) | ✅ `/location` |
-| Drone SAR (grid, radius, SIM telemetry) | ✅ `/drones` |
-| 3D Digital Twin (satellite, VFX, picking) | ✅ `/twin` |
-| Hospital Intelligence (SIM capacity) | ✅ `/resources` |
-| Shelter Intelligence (DEMO status) | ✅ `/shelter` `/nearby` |
-| What-If Simulation + impact model | ✅ `/simulation` |
-| Demo Scenario + Mission Replay | ✅ `/demo` `/platform` |
-| System Health (real probes) | ✅ `/ops` |
-| Recovery & Audit ledger | ✅ `/recovery` |
-| Citizen Reporting pipeline | ✅ `/report` |
-| Family Safety | ✅ `/family` |
-| Emergency Plan + Kit | ✅ `/plan` `/kit` |
-| Disaster Education (trilingual) | ✅ `/learn` |
-| Voice Assistant (Web Speech) | ✅ `/talk` |
-| Offline / PWA | ✅ Service worker + banner |
-| Accessibility toolbar | ✅ Text, contrast, motion, read-aloud |
-| EN / TE / HI | ✅ Dictionary + full Learn pass |
-
----
-
-## 🌊 Disaster Scenario (Vijayawada Flood Response · SIMULATION)
-
-```
-NORMAL → HEAVY RAIN → RIVER RISING → WATCH → WARNING → CRITICAL
-→ EVACUATION → DRONE SAR → HOSPITAL RESPONSE → RESCUE → RECOVERY
+```text
+┌────────────────────────────────────────────┐
+│              DRISHTI-X                    │
+├────────────────────────────────────────────┤
+│                                            │
+│  DETECT → ANALYZE → ALERT → RESPOND       │
+│                       ↓                    │
+│             EVACUATE → RESCUE             │
+│                       ↓                    │
+│                    RECOVER                 │
+│                                            │
+└────────────────────────────────────────────┘
 ```
 
-One shared ops store drives scenario + spillway through 7 engine phases, so **Risk, Alerts, Maps, Hazard Zones, 3D Twin, Drones, Shelters, Hospitals, Citizen + Command dashboards, Ops KPIs and Replay stay synchronized**. Run it from `/demo`, `/platform` or `/ops`; the DemoBar persists on every route with auto-play.
+The system deliberately distinguishes:
+
+* 🟢 LIVE data
+* 🟡 DEMO data
+* 🔵 SIMULATION output
+* 🟣 LOCAL device data
+* ⚪ OFFLINE cached data
+
+This prevents simulated demonstrations from being mistaken for official emergency information.
 
 ---
 
-## 🏗️ System Architecture
+# 🚀 Current Release — V3.2
 
+DRISHTI-X has evolved through several major architectural milestones.
+
+| Version  | Focus                | Major Achievement                                                      |
+| -------- | -------------------- | ---------------------------------------------------------------------- |
+| **V2**   | Cinematic Foundation | 3D AI Core, SOS Radar, Risk Visualizer, cinematic HUD                  |
+| **V2.5** | Visual & UX Polish   | Lighting, transitions, boot sequence, status ticker, responsive design |
+| **V3**   | Intelligence Layer   | Shared real-time intelligence state across the application             |
+| **V3.1** | Explainability       | AI Decision Timeline based on shared intelligence events               |
+| **V3.2** | Presentation         | Guided cinematic presentation mode using the real application engine   |
+
+### Current production commit
+
+```text
+48e07f8
+feat: V3.2 cinematic presentation mode —
+guided demo story on shared intel state
 ```
-CITIZEN / OPERATOR
+
+---
+
+# 🧠 V3 — Shared Intelligence Architecture
+
+The most important architectural change in V3 is the introduction of a centralized intelligence state.
+
+```text
+                 ┌─────────────────────┐
+                 │    INTELLIGENCE     │
+                 │       STORE         │
+                 └──────────┬──────────┘
+                            │
+          ┌─────────────────┼─────────────────┐
+          │                 │                 │
+          ▼                 ▼                 ▼
+       RISK STATE         SOS STATE       ALERT STATE
+          │                 │                 │
+          └─────────────────┼─────────────────┘
+                            │
+                            ▼
+                 ┌─────────────────────┐
+                 │  DERIVED SYSTEM     │
+                 │      STATE          │
+                 ├─────────────────────┤
+                 │ Effective Score     │
+                 │ AI Tone             │
+                 │ Threat Level        │
+                 │ Focus               │
+                 └──────────┬──────────┘
+                            │
+          ┌─────────────────┼──────────────────┐
+          ▼                 ▼                  ▼
+       AI CORE           GLOBE             TIMELINE
+          │                 │                  │
+          └─────────────────┼──────────────────┘
+                            ▼
+                    COMMAND CENTER
+```
+
+The V3 intelligence layer stores and derives:
+
+* Risk snapshot
+* Risk score
+* Risk level
+* Confidence
+* Location
+* Coordinates
+* SOS phase
+* SOS coordinates
+* SOS timestamp
+* Latest alert
+* Intelligence events
+* AI tone
+* Threat level
+* Focus state
+* Effective score
+
+The event stream is capped at **30 session-scoped events**.
+
+---
+
+# 📊 V3.1 — AI Decision Timeline
+
+V3.1 introduces a visible operational timeline.
+
+Instead of simply saying:
+
+```text
+AI ONLINE
+```
+
+DRISHTI-X can expose the sequence of system events:
+
+```text
+SENSOR DATA RECEIVED
         ↓
-NEXT.JS 14 APPLICATION (App Router, 27 pages)
+RISK ANALYSIS COMPLETED
         ↓
-CINEMATIC LAYER (CommandBackground · HudPanel · StatusHeader · Radar · Swarm · FloodTimeline)
+THREAT ALERT PROCESSED
         ↓
-DOMAIN SERVICES (riskEngine · alertRules · opsStore · geocode · overpass)
+EMERGENCY RESPONSE ACTIVATED
         ↓
-RISK / ALERT / EVACUATION / TELEMETRY logic
+SYSTEM STATE UPDATED
         ↓
-PROVIDER INTERFACES (Hazard · Weather · Alert · Shelter · Hospital · Evacuation · Incident · Drone)
-        ↓
-DEMO / LOCAL PROVIDERS (labeled cells · localStorage · sim telemetry · drill scripts)
-        ↓
-FUTURE OFFICIAL DATA SOURCES (plug in without touching pages)
+NETWORK STATE UPDATED
 ```
 
-See `/platform` in the app for the interactive version of this map.
+### Event types
+
+| Event     | Meaning                      |
+| --------- | ---------------------------- |
+| `SENSOR`  | Sensor intelligence received |
+| `RISK`    | Risk analysis completed      |
+| `ALERT`   | Threat alert processed       |
+| `SOS`     | Emergency response activated |
+| `SYSTEM`  | System state changed         |
+| `NETWORK` | Network state changed        |
+
+Each event can expose relevant:
+
+* Timestamp
+* Severity
+* Source
+* Location
+* Coordinates
+* Status
+* Additional event details
+
+The timeline is designed to make AI activity **observable and explainable**.
 
 ---
 
-## 🛠️ Technology Stack
+# 🎬 V3.2 — Cinematic Presentation Mode
 
-**Frontend:** Next.js 14.2.5 · React 18 · TypeScript 5 · Tailwind CSS 3 · Three.js (vanilla, no wrapper libs) · Leaflet + OpenStreetMap · lucide-react
-**Backend:** FastAPI · Python 3.11 · Uvicorn · WebSockets · Pydantic · pytest + httpx
-**Data/Maps (free, no keys):** Nominatim · Overpass API · Browser Geolocation · Google Maps keyless embed (rich place data only with optional key)
-**Platform:** PWA + Service Worker · localStorage (prefs, reports, checklists) · Web Speech API · Web Notifications API
-**What we deliberately do NOT use:** no paid maps, no paid AI, no paid 3D models, no stock footage, no premium fonts, no commercial animation libraries, no paid DB/auth, no IndexedDB (localStorage covers current needs), no secrets in code.
+V3.2 introduces a dedicated presentation layer.
 
----
+The objective is to allow a judge, recruiter, stakeholder, or audience member to understand the complete DRISHTI-X workflow in approximately **30 seconds**.
 
-## 🔐 Data Trust Model
-
-| Badge | Meaning |
-|---|---|
-| 🟢 LIVE | Real measured/streamed data (WS telemetry, OSM responses, probe results) |
-| 🟡 DEMO | Illustrative data for drills (hazard cells, shelters, alerts, ICU numbers) |
-| 🔵 SIMULATION | Model output (surge math, exposure ranking, ETAs, drill metrics) |
-| 🟣 LOCAL | On-device only (prefs, reports, family, checklists) |
-| ⚪ OFFLINE | Cached content shown without connectivity — never presented as live |
-
-Every important panel shows **SOURCE · STATUS · LAST UPDATED**. Demo providers live behind interfaces in `src/data/providers.ts`.
-
----
-
-## ♿ Designed for Real-World Conditions
-
-- EN / TE / HI dictionary + fully translated Learn library (8 topics × Before/During/After + Emergency + Do/Don't)
-- Keyboard navigation, `:focus-visible` rings, skip-to-content link, screen-reader labels; critical info never carried by color alone
-- `prefers-reduced-motion` respected globally (camera, parallax, particles, rotations, transitions park) + in-app Reduce-motion toggle; emergency info stays readable with animations off
-- Large-text + high-contrast modes, read-aloud toolbar
-- PWA offline shell: emergency/learn/safety pages cached; OFFLINE MODE + LAST SYNCHRONIZED banner; reconnect-friendly
-- Mobile prioritizes alert → risk → location → AI recommendation → map → response status, with reduced 3D complexity
-
----
-
-## 🔌 Future Official Integrations (ROADMAP — not live)
-
-IMD weather · NDMA/CAP alerts · Government disaster feeds · River/IoT sensors · Hospital HMIS · Shelter registries · Bhuvan satellite tiles · MAVLink drone link — each maps 1:1 onto an existing provider interface. **None of these are connected today, and the app never claims otherwise.**
-
----
-
-## 🧪 Engineering Verification
-
-| Check | Result |
-|---|---|
-| `npm run typecheck` | ✅ clean (also in CI) |
-| `npx next lint --dir src` | ✅ zero warnings (`next/core-web-vitals`) |
-| `cd backend` → `python -m pytest tests/ -q` | ✅ 9/9 (health, auth, packet shape, scenario, sensors, WS) |
-| Production build | ✅ all routes prerendered |
-| Routes | ✅ 28/28 local + 28/28 production |
-| Security | ✅ no secrets in repo, CHANGE_ME examples |
-
-> Local `npm run build` requires the dev server stopped (shared `.next/`); every `vercel --prod` is the standing build proof.
-
----
-
-## 🗺️ Routes
-
-**WELCOME** `/` → `/welcome` (poster, ENTER-to-enter) · **COMMAND** `/command` deck · `/ops` KPIs+health · `/demo` presenter
-**CITIZEN** `/safety` `/risk` `/emergency` `/alerts` `/nearby` `/evacuate` `/report` `/family` `/plan` `/kit` `/learn` `/talk`
-**INTELLIGENCE** `/location` `/drones` `/twin` `/simulation` · **OPERATIONS** `/resources` `/shelter` `/reunion` `/recovery` · **PLATFORM** `/portal` `/platform` `/sources`
-
----
-
-## ⚙️ Local Development Setup
-
-<details>
-<summary><b>First-time setup (backend + frontend + env)</b></summary>
-
-```powershell
-cd drishti-ai-command-center\backend
-copy .env.example .env
+```text
+INIT
+ ↓
+DETECTION
+ ↓
+GEOINT
+ ↓
+RISK
+ ↓
+ALERT
+ ↓
+RESPONSE
+ ↓
+SOS
+ ↓
+RECOVERY
+ ↓
+MISSION COMPLETE
 ```
-Creates `.env` (`GATEWAY_KEY`, `CORS_ORIGINS`, `TELEMETRY_HZ`). Git-ignored — generate your own value (examples use `CHANGE_ME`).
 
-```powershell
-pip install -r requirements.txt
+### Presentation controls
+
+* ▶ Play
+* ⏸ Pause
+* ⏮ Previous
+* ⏭ Next
+* ↻ Restart
+* ✕ Exit
+* Progress indicators
+* Scene progress bar
+* Keyboard shortcut: `P`
+
+---
+
+# 🎥 V3.2 Presentation Sequence
+
+| Scene            | Approx. Duration | Purpose                          |
+| ---------------- | ---------------: | -------------------------------- |
+| Initialization   |             2.5s | Establish system state           |
+| Detection        |             3.5s | Introduce incident               |
+| Geoint           |             3.5s | Establish location/context       |
+| Risk             |             4.5s | Show intelligence analysis       |
+| Alert            |             3.5s | Convert analysis into alert      |
+| Response         |             3.5s | Demonstrate coordination         |
+| SOS              |             5.5s | Demonstrate emergency escalation |
+| Recovery         |             3.5s | Show stabilization               |
+| Mission Complete |                — | Conclude the story               |
+
+---
+
+# 🧬 Real Engine, Not a Separate Fake Demo
+
+A key V3.2 architectural principle is:
+
+> **Demo Mode orchestrates the existing engine instead of creating a separate fake application.**
+
+Conceptually:
+
+```text
+                 DEMO CONTROLLER
+                        │
+                        ▼
+                EXISTING ENGINE
+                        │
+                        ▼
+                INTELLIGENCE STORE
+                        │
+        ┌───────────────┼────────────────┐
+        ▼               ▼                ▼
+      AI CORE          GLOBE          TIMELINE
+        │               │                │
+        └───────────────┼────────────────┘
+                        ▼
+                 COMMAND CENTER
 ```
-FastAPI, Uvicorn, Pydantic, pytest, httpx.
 
-```powershell
-cd drishti-ai-command-center
-copy .env.local.example .env.local
+This means the presentation demonstrates the same system architecture used by the application.
+
+---
+
+# 🚨 SOS Safety Model
+
+The V3.2 presentation includes a simulated SOS sequence.
+
+```text
+IDLE
+ ↓
+LOCKING
+ ↓
+ACTIVE
+ ↓
+RECOVERY
 ```
-Creates `.env.local` (`NEXT_PUBLIC_API_BASE`, `NEXT_PUBLIC_WS_URL`, `NEXT_PUBLIC_GATEWAY_KEY` = same value as backend). Optional `NEXT_PUBLIC_GOOGLE_MAPS_KEY` for rich place data; empty = free keyless map.
 
-```powershell
-npm install
+Demo Mode does **not**:
+
+* Place emergency calls
+* Dispatch emergency services
+* Contact real responders
+* Send real emergency notifications
+* Claim simulated coordinates are live rescue coordinates
+
+The presentation is clearly labeled as simulation/demo content.
+
+---
+
+# 🛰️ Cinematic 3D Command Environment
+
+DRISHTI-X uses procedural 3D visualization to create an immersive command-center experience.
+
+### 🌐 Holographic Earth
+
+Includes:
+
+* Rotating globe
+* Atmospheric shell
+* Latitude/longitude grid
+* Data arcs
+* Hazard pulses
+* Orbital traces
+* Drone orbiters
+* Adaptive particles
+
+### 🧠 AI Core
+
+Includes:
+
+* 3D energy core
+* Orbital rings
+* Data nodes
+* Neural connections
+* Particle shell
+* Lattice structure
+* Energy pulses
+* Dynamic lighting
+* Threat-reactive visual tone
+
+### 🖥️ HUD System
+
+Includes:
+
+* Glass panels
+* Corner ticks
+* Status indicators
+* Severity states
+* Hover/focus states
+* Cinematic transitions
+
+### 📡 Radar
+
+Includes:
+
+* Radar sweep
+* Contact pulses
+* Signal indicators
+* Coordinate display
+* Contact trails
+
+---
+
+# 🛰️ Drone Swarm & Search-and-Rescue
+
+Route:
+
+```text
+/drones
 ```
-Next.js, React, Leaflet, Three.js, Tailwind, lucide-react. `package-lock.json` pins versions.
 
-</details>
+The drone environment provides a cinematic SAR simulation containing:
 
-<details>
-<summary><b>Daily run (two terminals) + Docker + deploy</b></summary>
+* Procedural drone models
+* Formation flight
+* Navigation lights
+* Telemetry rings
+* Signal discs
+* FLIR cones
+* Motion trails
+* SAR search grid
+* Radar
+* Target detection sequence
 
-Terminal 1: `cd drishti-ai-command-center\backend` → `uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload` (prove: `http://localhost:8000/api/health`; stream: `ws://localhost:8000/ws/telemetry`).
-Terminal 2: `cd drishti-ai-command-center` → `npm run dev` → `http://localhost:3000` + **Ctrl+F5**.
+Detection sequence:
 
-Docker: `docker compose up --build` (API :8000, web :3000).
-Ship: `railway up -y -d` (from `backend/`) · `vercel --prod --yes` (repo root; set `NEXT_PUBLIC_*` env first — baked at build time).
-Commit: `git add -A` → `git commit -m "feat: ..."` → `git push origin main` (CI type-checks/builds).
+```text
+SCAN
+ ↓
+ANALYZING
+ ↓
+TARGET DETECTED
+```
 
-</details>
+The detection output can display:
 
-<details>
-<summary><b>📁 Project Structure</b></summary>
+* Target ID
+* Coordinates
+* Confidence
+* Distance
+* ETA
+* Thermal signature
+
+All drill outputs are explicitly marked **SIMULATION**.
+
+---
+
+# 🏙️ 3D Digital Twin
+
+Route:
+
+```text
+/twin
+```
+
+The digital twin represents a procedural disaster-response environment.
+
+Features include:
+
+* Terrain
+* Animated river
+* River shimmer
+* Roads
+* Bridges
+* Emergency corridors
+* Procedural buildings
+* Window strips
+* Hazard markers
+* Response vehicles
+* Drone telemetry
+* Spotlight cone
+* Flood-surge plane
+* Interactive entity selection
+* Satellite/grid modes
+* Flood forecast driver
+
+---
+
+# 🌊 Flood Simulation
+
+Route:
+
+```text
+/simulation
+```
+
+The simulation provides a cinematic flood-progression experience:
+
+```text
+T-0h
+ ↓
+T+1h
+ ↓
+T+3h
+ ↓
+T+6h
+ ↓
+T+12h
+ ↓
+T+24h
+```
+
+The interface can visualize:
+
+* Water expansion
+* Affected zones
+* Population impact
+* Roads
+* Buildings
+* Hospitals
+* Shelters
+* Evacuation zones
+
+Impact framing:
+
+```text
+BEFORE
+   ↓
+SIMULATION
+   ↓
+AFTER
+```
+
+---
+
+# 🧠 Hydra-Net AI Decision Support
+
+Route:
+
+```text
+/command
+```
+
+The AI decision-support panel demonstrates:
+
+```text
+ANALYZING
+     ↓
+INFERENCE COMPLETE
+     ↓
+RECOMMENDATION
+     ↓
+RESPONSE
+```
+
+The panel can present:
+
+* Confidence
+* Recommended intervention
+* Reasoning
+* Affected population
+* Resource requirement
+* Response ETA
+* Risk state
+* Dispatch recommendation
+
+All simulated model outputs are labeled accordingly.
+
+---
+
+# 🏥 Hospital Intelligence
+
+Route:
+
+```text
+/resources
+```
+
+Features include:
+
+* ICU availability
+* Ventilator availability
+* Oxygen capacity
+* ECG visualization
+* SpO₂ waveform
+* Respiratory waveform
+* Triage states
+* Field-sensor buffer
+* Ambulance → ICU pairing
+
+States:
+
+```text
+CRITICAL
+WARNING
+STABLE
+```
+
+Demonstration medical values are clearly labeled as demo data.
+
+---
+
+# 🏕️ Shelter Intelligence
+
+Route:
+
+```text
+/shelter
+```
+
+Provides:
+
+* Shelter capacity
+* Occupancy
+* Available spaces
+* ETA
+* Risk
+* Status
+* Capacity rings
+* Check-in scanner
+* Family reunification cross-match
+
+---
+
+# 🧾 Recovery & Audit
+
+Route:
+
+```text
+/recovery
+```
+
+Recovery operations include:
+
+```text
+EVENT
+ ↓
+TIME
+ ↓
+ACTION
+ ↓
+RESPONDER
+ ↓
+RESULT
+ ↓
+STATUS
+```
+
+The module also demonstrates:
+
+* Relief ledger
+* Running totals
+* Structural diagnostics
+* Post-disaster assessment
+* Audit-oriented visualization
+
+---
+
+# 📣 Citizen Reporting
+
+Routes:
+
+```text
+/report
+/portal
+```
+
+Supported simulated incident categories include:
+
+* Flood
+* Trapped person
+* Blocked road
+* Fire
+* Medical emergency
+* Missing person
+
+Priority:
+
+```text
+LOW
+ ↓
+MEDIUM
+ ↓
+HIGH
+ ↓
+CRITICAL
+```
+
+Reporting workflow:
+
+```text
+SUBMITTED
+ ↓
+PROCESSING
+ ↓
+RESOLVED
+```
+
+---
+
+# 🛡️ Citizen Safety Platform
+
+Citizen routes include:
+
+```text
+/welcome
+/safety
+/risk
+/alerts
+/nearby
+/evacuate
+/emergency
+/report
+/family
+/plan
+/kit
+/learn
+/talk
+```
+
+The citizen experience prioritizes:
+
+1. Alert
+2. Risk
+3. Location
+4. AI recommendation
+5. Map
+6. Response status
+
+The interface is intentionally simpler than the operator command center.
+
+---
+
+# 🛰️ Command Platform
+
+Operator-oriented routes include:
+
+```text
+/command
+/ops
+/demo
+/drones
+/twin
+/location
+/simulation
+/resources
+/shelter
+/reunion
+/recovery
+/portal
+/platform
+/sources
+```
+
+These routes expose:
+
+* Operational telemetry
+* 3D visualization
+* AI decision support
+* SAR
+* Digital twin
+* Flood simulation
+* Hospital intelligence
+* Shelter intelligence
+* Recovery
+* System health
+* Platform architecture
+
+---
+
+# 📊 Core Capabilities
+
+| Capability            | Route         | Status |
+| --------------------- | ------------- | ------ |
+| Citizen Safety        | `/safety`     | ✅      |
+| Risk Intelligence     | `/risk`       | ✅      |
+| Multi-Hazard Alerts   | `/alerts`     | ✅      |
+| Emergency Response    | `/emergency`  | ✅      |
+| Evacuation            | `/evacuate`   | ✅      |
+| Location Intelligence | `/location`   | ✅      |
+| Drone SAR             | `/drones`     | ✅      |
+| 3D Digital Twin       | `/twin`       | ✅      |
+| Flood Simulation      | `/simulation` | ✅      |
+| Hospital Intelligence | `/resources`  | ✅      |
+| Shelter Intelligence  | `/shelter`    | ✅      |
+| AI Decision Support   | `/command`    | ✅      |
+| Demo Presentation     | `/demo`       | ✅      |
+| System Health         | `/ops`        | ✅      |
+| Recovery & Audit      | `/recovery`   | ✅      |
+| Citizen Reporting     | `/report`     | ✅      |
+| Family Safety         | `/family`     | ✅      |
+| Emergency Planning    | `/plan`       | ✅      |
+| Emergency Kit         | `/kit`        | ✅      |
+| Disaster Education    | `/learn`      | ✅      |
+| Voice Assistant       | `/talk`       | ✅      |
+| PWA / Offline         | —             | ✅      |
+| Accessibility         | —             | ✅      |
+| Multilingual          | EN / TE / HI  | ✅      |
+
+---
+
+# 🌊 Demonstration Scenario
+
+### Vijayawada Flood Response — SIMULATION
+
+The primary demonstration narrative follows:
+
+```text
+NORMAL
+   ↓
+HEAVY RAIN
+   ↓
+RIVER RISING
+   ↓
+WATCH
+   ↓
+WARNING
+   ↓
+CRITICAL
+   ↓
+EVACUATION
+   ↓
+DRONE SAR
+   ↓
+HOSPITAL RESPONSE
+   ↓
+RESCUE
+   ↓
+RECOVERY
+```
+
+The scenario is designed as a demonstration environment and must not be interpreted as an official emergency warning.
+
+---
+
+# 🔐 Data Trust Model
+
+DRISHTI-X deliberately communicates the source and reliability category of displayed information.
+
+| Badge             | Meaning                                             |
+| ----------------- | --------------------------------------------------- |
+| 🟢 **LIVE**       | Real measured/streamed or externally retrieved data |
+| 🟡 **DEMO**       | Illustrative operational data                       |
+| 🔵 **SIMULATION** | Modelled or simulated output                        |
+| 🟣 **LOCAL**      | Data stored/processed on the device                 |
+| ⚪ **OFFLINE**     | Cached content available without connectivity       |
+
+Important operational panels are designed around:
+
+```text
+SOURCE
+STATUS
+LAST UPDATED
+```
+
+This trust model is a core part of the product design.
+
+---
+
+# ♿ Accessibility & Real-World Resilience
+
+DRISHTI-X is designed to remain usable under different user needs and device conditions.
+
+### Accessibility
+
+* Keyboard navigation
+* `:focus-visible` support
+* Skip-to-content navigation
+* Screen-reader labels
+* Reduced-motion support
+* High-contrast mode
+* Large-text mode
+* Read-aloud functionality
+* Critical information not communicated by color alone
+
+### Reduced Motion
+
+The cinematic system responds to:
+
+```text
+prefers-reduced-motion
+```
+
+and includes an in-app reduce-motion control.
+
+### Mobile
+
+Mobile prioritizes:
+
+```text
+ALERT
+ ↓
+RISK
+ ↓
+LOCATION
+ ↓
+AI RECOMMENDATION
+ ↓
+MAP
+ ↓
+RESPONSE STATUS
+```
+
+3D complexity and visual effects are reduced where appropriate.
+
+### Offline
+
+The application provides:
+
+* PWA shell
+* Service worker
+* Offline banner
+* Cached safety/education content
+* Last-synchronized status
+
+---
+
+# 🛠️ Technology Stack
+
+### Frontend
+
+* Next.js 14
+* React 18
+* TypeScript 5
+* Tailwind CSS
+* Three.js
+* Leaflet
+* OpenStreetMap
+* Lucide React
+
+### Backend
+
+* FastAPI
+* Python 3.11
+* Uvicorn
+* WebSockets
+* Pydantic
+* Pytest
+* HTTPX
+
+### Data / Maps
+
+* Browser Geolocation
+* Nominatim
+* Overpass API
+* OpenStreetMap
+* Optional Google Maps integration
+
+### Platform
+
+* Progressive Web App
+* Service Worker
+* localStorage
+* Web Speech API
+* Web Notifications API
+* Vercel
+
+### Deliberately Avoided
+
+DRISHTI-X does not depend on:
+
+* Paid maps
+* Paid AI APIs
+* Paid 3D models
+* Stock footage
+* Premium fonts
+* Commercial animation frameworks
+* Paid database/authentication services
+
+The original project documentation explicitly follows this free-resource architecture.
+
+---
+
+# 🏗️ System Architecture
+
+```text
+                  USER / OPERATOR
+                         │
+                         ▼
+                ┌─────────────────┐
+                │    NEXT.JS      │
+                │  APPLICATION     │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ CINEMATIC LAYER │
+                │ 3D / HUD / MAPS │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ INTELLIGENCE    │
+                │     STORE       │
+                └────────┬────────┘
+                         │
+             ┌───────────┼───────────┐
+             ▼           ▼           ▼
+           RISK        ALERTS       SOS
+             │           │           │
+             └───────────┼───────────┘
+                         ▼
+                ┌─────────────────┐
+                │ DOMAIN SERVICES │
+                ├─────────────────┤
+                │ Risk Engine     │
+                │ Alert Rules     │
+                │ Geospatial      │
+                │ Telemetry       │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ PROVIDER LAYER  │
+                └────────┬────────┘
+                         │
+              ┌──────────┴──────────┐
+              ▼                     ▼
+        DEMO / LOCAL          FUTURE OFFICIAL
+        PROVIDERS             DATA SOURCES
+```
+
+The architecture keeps provider interfaces separate from the UI so future official data integrations can be introduced without rewriting the presentation layer.
+
+---
+
+# 📁 Project Structure
 
 ```text
 drishti-ai-command-center/
-├── .github/workflows/   # deploy.yml + pr-check.yml
-├── backend/             # FastAPI (app/main.py, config, models, services, routers/api_v1+ws, tests/)
+│
+├── .github/
+│   └── workflows/
+│
+├── backend/
+│   ├── app/
+│   ├── routers/
+│   ├── services/
+│   ├── models/
+│   └── tests/
+│
 ├── src/
-│   ├── app/             # /, /welcome, /command, /ops, /demo, /sources + 10 tactical + 12 citizen routes
+│   ├── app/
+│   │   ├── command/
+│   │   ├── safety/
+│   │   ├── risk/
+│   │   ├── alerts/
+│   │   ├── emergency/
+│   │   ├── drones/
+│   │   ├── twin/
+│   │   ├── simulation/
+│   │   └── ...
+│   │
 │   ├── components/
-│   │   ├── cinematic/   # CommandBackground, StatusHeader, HudPanel, AnimatedCounter,
-│   │   │                # RadarSweep, BootSequence, SoundToggle, CinematicShell
-│   │   ├── three/       # DroneSwarmScene, FloodTimeline
-│   │   ├── 3d/          # TwinViewport (procedural city), DigitalTwinCanvas
-│   │   ├── maps/        # DroneLeafletTracker + RadarMap overlays
-│   │   ├── alerts/      # AlertBanner, GeofenceBreachModal
-│   │   └── …            # RiskChecker, DemoBar/Console/Replay, SystemHealth,
-│   │                    # ArchitectureDiagram, TrustBadge, EmergencyFab, A11yBar, Navbar…
-│   ├── data/            # providers.ts (8 interfaces + demo sets) + learn.ts (trilingual)
-│   ├── store/           # opsStore (scenario/spillway/demo) + appStore (mode/lang/a11y)
-│   ├── hooks/           # useTelemetrySocket (reconnecting WS) + useLocalList
-│   ├── i18n/dict.ts     # EN/TE/HI dictionary
-│   └── utils/           # apiClient, geofence, geocode+Nominatim/GPS, overpass, riskEngine,
-│                        # alertRules, googlePlaces (keyed)
-├── public/              # poster.jpg + manifest.json + sw.js + icon.svg
-├── docs/screenshots/    # capture guide + real captures only (none fabricated)
-├── tailwind.config.js + postcss.config.js + vercel.json + docker-compose.yml
+│   │   ├── cinematic/
+│   │   │   ├── AiCoreScene.tsx
+│   │   │   ├── AiDecisionTimeline.tsx
+│   │   │   ├── DemoMode.tsx
+│   │   │   ├── CommandBackground.tsx
+│   │   │   ├── StatusHeader.tsx
+│   │   │   ├── HudPanel.tsx
+│   │   │   ├── SosRadar.tsx
+│   │   │   └── RiskVisualizer.tsx
+│   │   │
+│   │   ├── three/
+│   │   ├── maps/
+│   │   └── alerts/
+│   │
+│   ├── data/
+│   │   └── providers.ts
+│   │
+│   ├── store/
+│   │   ├── opsStore.ts
+│   │   ├── appStore.ts
+│   │   └── intelStore.ts
+│   │
+│   ├── hooks/
+│   ├── i18n/
+│   └── utils/
+│
+├── public/
+│   ├── poster.jpg
+│   ├── manifest.json
+│   ├── sw.js
+│   └── icon.svg
+│
+├── docs/
+│   └── screenshots/
+│
+├── package.json
+├── tailwind.config.js
+├── postcss.config.js
+├── vercel.json
+└── docker-compose.yml
 ```
-
-</details>
 
 ---
 
-## 🔒 Security
+# 🧪 Engineering Verification
 
-- Secrets live in git-ignored `.env` files + hosting dashboards only; examples use `CHANGE_ME`
-- Repository audited for keys/tokens/passwords — clean; gateway auth guards REST, WS is local-HUD open
-- Personal data (reports, family, checklists) in browser localStorage; shared coordinates rounded to ~100 m; inputs length-capped
+The project includes engineering checks covering:
 
-## ⚠️ Limitations (honest)
+```text
+TypeScript
+     ↓
+ESLint
+     ↓
+Backend tests
+     ↓
+Production build
+     ↓
+Route verification
+     ↓
+Security review
+     ↓
+Production deployment
+```
 
-- Demo/simulation content is clearly labeled and must never be mistaken for official warnings
-- Learn TE/HI is functional, not professionally reviewed
-- Overpass/Geolocation depend on third-party reachability; both degrade gracefully
-- Local production build needs the dev server stopped; cloud build is the proof
+Current documented checks include:
 
-## 📄 Project Information
+| Check             | Result                 |
+| ----------------- | ---------------------- |
+| TypeScript        | ✅ Clean                |
+| ESLint            | ✅ Zero warnings        |
+| Backend tests     | ✅ 9/9                  |
+| Production build  | ✅ Pass                 |
+| Production routes | ✅ Verified             |
+| Security audit    | ✅ No secrets committed |
 
-DRISHTI-X — A Cinematic 3D Disaster Intelligence & Emergency Response Command Center.
-No license file is committed yet — add one (e.g. MIT/Apache-2.0) before public release.
-Maintainer: [@hemanthhemanth1834-bit](https://github.com/hemanthhemanth1834-bit)
+These verification results are carried forward from the project's existing engineering documentation.
+
+---
+
+# 🔒 Security & Privacy
+
+DRISHTI-X follows a defensive-by-default approach.
+
+### Secrets
+
+Secrets belong in:
+
+```text
+.env
+.env.local
+Hosting environment variables
+```
+
+and are not committed to the repository.
+
+### Local Data
+
+Certain citizen-oriented data is stored locally using browser storage.
+
+### Location Privacy
+
+Shared coordinates can be rounded before transmission/display, reducing unnecessary precision.
+
+### Input Safety
+
+Inputs are length-capped where appropriate.
+
+---
+
+# 🔌 Future Official Integrations
+
+The following are **roadmap integrations, not currently connected official feeds**:
+
+* IMD weather
+* NDMA/CAP alerts
+* Government disaster feeds
+* River/IoT sensors
+* Hospital HMIS
+* Government shelter registries
+* Bhuvan satellite tiles
+* MAVLink drone telemetry
+
+The platform is structured so these can map into provider interfaces without changing the core UI architecture.
+
+**DRISHTI-X does not claim these integrations are currently live.**
+
+---
+
+# 🖼️ Project Showcase
+
+Recommended screenshots for the repository:
+
+```text
+docs/screenshots/
+│
+├── welcome.png
+├── command.png
+├── twin.png
+├── drones.png
+├── simulation.png
+├── resources.png
+├── shelter.png
+├── report.png
+├── recovery.png
+├── ops.png
+├── location.png
+├── safety.png
+└── demo.png
+```
+
+### Recommended Capture Standard
+
+```text
+Resolution: 1280 × 800
+Format: PNG
+Target size: <500 KB/image
+Source: Actual running application
+```
+
+**No fabricated screenshots or mockup images should be committed as real application captures.**
+
+Your existing README already establishes this screenshot policy.
+
+---
+
+# 🎬 Recommended Hackathon Demo
+
+For the full cinematic demonstration:
+
+```text
+1. Open /command
+2. Press P
+3. Start Presentation Mode
+4. Let the ~30-second story play
+5. Show the AI Decision Timeline
+6. Explain the shared intelligence layer
+7. Open /drones
+8. Show target detection
+9. Open /twin
+10. Show the digital twin
+11. Open /simulation
+12. Demonstrate flood progression
+13. Finish with recovery / audit
+```
+
+### The story
+
+```text
+PROBLEM
+   ↓
+DETECTION
+   ↓
+INTELLIGENCE
+   ↓
+DECISION
+   ↓
+ALERT
+   ↓
+RESPONSE
+   ↓
+RESCUE
+   ↓
+RECOVERY
+```
+
+---
+
+# 🌐 Live Project
+
+### Main Experience
+
+**https://drishti-ai-command-center.vercel.app/**
+
+### Command Center
+
+**https://drishti-ai-command-center.vercel.app/command**
+
+### Citizen Safety
+
+**https://drishti-ai-command-center.vercel.app/safety**
+
+### Demo Mode
+
+**https://drishti-ai-command-center.vercel.app/demo**
+
+### Source Code
+
+**https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center**
+
+---
+
+# 📌 Current Production Status
+
+```text
+DRISHTI-X V3.2
+────────────────────────────────────
+
+GitHub main             ✅ 48e07f8
+V3 Intelligence        ✅ Complete
+V3.1 Decision Timeline ✅ Complete
+V3.2 Demo Mode         ✅ Complete
+Cinematic 3D           ✅ Complete
+Citizen Platform       ✅ Complete
+Command Platform       ✅ Complete
+PWA / Offline          ✅ Complete
+Accessibility          ✅ Complete
+Multilingual          ✅ EN / TE / HI
+Production Deployment  ✅ READY
+Live Verification      ✅ VERIFIED
+
+V3.3                    🔒 FROZEN
+```
+
+---
+
+# ⚠️ Honest Limitations
+
+DRISHTI-X is a demonstration and engineering prototype, not an official emergency-management system.
+
+Important limitations:
+
+* Demo and simulation content must not be interpreted as official warnings.
+* Some medical, shelter, hazard and operational values are illustrative.
+* Third-party geospatial services depend on network availability.
+* Future government data integrations are not currently connected.
+* Multilingual educational content may require professional review.
+* Production deployment currently uses a verified manual deployment workflow.
+
+## The original project also explicitly identifies demo/simulation content and future official integrations as limitations/roadmap items.
+
+# 🏆 Why DRISHTI-X?
+
+DRISHTI-X combines:
+
+```text
+                 AI
+                 +
+              GEOINT
+                 +
+               3D
+                 +
+             SIMULATION
+                 +
+             DRONE SAR
+                 +
+             EMERGENCY
+                 +
+              HEALTH
+                 +
+              SHELTERS
+                 +
+              CITIZENS
+                 +
+              RECOVERY
+```
+
+into one connected experience.
+
+The goal is not simply to build another dashboard.
+
+The goal is to demonstrate how a disaster-response platform can transform:
+
+> **Fragmented information → Shared intelligence → Explainable decisions → Coordinated response**
+
+---
+
+# 👨‍💻 Project
+
+**DRISHTI-X**
+*Cinematic 3D Disaster Intelligence & Emergency Response Command Center*
+
+Built with:
+
+**Next.js • React • TypeScript • Three.js • Leaflet • FastAPI • Python • WebSockets • PWA**
+
+### Maintainer
+
+**MUCHAKARLA HEMANTH KUMAR**
+
+### GitHub
+
+https://github.com/hemanthhemanth1834-bit
+
+---
+
+<div align="center">
+
+## 🛰️ DRISHTI-X
+
+### **From Detection to Decision. From Decision to Response.**
+
+**Built for a safer, stronger, more resilient future.**
+
+⭐ If you find the project useful, consider starring the repository.
+
+</div>
