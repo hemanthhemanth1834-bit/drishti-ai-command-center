@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useApp } from "@/store/appStore";
 
 type Props = {
   /** 0..1 intensity — command center uses ~1, side pages ~0.6 */
@@ -29,6 +30,9 @@ const TONE_COLOR: Record<string, number> = {
  */
 export default function CommandBackground({ intensity = 1, className = "", tone = "ok", focusKind = null }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const { qualityMode } = useApp();
+  const qualityRef = useRef(qualityMode);
+  qualityRef.current = qualityMode;
   const mouse = useRef({ x: 0, y: 0 });
   const toneRef = useRef(tone);
   toneRef.current = tone;
@@ -39,7 +43,10 @@ export default function CommandBackground({ intensity = 1, className = "", tone 
     const mount = mountRef.current;
     if (!mount) return;
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const isLow = qualityRef.current === "low";
+    const isHigh = qualityRef.current === "high";
     const weak =
+      isLow ||
       /Mobi|Android/i.test(navigator.userAgent) ||
       (navigator.hardwareConcurrency ?? 8) <= 4;
     if (reduced) return; // keep CSS fallback only
@@ -240,7 +247,7 @@ export default function CommandBackground({ intensity = 1, className = "", tone 
     }
 
     // particle dust (GPU-friendly Points)
-    const P = weak ? 220 : 650;
+    const P = isLow ? 120 : isHigh ? 750 : 380;
     const pos = new Float32Array(P * 3);
     for (let i = 0; i < P; i++) {
       pos[i * 3] = (Math.random() - 0.5) * 26;
@@ -256,7 +263,7 @@ export default function CommandBackground({ intensity = 1, className = "", tone 
     scene.add(dust);
 
     // data-stream particles — sparse bright motes drifting sideways (volumetric haze feel)
-    const S = weak ? 60 : 140;
+    const S = isLow ? 30 : isHigh ? 160 : 80;
     const spos = new Float32Array(S * 3);
     for (let i = 0; i < S; i++) {
       spos[i * 3] = (Math.random() - 0.5) * 24;

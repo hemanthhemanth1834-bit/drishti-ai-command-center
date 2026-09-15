@@ -21,7 +21,9 @@ import AnimatedCounter, { Sparkline, Waveform } from '@/components/cinematic/Ani
 import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
 import FloodTimeline from '@/components/three/FloodTimeline';
-import { Activity, Radio, Compass } from 'lucide-react';
+import GeospatialIntelGallery from '@/components/cinematic/GeospatialIntelGallery';
+import { soundSynth } from '@/utils/audioSynth';
+import { Activity, Radio, Compass, Satellite } from 'lucide-react';
 
 // Dynamic imports to prevent SSR window issues for Leaflet and Three.js
 const DigitalTwinCanvas = dynamic(
@@ -120,6 +122,7 @@ export default function MasterCommandCenter() {
 
   async function changeScenario(s: string) {
     setOps({ scenario: s, acked: [] });
+    soundSynth.scenarioChange();
     pushEvent({
       id: `scenario-${s}-${ops.spillwayK}`,
       type: 'SYSTEM',
@@ -481,6 +484,18 @@ export default function MasterCommandCenter() {
               </div>
             </HudPanel>
           </section>
+        </div>
+
+        {/* Geospatial Intelligence Feeds — Real-World Visual Examples */}
+        <div className="px-4 pb-6">
+          <div className="bg-[#051424]/80 border border-[#1b314b] rounded-xl p-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-[#1b314b] mb-4">
+              <Satellite className="w-4 h-4 text-[#00d2ff]" />
+              <span className="text-xs font-bold text-white tracking-wider">GEOSPATIAL INTELLIGENCE // EARTH OBSERVATION FEEDS</span>
+              <span className="ml-auto text-[10px] text-slate-400">REAL-WORLD VERIFIED OPEN-SOURCE IMAGERY</span>
+            </div>
+            <GeospatialIntelGallery />
+          </div>
         </div>
       </main>
     </CinematicShell>

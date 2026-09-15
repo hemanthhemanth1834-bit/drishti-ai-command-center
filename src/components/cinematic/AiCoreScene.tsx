@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useApp } from "@/store/appStore";
+import { soundSynth } from "@/utils/audioSynth";
 
 type Props = {
   /** compact height in px */
@@ -20,11 +22,14 @@ const TONE_COLOR: Record<string, number> = {
 /**
  * DRISHTI-X AI CORE — glowing energy sphere + orbital rings + neural nodes
  * + particle shell + scanning waves. Vanilla Three.js, procedural only.
- * Adaptive (weak/mobile = fewer particles), parks when offscreen/hidden,
- * full CSS fallback when WebGL or reduced-motion is unavailable.
+ * Adaptive (qualityMode: low/medium/high), interactive click-drag rotation,
+ * parks when offscreen/hidden, full CSS fallback when WebGL or reduced-motion is unavailable.
  */
 export default function AiCoreScene({ height = 220, tone = "ok", className = "", label = "DRISHTI-X AI core visualization" }: Props) {
   const mountRef = useRef<HTMLDivElement>(null);
+  const { qualityMode } = useApp();
+  const qualityRef = useRef(qualityMode);
+  qualityRef.current = qualityMode;
   const toneRef = useRef(tone);
   toneRef.current = tone;
 
@@ -34,9 +39,9 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
     const reduced = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return; // CSS fallback core stays visible
 
-    const weak =
-      /Mobi|Android/i.test(navigator.userAgent) ||
-      (navigator.hardwareConcurrency ?? 8) <= 4;
+    const isLow = qualityRef.current === "low";
+    const isHigh = qualityRef.current === "high";
+    const weak = isLow || /Mobi|Android/i.test(navigator.userAgent) || (navigator.hardwareConcurrency ?? 8) <= 4;
 
     let renderer: THREE.WebGLRenderer | null = null;
     try {
@@ -140,7 +145,7 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
     });
 
     // --- orbiting data nodes + neural links to core ---
-    const NODES = weak ? 6 : 10;
+    const NODES = isLow ? 4 : isHigh ? 12 : 8;
     const nodeGeo = new THREE.OctahedronGeometry(0.07);
     const nodeMat = new THREE.MeshBasicMaterial({ color: 0xbfefff });
     const nodes: THREE.Mesh[] = [];
@@ -159,7 +164,7 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
     scene.add(links);
 
     // --- particle shell (atmosphere motes) ---
-    const P = weak ? 120 : 320;
+    const P = isLow ? 70 : isHigh ? 450 : 240;
     const pos = new Float32Array(P * 3);
     const seed: number[] = [];
     for (let i = 0; i < P; i++) {
@@ -200,12 +205,41 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
     scene.add(grid);
 
     const mouse = { x: 0, y: 0 };
+    let isDragging = false;
+    let prevPointerX = 0;
+    let prevPointerY = 0;
+    let dragVelocityX = 0;
+    let dragVelocityY = 0;
+
+    const onPointerDown = (e: PointerEvent) => {
+      isDragging = true;
+      prevPointerX = e.clientX;
+      prevPointerY = e.clientY;
+      soundSynth.radarPing(1480, 0.02);
+    };
+
+    const onPointerUp = () => {
+      isDragging = false;
+    };
+
     const onMouse = (e: PointerEvent) => {
       const r = mount.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
       mouse.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
       mouse.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+
+      if (isDragging) {
+        const deltaX = e.clientX - prevPointerX;
+        const deltaY = e.clientY - prevPointerY;
+        prevPointerX = e.clientX;
+        prevPointerY = e.clientY;
+        dragVelocityX = deltaX * 0.008;
+        dragVelocityY = deltaY * 0.008;
+      }
     };
+
+    mount.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointermove", onMouse, { passive: true });
 
     const onResize = () => {
@@ -256,8 +290,10 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
       coreLight.intensity = 16 + Math.sin(t * 2.1) * 4;
       pulseMat.opacity = 0.65 + Math.sin(t * 2.1) * 0.2;
 
-      coreMesh.rotation.y += dt * 0.35;
-      coreMesh.rotation.x = Math.sin(t * 0.3) * 0.15;
+      coreMesh.rotation.y += dt * 0.35 + dragVelocityX;
+      coreMesh.rotation.x = Math.sin(t * 0.3) * 0.15 + dragVelocityY;
+      dragVelocityX *= 0.93;
+      dragVelocityY *= 0.93;
       // controlled breathing: core + pulse feel alive, never exaggerated
       const breathe = 1 + Math.sin(t * 1.6) * 0.022;
       coreMesh.scale.set(breathe, breathe, breathe);
@@ -318,6 +354,8 @@ export default function AiCoreScene({ height = 220, tone = "ok", className = "",
       cancelAnimationFrame(raf);
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
+      mount.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointermove", onMouse);
       window.removeEventListener("resize", onResize);
       scene.traverse((o) => {
