@@ -5,1030 +5,898 @@
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Vercel-00d2ff?style=for-the-badge&logo=vercel)](https://drishti-ai-command-center.vercel.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center)
 [![Next.js](https://img.shields.io/badge/Next.js-14.2.5-000000?style=flat-square&logo=nextdotjs)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.169-000000?style=flat-square&logo=threedotjs)](https://threejs.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![License](https://img.shields.io/badge/License-Educational_Hackathon-blue?style=flat-square)](#-license)
 
-**DRISHTI-X is a disaster-intelligence and emergency-response command prototype combining geospatial intelligence, simulated drone telemetry, 3D digital twins, deterministic risk/alert logic, AI-style decision visualization, citizen safety tools, and operator dashboards.**
+**DRISHTI-X is a disaster-intelligence command prototype: Next.js operator + citizen interfaces, FastAPI telemetry, Leaflet geospatial, Three.js 3D, and deterministic risk/alert logic over simulated data.**
 
-Live: **https://drishti-ai-command-center.vercel.app/** · Start at `/welcome`, then enter `/command`.
+Live: **https://drishti-ai-command-center.vercel.app/** · Status: **working prototype, not a production emergency system.**
 
-> **Scope honesty:** this repository contains **no trained ML model, no live satellite feed, and no real emergency-dispatch backend**. Telemetry, hazards, and scenarios are **simulated / demo data** visualized through a real Next.js + FastAPI + WebSocket + Three.js + Leaflet implementation. See [What is real vs simulated](#what-is-real-vs-simulated-vs-planned).
-
----
-
-<details>
-<summary><strong>Contents</strong></summary>
-
-- [Project overview](#-project-overview)
-- [Problem statement](#-problem-statement)
-- [Solution](#-solution)
-- [Live demo + routes](#-live-demo)
-- [Complete platform modules](#-complete-platform-modules)
-- [Command center deep dive](#-command-center-deep-explanation)
-- [Drone system](#-drone-system)
-- [Map & geolocation](#-map--geolocation-system)
-- [Risk engine](#-risk-engine)
-- [Alert system](#-alert-system)
-- [Emergency / SOS](#-emergency--sos-system)
-- [Evacuation](#-evacuation-system)
-- [Citizen safety](#-citizen-safety-system)
-- [AI / intelligence layer](#-ai--intelligence-layer)
-- [State management](#-state-management)
-- [Hooks](#-hooks)
-- [Utilities](#-utilities)
-- [Internationalization](#-internationalization)
-- [Audio system](#-audio-system)
-- [3D rendering architecture](#-3d-rendering-architecture)
-- [Quality modes](#-quality-modes)
-- [Performance engineering](#-performance-engineering)
-- [Backend](#-backend)
-- [API documentation](#-api-documentation)
-- [External services](#-external-services)
-- [Environment variables](#-environment-variables)
-- [Project structure](#-complete-project-structure)
-- [Data flow](#-data-flow)
-- [User flows](#-user-flows)
-- [Scenario simulator](#-scenario-simulator)
-- [Security](#-security)
-- [Accessibility](#-accessibility)
-- [Responsive design](#-responsive-design)
-- [Installation](#-installation)
-- [Troubleshooting](#-troubleshooting)
-- [Deployment](#-deployment)
-- [Testing](#-testing)
-- [Limitations](#-limitations)
-- [Roadmap](#-future-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Author](#-author)
-- [Why DRISHTI-X](#-why-drishti-x)
-
-</details>
-
----
-
-## 🛰️ Project overview
-
-**DRISHTI-X (“AI Disaster Intelligence Command Center”)** is a full-stack prototype for disaster-response **decision support**. The “command-center concept” means one shared operational picture: maps, terrain, telemetry, alerts, scenarios, and citizen tools reading from the same client stores and backend scenario state, instead of disconnected pages.
-
-### Citizen vs operator
-
-| Surface | Audience | Goal | Entry routes |
-|---|---|---|---|
-| **Citizen-facing** | Public, families, field reporters | Am I safe? Where do I go? Who do I call? | `/welcome`, `/safety`, `/risk`, `/location`, `/alerts`, `/nearby`, `/evacuate`, `/emergency`, `/family`, `/report`, `/plan`, `/kit`, `/learn`, `/talk`, `/portal` |
-| **Operator-facing** | Commanders, drill coordinators, evaluators | What is happening? What if discharge rises? Where are drones? | `/command`, `/twin`, `/drones`, `/ops`, `/simulation`, `/resources`, `/shelter`, `/reunion`, `/recovery`, `/demo`, `/platform`, `/sources` |
-
-`src/components/layout/Navbar.tsx` encodes this split explicitly: `PUBLIC_ITEMS` (13 links) vs `COMMAND_ITEMS` (14 links). Root `/` redirects to `/welcome`.
-
-### Why these technologies
-
-- **3D visualization** makes elevation, flood surge, drone position, and system posture readable at a glance. Implemented with vanilla Three.js (`three@0.169`), no react-three-fiber.
-- **Geospatial intelligence** grounds every decision in location: Leaflet + OpenStreetMap tiles, Nominatim geocoding, Overpass POIs, hazard circles, SAR grid, shelter discovery.
-- **Drone telemetry** gives a moving picture: FastAPI generates 2 Hz packets; `useTelemetrySocket` streams them into HUDs, maps, and 3D scenes.
-- The platform supports decisions by combining the above with deterministic risk/alert scoring, scenario injection, timeline review, and evacuation/SOS helpers — **as a prototype, not a certified dispatch system**.
-
-### What is real vs simulated vs planned
-
-| Category | Examples in this repo |
-|---|---|
-| **Real implemented** | Next.js routing, Leaflet maps, OSM/Nominatim/Overpass queries, WebSocket client with reconnect, FastAPI REST+WS, rule-based risk/alerts, geofencing math, localStorage lists, trilingual dictionary, procedural Web Audio, adaptive WebGL quality, CI typecheck/build/tests |
-| **Simulated / visualized** | Drone GPS/battery/signal (sinusoidal + random around Hyderabad `17.3850, 78.4867`), hazard zones (`DEMO_HAZARDS`), facilities (`DEMO_FACILITIES`), ICU registry, shelter seeds, reunion seeds, gallery Unsplash examples, “AI core” tone animation, scenario physics |
-| **Planned, not built** | Copernicus Sentinel, WebRTC drone video, PWA push, multi-agency rooms, citizen LLM chatbot, React Native app, NavIC positioning |
-
----
-
-## 🎯 Problem statement
-
-Without inventing statistics, disaster response is hard because:
-
-- **Fragmented information:** maps, terrain, telemetry, alerts, and field reports live apart.
-- **Delayed awareness:** conditions change faster than manual updates propagate.
-- **Map/terrain complexity:** elevation, water spread, and hazard overlap are hard to read from 2D lists.
-- **Emergency communication:** citizens need simple numbers, share-links, and navigation under stress.
-- **SAR coordination:** drone position, battery, link quality, and search pattern must be seen together.
-- **Citizen safety:** “am I safe, what do I do, where do I go” needs localized answers.
-- **Evacuation planning:** shelter distance, path hazard exposure, and transport mode interact.
-- **Resource discovery:** hospitals, shelters, police, fire, pharmacies are scattered across sources.
-- **Decision support:** operators need one posture (LEVEL-1/2/3), one timeline, one scenario control.
-
----
-
-## 💡 Solution
-
-DRISHTI-X’s conceptual data flow (labels match implemented pieces):
-
-```text
-Earth observation imagery (open tiles + gallery examples)
-        ↓
-Geospatial intelligence (Leaflet + OSM + Overpass + Nominatim)
-        ↓
-Risk / alert processing (riskEngine + alertRules + intelStore)
-        ↓
-Command center (Next.js HUD + shared stores)
-        ↓
-3D digital twin (procedural terrain + surge plane)
-        ↓
-Drone telemetry (FastAPI WebSocket @ ~2 Hz, simulated values)
-        ↓
-Operator intelligence (scenarios, spillway, timeline, replay)
-        ↓
-Citizen safety (risk, alerts, nearby, evacuation, SOS)
-        ↓
-Emergency response (frontend prototype helpers + map links)
-```
-
-Each layer is inspectable in code; none implies live satellite tasking or real dispatch.
+> **Truth contract:** no trained ML model, no live satellite tasking, no real dispatch backend in this repo. Telemetry/hazards/scenarios are **simulated**; open geospatial services are **external**; roadmap items are **planned**. Labels `🟢 Implemented · 🟡 Simulated · 🔵 External · ⚪ Planned` are used throughout.
 
 ---
 
 ## 🚀 Live Demo
 
-**Production:** https://drishti-ai-command-center.vercel.app/
+**Production:** https://drishti-ai-command-center.vercel.app/ — start at `/welcome`, then `/command`. Runs keyless.
 
-> Start at `/welcome` for the gateway, then `/command` for the operator deck. No API keys required.
+### ⚡ Quick start (under 1 minute, experienced devs)
 
-### Core routes
+```bash
+git clone https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center.git
+cd drishti-ai-command-center
+npm install
+cp .env.local.example .env.local
+npm run dev
+# http://localhost:3000
+```
 
-| Route | Purpose |
-|---|---|
-| `/welcome` | Gateway, 3D hero, module directory, scenario picker |
-| `/command` | Master deck: telemetry, alerts, inference ribbon, twin, tracker, timeline |
-| `/safety` | Public safety dashboard: AM I SAFE / WHAT DO I DO / WHERE DO I GO |
-| `/location` | Place search, reverse geocode, risk/facility layers |
-| `/alerts` | Alert stream with severity + Browser Notification opt-in |
-| `/emergency` | SOS mode with timer, radar, share + navigate |
-| `/evacuate` | Shelters ≤30 km with exposure-ranked destinations |
-| `/twin` | 3D twin + surge plane + air-drop demo |
-| `/drones` | Swarm + SAR radar + Leaflet tracker (fleet ≤8, `?lat&lon&name` focus) |
-| `/ops` | KPI overview, drill KPIs, system health, demo console |
-| `/simulation` | What-if spillway slider (5–80k cusecs) + flood math |
+Backend (live telemetry, optional): `cd backend && pip install -r requirements.txt && uvicorn app.main:app --host 0.0.0.0 --port 8000`.
+
+<details>
+<summary><strong>How to read this README (5 levels)</strong></summary>
+
+- **L1 General user:** Executive Overview + Live Demo + Platform Preview.
+- **L2 Hackathon judge:** Problem, Solution, Target Users, Capabilities, Why DRISHTI-X, Limitations, Roadmap.
+- **L3 Engineer:** Modules, Installation, Env, Deployment, Testing, Project Structure, Tech Matrix.
+- **L4 Senior engineer:** Architecture diagrams, State, APIs, Telemetry, Maps, 3D, Risk/Alert/Geofence engines, Data Models, Failure behavior.
+- **L5 Architect:** Boundaries, Trade-offs, Scalability/Future architecture, Observability, Security.
+
+</details>
 
 ---
 
-## 🧩 Complete platform modules
+## 🎯 Executive Overview
 
-> For each: purpose · user · view · components · data · store · utils · links · limits.
+DRISHTI-X (“AI Disaster Intelligence Command Center”) is one shared operational picture: maps, terrain, telemetry, alerts, scenarios, and citizen tools reading the same client stores and backend scenario state. The command-center concept is the integration itself — not a single model.
+
+| Surface | Audience | Goal | Key routes |
+|---|---|---|---|
+| Citizen | Public, families, reporters | Am I safe? Where do I go? Who do I call? | `/welcome /safety /risk /location /alerts /nearby /evacuate /emergency /family /report /plan /kit /learn /talk /portal` |
+| Operator | Commanders, drill coordinators, evaluators | What is happening? What if discharge rises? Where are drones? | `/command /twin /drones /ops /simulation /resources /shelter /reunion /recovery /demo /platform /sources` |
+
+Root `/` redirects to `/welcome`. `Navbar.tsx` encodes `PUBLIC_ITEMS` (13) vs `COMMAND_ITEMS` (14).
+
+---
+
+## 🧩 Problem
+
+- Fragmented maps, terrain, telemetry, alerts, and field reports.
+- Delayed awareness as conditions change faster than manual updates.
+- 2D lists cannot convey elevation, water spread, and hazard overlap.
+- Citizens need simple numbers, share-links, and navigation under stress.
+- Drone position, battery, link, and search pattern must be seen together.
+- Shelter distance, path exposure, and transport mode interact during evacuation.
+- Hospitals/shelters/police/fire data is scattered across sources.
+- Operators need one posture, one timeline, one scenario control.
+
+No invented statistics are used; the above is the design problem the prototype addresses.
+
+---
+
+## 💡 Solution
+
+Conceptual flow (each layer maps to implemented code, labeled where simulated):
+
+```text
+Earth observation imagery [🔵 External open tiles + 🟡 gallery examples]
+  → Geospatial intelligence [🟢 Leaflet/OSM/Overpass/Nominatim]
+  → Risk / alert processing [🟢 deterministic rules over 🟡 demo zones]
+  → Command center [🟢 Next.js HUD + shared stores]
+  → 3D digital twin [🟡 procedural terrain + surge plane]
+  → Drone telemetry [🟡 simulated packets over 🟢 real WS plumbing]
+  → Operator intelligence [🟢 scenarios, spillway, timeline, replay]
+  → Citizen safety [🟢 risk/alerts/nearby/evacuation/SOS helpers]
+  → Emergency response [🟡 frontend prototype + map links, no dispatch]
+```
+
+---
+
+## 👥 Target Users
+
+- **Citizens/families:** risk checks, hazard maps, alerts, nearby help, evacuation, SOS, reporting, education, voice assistant.
+- **Operators/evaluators:** telemetry wall, digital twin, swarm view, what-if spillway, drill KPIs, audit ledger, demo presenter.
+- **Contributors:** modular routes/stores/utils/backend with labeled demo data (`source: 'DEMO'/'SIMULATION'`, `STAMP='DEMO feed · updated 10 min ago'`).
+
+---
+
+## ✨ Platform Capabilities
+
+| Capability | Status | Notes |
+|---|---|---|
+| Command HUD + timeline + triage | 🟢 Implemented | Real UI/state; values simulated |
+| 3D core / twin / globe / swarm | 🟡 Simulated | Procedural Three.js driven by posture |
+| Leaflet maps + OSM + Overpass + Nominatim | 🟢 Implemented + 🔵 External | Keyless; Google optional |
+| Risk / alert / geofence engines | 🟢 Implemented | Deterministic rules, not ML |
+| SOS / evacuation helpers | 🟢 Implemented (prototype) | No dispatch; map-link handoff |
+| FastAPI REST + WS telemetry | 🟢 Implemented | Simulated generator, real protocol |
+| Trilingual EN/TE/HI, audio synth, quality modes | 🟢 Implemented | No audio assets |
+| Sentinel / WebRTC / push / multi-agency / chatbot / mobile / NavIC | ⚪ Planned | Roadmap only |
+
+---
+
+## 🧠 How the System Works
+
+```mermaid
+flowchart TD
+  B[Browser] --> N[Next.js App Router]
+  N --> R[React UI routes + components]
+  R --> S[State + Hooks: app/ops/intel stores, useTelemetrySocket]
+  S --> D[Domain utils: risk, alerts, geofence, geocode, overpass]
+  D --> A[API layer: apiClient REST + WS + browser APIs]
+  A --> E[External + Backend: OSM/Overpass/Nominatim/tiles, FastAPI]
+  E --> T[Telemetry + Intelligence: packets, scores, events]
+  T --> V[Visualization: HUD, Leaflet, Three.js, timeline]
+  V --> O[Operator + Citizen interfaces]
+```
+
+---
+
+## 🏗️ System Architecture
+
+### High-level
+
+```mermaid
+flowchart TD
+  Browser --> NextJS[Next.js 14 App]
+  NextJS --> UI[React 18 + Tailwind + Leaflet + Three.js]
+  UI --> Stores[appStore + opsStore + intelStore]
+  Stores --> Hooks[useTelemetrySocket + useLocalList + useT]
+  Hooks --> Utils[riskEngine + alertRules + geofence + overpass + geocode + apiClient]
+  Utils --> Backend[FastAPI + WS]
+  Utils --> External[OSM + CartoDB + Overpass + Nominatim + Esri + Google opt]
+  Backend --> Telemetry[Simulated packets @2Hz]
+  Telemetry --> Visual[HUD + Maps + 3D + Timeline]
+```
+
+### Frontend
+
+```mermaid
+flowchart TD
+  Routes[src/app 27 sub-routes + root redirect] --> Comp[40 components: cinematic + 3d + maps + dashboard + alerts + layout]
+  Comp --> Stores
+  Stores --> Hooks
+  Hooks --> Utils
+  Utils --> Leaflet[Leaflet maps]
+  Utils --> Three[Three.js scenes]
+  Utils --> Audio[Web Audio synth]
+  Utils --> I18N[EN/TE/HI dict]
+```
+
+### Backend
+
+```mermaid
+flowchart TD
+  Client --> CORS[CORSMiddleware]
+  CORS --> REST[REST: /api + /api/v1]
+  CORS --> WS[WS: /ws/telemetry + /ws/telemetry-v1]
+  REST --> Auth[Bearer GATEWAY_KEY]
+  REST --> Engine[telemetry_engine.make_packet]
+  WS --> Engine
+  Engine --> Models[Pydantic schemas]
+  WS --> Manager[ConnectionManager broadcast]
+```
+
+---
+
+## 🔄 Data Flow Architecture
+
+```mermaid
+flowchart TD
+  U[User] --> Route[Next.js route]
+  Route --> C[Component]
+  C --> SH[Store + Hook]
+  SH --> UT[Utility + apiClient]
+  UT --> EXT[Backend + External]
+  EXT --> UI[UI update: HUD + map + 3D + timeline]
+```
+
+### Telemetry flow (🟡 values, 🟢 plumbing)
+
+```mermaid
+flowchart TD
+  G[telemetry_engine sin + random, Hyd base] --> F[FastAPI WS 2Hz]
+  F --> H[useTelemetrySocket reconnect + cap 50]
+  H --> S[Stores: live packet + scenario]
+  S --> D[Dashboard + Tracker + 3D swarm]
+```
+
+### Alert flow
+
+```mermaid
+flowchart TD
+  SIG[telemetry + scenario + spillway + geofence + battery + signal] --> EVAL[evaluateAlerts pure fn]
+  EVAL --> SEV[critical/warning/info + LEVEL-3/2/1]
+  SEV --> STORE[opsStore.acked + intelStore latestAlert/events]
+  STORE --> UI[Banner + alerts page + badges + optional Notification]
+  UI --> ACK[Acknowledge]
+```
+
+### Citizen safety / Emergency / Evacuation
+
+```mermaid
+flowchart TD
+  LOC[GPS or search] --> HAZ[Hazard cells + live alerts]
+  HAZ --> RISK[riskEngine.assessRisk]
+  RISK --> ACT[Safety UI + nearby + evacuate + SOS]
+  ACT --> MAP[Google Maps dir + tel links]
+```
+
+```mermaid
+flowchart TD
+  SOSB[Big SOS button] --> LOCK[locking: GPS round ~100m]
+  LOCK --> ACTV[active: timer + radar + red HUD]
+  ACTV --> SHARE[intelStore mirror + share + navigate]
+  SHARE --> DOWN[stand down: resolve + log event]
+```
+
+```mermaid
+flowchart TD
+  EV[Use location] --> SHEL[Overpass shelters 30km + demo in-range]
+  SHEL --> EXP[pathExposure straight-line sampling]
+  EXP --> RANK[safest by maxLevel then distance]
+  RANK --> NAV[mode ETA sim speeds + Maps handoff]
+```
+
+### 3D rendering flow
+
+```mermaid
+flowchart TD
+  INIT[init renderer + camera + lights + meshes] --> LOOP[rAF + Clock dt<=0.05]
+  LOOP --> ANIM[rotate + pulse + orbit + drift + surge]
+  ANIM --> TONE[tone lerp ok/warn/critical]
+  TONE --> PARK[IntersectionObserver + visibility park]
+  PARK --> RSZ[resize handler]
+  RSZ --> DISP[dispose geometries + materials + renderer]
+```
+
+### External API flow
+
+```mermaid
+flowchart TD
+  App --> OSM[OSM + CartoDB tiles]
+  App --> NOM[Nominatim search + reverse]
+  App --> OV[Overpass POIs + shelters]
+  App --> ESRI[Esri fallback tiles]
+  App --> GOOG[Google embed + Places opt]
+  App --> GAL[NASA EO + Unsplash gallery examples]
+```
+
+---
+
+## 🔀 System Boundaries
+
+| Layer | Lives here | Examples |
+|---|---|---|
+| **Client** | Browser | All UI/rendering, 3 stores, hooks, risk/alert/geofence math, Leaflet + Three.js, geolocation/speech/notify/SW, Web Audio, localStorage |
+| **Server** | FastAPI process | REST snapshots, scenario global, WS loops, Bearer checks, CORS, static sensor stubs |
+| **External** | Internet services | OSM/CartoDB tiles, Nominatim, Overpass, Esri, Google (opt), gallery imagery |
+
+Browser computes posture; backend only streams packets and holds scenario. No server-side DB, queue, or ML inference exists.
+
+---
+
+## 🗺️ Module Architecture
+
+> Status key: 🟢 Implemented · 🟡 Simulated values · 🔵 External dependency · ⚪ Planned. All 27 sub-routes verified via `src/app/*/page.tsx` glob.
 
 <details open>
-<summary><strong>/welcome — Gateway</strong> <code>src/app/welcome/page.tsx</code></summary>
+<summary><strong>Core 11 routes</strong></summary>
 
-- **Purpose:** cinematic entry + directory to every module + scenario picker.
-- **User sees:** `AiCoreScene` + `DigitalTwin` (dynamic, ssr:false), counters/sparklines/waveforms, `GeospatialIntelGallery`, `ROW1` (6 citizen cards) + `ROW2` (9 ops/citizen cards), `SCENARIOS` (nominal/storm/swarm-surge/gps-denied).
-- **Components:** `Navbar`, `AnimatedCounter/Sparkline/Waveform`, `GeospatialIntelGallery`.
-- **Data:** const rows/scenarios; `ops.scenario`, `intel.scenarioScore`.
-- **Store/hooks:** `useTelemetrySocket`, `useApp/setQualityMode`, `useOps/setOps`, `useIntel/pushEvent`, `soundSynth`.
-- **Interacts:** sets global scenario consumed by command/ops/simulation/alerts/twin.
-- **Limits:** gallery images are open examples, not live tasking.
-
-</details>
-
-<details>
-<summary><strong>/command — Master Command Deck</strong> <code>src/app/command/page.tsx</code></summary>
-
-- **Purpose:** operator workstation: telemetry + triage + twin + timeline.
-- **User sees:** tactical HUD, `StatusHeader`, `HudPanel`s, `AlertBanner`, `GeofenceBreachModal`, `AiDecisionTimeline`, `RadarSweep`, `FloodTimeline`, `GeospatialIntelGallery`, dynamic `DigitalTwinCanvas`, `DroneLeafletTracker`, `AiCoreScene`, sim ticker.
-- **Data:** live `TelemetryPacket`, `ops.scenario/spillwayK`, `intel.scenarioScore`.
-- **Store/hooks:** `useTelemetrySocket`, `useOps/ackAlert`, `useIntel/pushEvent`, `evaluateAlerts/incidentLevel`, `checkGeofenceBreach`, `setScenario(apiClient)`.
-- **Limits:** values are simulated; triage acknowledges local state only.
+| Route | User | UI + Components | State/Hooks/APIs/Data | Interactions / Failure / Status |
+|---|---|---|---|---|
+| `/welcome` | both | Hero core+twin, counters, gallery, 15 cards, scenario picker; `Navbar`, `AiCoreScene`, `DigitalTwin`, `GeospatialIntelGallery` | `useTelemetrySocket`, `useApp`, `useOps`, `useIntel`; const ROW1/ROW2/SCENARIOS | Pick scenario → global; 3D fails → CSS fallback; 🟢 + 🟡 gallery |
+| `/command` | operator | HUD, ticker, triage, twin, tracker, timeline; `CinematicShell`, `HudPanel`, `AiDecisionTimeline`, `AlertBanner`, `GeofenceBreachModal` | `useTelemetrySocket`, `useOps/ackAlert`, `useIntel`, `evaluateAlerts`, `checkGeofenceBreach`, `setScenario` | Ack/triage local; WS down → stale badge; 🟢 + 🟡 values |
+| `/safety` | citizen | AM I SAFE / WHAT DO / WHERE GO; `RiskChecker`, `TrustBadge` | `useTelemetrySocket`, `useT`; `DEMO_HAZARDS`, `RISK_META` | Check risk → shared snapshot; demo-only disclaimer; 🟢 over 🟡 cells |
+| `/location` | both | Search, detail, layers; dynamic `DroneLeafletTracker` | `geocode`, `googlePlaces`, `DEMO_*`; Nominatim + Google embed | Search → markers; quota/key fail → fallback embed; 🟢+🔵 |
+| `/alerts` | both | Stream + severity + notify opt-in | `evaluateAlerts`, `useOps`, `useIntel`; `DEMO_ALERTS` + live | Ack + notify; rules-only; 🟢 |
+| `/emergency` | citizen | SOS targets, numbers, share, radar, timer | `setSosPhase/pushEvent/resolveEvent`; `EMERGENCY_NUMBERS`, GPS | SOS → global mirror; denied GPS → error; 🟢 prototype |
+| `/evacuate` | citizen | Shelters ≤30 km, exposure rank, 4 modes | `queryNearbyShelters`, `pathExposure`, `haversineKm` | Locate → rank → Maps nav; OSM fail → demo; 🟢 + 🟡 exposure |
+| `/twin` | operator | Twin + surge + air-drop; `TwinViewport`, `FloodTimeline` | local `surgeM/terrain`; live alt/batt/signal | Scrub surge → water plane; procedural DEM; 🟡 |
+| `/drones` | operator | Radar + swarm + tracker (fleet ≤8, `?lat&lon&name`) | `packets/live`; const PAYLOADS | Focus link → highlight; single-stream fan-out; 🟡 |
+| `/ops` | operator | KPIs, spillway, health, demo console | `PEOPLE[scenario]`, `demoDroneProvider`, `drishti-reports`, `SystemHealth` | Drill KPIs are math; 🟢 + 🟡 |
+| `/simulation` | operator | Spillway 5–80k, `30+spillwayK·1.1`, timeline | `setOps`, `setScenario`, `incidentLevel` | Slider → alerts+surge; illustrative; 🟡 |
 
 </details>
 
 <details>
-<summary><strong>/safety — Citizen Safety</strong> <code>src/app/safety/page.tsx</code></summary>
+<summary><strong>Extended routes (16)</strong></summary>
 
-- **Purpose:** “AM I SAFE? WHAT SHOULD I DO? WHERE DO I GO?”
-- **User sees:** `RiskChecker`, advice phases, checklists.
-- **Data:** `DEMO_HAZARDS`, `RISK_META` from `src/data/providers`; const `TYPES/ADVICE/PHASES`.
-- **Store:** `useTelemetrySocket(connected)` for live badge, `useT` for language.
-- **Limits:** demo hazard cells only; not an official warning.
-
-</details>
-
-<details>
-<summary><strong>/location — Location Intel</strong> <code>src/app/location/page.tsx</code></summary>
-
-- **Purpose:** search any place, inspect detail, overlay risk/facilities.
-- **User sees:** dynamic `DroneLeafletTracker`, `CinematicShell`, `StatusHeader`, Google embed or keyless fallback.
-- **Utils:** `searchPlaces/reverseGeocode/getLivePosition/haversineKm` (`geocode.ts`), `fetchGooglePlace` (`googlePlaces.ts`), `DEMO_FACILITIES/DEMO_HAZARDS`.
-- **Limits:** Nominatim rate-limited; Google rich details require key; else graceful fallback.
-
-</details>
-
-<details>
-<summary><strong>/alerts — Alert Center</strong> <code>src/app/alerts/page.tsx</code></summary>
-
-- **Purpose:** WHAT/WHERE/WHEN/SEVERITY/ACTION stream.
-- **Components:** `TrustBadge`, `CinematicShell`, `HudPanel`.
-- **Data:** `DEMO_ALERTS` + live `evaluateAlerts()` from telemetry/scenario.
-- **Store:** `useOps`, `useIntel/pushEvent/setLatestAlert`; Browser `Notification` opt-in.
-- **Limits:** rule output, not government alerts.
-
-</details>
-
-<details>
-<summary><strong>/emergency — Emergency Mode</strong> <code>src/app/emergency/page.tsx</code></summary>
-
-- **Purpose:** big-target SOS with numbers, share, navigate, radar + timer.
-- **Components:** `SosRadar`, `HudPanel`, `CinematicShell`.
-- **Data:** `EMERGENCY_NUMBERS [112,101,108,100,1078]`, `DEMO_FACILITIES`.
-- **Store:** `setSosPhase/pushEvent/resolveEvent` (mirrors phase+coords globally).
-- **Limits:** frontend prototype; no automatic dispatch. See [Emergency](#-emergency--sos-system).
-
-</details>
-
-<details>
-<summary><strong>/evacuate — Safe Evacuation</strong> <code>src/app/evacuate/page.tsx</code></summary>
-
-- **Purpose:** shelters ≤30 km, exposure-ranked.
-- **Utils:** `queryNearbyShelters` (Overpass), `pathExposure` (riskEngine), `getLivePosition/haversineKm`.
-- **Modes:** fastest/safest/vehicle/walking with simulated speeds (32/24/30/5 km/h).
-- **Limits:** straight-line exposure estimate; navigation handed to Google Maps links. See [Evacuation](#-evacuation-system).
-
-</details>
-
-<details>
-<summary><strong>/twin — 3D Digital Twin</strong> <code>src/app/twin/page.tsx</code></summary>
-
-- **Purpose:** topography + surge plane + air-drop demo.
-- **Components:** dynamic `TwinViewport`, `FloodTimeline`.
-- **State:** local `surgeM`, `terrain: satellite/grid`, spotlight, selection; live `alt/lat/lon/battery/signal`.
-- **Limits:** procedural terrain, not surveyed DEM.
-
-</details>
-
-<details>
-<summary><strong>/drones — Drone Swarm & SAR</strong> <code>src/app/drones/page.tsx</code></summary>
-
-- **Purpose:** fleet radar + 3D swarm + Leaflet tracker.
-- **Components:** dynamic `DroneSwarmScene`, `DroneLeafletTracker`, `RadarSweep`.
-- **Data:** `packets` fleet max 8; const `PAYLOADS`; `?lat&lon&name` deep-link.
-- **Limits:** simulated fleet from one backend stream + client fan-out.
-
-</details>
-
-<details>
-<summary><strong>/ops — Operations Dashboard</strong> <code>src/app/ops/page.tsx</code></summary>
-
-- **Purpose:** KPIs, spillway/scenario controls, health, demo console.
-- **Components:** `DemoConsole`, `SystemHealth`, `Sparkline`.
-- **Data:** `PEOPLE[scenario]`, `DEMO_FACILITIES`, `demoDroneProvider.fleet()`, `localStorage:drishti-reports`, live rule alerts + sim drill KPIs.
-- **Limits:** drill KPIs are scenario math, not field counts.
-
-</details>
-
-<details>
-<summary><strong>/simulation — What-If Copilot</strong> <code>src/app/simulation/page.tsx</code></summary>
-
-- **Purpose:** spillway slider 5–80k cusecs, inundation formula, timeline.
-- **Formula:** `inundation ≈ 30 + spillwayK × 1.1` (display model, not hydrology).
-- **Actions:** `setScenario(apiClient)` + `setOps`; `AlertBanner` reacts at `>45k`.
-- **Limits:** illustrative only.
-
-</details>
-
-### Additional routes (implemented)
-
-| Route | File | What it does | Data/state |
+| Route | Purpose | Key data | Status |
 |---|---|---|---|
-| `/risk` | `app/risk/page.tsx` | GPS/manual risk + `RiskVisualizer` | `assessRisk`, shared `intel.risk/sos`, `toneForScore` |
-| `/nearby` | `app/nearby/page.tsx` | Hospitals/police/fire/clinic/pharmacy | `queryNearbyHelp`, `getLivePosition`, demo fallback |
-| `/report` | `app/report/page.tsx` | Incident submit → pipeline SUBMITTED→RESOLVED | `localStorage:drishti-reports`, `useLocalList/cleanText`, photo `<1.5MB` |
-| `/family` | `app/family/page.tsx` | Demo profiles, I'M SAFE toggle | `localStorage:drishti-family`, manual sharing, no tracking |
-| `/learn` | `app/learn/page.tsx` | BEFORE/DURING/AFTER + do/don’t, EN/TE/HI | `LEARN_TOPICS` (`data/learn.ts`) |
-| `/plan`, `/kit` | `app/plan/page.tsx`, `app/kit/page.tsx` | 10-item checklists with progress | `Checklist`, `drishti-plan` / `drishti-kit` |
-| `/shelter` | `app/shelter/page.tsx` | Kiosk check-in, 3 hardcoded nodes, caps | `SEED EV-1042/1043/1077` |
-| `/resources` | `app/resources/page.tsx` | Hospital/ICU registry (4 demo) | const `ICU_REGISTRY`, `/api/v1/sensors` |
-| `/recovery` | `app/recovery/page.tsx` | Audit ledger + Merkle-like `mockHash` chain | `SEED RL-001/002`, const sensors |
-| `/reunion` | `app/reunion/page.tsx` | OP-MILAN match queue, name/camp/age heuristic | `SEED_FOUND:3/MISSING:2`, facial-model pending |
-| `/talk` | `app/talk/page.tsx` | Voice assistant (Web Speech) + risk/facilities | `assessRisk/nearestFacilities`, `HOME 17.385,78.4867` |
-| `/demo` | `app/demo/page.tsx` | 8-step story presenter, arrow-key stepping | `DEMO_PHASES`, `ops.demo.phase`, `DemoConsole/MissionReplay` |
-| `/platform` | `app/platform/page.tsx` | 8 pillars, 5 hardware, agencies list | const `PILLARS/HARDWARE/AGENCIES` |
-| `/portal` | `app/portal/page.tsx` | Low-bandwidth advisory (server comp.) | const corridors/trucks demo |
-| `/sources` | `app/sources/page.tsx` | Free-now vs future plug-ins (server) | `LIVE_FREE:10`, `FUTURE:8` |
+| `/risk` | GPS/manual risk + visualizer | `assessRisk`, `toneForScore`, shared risk/sos | 🟢 over 🟡 |
+| `/nearby` | Hospitals/police/fire/clinic/pharmacy | `queryNearbyHelp` + demo fallback | 🟢+🔵 |
+| `/report` | Incident pipeline + photo &lt;1.5 MB | `localStorage:drishti-reports`, `cleanText` | 🟢 local |
+| `/family` | Profiles + I'M SAFE | `localStorage:drishti-family`, manual | 🟢, no tracking |
+| `/learn` | BEFORE/DURING/AFTER EN/TE/HI | `data/learn.ts` | 🟢 static |
+| `/plan`, `/kit` | 10-item checklists | `drishti-plan`, `drishti-kit` | 🟢 |
+| `/shelter` | Kiosk check-in, 3 nodes | `SEED EV-1042/43/77` | 🟡 seeds |
+| `/resources` | ICU registry (4 demo) | `ICU_REGISTRY`, `/api/v1/sensors` | 🟡 + 🟢 sensors |
+| `/recovery` | Audit ledger + mockHash chain | `SEED RL-001/002` | 🟡 |
+| `/reunion` | Match queue heuristic | name/camp/age score; face pending | 🟡 |
+| `/talk` | Voice assistant + risk/POI | Web Speech, `HOME 17.385,78.4867` | 🟢 browser-gated |
+| `/demo` | 8-step story presenter | `DEMO_PHASES`, `DemoConsole`, `MissionReplay` | 🟢 + 🟡 |
+| `/platform` | 8 pillars, hardware, agencies | const PILLARS/HARDWARE | 🟢 descriptive |
+| `/portal` | Low-bandwidth advisory (server comp.) | corridors/trucks demo | 🟢 |
+| `/sources` | Free-now vs future (server) | LIVE_FREE:10, FUTURE:8 | 🟢 |
+
+</details>
 
 ---
 
-## 🎛️ Command Center deep explanation
+## 🧱 Component Architecture
 
-### 3D AI Neural Core (`AiCoreScene.tsx`, 393 lines)
+Grouped from 40 verified `src/components/**/*.tsx`:
 
-- **Stack:** vanilla `three@0.169` (`IcosahedronGeometry`, `TorusGeometry`, `Points`, `ShaderMaterial`, `FogExp2`, `PerspectiveCamera`), dynamic import `ssr:false`.
-- **Objects:** emissive icosahedron core + wireframe lattice + additive pulse sphere + fresnel glow shell; 3 orbital torus rings; `N` octahedron nodes + `LineSegments`; particle shell; 2 expanding scan waves; `GridHelper` floor.
-- **Animation:** `requestAnimationFrame` + `Clock(dt≤0.05)`; breathing pulse, ring speeds, orbiting nodes, drifting dust, wave expand/fade; `Color.lerp` tone transitions (`ok #00d2ff`, `warn #ffb020`, `critical #ff5470`).
-- **Interaction:** click-drag rotation with velocity, mouse parallax, `radarPing` on press.
-- **Purpose:** visualizes shared posture (`intelStore` tone), **not** model inference.
+| Domain | Components | Responsibility |
+|---|---|---|
+| cinematic | `AiCoreScene`, `CommandBackground`, `BootSequence`, `CinematicShell`, `StatusHeader`, `HudPanel`, `AnimatedCounter`, `RadarSweep`, `SosRadar`, `RiskVisualizer`, `AiDecisionTimeline`, `GeospatialIntelGallery`, `DemoMode`, `SoundToggle` | Posture visuals, HUD chrome, timeline, gallery, boot/sound |
+| 3D | `DigitalTwin`, `3d/DigitalTwinCanvas`, `3d/TwinViewport`, `three/DroneSwarmScene`, `three/FloodTimeline` | Terrain, water, drone group, swarm, flood scrub |
+| maps | `RadarMap`, `maps/DroneLeafletTracker` | Leaflet map, circles, SAR grid, target |
+| dashboard | `dashboard/HeaderBar`, `dashboard/LiveTelemetryTable`, `TelemetryFeed`, `SystemHealth`, `DemoConsole`, `MissionReplay` | Tables, health, replay |
+| alerts | `alerts/AlertBanner`, `alerts/GeofenceBreachModal` | Banner, breach modal + 20 s RTH copy |
+| layout | `layout/Navbar`, `A11yBar`, `MobileQuickBar`, `EmergencyFab`, `DemoBar`, `OfflineBanner`, `SwRegister` | Nav, a11y, mobile, offline, SW |
+| safety/ops | `RiskChecker`, `TrustBadge`, `Checklist`, `ArchitectureDiagram` | Risk form, trust labels, lists, diagram |
 
-### Digital Elevation Twin (`DigitalTwin.tsx`, 326 lines)
+```mermaid
+flowchart TD
+  Pages --> Shell[CinematicShell + StatusHeader + HudPanel]
+  Pages --> Maps[RadarMap + DroneLeafletTracker]
+  Pages --> ThreeD[AiCoreScene + Twin + Swarm + FloodTimeline]
+  Pages --> Alerts[AlertBanner + GeofenceModal]
+  Pages --> Dash[TelemetryTable + Health + DemoConsole + Replay]
+  Pages --> Safety[RiskChecker + TrustBadge + Checklist + SosRadar]
+  Shell --> Navbar[Navbar + A11yBar + MobileQuickBar + Fab]
+```
 
-- **Terrain:** `PlaneGeometry(8,8,res,res)` with hill `sin·cos`, river `-exp` carve, ridge `sin`; solid + wireframe contour + grid floor.
-- **Water:** separate plane; `water.y → -0.45 + surgeM × 0.15`; emissive pulse with surge.
-- **Drone:** `Group` chassis/dome/arms/nacelles/blades + open cone searchlight + beacon; rotors `15 (low) / 32 (high)` alternating; bob/roll/pitch drift; pointer parallax.
-- **Purpose:** readable elevation + flood extent + air asset context.
-
-### Holographic Earth (`CommandBackground.tsx`, 477 lines)
-
-- Full-screen schematic globe (explicitly **not** a geographic projection) + data arcs + hazard pulses + dust + grid haze; `FogExp2`, cyan/rose/amber tones; props `intensity 0..1`, `tone`, `focusKind (sos|risk|null)` so SOS/risk refocus the scene.
-
-### Tactical HUD
-
-- `HudPanel`, `StatusHeader`, `CinematicShell`, `AnimatedCounter/Sparkline/Waveform/RadialGauge`, `RadarSweep`.
-- Glassmorphism (`#051424/#081b2e` + blur), corner brackets, mono telemetry, live counters from `useTelemetrySocket`, posture badges from `incidentLevel` + `intelStore`.
+Important behaviors: dynamic `ssr:false` for 3D/Leaflet; `aria-hidden` on canvases with CSS fallbacks; `TrustBadge` labels `SIMULATION/DEMO/LIVE` at display sites; `SystemHealth` polls `/api/health`; `OfflineBanner` listens online/offline; `SwRegister` registers `sw.js`.
 
 ---
 
-## 🛸 Drone system
+## 🌐 3D Visualization Architecture
 
-> **Simulated values, real plumbing.**
+Vanilla `three@0.169` (no R3F). Per scene: renderer (`antialias:!weak`, `powerPreference:low-power`, `pixelRatio≤weak?1:1.75`) → `PerspectiveCamera(50–55°)` → ambient + directional + cyan points → procedural meshes → `rAF+Clock(dt≤0.05)` → `IntersectionObserver` + `visibilitychange` park → resize → dispose. `prefers-reduced-motion` returns early (CSS fallback stays). WebGL constructor `try/catch` → fallback.
 
-**Backend generation** (`backend/app/services/telemetry_engine.py`):
+| System | Implementation | Data class |
+|---|---|---|
+| AI Neural Core | Icosahedron emissive + lattice + pulse + fresnel shell, 3 torus rings, 4/8/12 octa nodes + links, 70/240/450 particles, 2 scan waves, grid floor, drag-velocity + parallax, tone lerp | 🟡 PROCEDURAL + CONCEPTUAL posture viz |
+| Digital Elevation Twin | Plane DEM (hill sin·cos, river −exp, ridge sin), contour wireframe, surge plane `y=−0.45+surgeM·0.15`, drone Group (chassis/dome/arms/nacelles/blades/cone searchlight/beacon), rotors 15/32 | 🟡 PROCEDURAL terrain + SIMULATED surge/drone |
+| Holographic Earth | Schematic globe (not geographic projection) + arcs + pulses + dust + haze; props `intensity`, `tone`, `focusKind` | 🟡 CONCEPTUAL schematic |
+| Drone viz | Swarm scene + tracker markers from WS packets (fleet ≤8) | 🟡 SIMULATED positions |
+| Flood viz | Water plane + `FloodTimeline` scrub; depth copy `spillwayK·0.041m`, inundation `30+spillwayK·1.1` | 🟡 SIMULATED display math |
+| Searchlight/volumetric | Open cone additive + point-light pulse + beacon blink | 🟡 PROCEDURAL effect |
+
+---
+
+## 🛰️ Geospatial Intelligence
+
+- **Leaflet 1.9.4** (`RadarMap.tsx`): `setView([17.385,78.4867],12)`, OSM tiles + CartoDB dark, `L.marker`, `L.layerGroup` rebuilds, `L.circle` hazard rings (pulse if high/critical), SAR dashed grid 5×5 step 0.02, target marker; icon fix to unpkg 1.9.4.
+- **Geocoding (`geocode.ts`):** Nominatim search/reverse, `haversineKm(R=6371)`, `bearingDeg atan2`, `compass16`, `toDMS`, `getLivePosition` high-accuracy one-shot with permission messages.
+- **Discovery (`overpass.ts`):** QL for help (6 km) + shelters (30 km), `GET overpass-api.de`, 15 s abort, throws → demo fallback, cap 20.
+- **Geofence:** separate engine below; breach feeds alerts + modal.
+
+```mermaid
+flowchart TD
+  L[Location: GPS or search] --> G[Geospatial: haversine + Overpass + Nominatim]
+  G --> M[Map state: circles + grid + markers]
+  M --> V[Leaflet visualization]
+  V --> S[Safety decision: risk + nearby + evacuate]
+```
+
+---
+
+## 🛸 Drone & Telemetry System
+
+Simulated generator, real protocol. Base `17.3850,78.4867`:
 
 ```python
-base_lat, base_lon = 17.3850, 78.4867  # Hyderabad ref
 lat = base + 0.02*sin(tick/12) + rand(±0.001)
 lon = base + 0.02*cos(tick/15) + rand(±0.001)
 alt_m = 120 + 10*sin(tick/8) + alt_noise
 speed_ms = max(0, 18 + 4*sin(tick/10) + rand(±1))
 battery_pct = max(0, 100 - tick*batt_drain)
-signal_pct, temp_c, mode, drone_id = scenario-dependent
 ```
 
-| Scenario | alt_noise | batt_drain/tick | signal | mode |
+| Scenario | alt_noise | drain | signal | mode |
 |---|---|---|---|---|
 | nominal | ±15 | 0.02 | 75–99 | AUTO-MESH |
 | storm | ±120 | 0.08 | 35–65 | AUTO-MESH |
 | swarm-surge | ±30 | 0.05 | 70–98 | AUTO-MESH |
 | gps-denied | ±50 | 0.04 | 5–25 | DEAD-RECKONING |
 
-Packet: `id, tick, ts, scenario, drone_id (DRX-01..12), lat, lon, alt_m, speed_ms, battery_pct, signal_pct, temp_c, mode`. Default rate `TELEMETRY_HZ=2` (`backend/app/config.py`, overridable via env).
+Packet: `id,tick,ts,scenario,drone_id DRX-01..12,lat,lon,alt_m,speed_ms,battery_pct,signal_pct,temp_c,mode`. `TELEMETRY_HZ=2` default.
 
-**Flow:**
-
-```text
-telemetry_engine.make_packet(tick, scenario)
-        ↓
-FastAPI WS /ws/telemetry (2 Hz) + REST snapshots
-        ↓
-useTelemetrySocket (reconnect + backoff, packets ≤50, live latest)
-        ↓
-intelStore / opsStore / local component state
-        ↓
-DroneLeafletTracker + DroneSwarmScene + command HUDs
-```
-
-Frontend (`src/hooks/useTelemetrySocket.ts`, 68 lines): `new WebSocket(url ?? getWsUrl())`, `onopen→connected`, `onclose→setTimeout(connect, min(1000·2^retry,10000))`, `onerror→close`, `onmessage→JSON.parse` (malformed ignored), newest-first cap 50. Fleet views fan the single stream into ≤8 markers.
-
-**SAR concept:** search grid (`RadarMap` dashed polyline 5×5 step 0.02), target marker, swarm scene, battery/signal-gated alerts — coordination visualization, not autonomous flight control.
+`useTelemetrySocket` (68 lines): `WebSocket(url ?? getWsUrl())`, `onopen→connected`, `onclose→backoff min(1s·2^retry,10s)`, `onerror→close`, `onmessage→JSON.parse` (ignore malformed), `packets≤50` newest-first + `live`. Consumers: HUDs, tracker, swarm, twin badges.
 
 ---
 
-## 🗺️ Map & geolocation system
+## 🗃️ State Management
 
-- **Libraries:** `leaflet@1.9.4` (+ `@types/leaflet`), CSS in `app/layout.tsx`; no react-leaflet/Mapbox/Cesium. `src/components/RadarMap.tsx` dynamic-imports Leaflet client-side.
-- **Base layers:** OSM standard tiles + CartoDB dark variant (tactical); Esri World Imagery as satellite fallback for twin context.
-- **Geocoding:** `src/utils/geocode.ts` — Nominatim `search?format=jsonv2` / `reverse`, `haversineKm (R=6371)`, `bearingDeg`, `compass16`, `toDMS`, `getLivePosition` (one-shot high-accuracy geolocation with permission/timeout messages).
-- **POIs:** `src/utils/overpass.ts` — `queryNearbyHelp` (hospital/clinic/pharmacy/doctors/police/fire/ambulance, 6 km) + `queryNearbyShelters` (shelter/assembly_point, 30 km) via `GET https://overpass-api.de/api/interpreter`, 15 s abort, throws on failure so callers show demo fallback, caps 20.
-- **Overlays:** `L.circle` hazard rings (pulse class if high/critical) + tooltips; SAR grid polylines; target markers; facility markers.
-- **Google (optional):** keyless `maps.google.com/maps?q&output=embed` fallback; with `NEXT_PUBLIC_GOOGLE_MAPS_KEY`, `embed/v1/place` + `fetchGooglePlace` (Place Search + FieldMask details: rating/hours/phone/website/photo/reviews) and `maps/dir` navigation links. Missing key throws `GOOGLE_KEY_MISSING`, UI degrades.
-
-```text
-Location (GPS/search)
-        ↓
-Map (Leaflet + tiles)
-        ↓
-Hazard information (demo cells + live alerts)
-        ↓
-Nearby resources (Overpass or demo)
-        ↓
-Safety / evacuation decisions
-```
-
----
-
-## 🧮 Risk engine
-
-`src/utils/riskEngine.ts` (103 lines) — **deterministic rules, not ML.**
-
-- **Inputs:** `(lat, lon)`; reads `DEMO_HAZARDS` (11 Krishna-basin + Hyderabad cells with `type/label/lat/lon/radiusKm/level/factors/confidence/source`).
-- **Calculation:** `haversineKm` to each zone → keep `dist ≤ radius+15km` → sort by severity rank then distance → top `inside` else nearest → else `low`.
-- **Output `RiskReport`:** `level (low/moderate/high/critical)`, `nearby[]`, `factors[]`, `confidence` (from zone, else 95), `assessedAt`, `action` (per-level guidance; critical: “Evacuate now via your safe route. Call 112…”).
-- **Helpers:** `nearestFacilities(lat,lon,kind?,n=3)` sorted slice; `pathExposure(a,b)` samples straight line `clamp(ceil(km/2),8,60)` against zone radii → `{maxLevel, crossed, pathKm}`.
-- **Consumed by:** `/safety`, `/risk` (+ `RiskVisualizer`), `/location`, `/evacuate` (destination ranking), `/talk`.
-- **Limits:** demo coverage only; straight-line exposure ignores roads/water; confidence is authored, not calibrated.
-
----
-
-## 🔔 Alert system
-
-`src/utils/alertRules.ts` (105 lines) — pure, testable, no React.
-
-| Condition | Severity | ID |
-|---|---|---|
-| `spillwayK > 45` (Prakasam critical discharge) | critical | `barrage-discharge` |
-| `geofenceBreach` (outside Hyderabad polygon) | critical | `geofence-breach` |
-| `scenario === 'storm'` | critical | `storm-cell` |
-| `scenario === 'gps-denied'` | warning | `gps-denied` |
-| `batteryPct < 20` | warning | `low-battery` |
-| `signalPct < 30` | warning | `weak-link` |
-
-Sorted critical → warning → info. `incidentLevel()` rolls up to `LEVEL-3 CRITICAL / LEVEL-2 ELEVATED / LEVEL-1 STABLE`.
-
-**Lifecycle:**
-
-```text
-live telemetry + ops.scenario/spillwayK + geofence check
-        ↓
-evaluateAlerts(input) on render
-        ↓
-AlertBanner / alerts page / ops KPIs / StatusHeader badge
-        ↓
-opsStore.acked[] (acknowledge) + intelStore latestAlert/events
-        ↓
-optional Browser Notification (user opt-in)
-```
-
-Geofence (`geofenceDetection.ts`, 32 lines): ray-casting `isInsideGeofence`, default rectangle `17.3757,78.4669 ±0.05°`; breach = outside.
-
----
-
-## 🆘 Emergency / SOS system
-
-`src/app/emergency/page.tsx` (305 lines) + `intelStore.setSosPhase/pushEvent/resolveEvent` + `SosRadar`.
-
-- **Flow:** `locate()` → `getLivePosition()` rounded to ~100 m → `sos: idle → locking → active` → elapsed `MM:SS` timer + radar pulse + red HUD → `tel:` links (`112/101/108/100/1078`), `navigator.share` fallback copy, Google Maps `dir` links to nearest facilities.
-- **Broadcasting:** local only — mirrors `{phase, coords}` into `intelStore` so command/globe/AI-core/ticker react; **no network dispatch to responders**.
-- **Safety notes:** rounding limits precision; requires geolocation permission + network for maps; always call local emergency numbers; prototype styling uses large touch targets for stress use.
-
----
-
-## 🚗 Evacuation system
-
-`src/app/evacuate/page.tsx` (223 lines) — **no routing engine; straight-line + map handoff.**
-
-1. `locate()` → GPS fix → `queryNearbyShelters(lat,lon,30km)` (Overpass) + in-range `DEMO_FACILITIES` shelters → filter `distKm ≤ 30` → sort → top 10.
-2. `pathExposure()` per destination → rank safest (lowest `maxLevel`, tie-break distance).
-3. Mode cards adjust ETA via simulated speeds (fastest 32, safest 24, vehicle 30, walking 5 km/h) with explicit “simulated risk” notes.
-4. “Navigate” opens Google Maps `dir/?api=1&origin&destination&travelmode`; shelter status from OSM tags or demo `status`.
-5. **Limits:** ignores roads, closures, water, capacity; unreachable directory shows demo fallback with notice.
-
----
-
-## 🛡️ Citizen safety system
-
-| Feature | Flow | Implementation | Limits |
-|---|---|---|---|
-| MY SAFETY | Check risk + checklist | `RiskChecker`, `assessRisk` | demo cells |
-| LIVE LOCATION | GPS + layers | Leaflet + geocode + hazards | permission-gated |
-| ALERT CENTER | Stream + ack + notify | `evaluateAlerts`, `acked[]` | rules only |
-| EMERGENCY MODE | SOS + share + navigate | `setSosPhase`, SosRadar | no dispatch |
-| SAFE EVACUATION | Shelters ≤30 km + exposure | Overpass + `pathExposure` | straight-line |
-| NEARBY HELP | Filter hospitals/police/fire | `queryNearbyHelp` + fallback | OSM completeness varies |
-| FAMILY SAFETY | Profiles + I'M SAFE | `localStorage:drishti-family` | manual, no tracking |
-| CITIZEN REPORTING | Form + photo + pipeline | `localStorage:drishti-reports`, `cleanText` | local only |
-| DISASTER EDUCATION | BEFORE/DURING/AFTER | `data/learn.ts`, EN/TE/HI | static content |
-
----
-
-## 🧠 AI / intelligence layer
-
-> **No trained ML model exists in this repo.** “AI” here = deterministic scoring + shared posture + visualization.
-
-| Intelligence component | Actual implementation | Purpose |
-|---|---|---|
-| Risk scoring | `riskEngine.assessRisk` (haversine + rank) | Citizen risk level + actions |
-| Alert rules | `alertRules.evaluateAlerts` (6 thresholds) | Hazard alerts + LEVEL-1/2/3 |
-| Scenario score | `intelStore.scenarioScore = min(100, 30+spillwayK·1.1 + storm?18:0)` | Ops posture 0–100 |
-| Tone mapping | `toneForScore (>70 critical, >40 warn)`, `threatForScore` | Drive core/globe/badges |
-| Event stream | `intelStore` (dedupe, sort, cap 30) + `AiDecisionTimeline` | Reviewable decision log |
-| Reunion match | `nameOverlap/scoreCandidate` heuristic | Queue ranking; facial-model pending |
-| 3D “AI core” | Three.js animation colored by tone | Visualize posture, not inference |
-| Telemetry | Simulated packets + WS plumbing | Animate dashboards/maps/3D |
-| External data | OSM/Overpass/Nominatim/tiles | Ground with open data |
-
-Effective posture: `effectiveScore = SOS-active ? 100 : max(scenarioScore, riskScore)`; `aiTone = SOS ? critical : max(drillTone, riskTone)`; `focus = SOS coords ?? risk place`.
-
----
-
-## 🗄️ State management
-
-| Store | File | State | Actions | Consumers |
+| Store | Responsibility | State | Actions | Consumers |
 |---|---|---|---|---|
-| `appStore` | `src/store/appStore.ts` (107) | `mode`, `lang`, `a11y{large,contrast,reduce}`, `qualityMode`, `soundEnabled` | `setApp/setA11y/setQualityMode/setSoundEnabled`, `useApp` | Navbar, A11yBar, 3D scenes, i18n |
-| `opsStore` | `src/store/opsStore.ts` (176) | `scenario`, `spillwayK`, `acked[]`, `demo{id,phase}` | `setOps/ackAlert/startDemo/demoStep/demoGoto/stopDemo`, `useOps` | command/ops/simulation/demo/alerts |
-| `intelStore` | `src/store/intelStore.ts` (266) | `scenarioScore`, `risk`, `sos`, `latestAlert`, `events[≤30]` | `setRiskResult/clearRisk/setSosPhase/setLatestAlert/pushEvent/resolveEvent`, `useIntel` | timeline, core, globe, alerts, risk |
+| `appStore` (107) | Prefs + quality | `mode`, `lang`, `a11y{large,contrast,reduce}`, `qualityMode`, `soundEnabled` | `setApp/setA11y/setQualityMode/setSoundEnabled`, `useApp` | nav, a11y, 3D, i18n |
+| `opsStore` (176) | Drill + triage | `scenario`, `spillwayK`, `acked[]`, `demo{id,phase}` | `setOps/ackAlert/startDemo/demoStep/demoGoto/stopDemo`, `useOps` | command/ops/sim/demo/alerts |
+| `intelStore` (266) | Shared truth | `risk`, `sos{phase,lat,lon}`, `latestAlert`, `events≤30` | `setRiskResult/clearRisk/setSosPhase/setLatestAlert/pushEvent/resolveEvent`, `useIntel` | timeline, core, globe, risk, SOS |
 
-`appStore` persists to `localStorage:drishti-app-v2` (lazy hydration, private-mode safe); `opsStore` in-memory (demo reset to `nominal/45`); `intelStore` pure score functions + external-store subscriptions (`useIntel` reads both ops+intel).
-
-```text
-UI event
-  ↓
-Store action (app/ops/intel)
-  ↓
-Subscribed components re-render
-  ↓
-Utils / APIs (risk, alerts, WS, Overpass)
-  ↓
-External services / backend
-  ↓
-UI update (HUD, map, 3D, timeline)
-```
+`appStore` persists `drishti-app-v2` (lazy hydrate, private-mode safe); `opsStore` in-memory reset `nominal/45`; `intelStore` dedupes/sorts/caps events, derives `effectiveScore = SOS?100:max(scenario,risk)`, `tone = SOS?critical:maxTone(...)`. `useIntel` subscribes to ops+intel together.
 
 ---
 
-## 🪝 Hooks
+## 🧠 Intelligence & Risk Engine
 
-| Hook | File | In → Out | Lifecycle | Used by |
-|---|---|---|---|---|
-| `useTelemetrySocket` | `hooks/useTelemetrySocket.ts` (68) | `url?` → `{packets[≤50], live, connected}` | connect on mount/url change; exponential backoff `min(1s·2^retry,10s)`; cleanup closes + clears timer | every live page |
-| `useLocalList` | `hooks/useLocalList.ts` (44) | `(key, seed)` → `{items, add, update, remove, ready}` | load once, persist on change (200-item / 200 kB caps) | family, report, plan/kit checklists |
-| `useT` | `i18n/dict.ts` | `key` → translated string (fallback EN→key) | reads `useApp().lang` | safety, emergency, learn, nav |
-| `useElapsed` | `app/emergency/page.tsx` | `running` → `MM:SS` | 1 s interval, reset on stop | SOS timer |
+> **No ML/AI inference exists.** Everything below is rules, math, simulation, or visualization over open data.
 
----
-
-## 🧰 Utilities
-
-| Utility | Purpose | In → Out | Used by | Notes |
-|---|---|---|---|---|
-| `alertRules` | Hazard alerts | `AlertInput` → `Alert[]` sorted | command/alerts/ops/simulation | `DISCHARGE_LIMIT_K=45`; pure |
-| `riskEngine` | Risk + exposure | `(lat,lon)` → `RiskReport`; path → `PathExposure` | safety/risk/location/evacuate/talk | rule-based; demo zones |
-| `geofenceDetection` | Polygon check | `point` → breach bool | command/alerts | ray-casting; Hyd. rect |
-| `overpass` | OSM POIs | `(lat,lon,r)` → `OsmPlace[]` | nearby/evacuate | 15 s abort; throws → demo |
-| `apiClient` | Backend I/O | endpoint/scenario → JSON | hooks/command/ops/health | Bearer key; defaults localhost |
-| `geocode` | Search/position/math | query/coords → `Place`/`GpsFix`/km | location/nearby/evacuate/emergency | Nominatim; high-accuracy GPS |
-| `googlePlaces` | Rich place details | `(name,lat,lon)` → details | location | requires Maps key; FieldMask |
-| `audioSynth` | Procedural sounds | event → oscillators | welcome/command toggles | Web Audio; no files; opt-in |
-
----
-
-## 🌐 Internationalization
-
-- `src/i18n/dict.ts` (88 lines): `DICT: Record<key, {en, te, hi}>` covering nav (25+ keys), modes, risk levels, emergency strings, common (`LIVE/DEMO/SIMULATION`).
-- `t(lang,key)` falls back `DICT[key][lang] ?? en ?? key`; `useT()` binds current `useApp().lang`.
-- Language switch persists via `appStore`; `/learn` and citizen flows are trilingual; Leaflet/OSM labels remain source-language.
-
----
-
-## 🔊 Audio system
-
-`src/utils/audioSynth.ts` (157 lines) — zero-dependency Web Audio:
-
-- Lazy singleton `AudioContext` (+ `webkit` fallback), resumes if suspended.
-- Gated by `localStorage['drishti-sound']=='1'` (default off) + `SoundToggle` UI.
-- Events: `click` (sine 1040→420 Hz, 0.04 s), `radarPing` (1320 Hz, 0.22 s), `warningAlarm` (triangle 620+840 Hz), `scenarioChange` (C5/E5/G5 arpeggio), `telemetryChirp` (1760→2200 Hz, 0.03 s).
-- No audio assets; autoplay-safe (created on user gesture); silent in SSR.
-
----
-
-## 🧊 3D rendering architecture
-
-- **No R3F:** direct `three` imperative scenes in `AiCoreScene`, `DigitalTwin`/`TwinViewport`/`DroneSwarmScene`, `CommandBackground`.
-- **Pattern per scene:** `init (renderer/camera/lights/meshes)` → `rAF + Clock` loop → `IntersectionObserver` + `visibilitychange` park → `resize` handler → `dispose` (geometries/materials/renderer).
-- **Cameras/lights:** `PerspectiveCamera(50–55°)`, ambient + directional + cyan point/fill, `FogExp2(#020b14)`.
-- **Interaction:** drag-velocity rotation (core), pointer parallax (twin/background), click pings.
-- **Resource guards:** `antialias:!weak`, `pixelRatio min(dpr, weak?1:1.75)`, particle/node counts by quality, `prefers-reduced-motion` → CSS fallback, dynamic `ssr:false` splits Three chunks.
-
----
-
-## 🎚️ Quality modes
-
-`appStore.qualityMode: high | medium | low` (+ legacy README names High/Balanced/Eco mapping to high/medium/low).
-
-- **Detection** (`detectOptimalQuality`): `low` if reduced-motion OR mobile UA OR `cores≤2` OR `memory<4GB`; `medium` if `cores≤4` OR `memory<8GB`; else `high`.
-- **Verified deltas:** AI core nodes `4/8/12`, particles `70/240/450`; twin grid `24/48`, rotors `15/32`; background pixel-ratio/antialias reduction.
-- **Targets:** 60 fps high/medium, ~30 fps low (design goals, not benchmarked).
-- **Switch:** quality switcher → `setQualityMode` → persisted in `drishti-app-v2`; scenes read `useApp().qualityMode` live.
-
----
-
-## ⚡ Performance engineering
-
-| Technique | Where | Why |
-|---|---|---|
-| Dynamic `import(..., {ssr:false})` | 3D scenes, Leaflet tracker | Keep Three/Leaflet out of initial bundle |
-| `IntersectionObserver` | 3D canvases | Park rAF off-screen |
-| Page Visibility API | All loops | Stop work when tab hidden |
-| Adaptive quality | `appStore` + scenes | Match device capability |
-| Reduced-motion / no-WebGL fallback | Scenes + CSS | Usable without GPU/animation |
-| Lazy gallery images | `loading="lazy"` | Defer below-fold cost |
-| Capped buffers | packets ≤50, events ≤30, lists ≤200 | Bound memory |
-| Zero paid deps for core | maps/data/sound | Run keyless |
-
----
-
-## 🖥️ Backend
-
-`backend/` — **FastAPI `0.116.1` + `uvicorn[standard]` + Pydantic 2, Python 3.11** (per `Dockerfile`/CI).
-
-```text
-Frontend
-  ↓
-REST / WebSocket (Bearer key, except open health/sensors)
-  ↓
-FastAPI (CORS open + localhost default, TELEMETRY_HZ=2)
-  ↓
-telemetry_engine / connection_manager / routers
-  ↓
-JSON packets → frontend stores
-```
-
-| Method + path | Auth | Behavior |
-|---|---|---|
-| `GET /api/health` | open | `{ok, service:drishti-telemetry, scenario}` |
-| `GET /api/telemetry` | Bearer | `make_packet(tick=0, current_scenario)` |
-| `POST /api/scenario` | Bearer | Validate `nominal\|storm\|swarm-surge\|gps-denied`, mutate global, else 400 |
-| `WS /ws/telemetry` | none | `accept` loop `send_json(make_packet(tick++))`, `sleep(1/HZ)` |
-| `GET /api/v1/health` | open | `{ok, service, api:v1}` |
-| `GET /api/v1/telemetry` | Bearer | `make_packet(tick=0)` |
-| `GET /api/v1/drones` | Bearer | `{drones: [packets ×3]}` |
-| `GET /api/v1/sensors` | open | Static thermal + AQI readings |
-| `POST /api/v1/scenario` | Bearer | Echo `{ok, scenario}` (no global mutation/validation) |
-| `WS /ws/telemetry-v1` | none | Broadcast via `ConnectionManager` |
-
-- **Startup:** `uvicorn app.main:app --host 0.0.0.0 --port 8000`; Docker `python:3.11-slim`, `EXPOSE 8000`, `${PORT:-8000}`; compose runs backend + frontend dev with shared dev key.
-- **Auth:** `HTTPBearer` vs `GATEWAY_KEY` (`drishti-mesh-dev-key-2025` default); frontend sends `Authorization: Bearer` via `apiClient`.
-
----
-
-## 🔌 API documentation
-
-| API / Service | Purpose | Key | Used by |
+| Component | Type | Input → Processing → Output | Used by |
 |---|---|---|---|
-| `WS /ws/telemetry` | Live packets @2 Hz | No (local trust) | `useTelemetrySocket` |
-| `GET /api/telemetry`, `/api/v1/telemetry`, `/api/v1/drones` | Snapshots | Bearer `GATEWAY_KEY` | `fetchTelemetryData`, resources |
-| `POST /api/scenario`, `/api/v1/scenario` | Scenario injection | Bearer | command/simulation |
-| `GET /api/health`, `/api/v1/health`, `/api/v1/sensors` | Health + demo sensors | No | `SystemHealth`, resources |
-| Nominatim search/reverse | Geocode | No | `geocode.ts`, location |
-| Overpass interpreter | POIs/shelters | No | `overpass.ts` |
-| OSM / CartoDB tiles | Base maps | No | `RadarMap` |
-| Esri World Imagery | Satellite fallback | No | twin context |
-| Google Maps embed / Places / Dir | Rich place + navigation | Optional `GOOGLE_MAPS_KEY` | location/evacuate/emergency |
-| OpenWeatherMap | Weather alerts (documented) | Optional `OWM_KEY` | Degrades gracefully; no hard dependency |
-| NASA EO / Unsplash | Gallery examples | No | `GeospatialIntelGallery` |
-| Web Speech / Notify / Geolocation | Voice, notify, GPS | Permission-gated | talk/alerts/safety |
+| Risk scoring | 4 Deterministic | `(lat,lon)` → haversine vs demo cells → `RiskReport` | safety/risk/location/evacuate/talk |
+| Alert rules | 3 Rule-based | telemetry+scenario+spillway+geofence+battery+signal → 6 rules → alerts + LEVEL | command/alerts/ops/sim |
+| Scenario score | 4 Deterministic | `(scenario,spillwayK)` → `min(100,30+spillwayK·1.1+storm?18:0)` → 0–100 | ticker, core, globe |
+| Tone/threat | 3 Rule-based | score → `>70 crit/>40 warn`, `≥80/60/30` levels | badges, 3D colors |
+| Event log | 6 Visualization | actions → dedupe/sort/cap30 → timeline | review |
+| Reunion rank | 4 Heuristic | name/camp/age overlap → score | reunion queue |
+| 3D core/globe | 6 Visualization | tone → color/animation | posture display |
+| Telemetry | 5 Simulation | tick+scenario → sin+random packet | dashboards/maps/3D |
+| OSM/Overpass | 7 External data | coords → tiles/POIs | maps/nearby/evacuate |
 
-Only the above are referenced in code; no other vendor APIs are required.
-
----
-
-## 🌍 External services
-
-| Service | Why / where | Key? | If unavailable |
-|---|---|---|---|
-| OpenStreetMap | Base tiles (`RadarMap`) | No | Map blank; overlays remain |
-| CartoDB | Dark tactical variant | No | Falls back to OSM |
-| Overpass | Hospitals/shelters/POIs | No | Demo facilities shown + notice |
-| Nominatim | Search/reverse | No (rate-limited) | Manual coords; error message |
-| Esri World Imagery | Satellite fallback | No | Grid/standard tiles |
-| NASA EO | Educational flood imagery | No | Gallery gradients |
-| Unsplash | Gallery examples | No | Fallback gradients |
-| Google Maps/Places | Embeds, rich details, `dir` links | Optional billing key | Keyless embed; `GOOGLE_KEY_MISSING` → fallback text |
-| OpenWeatherMap | Documented weather alerts | Optional | Feature degrades; core works |
-| Browser Geolocation/Speech/Notify/SW | GPS, voice, notify, offline | Permission | Guided errors; demo coords |
-
----
-
-## 🔐 Environment variables
-
-> Source of truth is code + `*.example`. Never commit real secrets.
-
-| Variable | Required? | Purpose | Default |
-|---|---|---|---|
-| `NEXT_PUBLIC_WS_URL` | Optional | Frontend WS URL | `ws://localhost:8000/ws/telemetry` |
-| `NEXT_PUBLIC_API_BASE` | Optional | Frontend REST base (code name; historic docs said `API_URL`) | `http://localhost:8000` |
-| `NEXT_PUBLIC_GATEWAY_KEY` | Optional locally, required to match backend | Bearer for REST | `drishti-mesh-dev-key-2025` |
-| `NEXT_PUBLIC_GOOGLE_MAPS_KEY` | Optional | Rich Places + embeds (historic docs said `GOOGLE_PLACES_KEY`) | empty → keyless fallback |
-| `NEXT_PUBLIC_OWM_KEY` | Optional | Documented weather key | empty → degrades |
-| `GATEWAY_KEY` (backend) | Required to match frontend in shared deploys | Backend bearer | `drishti-mesh-dev-key-2025` |
-| `CORS_ORIGINS` | Optional | Allowed origins (code appends `*`) | `http://localhost:3000` |
-| `TELEMETRY_HZ` | Optional | Packets/sec | `2` |
-
-```env
-# .env.local.example (frontend)
-NEXT_PUBLIC_API_BASE=http://localhost:8000
-NEXT_PUBLIC_WS_URL=ws://localhost:8000/ws/telemetry
-NEXT_PUBLIC_GATEWAY_KEY=CHANGE_ME_must_match_backend_GATEWAY_KEY
-# NEXT_PUBLIC_GOOGLE_MAPS_KEY=
-```
-
-```env
-# backend/.env.example
-GATEWAY_KEY=CHANGE_ME_set_a_long_random_value_here
-CORS_ORIGINS=http://localhost:3000
-TELEMETRY_HZ=2
-```
-
-> ⚠️ **Never commit real keys.** `.env*.local` and backend `.env` are gitignored. `NEXT_PUBLIC_*` ships to the browser — public by design, so use only publishable keys there.
-
----
-
-## 🗂️ Complete project structure
+### Risk formulas (only implemented variables)
 
 ```text
-drishti-ai-command-center/
-├── src/app/                  # 28 page.tsx routes; / redirects to /welcome
-│   ├── welcome/ command/ safety/ location/ alerts/ emergency/ evacuate/
-│   ├── twin/ drones/ ops/ simulation/ risk/ nearby/ report/ family/
-│   ├── learn/ plan/ kit/ shelter/ resources/ recovery/ reunion/ talk/
-│   ├── demo/ platform/ portal/ sources/ + layout.tsx, globals.css, error/loading
-├── src/components/
-│   ├── cinematic/            # AiCoreScene, CommandBackground, BootSequence,
-│   │                         # GeospatialIntelGallery, AiDecisionTimeline,
-│   │                         # HudPanel, RadarSweep, SosRadar, DemoMode, ...
-│   ├── 3d/ three/ maps/      # TwinViewport, DroneSwarmScene, DroneLeafletTracker
-│   ├── dashboard/ alerts/ layout/ # HeaderBar, LiveTelemetryTable, AlertBanner,
-│   │                              # GeofenceBreachModal, Navbar
-│   ├── RadarMap.tsx          # Leaflet map primitive
-│   ├── A11yBar.tsx MobileQuickBar.tsx EmergencyFab.tsx OfflineBanner.tsx
-│   └── RiskChecker.tsx ArchitectureDiagram.tsx DemoConsole.tsx MissionReplay.tsx
-├── src/store/                # appStore, opsStore, intelStore
-├── src/hooks/                # useTelemetrySocket, useLocalList
-├── src/utils/                # apiClient, alertRules, riskEngine, geofenceDetection,
-│                             # overpass, geocode, googlePlaces, audioSynth
-├── src/i18n/dict.ts          # EN/TE/HI dictionary + useT
-├── src/data/                 # providers.ts (demo hazards/facilities/alerts),
-│                             # learn.ts
-├── backend/
-│   ├── app/main.py           # FastAPI entry, CORS, scenario global, routers
-│   ├── app/config.py         # GATEWAY_KEY, CORS, TELEMETRY_HZ
-│   ├── app/telemetry.py      # re-export engine
-│   ├── app/services/         # telemetry_engine, connection_manager
-│   ├── app/models/ routers/  # packets, sensors, api_v1, ws_telemetry
-│   ├── requirements.txt Dockerfile tests/test_api.py .env.example
-├── public/                   # poster.jpg, icon.svg, manifest.json, sw.js
-├── docs/screenshots/README.md# real-capture contribution guide (no PNGs committed)
-├── docker-compose.yml vercel.json next.config.js
-└── .github/workflows/        # deploy.yml, pr-check.yml
+distKm(p, zone) = haversineKm(p.lat, p.lon, zone.lat, zone.lon)   # R=6371
+candidate if distKm ≤ zone.radiusKm + 15
+rank: critical 3 > high 2 > moderate 1 > low 0; tie → smaller distKm
+level = inside-top?.level ?? nearest?.level ?? 'low'
+confidence = zone.confidence ?? 95
+RISK_SCORE = { low:12, moderate:42, high:72, critical:94 }
+scenarioScore = min(100, round(30 + spillwayK*1.1 + (scenario=='storm' ? 18 : 0)))
+tone = score>70 ? critical : score>40 ? warn : ok
+effectiveScore = sos.phase=='active' ? 100 : max(scenarioScore, riskScore)
+pathExposure: samples = clamp(ceil(pathKm/2), 8, 60) straight-line; maxLevel = max zone containing any sample
 ```
 
-Key files: `app/welcome|command/page.tsx` (composition), `DigitalTwin.tsx` + `cinematic/AiCoreScene.tsx` (3D), `intelStore.ts` (posture), `telemetry_engine.py` (simulation), `RadarMap.tsx` (maps).
+Edge cases: no nearby → `low` + “demo coverage” factor; GPS denied → manual search path; OSM down → demo facilities; straight path ignores roads/water.
 
 ---
 
-## 🔀 Data flow
+## 🚨 Alert Architecture
 
-### Application flow
-
-```text
-User
- ↓
-Next.js route (src/app/*/page.tsx)
- ↓
-React component (components/*)
- ↓
-Store / hook (app/ops/intel + useTelemetrySocket/useLocalList)
- ↓
-Utility / API (risk, alerts, geocode, overpass, apiClient)
- ↓
-External service / backend
- ↓
-UI update (HUD, map, 3D, timeline)
-```
-
-### Telemetry flow
-
-```text
-telemetry_engine (simulated source)
- ↓
-FastAPI WS /ws/telemetry @2Hz
- ↓
-useTelemetrySocket (reconnect, cap 50)
- ↓
-Stores (live packet + scenario)
- ↓
-Dashboard + DroneLeafletTracker + 3D swarm
-```
-
-### Safety flow
-
-```text
-Location (GPS/search)
- ↓
-Hazard data (DEMO_HAZARDS + live alerts)
- ↓
-riskEngine.assessRisk
- ↓
-alertRules.evaluateAlerts
- ↓
-Safety UI (risk, alerts, nearby)
- ↓
-Evacuation / Emergency tools
-```
+Rules (`alertRules.ts`, `DISCHARGE_LIMIT_K=45`): barrage-discharge critical (`depth=spillwayK·0.041m` copy), geofence-breach critical, storm-cell critical, gps-denied warning, low-battery `<20` warning, weak-link `<30` warning. Sorted critical→info; `incidentLevel` → LEVEL-3/2/1. Lifecycle: signals → `evaluateAlerts` per render → banner/page/badges → `acked[]` + `latestAlert/events` → optional Notification. Geofence breach also opens modal with 20 s RTH copy (acknowledge stands it down locally).
 
 ---
 
-## 🧭 User flows
+## 📍 Geofence Engine
 
-### Citizen (implemented; data simulated where noted)
-
-Open `/welcome` → `/safety` check → enable location → `/location` hazards → `/nearby` help → `/alerts` subscribe → `/evacuate` shelter ≤30 km → `/emergency` SOS if needed → `/report` field update → `/family` mark safe → `/learn` guidance.
-
-### Operator (implemented; drill-oriented)
-
-Open `/command` → inspect telemetry/map → `/twin` surge → `/drones` swarm → `/simulation` raise spillway → review `LEVEL` + timeline → `/ops` ack + health → `/demo` replay story.
+`geofenceDetection.ts` (32 lines): ray-casting `yi>lat !== yj>lat && lon < (xj−xi)(lat−yi)/(yj−yi)+xi`, toggle inside. `HYDERABAD_GEOFENCE` rect `17.3757,78.4669 ±0.05°`. `checkGeofenceBreach = !inside`. Consumers: command/alerts via live packet coords. Triggers critical alert + modal. Math is planar degrees (fine for small drill box, not survey-grade).
 
 ---
 
-## 🎮 Scenario simulator
+## 🆘 Emergency & Safety System
 
-Shared `opsStore.scenario` + backend `_current_scenario` (via `setScenario`); `intelStore.scenarioScore` and 3D/telemetry/alerts react.
+SOS `idle→locking→active`: GPS rounded ~100 m → timer + `SosRadar` + red HUD → `tel:` (112/101/108/100/1078) + share/clipboard + Maps `dir` → stand-down resolves events and logs `sos-stood-down`. `intelStore` mirror lets command/globe/core react. Prototype: no dispatch, no background beacon, share requires user gesture + network.
 
-| Scenario | Purpose | What changes (verified) |
-|---|---|---|
-| Nominal | Baseline | alt ±15, drain 0.02, sig 75–99, AUTO-MESH |
-| Monsoon Surge (`storm`) | Flood discharge drill | alt ±120, drain 0.08, sig 35–65, critical storm alert, surge plane rises |
-| Swarm SAR (`swarm-surge`) | Multi-drone search | alt ±30, drain 0.05, sig 70–98, fleet emphasis |
-| GPS-Denied | Degraded nav | alt ±50, drain 0.04, sig 5–25, DEAD-RECKONING + warning |
-
-`DEMO_SCRIPTS` maps 7 demo phases to scenario+spillway presets; `spillwayK>45` fires barrage critical.
+Citizen 9: MY SAFETY (score+checklist), LIVE LOCATION (GPS layers), ALERT CENTER (rules+ack), EMERGENCY (above), EVACUATION (≤30 km + exposure), NEARBY HELP (Overpass + fallback), FAMILY (local profiles), REPORTING (local pipeline + photo), EDUCATION (static trilingual).
 
 ---
 
-## 🔒 Security
+## 🚗 Evacuation System
 
-- `NEXT_PUBLIC_*` are browser-public; never put private keys there.
-- REST guarded by `GATEWAY_KEY` Bearer; WS endpoints unauthenticated (local-trust prototype) — do not expose WS without a proxy/auth in production.
-- Backend `CORS` appends `*` in code — tighten `CORS_ORIGINS` for any shared deploy.
-- Location rounded to ~100 m before display/share in emergency/evacuate; still sensitive — share deliberately.
-- Incident/family data lives in `localStorage` only (per-browser, unencrypted).
-- Prototype is **not** production-hardened: no rate limits, audit log, RBAC, or encrypted dispatch.
+`evacuate/page.tsx`: GPS → `queryNearbyShelters(30 km)` + in-range demo → `distKm≤30` sort top 10 → `pathExposure` per dest → safest = min maxLevel then distance → mode ETAs via 32/24/30/5 km/h (labeled simulated) → Maps `dir` handoff. No road routing, closures, capacity, or water logic.
+
+---
+
+## 🔌 API Architecture
+
+| API | Method | Purpose | In → Out | Auth | Failure |
+|---|---|---|---|---|---|
+| `/api/health` | GET | Liveness + scenario | — → `{ok,service,scenario}` | open | backend down → health UI error |
+| `/api/telemetry` | GET | Snapshot | — → packet(`tick=0`) | Bearer | 401; malformed ignored |
+| `/api/scenario` | POST | Inject scenario | `{scenario}` → `{ok,scenario}` | Bearer, validated 4 | 400 invalid; 401 |
+| `/ws/telemetry` | WS | Stream | tick++ → packet @2 Hz | none | reconnect backoff |
+| `/api/v1/health` | GET | V1 liveness | — → `{ok,service,api:v1}` | open | — |
+| `/api/v1/telemetry` | GET | V1 snapshot | — → packet | Bearer | 401 |
+| `/api/v1/drones` | GET | Fleet stub | — → `{drones×3}` | Bearer | 401 |
+| `/api/v1/sensors` | GET | Demo sensors | — → THM-01 + AIR-02 | open | static |
+| `/api/v1/scenario` | POST | Echo (no mutate) | `{scenario}` → echo | Bearer | 401 |
+| `/ws/telemetry-v1` | WS | Broadcast | tick++ via Manager | none | prune dead |
+| Nominatim | GET | Geocode | query → `Place[]` | none/rate-limit | `[]` + message |
+| Overpass | GET | POIs/shelters | QL → `OsmPlace[≤20]` | none | throw → demo |
+| Google Places/Embed/Dir | GET/POST/link | Rich place + nav | key or keyless embed | opt key | `GOOGLE_KEY_MISSING` → fallback |
+| Browser GPS/Speech/Notify/SW | APIs | Position/voice/alerts/offline | permission | — | guided errors |
+
+---
+
+## ⚙️ Backend Architecture
+
+FastAPI `0.116.1`, Python 3.11, `app.main:app` v0.1.0. `config.py`: `GATEWAY_KEY`, `CORS_ORIGINS` (+`*` in code), `TELEMETRY_HZ=2`. `telemetry.py` re-exports engine. `services/telemetry_engine.py` (43 lines) + `connection_manager.py` (connect/disconnect/broadcast prune). `models/telemetry.py`: `TelemetryPacket/SensorReading/Alert/ScenarioRequest`. `routers/api_v1.py` + `ws_telemetry.py` mounted in `main.py`; global `_current_scenario` mutated only by `/api/scenario`.
+
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8000
+```
+
+Docker: `python:3.11-slim`, `EXPOSE 8000`, `CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}`. Compose: backend (8000, env_file + `CORS_ORIGINS/TELEMETRY_HZ=2`) + frontend `node:20-slim` dev mount (3000, dev key).
+
+---
+
+## 🌍 External Services
+
+- **OpenStreetMap:** base tiles; no key; blank-map fallback.
+- **CartoDB:** dark variant; no key; OSM fallback.
+- **Overpass:** `queryNearbyHelp/Shelters` QL; no key; 15 s timeout → demo + notice.
+- **Nominatim:** search/reverse; no key, rate-limited; manual-coords fallback.
+- **Esri World Imagery:** satellite fallback for twin; no key.
+- **OpenWeatherMap:** documented optional weather alerts (`OWM_KEY`); degrades gracefully; no hard call path required.
+- **NASA EO:** open educational flood imagery in gallery only.
+- **Unsplash:** 4 `INTEL_EXAMPLES` (satellite/drone/vision/terrain) with gradient fallbacks.
+- **Google:** keyless embed fallback everywhere; `GOOGLE_MAPS_KEY` unlocks `embed/v1/place` + `fetchGooglePlace` (searchText + FieldMask) + rich `dir` links.
+
+---
+
+## 📊 Data Models
+
+```ts
+TelemetryPacket { id, tick, ts, scenario, drone_id, lat, lon, alt_m, speed_ms, battery_pct, signal_pct, temp_c, mode }
+HazardZone { id, type, label, lat, lon, radiusKm, level, note, factors[], confidence, source: DEMO|SIMULATION, updated }
+Facility { id, kind: shelter|hospital|police|fire|relief|dam|bridge, name, lat, lon, status, detail, source: DEMO }
+Alert { id, level: critical|warning|info, title, detail } + AlertInput { scenario, spillwayK, batteryPct?, signalPct?, geofenceBreach, droneId? }
+DrishtiEvent { id, type: SENSOR|RISK|ALERT|SOS|SYSTEM|NETWORK, severity, title, detail?, lat?, lon?, place?, source, ts, status }
+RiskSnapshot { score, level, confidence, placeName, lat, lon, assessedAt, source:'risk-check' }
+SosSnapshot { phase: idle|locking|active, lat?, lon?, startedAt? }
+StoredIncident { id, + localStorage drishti-reports pipeline } ; FamilyMember { localStorage drishti-family, manual sharing }
+EvacDest { id, name, lat, lon, live, status, distKm } + PathExposure { maxLevel, crossed, pathKm }
+OpsState { scenario, spillwayK, acked[], demo{id,phase}|null } ; AppState { mode, lang, a11y, qualityMode, soundEnabled }
+```
+
+Only above entities exist; no user accounts, DB rows, or ML feature stores.
+
+---
+
+## 🧯 Failure & Fallback Architecture
+
+| Failure | Behavior |
+|---|---|
+| Backend down | `connected:false` badges, last packet shown, `SystemHealth` error, scenario local-only |
+| WS drop | Exponential backoff `≤10 s`, auto-resume, malformed frames ignored |
+| GPS denied | Message + manual search path; SOS/evacuate blocked with guidance |
+| No WebGL / reduced motion | Canvas skipped, CSS/gradient fallback remains |
+| Low device | Auto `low`, pixelRatio≤1, fewer nodes/particles, gated pointer |
+| OSM/tiles down | Overlays remain; fallback tile layer |
+| Overpass/Nominatim fail | Demo facilities + notices; `[]` for short queries |
+| Google key missing | Keyless embed; `GOOGLE_KEY_MISSING` friendly copy |
+| Weather key missing | Alerts degrade; core works |
+| Storage full/private | `try/catch`, in-memory continue |
+
+---
+
+## ⚡ Performance Engineering
+
+| Problem → Technique → Benefit |
+|---|
+| Three/Leaflet bloat initial JS → dynamic `ssr:false` + `await import(leaflet)` → split chunks, faster FCP |
+| Off-screen WebGL burn → `IntersectionObserver` park → near-zero idle GPU |
+| Hidden-tab burn → `visibilitychange` pause → battery saved |
+| Weak GPUs jank → adaptive `high/medium/low` + `pixelRatio` caps → stable frames |
+| Motion-sensitive / no GPU → reduced-motion + WebGL `try/catch` fallbacks → usable everywhere |
+| Gallery cost → `loading="lazy"` + gradients → deferred bytes |
+| Unbounded growth → packets≤50, events≤30, lists≤200/200 kB → bounded memory |
+| Paid walls → keyless-first + optional keys → evaluable offline from backend |
+
+---
+
+## 🔐 Security & Privacy
+
+- `NEXT_PUBLIC_*` ships to browser: publishable only; backend `GATEWAY_KEY/CORS/TELEMETRY_HZ` server-side.
+- REST Bearer-checked; WS open (local-trust) — proxy/auth before any shared hosting.
+- `CORS_ORIGINS + "*"` in code is dev-grade; tighten for shared deploys.
+- GPS rounded ~100 m for display/share; family/reports in unencrypted `localStorage`.
+- No RBAC, rate limits, audit log, or encrypted dispatch — prototype boundaries, not production posture.
 
 ---
 
 ## ♿ Accessibility
 
-Implemented (`A11yBar`, `layout`, emergency design):
-
-- Skip-to-content link, `sr-only` helpers, semantic `main`/`h1`.
-- Toggles set `html.a11y-large / a11y-contrast / a11y-still` (persisted via `appStore`); respects OS reduced-motion on load.
-- `readAloud()` via `speechSynthesis` (first 1200 chars of `main`).
-- Emergency big targets, high-contrast cyan/rose/amber on navy.
-- Gaps: canvas scenes lack text equivalents; status is color+text (keep text); no full WCAG audit; Leaflet keyboard map limited; voice requires browser support.
+Implemented: skip link, semantic `main/h1`, `sr-only`, `A11yBar` (`a11y-large/contrast/still` on `html`, persisted), OS reduced-motion default, `readAloud` (1200 chars), big SOS targets, status text alongside color, keyboard-reachable nav/buttons. Gaps: canvases `aria-hidden` without text equivalents; Leaflet keyboard limited; no formal WCAG audit; voice/notification browser-gated.
 
 ---
 
-## 📱 Responsive design
+## 📱 Responsive Design
 
-- Tailwind `sm/md` grids (`grid-cols-1 sm:grid-cols-2`), `p-4 max-w-3xl` citizen pages, `pb-14 md:pb-0` for mobile bar clearance.
-- `MobileQuickBar` + `EmergencyFab` on small screens; `Navbar` splits public/command lists with compact overflow.
-- 3D auto-`low` on mobile UA / low cores/memory; `pixelRatio≤1`, reduced geometry.
-- HUD panels stack vertically; tables scroll; maps remain touch-draggable.
-- Verified pattern, not device-lab certified — test on target phones before field claims.
+Tailwind `sm/md`: `grid-cols-1 sm:2`, `max-w-3xl` citizen pages, `pb-14 md:pb-0` for `MobileQuickBar`. HUD stacks; tables scroll; maps touch-drag; `EmergencyFab` persistent; Navbar overflows compactly. 3D auto-low on mobile/low cores/memory. Pattern-verified, not device-lab certified.
 
 ---
 
-## 🖼️ Platform preview
+## 🎨 UX Architecture
 
-Shipped assets only — no fabricated screenshots:
-
-![DRISHTI-X poster](public/poster.jpg)
-
-- `public/poster.jpg` — hero poster (also OG/Twitter image via `layout.tsx`).
-- `public/icon.svg` — cybernetic-eye favicon.
-- `docs/screenshots/` — contribution guide only; add real `welcome/command/twin/drones/simulation/...` captures (1280×800, <500 kB) and reference them here once committed.
+Mission-control hierarchy: posture (`LEVEL` + tone color) → map/twin/telemetry → timeline → actions. Operator flow inspects then injects scenario; citizen flow checks then navigates/calls. Cyan primary, rose/amber status on `#020b14` navy; mono telemetry; `TrustBadge` marks `LIVE/DEMO/SIMULATION` at every ambiguous surface; confirm-free ack, gesture-gated SOS/share/notify.
 
 ---
 
-## 📦 Installation
+## 🎮 Scenario Simulation
 
-### Prerequisites
+| Scenario | Initial → Changed | Affects | UX |
+|---|---|---|---|
+| Nominal | Baseline | calm ticker, AUTO-MESH, LEVEL-1 | surveillance |
+| Monsoon Surge (`storm`) | +18 score, alt±120, drain 4×, sig 35–65, critical storm + barrage at >45k, surge rises | alerts, twin, core red | flood drill |
+| Swarm SAR (`swarm-surge`) | alt±30, sig 70–98, fleet emphasis | drones, radar | search drill |
+| GPS-Denied | DEAD-RECKONING, sig 5–25, warning | maps, alerts | degraded drill |
 
-- Node.js 18+ (CI uses 20), npm 9+
-- Python 3.11 for backend (optional but recommended for live telemetry)
-- Modern browser with WebGL + Geolocation permission for full experience
+`DEMO_SCRIPTS` maps 7 phases → scenario+spillway; `POST /api/scenario` syncs backend global where reachable.
+
+---
+
+## 🔀 Complete User Journeys
+
+```mermaid
+flowchart TD
+  C0[Open /welcome] --> C1[/safety check]
+  C1 --> C2[Enable location]
+  C2 --> C3[/location hazards]
+  C3 --> C4[/nearby help]
+  C4 --> C5[/alerts subscribe]
+  C5 --> C6[/evacuate shelter]
+  C6 --> C7{SOS needed?}
+  C7 -- Yes --> C8[/emergency SOS]
+  C7 -- No --> C9[/learn + /family safe]
+```
+
+```mermaid
+flowchart TD
+  E0[/emergency open] --> E1[Locate ~100m]
+  E1 --> E2[locking]
+  E2 --> E3[active timer + radar]
+  E3 --> E4[Call 112 + share + navigate]
+  E4 --> E5[Stand down + log]
+```
+
+```mermaid
+flowchart TD
+  O0[/command] --> O1[Telemetry + map]
+  O1 --> O2[/twin surge]
+  O2 --> O3[/drones swarm]
+  O3 --> O4[/simulation spillway]
+  O4 --> O5[LEVEL + timeline]
+  O5 --> O6[/ops ack + health]
+```
+
+```mermaid
+flowchart TD
+  D0[Scenario swarm-surge] --> D1[Packets fan-out fleet 8]
+  D1 --> D2[Radar + grid + target]
+  D2 --> D3[Battery + signal gates]
+  D3 --> D4[Alert + triage]
+```
+
+```mermaid
+flowchart TD
+  F0[storm + spillway >45k] --> F1[Critical barrage + storm alerts]
+  F1 --> F2[LEVEL-3 + red core]
+  F2 --> F3[Twin surge + timeline]
+  F3 --> F4[Evacuate + SOS path]
+```
+
+---
+
+## 🛠️ Installation
+
+Prereqs: Node 18+ (CI 20), npm 9+, Python 3.11 (backend), WebGL browser.
 
 ```bash
-# 1. Clone
 git clone https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center.git
 cd drishti-ai-command-center
-
-# 2. Install frontend
 npm install
-
-# 3. Configure (all optional — runs keyless)
 cp .env.local.example .env.local
-# edit .env.local to match backend GATEWAY_KEY if running backend
-
-# 4. Dev
 npm run dev
 # http://localhost:3000
 ```
 
 ```bash
-# Production build
 npm run build
 npm run start
-
-# Checks
 npm run lint
 npm run typecheck
 ```
 
 ```bash
-# Optional backend (live WS)
 cd backend
 pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000
-# WS ws://localhost:8000/ws/telemetry
-# Health http://localhost:8000/api/health
 ```
-
-Docker alternative:
 
 ```bash
 docker build -t drishti-backend ./backend
-# or
 docker compose up --build
 ```
 
 ---
 
-## 🛠️ Troubleshooting
+## 🔑 Environment Configuration
 
-| Symptom | Likely cause | Fix |
-|---|---|---|
-| `npm install` fails | Node <18 / cache | Use Node 20, `npm cache clean --force`, delete `node_modules` + `package-lock` reinstall |
-| `npm run build` fails | Type/ESLint | Run `npm run typecheck`, `npm run lint`; fix reported file |
-| Blank 3D / fallback shown | No WebGL / reduced-motion | Try Chrome/Edge, enable hardware accel, disable reduced-motion to test |
-| `connected: false` forever | Backend down / wrong WS URL | Start backend, verify `NEXT_PUBLIC_WS_URL`, check `/api/health` |
-| `401` on telemetry/scenario | Key mismatch | Match `NEXT_PUBLIC_GATEWAY_KEY` ↔ backend `GATEWAY_KEY` |
-| Geolocation error | Permission denied / insecure context | Allow location, use localhost/HTTPS |
-| Overpass empty/timeout | Rate limit / offline | Retry; demo fallback is expected |
-| Google details missing | No Maps key | Set `NEXT_PUBLIC_GOOGLE_MAPS_KEY`, redeploy; else keyless embed |
-| Mobile jank | High quality on weak GPU | Switch to Eco/low; close tabs |
-| Backend port busy | 8000 taken | Change `--port` + `NEXT_PUBLIC_*` URLs |
+| Variable | Required | Scope | Purpose | Default |
+|---|---|---|---|---|
+| `NEXT_PUBLIC_WS_URL` | Optional | browser | WS URL | `ws://localhost:8000/ws/telemetry` |
+| `NEXT_PUBLIC_API_BASE` | Optional | browser | REST base | `http://localhost:8000` |
+| `NEXT_PUBLIC_GATEWAY_KEY` | Match backend | browser | REST Bearer | `drishti-mesh-dev-key-2025` |
+| `NEXT_PUBLIC_GOOGLE_MAPS_KEY` | Optional | browser | Rich Places/embeds | empty → keyless |
+| `NEXT_PUBLIC_OWM_KEY` | Optional | browser | Documented weather | empty → degrade |
+| `GATEWAY_KEY` | Match frontend | server | REST Bearer | `drishti-mesh-dev-key-2025` |
+| `CORS_ORIGINS` | Optional | server | Origins (+`*` in code) | `http://localhost:3000` |
+| `TELEMETRY_HZ` | Optional | server | Packets/sec | `2` |
+
+> ⚠️ Never commit real keys. `.env*.local` + backend `.env` are gitignored.
 
 ---
 
-## 🌐 Deployment
+## 🚀 Deployment
 
-- **Frontend live:** https://drishti-ai-command-center.vercel.app/ via Vercel + `vercel.json` (frontend service root `.`, backend entry `app.main:app`, `/api/backend/*` rewrite).
-- **CI:** `.github/workflows/pr-check.yml` (typecheck+lint+compile) and `deploy.yml` (frontend build + backend pytest/compile + Docker build) on push/PR.
-- **Manual:** `npm run build` then `vercel --prod`; set `NEXT_PUBLIC_*` in Vercel → Settings → Environment Variables.
-- **Backend:** not served from the Vercel static URL alone — host FastAPI separately (Docker/VM), set CORS to your domain, point frontend envs at `https://<api>` / `wss://<api>/ws/telemetry`. WS needs sticky sessions/proxy support.
+```mermaid
+flowchart TD
+  GH[GitHub main] --> CI[Actions: typecheck + lint + build + pytest + docker]
+  CI --> V[Verce: Next.js frontend]
+  V --> URL[https://drishti-ai-command-center.vercel.app/]
+  URL --> EXT[External APIs keyless-first]
+  BACK[FastAPI Docker/VM separate] --> URL
+```
+
+`vercel.json` services: frontend root `.`, backend entry `app.main:app`, `/api/backend/*` rewrite. Manual: `npm run build && vercel --prod`; set `NEXT_PUBLIC_*` in Vercel env. Backend needs separate host with `wss` + tightened CORS; WS needs sticky/proxy support. Do not claim backend is on the Vercel URL.
 
 ---
 
 ## 🧪 Testing
 
-### Current testing status
+9 backend contract tests (`backend/tests/test_api.py`, `TestClient`, `GATEWAY_KEY=test-key-123`): open health ×2, 401 guards, authed shape (fields + lat/lon/battery ranges), drones list, scenario round-trip (`storm→200`, `nope→400`, reset), WS frame (`drone_id+tick`), open sensors, v1 scenario guard. Run `python -m pytest -q`. Frontend: no suite; CI enforces `tsc --noEmit` + `next lint` + `next build`. No coverage percentages claimed.
 
-- **Backend: 8 tests in `backend/tests/test_api.py`** (`TestClient(app)`, `GATEWAY_KEY=test-key-123`): open health checks, 401-without-key guards, authed telemetry shape (fields + lat/lon/battery ranges), drones list, scenario round-trip (`storm→200`, invalid→400, reset nominal), WS frame contains `drone_id+tick`, open sensors, v1 scenario guard.
-- Run: `cd backend && pip install -r requirements.txt && python -m pytest -q`.
-- **Frontend: no automated test suite** in this repo. Verification is `tsc --noEmit` + `next lint` + `next build` (CI-enforced).
-- No invented coverage: add Vitest/Playwright + backend load tests before production claims.
+---
+
+## 👁️ Observability
+
+Exists: `/api/health` + `/api/v1/health` + `/api/v1/sensors`, `SystemHealth` panel, `OfflineBanner`, `BootSequence` steps, `DemoConsole`/`MissionReplay` drill trace, `AiDecisionTimeline` event log, `try/catch` + malformed-frame guards, Next error/loading boundaries. Missing: structured logs, metrics/tracing, alerting, persisted audit — see Scalability.
+
+---
+
+## 🧯 Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Install fail | Node 20, clean cache, reinstall |
+| Build fail | `typecheck` + `lint` first |
+| `connected:false` | Start backend, check WS URL + `/api/health` |
+| 401 | Match gateway keys |
+| GPS error | Allow permission, localhost/HTTPS |
+| Overpass empty | Retry; demo fallback expected |
+| Google details missing | Set Maps key + redeploy |
+| 3D fallback | Enable HW accel; test without reduced-motion |
+| Mobile jank | Eco/low mode |
 
 ---
 
 ## ⚠️ Limitations
 
-- Prototype/demo: telemetry, hazards, facilities, ICU, shelters seeds, and gallery are simulated or open examples.
-- No trained ML, no accuracy metrics, no live satellite tasking, no dispatch integration.
-- Straight-line evacuation exposure; navigation delegated to Google Maps links.
-- OSM/Nominatim/Overpass subject to availability and rate limits.
-- Requires geolocation permission + WebGL-capable browser for full fidelity.
-- LocalStorage-only persistence; multi-device/agency sync is roadmap, not present.
-- Security/CORS/auth are dev-grade.
-
-Stating limits is intentional — it makes evaluation and extension easier.
+Prototype/demo boundaries: simulated telemetry/hazards/facilities/ICU/seeds/gallery; no ML, metrics, satellite tasking, or dispatch. Straight-line evacuation; OSM rate limits; GPS/WebGL permission/hardware gated; localStorage-only; dev-grade CORS/auth; WS open. Maturity explicit in matrix below.
 
 ---
 
-## 🗺️ Future roadmap
+## 📈 Scalability & Future Architecture
 
-Planned only — not implemented:
+> Recommendations, not existing features.
 
-- [ ] Copernicus Sentinel imagery integration
-- [ ] WebRTC peer-to-peer drone video
-- [ ] PWA push notification alerts
-- [ ] Multi-agency collaboration room (shared WS state)
-- [ ] Citizen AI chatbot (local open-source LLM)
-- [ ] React Native / Expo companion app
-- [ ] Bharat GNSS / NavIC positioning
+- Distributed telemetry: gateway → queue (e.g., NATS/Kafka) → stream processors → WS fan-out + history DB.
+- Persistent PostGIS + event store; idempotent ingestion; backfill/replay.
+- WebRTC SFU for drone video alongside telemetry tracks.
+- Multi-agency rooms: presence + CRDT/shared WS state + RBAC + audit.
+- Real inference service: versioned models behind feature-flagged API, calibrated scores, eval harness.
+- Satellite pipeline: STAC catalog + tile server + change detection jobs.
+- Mobile: Expo client reusing REST/WS + push.
+- Backend horizontal scale: stateless packet builders + Redis pub/sub + sticky WS or gateway broadcast.
+
+---
+
+## 🧭 Architectural Decisions & Trade-offs
+
+| Decision | Why (evident) / Interpretation |
+|---|---|
+| Next.js App Router | Routes map 1:1 to ops/citizen modules; SSR shell + client islands; Vercel-native |
+| Vanilla Three.js | Full control of particles/loops/dispose; no R3F dep; cost = imperative code |
+| Leaflet + OSM | Keyless, light, sufficient for circles/markers; cost = no vector 3D globe |
+| WS push @2 Hz | Liveness for HUD/maps/3D; cost = open local WS, reconnect logic owned by client |
+| FastAPI | Typed Python service, TestClient tests, Docker-ready; cost = separate host from Vercel |
+| Browser-side viz | Zero backend render cost, instant tone updates; cost = GPU-gated, needs quality modes |
+| Adaptive quality | One codebase across desktop/mobile; cost = tuning matrix |
+| Procedural audio | Zero assets, gesture-safe; cost = limited fidelity |
+| Open geo services | Evaluable with no keys; cost = quotas/fallback complexity |
+
+---
+
+## 🗺️ Roadmap
+
+**Current (verified):** 27 sub-routes, HUD+timeline, 3D trio+swarm, Leaflet+Overpass+Nominatim, rules engines, SOS/evacuate prototypes, trilingual, audio, quality modes, FastAPI+WS, CI, Docker/compose.
+
+**Planned (not started):** Copernicus Sentinel, WebRTC drone video, PWA push, multi-agency collaboration, citizen AI chatbot (local LLM), React Native/Expo app, NavIC/Bharat GNSS.
+
+---
+
+## 📁 Complete Project Structure
+
+```text
+src/
+├── app/ # 27 page.tsx (welcome/command/safety/location/alerts/emergency/evacuate/twin/drones/ops/simulation/risk/nearby/report/family/learn/plan/kit/shelter/resources/recovery/reunion/talk/demo/platform/portal/sources) + page redirect + layout + globals + error/loading
+├── components/ # 40 tsx: cinematic(14) + 3d/three + maps + dashboard + alerts + layout + safety/ops primitives
+├── hooks/ # useTelemetrySocket(68) + useLocalList(44)
+├── store/ # appStore(107) + opsStore(176) + intelStore(266)
+├── utils/ # apiClient(36) + alertRules(105) + riskEngine(103) + geofenceDetection(32) + overpass(105) + geocode(146) + googlePlaces(120) + audioSynth(157)
+├── i18n/dict.ts(88) # EN/TE/HI + useT
+└── data/ # providers.ts(183: 11 hazards/11 facilities/4 alerts + numbers) + learn.ts
+backend/ # app/main(81)+config+telemetry + services(engine43/manager) + models(39) + routers(api_v1 52/ws) + requirements + Dockerfile(py3.11) + tests(71: 9 tests) + .env.example
+public/ # poster.jpg + icon.svg + manifest.json + sw.js
+docs/screenshots/README.md # capture guide, no PNGs
+next.config.js # strict + env passthrough
+tailwind.config.js # content src/**/*.tsx
+docker-compose.yml # backend 8000 + frontend node:20 dev
+vercel.json # frontend svc + backend entry + rewrites
+.github/workflows/ # deploy.yml + pr-check.yml
+```
+
+---
+
+## 🧮 Technology Matrix
+
+| Layer | Technology | Version | Responsibility |
+|---|---|---|---|
+| Frontend | Next.js / React / TS | 14.2.5 / 18.3.1 / 5.5.0 | Routing, UI, types |
+| 3D | three + @types/three | 0.169.0 | Core, twin, globe, swarm |
+| Maps | leaflet + @types/leaflet | 1.9.4 / 1.9.12 | Tiles, circles, grid, markers |
+| State | React external stores | built-in | app/ops/intel shared truth |
+| Styling | Tailwind + PostCSS + autoprefixer | 3.4.19 / 8.5.28 / 10.5.6 | Utility UI |
+| Icons | lucide-react | 1.45.0 | Glyphs |
+| Audio | Web Audio | native | Procedural cues |
+| Backend | FastAPI / Uvicorn / Pydantic | 0.116.1 / 0.35.0 / 2.11.7 | REST/WS/models |
+| Realtime | WebSocket | native | 2 Hz packets |
+| Tests | pytest + httpx + TestClient | 8.3.4 / 0.28.1 | 9 contract tests |
+| Deploy | Vercel + Docker + compose | services/dockerfile | Frontend hosting + API container |
+| External | OSM/CartoDB/Overpass/Nominatim/Esri/Google/NASA/Unsplash | services | Tiles, POIs, geocode, gallery |
+
+---
+
+## 🏷️ Feature Maturity Matrix
+
+| Capability | Status | Implementation |
+|---|---|---|
+| Routing + HUD + timeline + triage | 🟢 Implemented | 27 routes, 40 components, 3 stores |
+| Maps + search + POIs + shelters | 🟢 Implemented | Leaflet + Nominatim + Overpass; Google opt |
+| Risk/alert/geofence math | 🟢 Implemented | Deterministic fns, 6 alert rules, ray-casting |
+| REST/WS + reconnect + health | 🟢 Implemented | FastAPI + hook + SystemHealth |
+| SOS/evacuate/report/family/learn/voice | 🟢 Implemented | Prototypes, local-first |
+| Drone positions/battery/signal | 🟡 Simulated | sin+random Hyd generator @2 Hz |
+| Hazards/facilities/ICU/seeds/gallery | 🟡 Simulated | Labeled DEMO/SIMULATION |
+| 3D core/twin/globe/swarm/flood | 🟡 Simulated | Procedural viz of posture |
+| Tiles/POIs/geocode/imagery | 🔵 External | Keyless-first, quota-gated |
+| Sentinel/WebRTC/push/multi-agency/chatbot/mobile/NavIC | ⚪ Planned | Roadmap only |
+
+---
+
+## 🖼️ Platform Preview
+
+![DRISHTI-X poster](public/poster.jpg)
+
+Verified assets: `public/poster.jpg` (hero + OG image), `public/icon.svg` (favicon), `public/manifest.json` + `sw.js` (PWA shell). `docs/screenshots/` holds only a capture guide — add real 1280×800 route PNGs before referencing more images.
 
 ---
 
 ## 🤝 Contributing
 
 ```bash
-# 1. Fork, then
 git clone https://github.com/<you>/drishti-ai-command-center.git
 cd drishti-ai-command-center
 git checkout -b feat/<short-name>
-
-# 2. Change + verify
 npm install
 npm run typecheck
 npm run lint
 npm run build
 cd backend && python -m pytest -q
-
-# 3. Push + PR against main with screenshots for UI changes
 ```
 
-Keep PRs scoped; document simulated vs real in descriptions; add real captures to `docs/screenshots/` when touching routes.
+Scoped PRs to `main`; screenshots for UI; label simulated vs real; update maturity matrix when behavior changes.
 
 ---
 
@@ -1050,6 +918,6 @@ AI Engineer · Full-Stack Developer
 
 ## ⭐ Why DRISHTI-X
 
-Deterministic intelligence logic + geospatial systems + 3D visualization + WebSocket telemetry + citizen safety + operator workflows + modern Next.js/FastAPI architecture — in one inspectable prototype with honest simulated-vs-real boundaries and a clear path to Sentinel, WebRTC, push, multi-agency, chatbot, mobile, and NavIC next.
+AI disaster management needs more than models: geospatial intelligence, drone search and rescue context, digital twin and flood simulation, real-time telemetry, Three.js visualization, Next.js + FastAPI delivery, and citizen safety plus command center workflows in one evaluable system. DRISHTI-X is that integration prototype — honest about simulated boundaries, explicit about architecture, and structured for Sentinel, video, push, multi-agency, inference, and mobile next.
 
 *DRISHTI-X — For a Safer, Stronger, Resilient India 🇮🇳*
