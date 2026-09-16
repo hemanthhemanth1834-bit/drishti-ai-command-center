@@ -1,9 +1,27 @@
 'use client';
 /** Live disaster overview — honest statuses, never fabricated live values. */
 import Link from 'next/link';
+import { CloudLightning, Waves, Mountain, Sun, Activity, Flame } from 'lucide-react';
 import { DISASTER_CATEGORIES } from '@/config/navigation';
 import { usePlatform } from '@/platform/usePlatform';
 import { StatusBadge } from '@/platform/provenance';
+
+const CATEGORY_ICONS: Record<string, typeof Waves> = {
+  Cyclone: CloudLightning, Flood: Waves, Landslide: Mountain,
+  Heatwave: Sun, Earthquake: Activity, Wildfire: Flame,
+};
+
+function timeAgo(ts?: string): string {
+  if (!ts || ts === 'demo') return 'demo';
+  const t = Date.parse(ts);
+  if (Number.isNaN(t)) return 'demo';
+  const m = Math.max(0, Math.round((Date.now() - t) / 60000));
+  if (m < 1) return 'just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
 
 interface AlertItem {
   id?: string; level?: string; severity?: string; title?: string;
@@ -44,14 +62,18 @@ export function DisasterOverview() {
       </div>
       {alerts.loading && <p className="home-muted" role="status">Loading overview…</p>}
       <div className="home-grid home-grid-overview">
-        {perCategory.map((c) => (
-          <Link key={c.cat} href="/alerts" className="home-mini" aria-label={`${c.cat}: ${c.status}`}>
-            <span className={`home-sev home-sev-${levelTone(c.status)}`} aria-hidden="true" />
-            <span className="home-mini-title">{c.cat}</span>
-            <span className="home-mini-status">{c.status}{c.count > 0 ? ` · ${c.count}` : ''}</span>
-            <span className="home-mini-meta">Updated {updated} · {c.provenance}</span>
-          </Link>
-        ))}
+        {perCategory.map((c) => {
+          const Icon = CATEGORY_ICONS[c.cat] ?? Waves;
+          return (
+            <Link key={c.cat} href="/alerts" className="home-mini" aria-label={`${c.cat}: ${c.status}`}>
+              <span className="home-mini-icon" aria-hidden="true"><Icon className="w-4 h-4" /></span>
+              <span className={`home-sev home-sev-${levelTone(c.status)}`} aria-hidden="true" />
+              <span className="home-mini-title">{c.cat}</span>
+              <span className="home-mini-status">{c.status}{live && c.count > 0 ? ` · ${c.count}` : ''}</span>
+              <span className="home-mini-meta">Updated {updated} · {c.provenance}</span>
+            </Link>
+          );
+        })}
       </div>
       {!live && !alerts.loading && (
         <p className="home-muted">No live disaster feed is connected — showing DEMO structure. Connect the backend alert pipeline for live values.</p>
@@ -81,6 +103,11 @@ export function RegionalStatus() {
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
       <div className="home-grid home-grid-regions">
+        <div className="home-mini home-region-map">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/img/india-schematic.svg" alt="Schematic India map, Andhra Pradesh and Telangana highlighted, not to scale" loading="lazy" decoding="async" />
+          <span className="home-mini-meta">Schematic — not to scale</span>
+        </div>
         {rows.map((r) => (
           <Link key={r.name} href={r.href} className="home-mini" aria-label={`Region: ${r.name}`}>
             <span className="home-mini-title">{r.name}</span>
@@ -121,7 +148,7 @@ export function RealtimeFeed() {
               <p className="home-feed-meta">
                 {(a.level ?? a.severity ?? 'INFO').toUpperCase()}
                 {typeof a.lat === 'number' ? ` · ${a.lat.toFixed(2)}, ${(a.lon ?? 0).toFixed(2)}` : ' · region feed'}
-                {` · ${a.ts ?? 'demo timestamp'} · ${a.source ?? (live ? 'operations feed' : 'DEMO')}`}
+                {` · ${timeAgo(a.ts)} · ${a.source ?? (live ? 'operations feed' : 'DEMO')}`}
               </p>
             </div>
             <Link href="/alerts" className="home-feed-link" aria-label={`Open alert: ${a.title ?? 'untitled'}`}>Open →</Link>

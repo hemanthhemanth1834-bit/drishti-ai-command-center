@@ -23,6 +23,10 @@ export default function HomeFooter() {
         )}
       </nav>
       <p className="home-footer-base">DRISHTI-X · Sovereign disaster intelligence · Open data, honest provenance</p>
+      <p className="home-footer-strip" aria-label="Site commitments">
+        <span>Made for People • Protecting the Planet • Building a Safer Tomorrow</span>
+        <span className="home-footer-sos">Emergency? Stay Calm. Stay Informed. Stay Safe.</span>
+      </p>
     </footer>
   );
 }

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" role="img" aria-label="Schematic India map with Andhra Pradesh and Telangana highlighted, not to scale">
+  <path d="M100 8 L138 30 L150 70 L142 105 L128 130 L132 165 L112 200 L96 212 L82 190 L60 160 L52 120 L60 80 L78 40 Z"
+    fill="#0a2036" stroke="#00d2ff" stroke-width="2"/>
+  <circle cx="102" cy="150" r="7" fill="#34d399" opacity=".9"/>
+  <circle cx="96" cy="132" r="6" fill="#7de9ff" opacity=".9"/>
+  <circle cx="102" cy="150" r="11" fill="none" stroke="#34d399" stroke-width="1.5" opacity=".5"/>
+  <g fill="#00d2ff" opacity=".7">
+    <circle cx="85" cy="90" r="2"/><circle cx="115" cy="70" r="2"/><circle cx="95" cy="110" r="2"/>
+  </g>
+  <text x="100" y="208" font-family="monospace" font-size="9" fill="#64748b" text-anchor="middle">SCHEMATIC</text>
+</svg>
