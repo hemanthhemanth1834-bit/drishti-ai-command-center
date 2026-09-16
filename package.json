@@ -33,5 +33,6 @@
     "postcss": "^8.5.28",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.5.0"
-  }
+  },
+  "description": "DRISHTI-X \u2014 AI Disaster Intelligence Command Center: free-first, open-data disaster monitoring, GIS intelligence, ML risk analysis, citizen reporting and emergency response."
 }
