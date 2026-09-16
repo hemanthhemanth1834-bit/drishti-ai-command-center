@@ -478,7 +478,9 @@ export default function WelcomePage() {
           <button
             onClick={() => {
               const langs = ["en", "te", "hi"] as const;
-              setApp({ lang: langs[(langs.indexOf(lang) + 1) % langs.length] });
+              type L3 = (typeof langs)[number];
+              const cur: L3 = (langs as readonly string[]).includes(lang) ? (lang as L3) : "en";
+              setApp({ lang: langs[(langs.indexOf(cur) + 1) % langs.length] });
               soundSynth.click();
             }}
             className="text-left p-3 rounded-xl bg-[#051424]/90 border border-[#1b314b] hover:border-[#00d2ff]/60 transition-all hover:shadow-[0_0_15px_rgba(0,210,255,0.2)]"

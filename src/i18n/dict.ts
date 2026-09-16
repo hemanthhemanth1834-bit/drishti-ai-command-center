@@ -2,9 +2,10 @@
 import { useApp, type Lang } from '@/store/appStore';
 
 /** Central translation dictionary — add keys here, never duplicate pages per language. */
-const DICT: Record<string, Record<Lang, string>> = {
+const DICT: Record<string, Partial<Record<Lang, string>>> = {
   // Nav
-  nav_command: { en: 'Command Center', te: 'కమాండ్ సెంటర్', hi: 'कमांड सेंटर' },
+  nav_nesafe: { en: 'NE-SAFE AI', te: 'NE-SAFE AI', hi: 'NE-SAFE AI', as: 'NE-SAFE AI', bn: 'NE-SAFE AI', ne: 'NE-SAFE AI', mni: 'NE-SAFE AI', mizo: 'NE-SAFE AI', kh: 'NE-SAFE AI' },
+  nav_command: { en: 'Command Center', te: 'కమాండ్ సెంటర్', hi: 'कमांड सेंटर', as: 'কমাণ্ড চেণ্টাৰ', bn: 'কমান্ড সেন্টার', ne: 'कमाण्ड सेन्टर', mni: 'কমান্ড সেন্টর', mizo: 'Command Center', kh: 'Command Center' },
   nav_drones: { en: 'Drone Swarm & SAR', te: 'డ్రోన్ దళం', hi: 'ड्रोन दस्ता' },
   nav_twin: { en: '3D Digital Twin', te: '3D డిజిటల్ ట్విన్', hi: '3D डिजिटल ट्विन' },
   nav_location: { en: 'Location Intel', te: 'ప్రదేశ సమాచారం', hi: 'स्थान जानकारी' },

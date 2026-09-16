@@ -10,6 +10,7 @@ from .config import CORS_ORIGINS, DEV_GATEWAY_KEY, TELEMETRY_HZ
 from .telemetry import make_packet
 from .routers.api_v1 import router as api_v1_router
 from .routers.ws_telemetry import router as ws_router
+from .routers.nesafe import router as nesafe_router
 
 security = HTTPBearer(auto_error=False)
 
@@ -43,6 +44,7 @@ _current_scenario = "nominal"
 
 app.include_router(api_v1_router)
 app.include_router(ws_router)
+app.include_router(nesafe_router)
 
 
 @app.get("/api/health")

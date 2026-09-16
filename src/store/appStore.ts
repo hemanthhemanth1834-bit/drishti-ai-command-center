@@ -2,7 +2,7 @@
 import { useSyncExternalStore } from 'react';
 
 export type AppMode = 'public' | 'command';
-export type Lang = 'en' | 'te' | 'hi';
+export type Lang = 'en' | 'te' | 'hi' | 'as' | 'bn' | 'ne' | 'mni' | 'mizo' | 'kh';
 export type QualityMode = 'high' | 'medium' | 'low';
 
 type A11y = { largeText: boolean; highContrast: boolean; reduceMotion: boolean };

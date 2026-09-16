@@ -10,6 +10,8 @@ import { BookOpen, ChevronDown, Siren, Check, X } from 'lucide-react';
 export default function LearnPage() {
   const { connected } = useTelemetrySocket();
   const { lang } = useApp();
+  // Learn content ships EN/TE/HI — fall back to EN for newer NE-SAFE langs (preserves existing).
+  const lang3 = (lang === 'te' || lang === 'hi' ? lang : 'en') as 'en' | 'te' | 'hi';
   const [open, setOpen] = useState<string>('flood');
   const H = {
     before: { en: 'BEFORE', te: 'ముందు', hi: 'पहले' },
@@ -37,23 +39,23 @@ export default function LearnPage() {
                 className="w-full flex items-center gap-2 px-4 py-3 text-left"
               >
                 <span className="text-xl">{t.emoji}</span>
-                <span className="font-bold text-white">{t.title[lang]}</span>
+                <span className="font-bold text-white">{t.title[lang3]}</span>
                 <ChevronDown className={`w-4 h-4 ml-auto text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
               </button>
               {isOpen && (
                 <div className="px-4 pb-4 flex flex-col gap-2 text-[12px]">
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                    {(
-                      [
-                        [H.before[lang], t.before[lang], 'text-sky-300'],
-                        [H.during[lang], t.during[lang], 'text-rose-300'],
-                        [H.after[lang], t.after[lang], 'text-emerald-300'],
-                      ] as const
-                    ).map(([h, items, cls]) => (
+                      {(
+                        [
+                          [H.before[lang3], t.before[lang3], 'text-sky-300'],
+                          [H.during[lang3], t.during[lang3], 'text-rose-300'],
+                          [H.after[lang3], t.after[lang3], 'text-emerald-300'],
+                        ] as const
+                      ).map(([h, items, cls]: readonly [string, readonly string[], string]) => (
                       <div key={h} className="bg-[#091a2e] border border-[#132d4a] rounded-lg p-2.5">
                         <div className={`font-bold ${cls}`}>{h}</div>
                         <ul className="mt-1 list-disc ml-4 text-slate-300 space-y-0.5">
-                          {items.map((s) => (
+                          {items.map((s: string) => (
                             <li key={s}>{s}</li>
                           ))}
                         </ul>
@@ -62,10 +64,10 @@ export default function LearnPage() {
                   </div>
                   <div className="bg-[#140608] border border-rose-500/40 rounded-lg p-2.5">
                     <div className="font-bold text-rose-300 flex items-center gap-1.5">
-                      <Siren className="w-3.5 h-3.5" /> {H.emergency[lang]}
+                      <Siren className="w-3.5 h-3.5" /> {H.emergency[lang3]}
                     </div>
                     <ul className="mt-1 list-disc ml-4 text-rose-100/90 space-y-0.5">
-                      {t.emergency[lang].map((s) => (
+                      {t.emergency[lang3].map((s: string) => (
                         <li key={s}>{s}</li>
                       ))}
                     </ul>
@@ -73,20 +75,20 @@ export default function LearnPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <div className="bg-[#061410] border border-emerald-500/40 rounded-lg p-2.5">
                       <div className="font-bold text-emerald-300 flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" /> {H.dos[lang]}
+                        <Check className="w-3.5 h-3.5" /> {H.dos[lang3]}
                       </div>
                       <ul className="mt-1 list-disc ml-4 text-slate-300 space-y-0.5">
-                        {t.dos[lang].map((s) => (
+                        {t.dos[lang3].map((s: string) => (
                           <li key={s}>{s}</li>
                         ))}
                       </ul>
                     </div>
                     <div className="bg-[#141006] border border-amber-500/40 rounded-lg p-2.5">
                       <div className="font-bold text-amber-300 flex items-center gap-1">
-                        <X className="w-3.5 h-3.5" /> {H.donts[lang]}
+                        <X className="w-3.5 h-3.5" /> {H.donts[lang3]}
                       </div>
                       <ul className="mt-1 list-disc ml-4 text-slate-300 space-y-0.5">
-                        {t.donts[lang].map((s) => (
+                        {t.donts[lang3].map((s: string) => (
                           <li key={s}>{s}</li>
                         ))}
                       </ul>

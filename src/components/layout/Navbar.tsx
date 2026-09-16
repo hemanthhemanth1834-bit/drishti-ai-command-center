@@ -37,6 +37,7 @@ import {
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
+  { href: '/nesafe', labelKey: 'nav_nesafe', icon: ShieldAlert },
   { href: '/command', labelKey: 'nav_command', icon: Activity },
   { href: '/ops', labelKey: 'nav_ops', icon: Gauge },
   { href: '/demo', labelKey: 'nav_demo', icon: Clapperboard },
@@ -54,6 +55,7 @@ const COMMAND_ITEMS = [
 ];
 
 const PUBLIC_ITEMS = [
+  { href: '/nesafe', labelKey: 'nav_nesafe', icon: ShieldAlert },
   { href: '/welcome', labelKey: 'nav_welcome', icon: House },
   { href: '/safety', labelKey: 'nav_safety', icon: HeartPulse },
   { href: '/risk', labelKey: 'nav_risk', icon: Crosshair },
@@ -176,13 +178,19 @@ export default function Navbar({
           <Languages className="w-3.5 h-3.5" />
           <select
             value={lang}
-            onChange={(e) => setApp({ lang: e.target.value as 'en' | 'te' | 'hi' })}
+            onChange={(e) => setApp({ lang: e.target.value as 'en' | 'te' | 'hi' | 'as' | 'bn' | 'ne' | 'mni' | 'mizo' | 'kh' })}
             className="bg-[#051424] border border-[#1b314b] rounded px-1.5 py-1 text-slate-200"
             aria-label="Language"
           >
             <option value="en">English</option>
             <option value="te">తెలుగు</option>
             <option value="hi">हिन्दी</option>
+            <option value="as">অসমীয়া</option>
+            <option value="bn">বাংলা</option>
+            <option value="ne">नेपाली</option>
+            <option value="mni">Manipuri</option>
+            <option value="mizo">Mizo</option>
+            <option value="kh">Khasi</option>
           </select>
         </label>
         <Link
