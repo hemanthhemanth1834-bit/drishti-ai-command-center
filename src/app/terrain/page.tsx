@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ModuleShell } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 export default function TerrainPage() {
   const [lat, setLat] = useState(25.57);
@@ -31,6 +32,7 @@ export default function TerrainPage() {
           </div>
         )}
         <p className="text-[11px] text-slate-400 mt-2">Swap the procedural DEM for SRTM/Copernicus DEM without changing this API or UI. Twin params: GET /api/v1/terrain/twin-params.</p>
+        <div className="mt-2"><VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Contour + slope schematic — not a DEM render" status="DEMO" /></div>
       </div>
     </ModuleShell>
   );

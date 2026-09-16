@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Landslide blocking a highway illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <polygon points="0,225 0,120 150,60 400,40 400,110 200,130 80,170" fill="#14301f"/>
+  <path d="M0 200 L400 150 L400 185 L0 225 Z" fill="#33475b"/>
+  <path d="M0 200 L400 150" stroke="#e8f4ff" stroke-width="3" stroke-dasharray="16 12"/>
+  <polygon points="150,105 250,95 290,150 170,165" fill="#5b4a36"/>
+  <polygon points="180,100 220,96 235,125 190,130" fill="#6e5b42"/>
+  <polygon points="230,108 258,105 268,132 240,136" fill="#4a3d2c"/>
+  <circle cx="205" cy="140" r="10" fill="#3d3f45"/>
+  <circle cx="228" cy="138" r="8" fill="#3d3f45"/>
+  <rect x="70" y="150" width="44" height="30" rx="6" fill="#b33939"/>
+  <rect x="76" y="155" width="32" height="10" fill="#7de9ff" opacity="0.5"/>
+  <circle cx="82" cy="182" r="7" fill="#1b2f47"/><circle cx="102" cy="182" r="7" fill="#1b2f47"/>
+  <path d="M300 60 l16 0 -8 14 Z" fill="#ff5470"/>
+  <rect x="306" y="46" width="4" height="16" fill="#ff5470"/>
+  <circle cx="308" cy="120" r="18" fill="none" stroke="#ff5470" stroke-width="3" stroke-dasharray="6 5"/>
+</svg>

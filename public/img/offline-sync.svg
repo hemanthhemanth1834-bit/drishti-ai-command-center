@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Offline sync flow diagram">
+  <rect width="400" height="225" fill="#06121f"/>
+  <g font-family="monospace" font-size="10" text-anchor="middle">
+    <rect x="14" y="85" width="80" height="56" rx="8" fill="#0a2036" stroke="#00d2ff"/>
+    <text x="54" y="108" fill="#7de9ff">FIELD</text><text x="54" y="122" fill="#7de9ff">DEVICE</text>
+    <rect x="122" y="85" width="80" height="56" rx="8" fill="#0a2036" stroke="#fbbf24"/>
+    <text x="162" y="108" fill="#ffd88a">INDEXED</text><text x="162" y="122" fill="#ffd88a">DB QUEUE</text>
+    <rect x="298" y="85" width="88" height="56" rx="8" fill="#0a2a1a" stroke="#34d399"/>
+    <text x="342" y="108" fill="#6ee7b7">SERVER</text><text x="342" y="122" fill="#6ee7b7">RECEIPT ✓</text>
+  </g>
+  <g stroke-width="2" marker-end="url(#sah)">
+    <defs><marker id="sah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8" fill="none" stroke="#7de9ff" stroke-width="1.5"/></marker></defs>
+    <line x1="94" y1="105" x2="120" y2="105" stroke="#7de9ff"/>
+    <line x1="202" y1="105" x2="240" y2="105" stroke="#fbbf24" stroke-dasharray="5 4"/>
+    <line x1="252" y1="125" x2="296" y2="118" stroke="#34d399"/>
+  </g>
+  <rect x="212" y="92" width="76" height="26" rx="13" fill="none" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="250" y="109" font-family="monospace" font-size="10" fill="#fdba74" text-anchor="middle">OFFLINE</text>
+  <text x="200" y="175" font-family="monospace" font-size="10" fill="#7d93a8" text-anchor="middle">ONLINE → AUTO-SYNC → RECEIPT</text>
+</svg>

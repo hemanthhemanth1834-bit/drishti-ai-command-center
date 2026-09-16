@@ -1,6 +1,7 @@
 'use client';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 export default function AdminPage() {
   const roles = usePlatform<{ roles: { role: string; permissions: string[] }[] }>('/api/v1/admin/roles');
@@ -20,6 +21,7 @@ export default function AdminPage() {
         <div className="dx-hud-edge" />
         <div className="dx-micro">WARNING THRESHOLDS (ENV-CONFIGURABLE)</div>
         <pre className="text-[11px] mt-1">{JSON.stringify(th.data ?? th.status, null, 1)}</pre>
+        <div className="mt-2"><VizFigure src="/img/hero-command.svg" alt="Command center situation wall illustration" caption="Authority view (reference render)" status="DEMO" /></div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

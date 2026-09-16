@@ -4,6 +4,7 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { get } from '@/platform/api';
 import { cacheGet, cachePut } from '@/platform/offlineDb';
+import VizFigure from '@/platform/VizFigure';
 
 export default function WeatherPage() {
   const [lat, setLat] = useState(25.57);
@@ -24,6 +25,9 @@ export default function WeatherPage() {
   const live = cur.data as Record<string, unknown> | null;
   const d = live ?? cached?.value ?? null;
   const badge = live ? String(live.data_status ?? cur.status) : cached ? 'CACHED' : cur.status;
+  const rain24 = Number(d?.rain_24h_mm ?? 0);
+  const wxImg = rain24 >= 200 ? '/img/wx-storm.svg' : rain24 >= 60 ? '/img/wx-rain.svg' : '/img/wx-clear.svg';
+  const wxAlt = rain24 >= 200 ? 'Extreme storm warning illustration' : rain24 >= 60 ? 'Heavy rainfall illustration' : 'Clear weather illustration';
   return (
     <ModuleShell title="Weather Intelligence" sub="Rainfall 1/6/24/72h · accumulation · anomaly · forecast · thresholds" status={badge} source={String(d?.source ?? 'provider chain')}>
       {cached && !live && <p className="text-[11px] text-sky-300">CACHED DATA from {new Date(cached.ts).toLocaleString()} — backend unreachable.</p>}
@@ -45,6 +49,7 @@ export default function WeatherPage() {
           </div>
         ) : <p className="text-xs mt-2">Backend offline — showing DEMO fallback only where labeled.</p>}
         <p className="text-[11px] text-slate-400 mt-2">Thresholds: warn ≥ {th.data?.warn_24h_mm}mm/24h · critical ≥ {th.data?.crit_24h_mm}mm/24h (env RAIN_WARN_24H / RAIN_CRIT_24H).</p>
+        {d && <div className="mt-2"><VizFigure src={wxImg} alt={wxAlt} caption={`Visual state for ${rain24}mm/24h — context only, data above is authoritative`} status={badge} /></div>}
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

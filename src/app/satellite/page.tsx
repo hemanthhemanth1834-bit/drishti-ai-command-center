@@ -1,6 +1,7 @@
 'use client';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 const ADAPTERS = [
   { name: 'Copernicus Sentinel-1 (SAR)', use: 'surface change, all-weather', status: 'NOT_CONFIGURED', note: 'Free account needed (COPERNICUS_USER)' },
@@ -24,6 +25,15 @@ export default function SatellitePage() {
             <div className="text-slate-400">{a.use} · {a.note}</div>
           </div>
         ))}
+      </div>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">BEFORE → AFTER → CHANGE DETECTION (REFERENCE RENDERS, NOT LIVE TASKING)</div>
+        <div className="nesafe-vizgrid mt-2">
+          <VizFigure src="/img/sat-before.svg" alt="Reference satellite view before event, green terrain" caption="Before (reference)" status="DEMO" />
+          <VizFigure src="/img/sat-after.svg" alt="Reference satellite view after event, disturbed terrain" caption="After (reference)" status="DEMO" />
+          <VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="Change Δ (reference)" status="DEMO" />
+        </div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

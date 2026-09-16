@@ -1,6 +1,7 @@
 'use client';
 import { ModuleShell, StatusBadge, WhyList } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 export default function ResponsePage() {
   const q = usePlatform<{ count: number; queue: { alert_id: string; level: string; title: string; score: number; band: string; why: string[] }[] }>('/api/v1/response/queue');
@@ -9,6 +10,10 @@ export default function ResponsePage() {
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PRIORITY QUEUE ({q.data?.count ?? '…'})</div>
+        <div className="nesafe-vizgrid mt-2">
+          <VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="Response units (reference)" status="DEMO" />
+          <VizFigure src="/img/shelter.svg" alt="Relief shelter illustration" caption="Shelter capacity (reference)" status="DEMO" />
+        </div>
         {(q.data?.queue ?? []).map((i) => (
           <div key={i.alert_id} className="border-b border-[#1b314b] py-2">
             <div className="flex justify-between text-sm">

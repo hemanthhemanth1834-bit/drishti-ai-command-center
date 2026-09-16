@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Landslide on a mountain road illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <circle cx="320" cy="40" r="60" fill="#00d2ff" opacity="0.06"/>
+  <polygon points="0,225 0,140 120,40 200,110 260,70 400,180 400,225" fill="#0e2a3f"/>
+  <polygon points="120,40 200,110 160,130 100,80" fill="#274b63"/>
+  <polygon points="120,40 140,58 120,70 100,58" fill="#e8f4ff" opacity="0.85"/>
+  <polygon points="200,110 260,70 300,110 240,140" fill="#1d3a2f"/>
+  <path d="M150 90 L190 150 L230 175 L260 210" stroke="#8a6d4b" stroke-width="14" fill="none" opacity="0.9"/>
+  <path d="M150 90 L190 150 L230 175 L260 210" stroke="#c9a06a" stroke-width="4" fill="none" stroke-dasharray="8 6"/>
+  <polygon points="185,140 205,145 195,170 175,165" fill="#5b4a36"/>
+  <polygon points="210,160 230,165 220,190 200,185" fill="#5b4a36"/>
+  <polygon points="165,120 180,124 172,142 158,138" fill="#6e5b42"/>
+  <path d="M120 40 L150 90" stroke="#ff5470" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="150" cy="90" r="5" fill="none" stroke="#ff5470" stroke-width="2"/>
+  <g stroke="#7de9ff" stroke-width="2" opacity="0.7">
+    <line x1="60" y1="20" x2="52" y2="40"/><line x1="90" y1="14" x2="82" y2="34"/><line x1="120" y1="18" x2="112" y2="38"/>
+  </g>
+</svg>

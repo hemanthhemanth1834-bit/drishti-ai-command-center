@@ -1,6 +1,7 @@
 'use client';
 import { ModuleShell } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 function cell(v: unknown) {
   return v === undefined || v === null ? 'NOT AVAILABLE' : String(v);

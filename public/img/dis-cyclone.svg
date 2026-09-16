@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Cyclone spiral over coastline illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <path d="M0 190 Q100 175 200 185 T400 178 L400 225 L0 225 Z" fill="#0e3a2f"/>
+  <path d="M0 190 Q100 175 200 185 T400 178" stroke="#34d399" stroke-width="3" fill="none"/>
+  <g fill="none" stroke="#7de9ff" opacity="0.9">
+    <circle cx="200" cy="105" r="14" stroke-width="3"/>
+    <path d="M200 91 A40 40 0 0 1 240 105" stroke-width="7" stroke-linecap="round"/>
+    <path d="M240 105 A58 58 0 0 1 200 163" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+    <path d="M200 163 A78 78 0 0 1 122 105" stroke-width="7" stroke-linecap="round" opacity="0.55"/>
+    <path d="M122 105 A98 98 0 0 1 200 7" stroke-width="7" stroke-linecap="round" opacity="0.35"/>
+  </g>
+  <circle cx="200" cy="105" r="5" fill="#ff5470"/>
+  <g stroke="#7de9ff" stroke-width="2" opacity="0.6">
+    <line x1="300" y1="30" x2="292" y2="54"/><line x1="330" y1="40" x2="322" y2="64"/><line x1="100" y1="40" x2="92" y2="64"/>
+  </g>
+  <polygon points="60,178 90,178 75,150" fill="#12324a"/>
+  <polygon points="310,175 345,175 328,145" fill="#12324a"/>
+</svg>

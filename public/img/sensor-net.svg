@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Sensor network diagram with field nodes and gateway">
+  <rect width="400" height="225" fill="#06121f"/>
+  <polygon points="0,225 0,170 120,140 260,160 400,130 400,225" fill="#0e2a3f"/>
+  <g>
+    <line x1="80" y1="150" x2="80" y2="110" stroke="#7de9ff" stroke-width="3"/>
+    <circle cx="80" cy="104" r="7" fill="#34d399"/>
+    <circle cx="80" cy="104" r="12" fill="none" stroke="#34d399" stroke-width="1.5" opacity="0.6"/>
+    <line x1="190" y1="145" x2="190" y2="100" stroke="#7de9ff" stroke-width="3"/>
+    <circle cx="190" cy="94" r="7" fill="#fbbf24"/>
+    <circle cx="190" cy="94" r="12" fill="none" stroke="#fbbf24" stroke-width="1.5" opacity="0.6"/>
+    <line x1="300" y1="138" x2="300" y2="95" stroke="#7de9ff" stroke-width="3"/>
+    <circle cx="300" cy="89" r="7" fill="#ff5470"/>
+    <circle cx="300" cy="89" r="12" fill="none" stroke="#ff5470" stroke-width="1.5" opacity="0.6"/>
+  </g>
+  <g stroke="#00d2ff" stroke-width="1.5" stroke-dasharray="5 5" opacity="0.8">
+    <line x1="80" y1="104" x2="200" y2="45"/>
+    <line x1="190" y1="94" x2="200" y2="45"/>
+    <line x1="300" y1="89" x2="200" y2="45"/>
+  </g>
+  <rect x="160" y="22" width="80" height="46" rx="8" fill="#0a2036" stroke="#00d2ff" stroke-width="1.5"/>
+  <circle cx="200" cy="40" r="8" fill="none" stroke="#00d2ff" stroke-width="2"/>
+  <circle cx="200" cy="40" r="2.5" fill="#00d2ff"/>
+  <text x="172" y="62" font-family="monospace" font-size="10" fill="#7de9ff">GATEWAY</text>
+  <g font-family="monospace" font-size="10" fill="#7d93a8">
+    <text x="58" y="170">SOIL</text><text x="168" y="164">RAIN</text><text x="278" y="157">TILT</text>
+  </g>
+</svg>

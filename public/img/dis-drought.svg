@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Drought cracked farmland illustration">
+  <rect width="400" height="225" fill="#0d1520"/>
+  <circle cx="320" cy="55" r="28" fill="#ffd23f" opacity="0.9"/>
+  <circle cx="320" cy="55" r="40" fill="#ffd23f" opacity="0.15"/>
+  <rect y="120" width="400" height="105" fill="#2b2118"/>
+  <g stroke="#0d1520" stroke-width="3">
+    <path d="M0 150 H400 M0 180 H400 M0 205 H400"/>
+    <path d="M60 120 L40 225 M140 120 L130 225 M220 120 L225 225 M300 120 L320 225 M360 120 L390 225"/>
+  </g>
+  <g stroke="#ff7a1a" stroke-width="2" opacity="0.8">
+    <path d="M80 165 l25 -8 M210 190 l22 10 M300 160 l26 -6"/>
+  </g>
+  <g stroke="#8a9a5b" stroke-width="3">
+    <line x1="120" y1="120" x2="120" y2="100"/><line x1="120" y1="108" x2="108" y2="100"/><line x1="120" y1="108" x2="132" y2="100"/>
+    <line x1="250" y1="120" x2="250" y2="102"/><line x1="250" y1="110" x2="240" y2="102"/>
+  </g>
+  <line x1="250" y1="102" x2="250" y2="120" stroke="#5b6b3a" stroke-width="3"/>
+  <path d="M100 60 q20 -18 44 -8 q-22 2 -28 14 q14 -4 24 2 q-16 8 -40 -8 Z" fill="#3a3f45" opacity="0.7"/>
+</svg>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="River flood over roads and houses illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <circle cx="70" cy="45" r="55" fill="#00d2ff" opacity="0.06"/>
+  <rect x="30" y="60" width="70" height="50" fill="#12324a"/>
+  <polygon points="30,60 65,38 100,60" fill="#1b4a68"/>
+  <rect x="290" y="55" width="80" height="55" fill="#12324a"/>
+  <polygon points="290,55 330,32 370,55" fill="#1b4a68"/>
+  <rect x="150" y="80" width="90" height="30" fill="#0e2a3f"/>
+  <path d="M0 150 Q50 135 100 150 T200 150 T300 150 T400 150 L400 225 L0 225 Z" fill="#0e4a68"/>
+  <path d="M0 165 Q50 152 100 165 T200 165 T300 165 T400 165 L400 225 L0 225 Z" fill="#15648c" opacity="0.85"/>
+  <path d="M0 185 Q60 175 120 185 T240 185 T400 182 L400 225 L0 225 Z" fill="#1b86b8" opacity="0.7"/>
+  <rect x="120" y="120" width="160" height="10" fill="#33475b"/>
+  <rect x="120" y="120" width="160" height="3" fill="#7de9ff" opacity="0.5"/>
+  <g stroke="#7de9ff" stroke-width="2" opacity="0.8">
+    <line x1="180" y1="10" x2="172" y2="34"/><line x1="210" y1="8" x2="202" y2="32"/><line x1="240" y1="12" x2="232" y2="36"/>
+  </g>
+  <path d="M320 130 l14 0 -7 12 Z" fill="#ff5470"/>
+  <rect x="325" y="118" width="4" height="14" fill="#ff5470"/>
+</svg>

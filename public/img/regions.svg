@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Schematic region hierarchy India to Andhra Pradesh Telangana districts">
+  <rect width="400" height="225" fill="#06121f"/>
+  <g font-family="monospace" font-size="11" text-anchor="middle">
+    <rect x="140" y="14" width="120" height="34" rx="17" fill="#0a2036" stroke="#00d2ff" stroke-width="2"/>
+    <text x="200" y="36" fill="#fff">INDIA</text>
+    <rect x="60" y="70" width="130" height="36" rx="8" fill="#0a2036" stroke="#34d399" stroke-width="1.5"/>
+    <text x="125" y="86" fill="#6ee7b7" font-size="10">ANDHRA</text><text x="125" y="99" fill="#6ee7b7" font-size="10">PRADESH · 26</text>
+    <rect x="210" y="70" width="130" height="36" rx="8" fill="#0a2036" stroke="#34d399" stroke-width="1.5"/>
+    <text x="275" y="86" fill="#6ee7b7" font-size="10">TELANGANA</text><text x="275" y="99" fill="#6ee7b7" font-size="10">33 DISTRICTS</text>
+    <g font-size="9">
+      <rect x="20" y="128" width="104" height="30" rx="6" fill="#091a2e" stroke="#1b314b"/><text x="72" y="147" fill="#7de9ff">Vijayawada</text>
+      <rect x="132" y="128" width="104" height="30" rx="6" fill="#091a2e" stroke="#1b314b"/><text x="184" y="147" fill="#7de9ff">Vizag 🌊</text>
+      <rect x="244" y="128" width="72" height="30" rx="6" fill="#091a2e" stroke="#1b314b"/><text x="280" y="147" fill="#7de9ff">Hyd</text>
+      <rect x="324" y="128" width="64" height="30" rx="6" fill="#091a2e" stroke="#1b314b"/><text x="356" y="147" fill="#7de9ff">Warangal</text>
+    </g>
+    <rect x="120" y="172" width="160" height="30" rx="6" fill="#091a2e" stroke="#1b314b"/>
+    <text x="200" y="191" fill="#7d93a8" font-size="9">+ 20 STATES · SCHEMATIC</text>
+  </g>
+  <g stroke="#1b6d8a" stroke-width="1.5">
+    <line x1="200" y1="48" x2="125" y2="70"/><line x1="200" y1="48" x2="275" y2="70"/>
+    <line x1="125" y1="106" x2="72" y2="128"/><line x1="125" y1="106" x2="184" y2="128"/>
+    <line x1="275" y1="106" x2="280" y2="128"/><line x1="275" y1="106" x2="356" y2="128"/>
+  </g>
+</svg>

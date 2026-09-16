@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Terrain contour and slope diagram">
+  <rect width="400" height="225" fill="#06121f"/>
+  <g fill="none" stroke="#00d2ff" opacity="0.55">
+    <ellipse cx="200" cy="115" rx="170" ry="95" stroke-width="1.5"/>
+    <ellipse cx="200" cy="115" rx="135" ry="74" stroke-width="1.5"/>
+    <ellipse cx="200" cy="115" rx="100" ry="54" stroke-width="2"/>
+    <ellipse cx="200" cy="115" rx="66" ry="35" stroke-width="2" opacity="0.8"/>
+    <ellipse cx="200" cy="115" rx="34" ry="18" stroke-width="2.5"/>
+  </g>
+  <polygon points="200,80 214,115 200,150 186,115" fill="#ff5470" opacity="0.8"/>
+  <text x="192" y="120" font-family="monospace" font-size="16" fill="#020b14">▲</text>
+  <line x1="200" y1="115" x2="300" y2="115" stroke="#ffd23f" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="252" y="108" font-family="monospace" font-size="12" fill="#ffd23f">36°</text>
+  <text x="16" y="30" font-family="monospace" font-size="12" fill="#7d93a8">1240m</text>
+  <text x="16" y="200" font-family="monospace" font-size="12" fill="#7d93a8">860m</text>
+  <line x1="330" y1="40" x2="330" y2="190" stroke="#1b314b" stroke-width="2"/>
+  <rect x="324" y="60" width="12" height="110" fill="#0e2a3f"/>
+  <rect x="324" y="60" width="12" height="34" fill="#00d2ff" opacity="0.8"/>
+</svg>

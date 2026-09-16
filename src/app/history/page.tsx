@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { API_BASE, hasKey } from '@/platform/api';
+import VizFigure from '@/platform/VizFigure';
 
 export default function HistoryPage() {
   const tr = usePlatform<{ yearly: Record<string, number>; by_severity: Record<string, number>; avg_rainfall_by_severity_mm: Record<string, number>; hotspots: unknown[]; data_status: string; note: string }>('/api/v1/history/trends');
@@ -36,6 +37,15 @@ export default function HistoryPage() {
         <input type="file" accept=".csv" className="text-xs mt-2" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
         {msg && <p className="text-xs mt-1">{msg}</p>}
         <p className="text-[11px] text-slate-400 mt-1">Schema: GET /api/v1/history/schema. Casualties: official figures only, else “unknown”.</p>
+      </div>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">EVENT CONTEXT (ILLUSTRATIVE — NOT HISTORICAL EVIDENCE)</div>
+        <div className="nesafe-vizgrid mt-2">
+          <VizFigure src="/img/dis-flood.svg" alt="River flood over roads and houses" caption="Flood events" status="DEMO" />
+          <VizFigure src="/img/dis-cyclone.svg" alt="Cyclone spiral over coastline" caption="Cyclone events" status="DEMO" />
+          <VizFigure src="/img/dis-landslide.svg" alt="Landslide affecting a mountain road" caption="Landslide events" status="DEMO" />
+        </div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

@@ -1,12 +1,18 @@
 'use client';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 export default function MlPage() {
   const m = usePlatform<{ model_version: string; status: string; trained_at?: string; data_kind?: string; features?: string[] }>('/api/v1/ml/model');
   const h = usePlatform<{ accuracy: unknown; precision: unknown; recall: unknown; f1: unknown; roc_auc: unknown; training_samples: unknown; validation_samples: unknown }>('/api/v1/ml/health');
   return (
     <ModuleShell title="ML Lab" sub="RandomForest pipeline: train → validate → infer → explain → monitor. Metrics only from real runs." status={m.data?.status ?? 'OFFLINE'} source={m.data?.data_kind ?? 'model artifacts'}>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">PIPELINE: WEATHER + RAINFALL + SOIL + SLOPE + TERRAIN + HISTORY → FEATURES → RANDOM FOREST → PROBABILITY → GIS CELL → WARNING</div>
+        <div className="mt-2"><VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from data to warning" caption="Training/inference flow — synthetic demo unless retrained on verified CSV" status="DEMO" /></div>
+      </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">MODEL CARD</div>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Relief shelter illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <rect x="110" y="90" width="180" height="100" fill="#12324a"/>
+  <polygon points="90,95 200,40 310,95" fill="#1b4a68"/>
+  <rect x="185" y="140" width="30" height="50" fill="#0a2036"/>
+  <rect x="130" y="115" width="34" height="26" fill="#7de9ff" opacity="0.4"/>
+  <rect x="236" y="115" width="34" height="26" fill="#7de9ff" opacity="0.4"/>
+  <rect x="60" y="150" width="34" height="40" fill="#0e2a3f"/>
+  <rect x="306" y="150" width="34" height="40" fill="#0e2a3f"/>
+  <g fill="#6ee7b7">
+    <circle cx="140" cy="70" r="5"/><circle cx="260" cy="70" r="5"/>
+  </g>
+  <rect x="120" y="196" width="160" height="22" rx="6" fill="#020b14" opacity="0.85"/>
+  <text x="132" y="211" font-family="monospace" font-size="12" fill="#6ee7b7">680 / 800 BEDS FREE</text>
+  <path d="M200 40 L200 22" stroke="#6ee7b7" stroke-width="3"/>
+  <rect x="188" y="8" width="24" height="16" rx="3" fill="#6ee7b7"/>
+  <rect x="197" y="4" width="6" height="24" fill="#6ee7b7"/>
+</svg>

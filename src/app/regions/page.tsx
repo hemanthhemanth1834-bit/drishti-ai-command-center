@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { get } from '@/platform/api';
+import VizFigure from '@/platform/VizFigure';
 import { setRegion, useRegion } from '@/platform/regionStore';
 import { usePT } from '@/platform/i18n';
 import { SHOWCASE_CITIES, STATE_NAMES } from '@/config/regions';
@@ -97,6 +98,20 @@ export default function RegionsPage() {
           ))}
         </div>
         <p className="text-[11px] text-slate-400 mt-2">{t('demo_geo')} {Object.values(STATE_NAMES).join(' · ')}</p>
+        <div className="mt-2"><VizFigure src="/img/regions.svg" alt="Schematic region hierarchy India to Andhra Pradesh Telangana districts" caption="Hierarchy schematic — boundaries not to survey scale" status="DEMO" /></div>
+      </div>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">SECTORS (7) — SAME ARCHITECTURE EVERYWHERE</div>
+        <div className="nesafe-vizgrid mt-2">
+          <VizFigure src="/img/dis-landslide.svg" alt="Natural hazards reference" caption="Natural" status="DEMO" />
+          <VizFigure src="/img/dis-flood.svg" alt="Urban flooding reference" caption="Urban" status="DEMO" />
+          <VizFigure src="/img/dis-cyclone.svg" alt="Coastal cyclone reference" caption="Coastal" status="DEMO" />
+          <VizFigure src="/img/dis-fire.svg" alt="Industrial fire reference" caption="Industrial" status="DEMO" />
+          <VizFigure src="/img/response.svg" alt="Emergency medical response reference" caption="Health" status="DEMO" />
+          <VizFigure src="/img/dis-drought.svg" alt="Drought farmland reference" caption="Agriculture" status="DEMO" />
+          <VizFigure src="/img/dis-road.svg" alt="Road incident reference" caption="Transport" status="DEMO" />
+        </div>
       </div>
 
       {region.lat === null ? (

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Reference change detection with highlighted disturbed area">
+  <rect width="400" height="225" fill="#101418"/>
+  <g stroke="#2a3440" stroke-width="1">
+    <path d="M0 45 H400 M0 90 H400 M0 135 H400 M0 180 H400"/>
+    <path d="M50 0 V225 M100 0 V225 M150 0 V225 M200 0 V225 M250 0 V225 M300 0 V225 M350 0 V225"/>
+  </g>
+  <polygon points="180,40 300,60 340,140 220,170 150,110" fill="#ff5470" opacity="0.35"/>
+  <polygon points="180,40 300,60 340,140 220,170 150,110" fill="none" stroke="#ff5470" stroke-width="2.5" stroke-dasharray="8 5"/>
+  <polygon points="210,70 280,80 300,130 230,145 190,100" fill="#ff5470" opacity="0.5"/>
+  <circle cx="245" cy="105" r="4" fill="#ff5470"/>
+  <line x1="245" y1="105" x2="330" y2="40" stroke="#ff5470" stroke-width="1.5"/>
+  <rect x="288" y="18" width="100" height="24" rx="4" fill="#020b14" opacity="0.85"/>
+  <text x="298" y="35" font-family="monospace" font-size="13" fill="#ff8ba0">Δ 8.4mm</text>
+  <rect x="12" y="12" width="150" height="24" rx="4" fill="#020b14" opacity="0.8"/>
+  <text x="22" y="29" font-family="monospace" font-size="13" fill="#7de9ff">DEFORMATION</text>
+</svg>

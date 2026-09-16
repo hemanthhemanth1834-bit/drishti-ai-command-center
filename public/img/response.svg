@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Emergency response convoy illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <circle cx="200" cy="40" r="70" fill="#ff5470" opacity="0.05"/>
+  <path d="M0 170 L400 150 L400 225 L0 225 Z" fill="#0e2a3f"/>
+  <path d="M0 170 L400 150" stroke="#e8f4ff" stroke-width="3" stroke-dasharray="18 14"/>
+  <g>
+    <rect x="40" y="120" width="70" height="38" rx="6" fill="#b33939"/>
+    <rect x="46" y="126" width="30" height="12" fill="#7de9ff" opacity="0.6"/>
+    <rect x="110" y="130" width="26" height="28" rx="4" fill="#8f2f2f"/>
+    <circle cx="60" cy="160" r="9" fill="#1b2f47"/><circle cx="120" cy="160" r="9" fill="#1b2f47"/>
+    <rect x="58" y="106" width="34" height="10" rx="2" fill="#ff5470"/>
+  </g>
+  <g>
+    <rect x="170" y="116" width="76" height="40" rx="6" fill="#e8e8e8"/>
+    <rect x="228" y="126" width="14" height="10" fill="#b33939"/>
+    <rect x="176" y="122" width="34" height="12" fill="#7de9ff" opacity="0.6"/>
+    <rect x="178" y="104" width="30" height="10" rx="2" fill="#ff5470"/>
+    <circle cx="192" cy="158" r="9" fill="#1b2f47"/><circle cx="228" cy="158" r="9" fill="#1b2f47"/>
+  </g>
+  <g>
+    <circle cx="315" cy="120" r="16" fill="none" stroke="#00d2ff" stroke-width="3"/>
+    <circle cx="315" cy="120" r="4" fill="#00d2ff"/>
+    <rect x="309" y="136" width="12" height="24" fill="#12324a"/>
+    <circle cx="300" cy="162" r="7" fill="#1b2f47"/><circle cx="330" cy="162" r="7" fill="#1b2f47"/>
+  </g>
+  <rect x="40" y="186" width="120" height="24" rx="6" fill="#020b14" opacity="0.85"/>
+  <text x="52" y="202" font-family="monospace" font-size="12" fill="#ff8ba0">P1 · P2 · P3 · P4</text>
+</svg>

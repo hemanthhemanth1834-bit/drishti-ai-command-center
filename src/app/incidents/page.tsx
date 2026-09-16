@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { API_BASE } from '@/platform/api';
+import VizFigure from '@/platform/VizFigure';
 
 const TYPES = ['crack', 'slope_movement', 'landslide', 'road_blockage', 'flood', 'bridge_damage', 'other'];
 
@@ -40,6 +41,7 @@ export default function IncidentsPage() {
         <input type="file" accept="image/*,video/*" className="text-xs mt-2" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         <button onClick={submit} className="bg-[#00d2ff] text-black font-bold rounded px-3 py-1 text-xs mt-2">SUBMIT REPORT</button>
         {msg && <p className="text-xs mt-1">{msg}</p>}
+        <div className="mt-2"><VizFigure src="/img/dis-road.svg" alt="Landslide debris blocking a highway" caption="What a verified road-blockage report looks like (reference)" status="DEMO" /></div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

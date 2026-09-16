@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Extreme storm warning illustration">
+  <rect width="400" height="225" fill="#12060d"/>
+  <ellipse cx="200" cy="75" rx="155" ry="50" fill="#3a1626"/>
+  <polygon points="208,85 178,155 198,155 172,215 232,135 207,135 228,85" fill="#ff5470"/>
+  <g stroke="#ff8ba0" stroke-width="2.5" opacity="0.85">
+    <line x1="90" y1="120" x2="82" y2="148"/><line x1="130" y1="125" x2="122" y2="153"/><line x1="280" y1="120" x2="272" y2="148"/><line x1="320" y1="125" x2="312" y2="153"/>
+  </g>
+  <rect x="110" y="186" width="180" height="26" rx="6" fill="#020b14" opacity="0.9"/>
+  <text x="122" y="204" font-family="monospace" font-size="13" fill="#ff8ba0">EXTREME · TAKE SHELTER</text>
+</svg>

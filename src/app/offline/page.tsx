@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { API_BASE } from '@/platform/api';
+import VizFigure from '@/platform/VizFigure';
 import { cacheGet, cachePut, onReconnect, queueAdd, queueList, syncNow } from '@/platform/offlineDb';
 
 const KEY = (typeof process !== 'undefined' && (process.env.NEXT_PUBLIC_GATEWAY_KEY as string)) || '';
@@ -50,6 +51,11 @@ export default function OfflinePage() {
 
   return (
     <ModuleShell title="Offline / Low-Network PWA" sub="Cached map · risk · alerts · GPS · photo/video · queue · auto-sync" status={online ? 'LIVE' : 'OFFLINE'} source="Service Worker + IndexedDB">
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">SYNC FLOW (TECHNICAL DIAGRAM — NOT A SCREENSHOT)</div>
+        <div className="mt-2"><VizFigure src="/img/offline-sync.svg" alt="Offline sync flow diagram" caption="Online → network lost → IndexedDB queue → restored → receipt" status="LIVE" /></div>
+      </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">{online ? 'ONLINE' : 'OFFLINE MODE'}</div>

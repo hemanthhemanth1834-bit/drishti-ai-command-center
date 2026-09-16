@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Earthquake cracked buildings illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <rect x="60" y="70" width="80" height="120" fill="#12324a"/>
+  <rect x="75" y="90" width="20" height="20" fill="#7de9ff" opacity="0.35"/>
+  <rect x="105" y="90" width="20" height="20" fill="#7de9ff" opacity="0.35"/>
+  <rect x="75" y="120" width="20" height="20" fill="#7de9ff" opacity="0.35"/>
+  <polygon points="60,70 100,45 140,70" fill="#1b4a68"/>
+  <rect x="250" y="95" width="90" height="95" fill="#12324a" transform="rotate(4 295 142)"/>
+  <rect x="265" y="112" width="20" height="18" fill="#7de9ff" opacity="0.35"/>
+  <rect x="295" y="112" width="20" height="18" fill="#7de9ff" opacity="0.35"/>
+  <polyline points="100,70 115,100 105,130 125,160 115,190" stroke="#ff5470" stroke-width="3" fill="none"/>
+  <polyline points="280,95 295,125 285,155 300,190" stroke="#ff5470" stroke-width="3" fill="none"/>
+  <g stroke="#ffd23f" stroke-width="2" opacity="0.9">
+    <line x1="200" y1="30" x2="200" y2="44"/><line x1="188" y1="34" x2="194" y2="46"/><line x1="212" y1="34" x2="206" y2="46"/>
+  </g>
+  <path d="M0 200 Q100 192 200 200 T400 198 L400 225 L0 225 Z" fill="#0e2a3f"/>
+  <path d="M40 200 l30 -8 M330 199 l28 6" stroke="#ff5470" stroke-width="2"/>
+</svg>

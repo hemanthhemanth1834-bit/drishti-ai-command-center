@@ -745,5 +745,12 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 .nesafe-slopebar { height: 10px; border-radius: 999px; background: #0a2036; border: 1px solid #1b314b; overflow: hidden; }
 .nesafe-slopebar i { display: block; height: 100%; background: linear-gradient(90deg, #00d2ff, #fb923c, #ff5470); transition: width 0.8s; }
 .nesafe-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 10px; color: #475569; margin-top: 14px; letter-spacing: 0.04em; }
+/* NE-SAFE figures: contextual visuals, never evidence */
+.nesafe-fig { border: 1px solid #1b314b; border-radius: 12px; overflow: hidden; background: #04121f; }
+.nesafe-fig-img { background: #04121f; }
+.nesafe-fig-cap { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 10px; color: #7d93a8; padding: 6px 10px; border-top: 1px solid #1b314b; flex-wrap: wrap; }
+.nesafe-vizgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+@media (max-width: 1000px) { .nesafe-vizgrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .nesafe-vizgrid { grid-template-columns: 1fr; } }
 @media (max-width: 1000px) { .nesafe-grid-main, .nesafe-grid2col { grid-template-columns: 1fr; } .nesafe-grid2 { grid-template-columns: repeat(2, 1fr); } .nesafe-head h1 { font-size: 20px; } }
 @media (prefers-reduced-motion: reduce) { .nesafe-pkt, .nesafe-sat-scan, .nesafe-alert { animation: none !important; } }

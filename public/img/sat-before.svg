@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Reference satellite view before event, green terrain">
+  <rect width="400" height="225" fill="#0d2b1f"/>
+  <path d="M0 60 Q80 40 160 65 T400 55 L400 0 L0 0 Z" fill="#123a28" opacity="0.8"/>
+  <path d="M0 150 Q120 120 220 145 T400 135 L400 225 L0 225 Z" fill="#0a2033"/>
+  <path d="M40 0 Q90 90 60 180" stroke="#1d5a40" stroke-width="10" fill="none" opacity="0.7"/>
+  <path d="M140 0 Q170 100 150 200" stroke="#1d5a40" stroke-width="7" fill="none" opacity="0.6"/>
+  <path d="M250 0 Q230 110 260 225" stroke="#2a7a55" stroke-width="12" fill="none" opacity="0.6"/>
+  <circle cx="300" cy="90" r="26" fill="#2a7a55" opacity="0.8"/>
+  <circle cx="90" cy="110" r="18" fill="#2a7a55" opacity="0.7"/>
+  <rect x="0" y="0" width="400" height="225" fill="none" stroke="#1b314b" stroke-width="2"/>
+  <rect x="12" y="12" width="86" height="24" rx="4" fill="#020b14" opacity="0.8"/>
+  <text x="22" y="29" font-family="monospace" font-size="14" fill="#6ee7b7">BEFORE</text>
+</svg>

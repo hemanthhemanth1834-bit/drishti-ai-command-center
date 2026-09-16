@@ -14,6 +14,8 @@ const STATIC = [
   { provider: 'SRTM/Copernicus DEM', purpose: 'Elevation (production path)', license: 'Open', live: 'PLANNED', free: 'Yes', fallback: 'Procedural DEM (demo)' },
   { provider: 'Web Push (VAPID)', purpose: 'Free push notifications', license: 'Open web standard', live: 'NOT_CONFIGURED', free: 'Yes', fallback: 'In-app queue' },
   { provider: 'SMTP / Mailpit', purpose: 'Email alerts', license: 'Open', live: 'NOT_CONFIGURED', free: 'Yes (self-host)', fallback: 'In-app queue' },
+  { provider: 'Project SVG diagrams', purpose: 'Contextual visuals (public/img/)', license: 'Original, in-repo', live: 'STATIC', free: 'Yes', fallback: '—' },
+  { provider: 'Unsplash placeholders', purpose: 'Gallery examples (labeled EXAMPLE)', license: 'Unsplash License', live: 'EXTERNAL hotlink', free: 'Yes', fallback: 'gradient blocks' },
 ];
 
 export default function DataSourcesPage() {

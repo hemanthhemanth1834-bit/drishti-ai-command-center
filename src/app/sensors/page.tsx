@@ -1,6 +1,7 @@
 'use client';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 interface Row {
   sensor_id: string; lat: number; lon: number; kind: string; status: string; source: string;
@@ -11,6 +12,11 @@ export default function SensorsPage() {
   const net = usePlatform<{ count: number; sensors: Row[] }>('/api/v1/sensors/network', 15000);
   return (
     <ModuleShell title="Sensor Network" sub="Soil-moisture + temperature · ESP32/LoRa/MQTT/HTTP ingest ready · POST /api/v1/sensors/ingest" status={net.data ? 'LIVE' : net.status} source="DB live rows + seeded DEMO">
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">NETWORK TOPOLOGY (ILLUSTRATIVE — NOT DEPLOYED HARDWARE)</div>
+        <div className="mt-2"><VizFigure src="/img/sensor-net.svg" alt="Sensor network diagram with field nodes and gateway" caption="Soil / rain / tilt nodes → LoRa gateway → ingest API" status="DEMO" /></div>
+      </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">NODES ({net.data?.count ?? '…'}) — LIVE, stale &gt; 15 min marked STALE</div>

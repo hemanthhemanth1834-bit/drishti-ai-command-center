@@ -23,9 +23,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "satellite",
     title: "Multispectral Delta Inundation Analysis",
     badge: "EARTH OBSERVATION",
-    source: "NASA Earth Observatory / Landsat-8 OLI",
-    license: "Public Domain (NASA / USGS)",
-    sensor: "Operational Land Imager (Band 7, 5, 4)",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "30m GSD / 185km Swath",
     description: "False-color infrared imagery differentiating submerged lowlands from standing structures. Water absorbs shortwave infrared (black/dark blue), while unaffected vegetation appears bright cyan/green.",
     imageUrl: "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=1200&q=80",
@@ -41,9 +41,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "drone",
     title: "Autonomous Thermal FLIR Search & Rescue",
     badge: "DRONE SAR",
-    source: "Open Aerial Geointelligence Archive",
-    license: "CC BY-SA 4.0 / Public Commons",
-    sensor: "Uncooled Microbolometer LWIR 640x512",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "3.2cm/px @ 80m AGL",
     description: "Forward-Looking Infrared (FLIR) aerial stream highlighting human body heat signatures amidst debris and cold flood currents. DRISHTI computer vision isolates clusters of interest.",
     imageUrl: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=1200&q=80",
@@ -59,9 +59,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "vision",
     title: "Real-time Edge Computer Vision & Segment Bounding",
     badge: "COMPUTER VISION",
-    source: "DRISHTI Sovereign Vision Core v2",
-    license: "Open Source Drone Model",
-    sensor: "4K Sony Exmor CMOS + TensorRT Edge",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "3840x2160 @ 60 FPS (Sub-20ms Latency)",
     description: "Onboard drone YOLO/TensorRT segmentation model detecting breached embankments, stranded livestock, submerged vehicles, and active distress waving in real-time.",
     imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
@@ -77,9 +77,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "terrain",
     title: "3D Digital Elevation Contour & Runoff Vectors",
     badge: "GEOSPATIAL DEM",
-    source: "USGS SRTM & CartoSat Topographic Data",
-    license: "Public Domain / Open Data",
-    sensor: "Interferometric Radar (InSAR) 1-Arcsecond",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "12.5m Spatial Elevation",
     description: "High-resolution digital terrain model computing hydraulic flow velocity and flood wall overtopping probabilities for low-elevation arterial evacuation channels.",
     imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
@@ -95,9 +95,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "satellite",
     title: "Orbital Geostationary Cyclone Doppler Tracking",
     badge: "METEOROLOGY",
-    source: "NOAA GOES / ISRO INSAT-3DR",
-    license: "Public Domain (NOAA / ISRO Open Data)",
-    sensor: "16-Channel Advanced Baseline Imager (ABI)",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "0.5km Visible / 2.0km Thermal",
     description: "Deep convection cloud-top cooling analysis and spiral wind vector computation predicting landfall trajectory and extreme precipitation intensity belts.",
     imageUrl: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80",
@@ -113,9 +113,9 @@ const INTEL_EXAMPLES: IntelExample[] = [
     category: "drone",
     title: "Sovereign Drone Swarm Relay & Mesh Telemetry",
     badge: "SWARM MESH",
-    source: "DRISHTI-X Tactical Flight Telemetry",
-    license: "DRISHTI Sovereign Protocol",
-    sensor: "802.11ah HaLow + LoRa 868MHz Gateway",
+    source: "Illustrative image (Unsplash) — not a live observation",
+    license: "Unsplash License (illustrative placeholder)",
+    sensor: "Illustrative spec — not a real sensor",
     resolution: "15km Line-of-Sight P2P Link",
     description: "Decentralized ad-hoc airborne communications mesh restoring civilian connectivity and GPS-denied inertial positioning across severed cellular towers.",
     imageUrl: "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=1200&q=80",
@@ -209,8 +209,8 @@ export default function GeospatialIntelGallery() {
 
               {/* Status Badge */}
               <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/75 backdrop-blur border border-[#00d2ff]/50 text-[10px] text-[#00d2ff] font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#00d2ff] animate-ping" />
-                {item.badge}
+                <span className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-ping" />
+                EXAMPLE · {item.badge}
               </div>
 
               {/* Sensor Spec Tag */}
@@ -246,7 +246,7 @@ export default function GeospatialIntelGallery() {
               </div>
 
               <div className="mt-2 text-[9px] text-slate-500 flex items-center justify-between">
-                <span className="truncate max-w-[200px]">{item.source}</span>
+                <span className="truncate max-w-[200px]">{item.source} · EXAMPLE</span>
                 <span className="text-[#00d2ff] group-hover:underline">EXPAND →</span>
               </div>
             </div>
@@ -320,8 +320,8 @@ export default function GeospatialIntelGallery() {
                   <span className="text-slate-600 mx-1.5">|</span>
                   <span className="text-emerald-400">{activeModal.license}</span>
                 </div>
-                <div className="text-[10px] text-[#00d2ff] flex items-center gap-1 font-bold">
-                  VERIFIED OPEN SOURCE
+                <div className="text-[10px] text-[#fbbf24] flex items-center gap-1 font-bold">
+                  ILLUSTRATIVE EXAMPLE — NOT A LIVE OBSERVATION
                 </div>
               </div>
             </div>

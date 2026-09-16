@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import VizFigure from '@/platform/VizFigure';
 
 const MODULES = [
   ['/prediction', 'Prediction', 'AI landslide probability + WHY'],
@@ -47,6 +48,18 @@ export default function IntelligencePage() {
         <div className="dx-hud-edge" />
         <div className="dx-micro">PIPELINE</div>
         <p className="text-xs text-slate-300 mt-1">FREE DATA (Open-Meteo · SoilGrids · OSM · open DEM) → INGEST → VALIDATE → FEATURES → OPEN-SOURCE ML → RISK → GIS HEATMAP → EARLY WARNING → WEB PUSH/APP → AUTHORITY + CITIZEN PWA → FIELD REPORT → IMAGE ANALYSIS → DATABASE → LEARN</p>
+      </div>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">CURRENT SITUATION — CONTEXT, NOT LIVE EVENTS</div>
+        <div className="nesafe-vizgrid mt-2">
+          <Link href="/risk-map" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-landslide.svg" alt="Landslide affecting a mountain road" caption="Landslide risk" status="DEMO" /></Link>
+          <Link href="/weather" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-flood.svg" alt="River flood over roads and houses" caption="Flood watch" status="DEMO" /></Link>
+          <Link href="/satellite" style={{ textDecoration: 'none' }}><VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="Change watch" status="DEMO" /></Link>
+          <Link href="/terrain" style={{ textDecoration: 'none' }}><VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Terrain" status="DEMO" /></Link>
+          <Link href="/incidents" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-road.svg" alt="Landslide debris blocking a highway" caption="Field reports" status="DEMO" /></Link>
+          <Link href="/response" style={{ textDecoration: 'none' }}><VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="Response" status="DEMO" /></Link>
+        </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
         {MODULES.map(([href, t, d]) => (

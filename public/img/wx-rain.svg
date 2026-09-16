@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Heavy rainfall illustration">
+  <rect width="400" height="225" fill="#081420"/>
+  <ellipse cx="200" cy="80" rx="150" ry="48" fill="#22364f"/>
+  <ellipse cx="130" cy="62" rx="70" ry="30" fill="#2e4a68"/>
+  <ellipse cx="280" cy="64" rx="75" ry="32" fill="#2e4a68"/>
+  <g stroke="#7de9ff" stroke-width="3" stroke-linecap="round" opacity="0.9">
+    <line x1="90" y1="120" x2="80" y2="155"/><line x1="130" y1="125" x2="120" y2="160"/><line x1="170" y1="120" x2="160" y2="155"/>
+    <line x1="210" y1="125" x2="200" y2="160"/><line x1="250" y1="120" x2="240" y2="155"/><line x1="290" y1="125" x2="280" y2="160"/><line x1="330" y1="120" x2="320" y2="155"/>
+  </g>
+  <g stroke="#7de9ff" stroke-width="2" opacity="0.5">
+    <line x1="110" y1="165" x2="104" y2="190"/><line x1="230" y1="168" x2="224" y2="193"/><line x1="310" y1="165" x2="304" y2="190"/>
+  </g>
+  <path d="M0 205 Q200 195 400 205 L400 225 L0 225 Z" fill="#0e4a68"/>
+</svg>

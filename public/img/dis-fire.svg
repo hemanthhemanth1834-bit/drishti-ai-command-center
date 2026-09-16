@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 225" role="img" aria-label="Wildfire on a hillside illustration">
+  <rect width="400" height="225" fill="#06121f"/>
+  <polygon points="0,225 0,150 140,90 260,140 400,110 400,225" fill="#14301f"/>
+  <polygon points="140,90 260,140 220,160 120,120" fill="#1d4028"/>
+  <g>
+    <path d="M120 150 q-18 -30 4 -52 q-2 18 10 24 q4 -20 18 -30 q-4 24 8 34 q10 -8 12 -22 q14 20 2 46 q-20 16 -54 0 Z" fill="#ff7a1a"/>
+    <path d="M140 150 q-10 -18 2 -32 q0 12 7 16 q3 -12 11 -18 q-2 15 5 21 q6 -5 7 -13 q8 12 1 26 q-12 10 -33 0 Z" fill="#ffd23f"/>
+    <path d="M155 150 q-5 -9 1 -16 q4 6 9 4 q-1 8 -10 12 Z" fill="#fff3c4"/>
+  </g>
+  <g>
+    <path d="M250 165 q-14 -22 3 -40 q-1 14 8 19 q3 -15 14 -23 q-3 18 6 26 q8 -6 9 -17 q11 15 2 35 q-16 12 -42 0 Z" fill="#ff7a1a" opacity="0.9"/>
+    <path d="M265 165 q-8 -13 2 -24 q0 9 5 12 q2 -9 8 -14 q-1 11 4 16 q5 -4 5 -10 q6 9 1 20 q-9 8 -25 0 Z" fill="#ffd23f"/>
+  </g>
+  <ellipse cx="150" cy="70" rx="70" ry="16" fill="#8a8f98" opacity="0.25"/>
+  <ellipse cx="190" cy="48" rx="90" ry="18" fill="#8a8f98" opacity="0.18"/>
+  <rect x="60" y="185" width="60" height="26" fill="#12324a"/>
+  <rect x="280" y="190" width="70" height="22" fill="#12324a"/>
+</svg>
