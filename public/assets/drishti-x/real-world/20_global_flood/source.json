@@ -1,0 +1,7 @@
+{
+  "title": "NASA NRT Global Flood Product",
+  "source_url": "https://www.earthdata.nasa.gov/data/tools/worldview",
+  "status": "LIVE/NEAR-REAL-TIME",
+  "downloaded": false,
+  "note": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live."
+}

@@ -14,6 +14,8 @@ const COLORS: Record<string, string> = {
   INFO: '#00d2ff', ADVISORY: '#a7f3d0', WATCH: '#7de9ff', ALERT: '#fbbf24',
   WARNING: '#fb923c', EMERGENCY: '#ff5470', CRITICAL: '#ff5470',
   'HIGH RISK': '#fb923c',
+  'NEAR-REAL-TIME': '#34d399', 'HISTORICAL': '#fbbf24',
+  'HISTORICAL REFERENCE': '#fbbf24', REFERENCE: '#38bdf8',
 };
 
 export function StatusBadge({ status, small }: { status: string; small?: boolean }) {

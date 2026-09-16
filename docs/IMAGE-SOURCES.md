@@ -42,6 +42,19 @@ responsive (`nesafe-vizgrid`), meaningful alt text in `VizFigure` (`src/platform
 - No scraped news/copyrighted disaster photos. No paid image APIs. No stock-photo grids.
 - `dis-earthquake.svg` / `dis-storm.svg` ship unused for future sector pages (documented here, not dead code).
 
+## Real-world image pack import (2026-09-16)
+
+Imported from `drishti-x-real-world-image-pack` (30 topic folders):
+`public/assets/drishti-x/real-world/<folder>/source.json` (verbatim, metadata only),
+manifest `public/assets/drishti-x/real-world/manifest.json`,
+registry `src/config/imageSources.ts`, mappings `src/config/disasterVisuals.ts`,
+component `src/components/visuals/DisasterImage.tsx`, mapping doc `docs/IMAGE-MAPPING.md`.
+**Zero image binaries vendored**: LIVE entries resolve to provider integrations
+(GIBS tiles, Worldview/FIRMS/Copernicus/Bhuvan links); HISTORICAL entries
+(NASA EO cases, JPL, ISRO atlas) link out to source articles; REFERENCE entries
+with unverifiable licenses (commercial/news sites) are outbound-link-only.
+Wired into `/history` (reference library) and `/satellite` (provider cards).
+
 ## Live EO tile layers (verified HTTP 200, 2026-09-16, keyless)
 
 | Layer | GIBS endpoint (EPSG:3857, `default` = latest NRT composite) | Use |

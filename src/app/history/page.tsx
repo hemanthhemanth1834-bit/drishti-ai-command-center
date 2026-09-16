@@ -4,6 +4,8 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { API_BASE, hasKey } from '@/platform/api';
 import VizFigure from '@/platform/VizFigure';
+import DisasterImage from '@/components/visuals/DisasterImage';
+import { imagesByStatus } from '@/config/imageSources';
 
 export default function HistoryPage() {
   const tr = usePlatform<{ yearly: Record<string, number>; by_severity: Record<string, number>; avg_rainfall_by_severity_mm: Record<string, number>; hotspots: unknown[]; data_status: string; note: string }>('/api/v1/history/trends');
@@ -45,6 +47,15 @@ export default function HistoryPage() {
           <VizFigure src="/img/dis-flood.svg" alt="River flood over roads and houses" caption="Flood events" status="DEMO" />
           <VizFigure src="/img/dis-cyclone.svg" alt="Cyclone spiral over coastline" caption="Cyclone events" status="DEMO" />
           <VizFigure src="/img/dis-landslide.svg" alt="Landslide affecting a mountain road" caption="Landslide events" status="DEMO" />
+        </div>
+      </div>
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">HISTORICAL REFERENCE LIBRARY (DOCUMENTED CASES — NOT CURRENT EVENTS)</div>
+        <div className="nesafe-vizgrid mt-2">
+          {imagesByStatus('HISTORICAL').map((e) => (
+            <DisasterImage key={e.id} entry={e} />
+          ))}
         </div>
       </div>
       <div className="dx-hud">
