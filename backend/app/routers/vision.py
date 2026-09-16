@@ -40,6 +40,7 @@ class ClassifyResult(BaseModel):
     simulated: bool
     model: str
     verification_required: bool = True
+    result_class: str = "SIMULATED"  # OBSERVED|POSSIBLE|UNCERTAIN|SIMULATED|NOT_AVAILABLE
 
 
 @router.get("/labels")
@@ -56,4 +57,6 @@ async def classify(file: UploadFile = File(...),
     validate_upload(file.filename or "photo.jpg", len(content))
     out = demo_classify(file.filename or "photo.jpg", len(content))
     out["verification_required"] = True
+    out["result_class"] = ("POSSIBLE" if out["label"] != "no_hazard_visible"
+                           else "UNCERTAIN") if not out["simulated"] else "SIMULATED"
     return out

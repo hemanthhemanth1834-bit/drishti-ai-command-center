@@ -14,6 +14,8 @@
 | regions | `/api/regions/countries|states|districts|cities|localities|disasters|sectors|agencies|geocode|route` | open |
 | ai | `/api/v1/ai/status|summarize|classify` | rate-limited, open |
 | resources | `/api/v1/resources`, `/shelters`, `/nearest-shelter`, occupancy | key on occupancy |
+| sectors | `/api/v1/sectors/impact` (LIVE/CALCULATED/DEMO/NOT_AVAILABLE) | open |
+| ops | `/api/v1/ops/health` (errors, latency, inference, sync, db) | open |
 | grid/risk | `/api/v1/grid/risk-cells`, `/api/v1/risk/assess` | open |
 | sync/notify/admin | `/api/v1/sync/*`, `/api/v1/notifications/*`, `/api/v1/admin/*` | key on send/verify/admin |
 

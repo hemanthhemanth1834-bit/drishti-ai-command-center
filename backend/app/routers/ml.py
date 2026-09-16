@@ -37,8 +37,15 @@ def _persist(resp) -> None:
 @router.post("/predict")
 def predict(req: PredictRequest,
             _=Depends(rate_limit(120))):
+    import time
+    t0 = time.perf_counter()
     resp = REGISTRY.predict(req.location.latitude, req.location.longitude,
                             req.features)
+    try:
+        from .ops import record_inference_ms
+        record_inference_ms((time.perf_counter() - t0) * 1000)
+    except Exception:
+        pass
     _persist(resp)
     return resp.model_dump()
 

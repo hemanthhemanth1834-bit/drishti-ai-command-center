@@ -159,6 +159,7 @@ flowchart TD
 - **Sectors:** 7 sectors × 15 disaster types (EN + TE), 9 agency records — config + DB, filterable.
 - **Telugu-first:** full EN/TE platform strings (`src/platform/i18n.ts`), TE nav, TE emergency phrases, TE alert templates; app language switch already in Navbar.
 - **AI:** `/api/v1/ai/*` — Ollama-optional summarization/classification; LLM explains text only, never computes risk. Output classes OBSERVED/ANALYZED/ESTIMATED/PREDICTED/SIMULATED.
+- **Observability:** `/api/v1/ops/health` (errors, latency p50/p95, inference time, provider failures, sync, DB) + Admin panel; in-memory, no commercial monitoring.
 - **Maps:** OSRM routing + Nominatim geocoding adapters (cached, throttled, labeled CACHED/LIVE/DEMO).
 - **Shelters/resources:** live registry with occupancy workflow + nearest-open-shelter.
 - **Reports:** UNVERIFIED → UNDER_REVIEW → VERIFIED/REJECTED workflow (backwards-compatible `verified` flag kept).
@@ -264,7 +265,8 @@ Groups (all under `/api/v1/`): `ml` (predict/batch/model/health/features/explain
 ## 14. Testing & verification (latest verified runs)
 
 ```bash
-cd backend && python -m pytest -q     # 44 passed (9 legacy + 26 platform + 9 universal)
+cd backend && python -m pytest -q     # 49 passed (9 legacy + 26 platform + 14 universal)
+npm test                              # 7 passed (vitest: templates, geo config, region store)
 npm run typecheck                      # clean
 npm run lint                           # clean
 npm run build                          # 47/47 routes static

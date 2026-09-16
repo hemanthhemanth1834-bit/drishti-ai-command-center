@@ -92,6 +92,11 @@ def send(req: SendRequest, db: Session = Depends(get_db),
         db.add(m.Notification(channel=req.channel, audience=req.audience,
                               title=text[:200], status="provider_not_configured"))
         db.commit()
+        try:
+            from .ops import record_notify_failure
+            record_notify_failure(req.channel)
+        except Exception:
+            pass
         return {"ok": False, "status": "Provider not configured",
                 "channel": req.channel,
                 "needs": [p["needs"] for p in provider_status()

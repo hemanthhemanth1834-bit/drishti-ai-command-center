@@ -24,7 +24,8 @@ Target: **₹0 mandatory recurring API cost** for the core app.
 | Icons | lucide-react (ISC) | — | READY |
 | Realtime | native WebSocket + polling | Socket.IO/SSE if needed | READY |
 | Email dev | SMTP adapter | Mailpit (compose profile) | NOT CONFIGURED |
-| Auth | Bearer + JWT-ready RBAC | self-hosted IdP later | prototype-grade |
+| Auth | Bearer + PyJWT RBAC | PyJWT (HPND), self-hosted IdP later | READY (prototype-grade) |
+| Testing | pytest (backend) + vitest (frontend) | both free/open | READY |
 | Storage | local FS + MinIO adapter | MinIO (compose profile) | READY / NOT CONFIGURED |
 | Hosting | Vercel (frontend) + Docker | any Docker host | READY |
 

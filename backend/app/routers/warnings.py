@@ -58,6 +58,7 @@ def evaluate(req: WarnRequest, db: Session = Depends(get_db),
              ident=Depends(require_perm("read"))):
     _ = ident
     wx = get_weather(req.lat, req.lon)
+    wx_live = "error" not in wx and wx.get("data_status") == "LIVE"
     rain_state = threshold_state(float(wx.get("rain_24h", 0))) \
         if "error" not in wx else "UNKNOWN"
     terr = terrain_analyze(req.lat, req.lon)
@@ -119,6 +120,8 @@ def evaluate(req: WarnRequest, db: Session = Depends(get_db),
         "source": "EarlyWarningEngine",
         "model_version": pred.model_version,
         "simulated": pred.simulated,
+        "data_freshness": ("FRESH-LIVE" if wx_live and not pred.simulated
+                           else "STALE-OR-DEMO"),
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "disclaimer": "AI decision support — potential landslide, "
                       "not a certain event.",

@@ -304,6 +304,26 @@ export default function WelcomePage() {
               </Link>
             </div>
 
+            {/* Entry strip: language + location + emergency (no account needed) */}
+            <div className="flex items-center gap-2 mt-3 flex-wrap text-[11px]">
+              <span className="text-slate-500">START:</span>
+              {([['en', 'English'], ['te', 'తెలుగు'], ['hi', 'हिन्दी']] as const).map(([code, label]) => (
+                <button
+                  key={code}
+                  onClick={() => { setApp({ lang: code }); soundSynth.click(); }}
+                  className={`px-2.5 py-1 rounded-lg border font-bold ${lang === code ? 'bg-[#00d2ff] text-black border-[#00d2ff]' : 'bg-[#051424] text-slate-300 border-[#1b314b]'}`}
+                >
+                  {label}
+                </button>
+              ))}
+              <Link href="/regions" onClick={() => soundSynth.click()} className="px-2.5 py-1 rounded-lg border bg-[#051424] text-[#7de9ff] border-[#1b314b] font-bold inline-flex items-center gap-1">
+                <MapPin className="w-3 h-3" /> LOCATION
+              </Link>
+              <Link href="/emergency" onClick={() => soundSynth.click()} className="px-2.5 py-1 rounded-lg border bg-rose-500/15 text-rose-300 border-rose-500/50 font-bold inline-flex items-center gap-1">
+                <Siren className="w-3 h-3" /> EMERGENCY
+              </Link>
+            </div>
+
             {/* Micro keyboard tip */}
             <div className="text-[11px] text-slate-500 flex items-center gap-2">
               <span>Press <kbd className="px-1.5 py-0.5 rounded border border-[#1b314b] bg-[#051424] text-white font-bold">ENTER</kbd> anytime to enter Master Command</span>

@@ -90,3 +90,53 @@ def test_alert_levels_extended():
                     json={"level": "ADVISORY", "title": "t", "lat": 1, "lon": 2})
     assert r.status_code == 200
     assert client.get("/api/v1/alerts/render?level=ADVISORY&lang=te").json()["text"]
+    s = client.post("/api/v1/alerts", headers=AUTH,
+                    json={"level": "SEVERE", "title": "t", "lat": 1, "lon": 2})
+    assert s.status_code == 200
+
+
+def test_jwt_library_roundtrip(monkeypatch):
+    import app.services.security as sec
+    assert sec.decode_token("bogus") is None
+    assert sec.mint_token("u", "admin") is None  # no secret by default
+    monkeypatch.setenv("JWT_SECRET", "test-secret-123")
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    tok = sec.mint_token("op1", "district_admin")
+    assert tok
+    ident = sec.decode_token(tok)
+    assert ident == {"sub": "op1", "role": "district_admin"}
+    assert sec.decode_token(tok + "tampered") is None
+
+
+def test_ops_health_shape():
+    j = client.get("/api/v1/ops/health").json()
+    for k in ("uptime_s", "requests", "errors", "latency_ms",
+              "inference_ms", "provider_failures", "sync", "database"):
+        assert k in j, f"missing {k}"
+
+
+def test_sector_impact_labels():
+    j = client.get("/api/v1/sectors/impact?disaster=flood&lat=16.5&lon=80.6").json()
+    assert j["impacts"]
+    for row in j["impacts"]:
+        assert row["status"] in ("LIVE", "CALCULATED", "DEMO", "NOT_AVAILABLE")
+        assert "inputs" in row
+
+
+def test_sync_idempotency():
+    payload = {"device_id": "d", "items": [
+        {"client_id": "idem-x", "kind": "reading",
+         "payload": {"sensor_id": "S-1", "soil_moisture": 60}}]}
+    r1 = client.post("/api/v1/sync/push", headers=AUTH, json=payload).json()
+    r2 = client.post("/api/v1/sync/push", headers=AUTH, json=payload).json()
+    assert r1["receipts"][0]["status"] == "accepted"
+    assert r2["receipts"][0]["status"] == "duplicate"
+
+
+def test_rainfall_observed_forecast_split():
+    j = client.get("/api/v1/rainfall/current?lat=16.5&lon=80.6").json()
+    if j["data_status"] == "LIVE":
+        assert "observed" in j and "forecast" in j
+        assert "rain_7d_mm" in j
+    else:
+        assert j["data_status"] == "DEMO"

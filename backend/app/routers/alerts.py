@@ -14,7 +14,7 @@ from ..services.security import require_perm
 
 router = APIRouter(prefix="/api/v1/alerts", tags=["alerts"])
 
-LEVELS = ["INFO", "ADVISORY", "WATCH", "ALERT", "WARNING", "EMERGENCY", "CRITICAL"]
+LEVELS = ["INFO", "ADVISORY", "WATCH", "ALERT", "WARNING", "SEVERE", "EMERGENCY", "CRITICAL"]
 
 # Reviewed short templates (operator-facing). Life-safety wording per locale
 # ships in frontend src/platform/alertTemplates.ts (9 languages).
@@ -25,6 +25,7 @@ TITLES = {
     "ALERT": {"en": "Alert: heightened risk — stay informed", "hi": "अलर्ट: बढ़ा जोखिम — सतर्क रहें", "te": "హెచ్చరిక: ప్రమాదం పెరిగింది — అప్రమత్తంగా ఉండండి"},
     "WARNING": {"en": "Warning: dangerous conditions likely", "hi": "चेतावनी: खतरनाक स्थिति संभावित", "te": "హెచ్చరిక: ప్రమాదకర పరిస్థితులు రావచ్చు"},
     "EMERGENCY": {"en": "EMERGENCY: follow official orders now", "hi": "आपातकाल: अभी आधिकारिक आदेश मानें", "te": "అత్యవసరం: ఇప్పుడే అధికారిక ఆదేశాలు పాటించండి"},
+    "SEVERE": {"en": "SEVERE: dangerous impact expected — act now", "hi": "अति गंभीर: खतरनाक प्रभाव संभावित — तुरंत कार्रवाई करें", "te": "తీవ్రమైన: ప్రమాదకర ప్రభావం ఉండవచ్చు — వెంటనే చర్య తీసుకోండి"},
     "CRITICAL": {"en": "CRITICAL: act now per official orders", "hi": "गंभीर: आधिकारिक आदेशों का पालन करें", "te": "తీవ్రం: అధికారిక ఆదేశాల ప్రకారం వెంటనే చర్య తీసుకోండి"},
 }
 

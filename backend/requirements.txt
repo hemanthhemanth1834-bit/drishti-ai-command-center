@@ -8,3 +8,4 @@ scikit-learn==1.9.1
 sqlalchemy==2.0.54
 pandas==3.0.5
 python-multipart==0.0.32
+PyJWT==2.14.0

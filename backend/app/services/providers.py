@@ -137,10 +137,27 @@ class OpenMeteoPrecip(PrecipitationProvider):
                "&hourly=precipitation&daily=precipitation_sum"
                "&forecast_days=7&past_days=7&timezone=auto" % (lat, lon))
         try:
+            from datetime import datetime, timezone
             data = _get_json(url)
             hourly = (data.get("hourly", {}).get("precipitation", []) or [])
+            times = (data.get("hourly", {}).get("time", []) or [])
             daily = (data.get("daily", {}).get("precipitation_sum", []) or [])
-            return {"hourly_next_mm": hourly[:24],
+            # Split OBSERVED (past, up to current hour) vs FORECAST (after now).
+            now_h = datetime.now(timezone.utc).replace(minute=0, second=0,
+                                                      microsecond=0)
+            cut = len(hourly)
+            for i, ts in enumerate(times):
+                try:
+                    t = datetime.fromisoformat(str(ts))
+                    if t.tzinfo is None:
+                        continue
+                    if t >= now_h:
+                        cut = i
+                        break
+                except ValueError:
+                    continue
+            return {"hourly_observed_mm": hourly[:cut],
+                    "hourly_forecast_mm": hourly[cut:cut + 72],
                     "daily_sum_mm": daily,
                     "source": "LIVE:Open-Meteo", "data_status": "LIVE"}
         except Exception as e:

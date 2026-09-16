@@ -4,7 +4,7 @@ DRISHTI-X is a **working prototype**, not hardened production infrastructure. If
 
 ## What exists
 
-- Bearer auth on mutating REST endpoints (gateway key, backward compatible) + JWT-ready role checks (`backend/app/services/security.py`).
+- Bearer auth on mutating REST endpoints (gateway key, backward compatible) + PyJWT-verified roles (`backend/app/services/security.py`, tested).
 - RBAC: citizen → field_officer → district_admin → state_admin → sys_admin.
 - Per-identity rate limiting, upload type/size validation (≤15 MB, allow-listed extensions), audit log for alert/incident actions.
 - Secrets via environment only; `.env*`, `backend/.env`, `*.db`, `ml/artifacts/` are gitignored.
@@ -12,8 +12,8 @@ DRISHTI-X is a **working prototype**, not hardened production infrastructure. If
 ## Development-only defaults (rotate before any shared deploy)
 
 - `GATEWAY_KEY` default `drishti-mesh-dev-key-2025` (also in `docker-compose.yml`).
-- `CORS_ORIGINS + "*"` in `app/main.py` (open CORS).
-- SQLite file DB; hand-rolled minimal JWT decoder (replace with a JWT library + tests).
+- CORS open unless `CORS_STRICT=true` (set it in production with tight `CORS_ORIGINS`).
+- SQLite file DB; `CORS_STRICT` + strict origins + Postgres before any shared deploy.
 
 ## Reporting a vulnerability
 

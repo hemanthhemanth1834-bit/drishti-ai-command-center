@@ -20,6 +20,8 @@ from ..services.security import require_perm
 router = APIRouter(prefix="/api/v1/sync", tags=["sync"])
 
 SUBSCRIPTIONS: List[Dict[str, Any]] = []  # in-memory; move to Redis/DB prod
+SEEN_CLIENT_IDS: set = set()  # idempotency window (in-memory; Redis in prod)
+MAX_SEEN = 5000
 
 
 class QueueItem(BaseModel):
@@ -39,6 +41,10 @@ def push(req: PushRequest, db: Session = Depends(get_db),
     _ = ident
     receipts = []
     for item in req.items[:100]:
+        if item.client_id in SEEN_CLIENT_IDS:
+            receipts.append({"client_id": item.client_id, "status": "duplicate",
+                             "note": "already processed — safe to drop client copy"})
+            continue
         try:
             if item.kind == "incident":
                 p = item.payload
@@ -66,7 +72,18 @@ def push(req: PushRequest, db: Session = Depends(get_db),
         except (ValueError, TypeError, KeyError) as e:
             receipts.append({"client_id": item.client_id, "status": "rejected",
                              "reason": f"invalid payload: {type(e).__name__}"})
+        else:
+            SEEN_CLIENT_IDS.add(item.client_id)
+            if len(SEEN_CLIENT_IDS) > MAX_SEEN:
+                SEEN_CLIENT_IDS.clear()
     db.commit()
+    acc = sum(1 for r in receipts if r["status"] == "accepted")
+    rej = sum(1 for r in receipts if r["status"] == "rejected")
+    try:
+        from .ops import record_sync
+        record_sync(acc, rej)
+    except Exception:
+        pass
     return {"device": req.device_id, "received": len(req.items),
             "receipts": receipts}
 

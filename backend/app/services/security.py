@@ -48,24 +48,30 @@ _rate: Dict[str, List[float]] = {}
 
 
 def decode_token(token: str) -> Optional[Dict]:
+    """Maintained-library JWT verification (PyJWT). HS256 only."""
     if not JWT_SECRET:
         return None
     try:
-        import base64, hashlib, hmac, json
-        parts = token.split(".")
-        if len(parts) != 3:
+        import jwt
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALG],
+                             options={"require": ["exp"]})
+        if not isinstance(payload, dict) or "sub" not in payload:
             return None
-        signing = f"{parts[0]}.{parts[1]}".encode()
-        sig = base64.urlsafe_b64decode(parts[2] + "==")
-        exp = base64.urlsafe_b64encode(
-            hmac.new(JWT_SECRET.encode(), signing, hashlib.sha256).digest()
-        ).decode().rstrip("=")
-        if not hmac.compare_digest(exp, parts[2]):
-            return None
-        payload = json.loads(base64.urlsafe_b64decode(parts[1] + "=="))
-        return payload if isinstance(payload, dict) else None
+        return {"sub": str(payload["sub"]),
+                "role": str(payload.get("role", "citizen"))}
     except Exception:
         return None
+
+
+def mint_token(sub: str, role: str = "citizen", ttl_min: int = 720) -> Optional[str]:
+    """Issue operator tokens (requires JWT_SECRET). No user store needed."""
+    if not JWT_SECRET:
+        return None
+    import time as _time
+    import jwt
+    now = int(_time.time())
+    return jwt.encode({"sub": sub, "role": role, "iat": now,
+                       "exp": now + ttl_min * 60}, JWT_SECRET, algorithm=JWT_ALG)
 
 
 def current_identity(

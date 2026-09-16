@@ -1,8 +1,10 @@
 """DRISHTI-X FastAPI telemetry service — local dev only."""
 import asyncio
+import os
 
-from fastapi import Depends, FastAPI, HTTPException, WebSocket, WebSocketDisconnect, status
+from fastapi import Depends, FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
@@ -34,6 +36,8 @@ from .routers.admin import router as admin_router
 from .routers.regions import router as regions_router
 from .routers.ai import router as ai_router
 from .routers.resources import router as resources_router
+from .routers.sectors import router as sectors_router
+from .routers.ops import router as ops_router, OpsMiddleware
 
 security = HTTPBearer(auto_error=False)
 
@@ -57,11 +61,22 @@ app = FastAPI(title="DRISHTI-X Telemetry Mesh", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=CORS_ORIGINS + ["*"],
+    allow_origins=CORS_ORIGINS if os.getenv("CORS_STRICT", "").lower() == "true" else CORS_ORIGINS + ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(Exception)
+async def safe_errors(request: Request, exc: Exception):
+    """Never leak stack traces to clients; 401/403/429 pass through."""
+    if isinstance(exc, HTTPException):
+        return JSONResponse(status_code=exc.status_code,
+                            content={"detail": exc.detail})
+    return JSONResponse(status_code=500,
+                        content={"detail": "Internal error (see server logs)",
+                                 "path": str(request.url.path)})
 
 _current_scenario = "nominal"
 
@@ -90,6 +105,9 @@ app.include_router(admin_router)
 app.include_router(regions_router)
 app.include_router(ai_router)
 app.include_router(resources_router)
+app.include_router(sectors_router)
+app.include_router(ops_router)
+app.add_middleware(OpsMiddleware)
 
 
 @app.on_event("startup")

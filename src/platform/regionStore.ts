@@ -26,6 +26,11 @@ export function useRegion(): RegionSelection {
   return useSyncExternalStore(subscribe, snap, snap);
 }
 
+/** Snapshot for tests and non-React callers. */
+export function getRegion(): RegionSelection {
+  return { ...state };
+}
+
 export function setRegion(patch: Partial<RegionSelection>) {
   state = { ...state, ...patch };
   if (!patch.label) {

@@ -95,6 +95,11 @@ def get_weather(lat: float, lon: float, provider: str = "auto") -> Dict:
     try:
         return OpenMeteoProvider().current(lat, lon)
     except Exception as e:
+        try:
+            from .ops import record_provider_failure
+            record_provider_failure("Open-Meteo")
+        except Exception:
+            pass
         out = FallbackDemoProvider().current(lat, lon)
         out["fallback_reason"] = f"Open-Meteo unreachable: {type(e).__name__}"
         return out
