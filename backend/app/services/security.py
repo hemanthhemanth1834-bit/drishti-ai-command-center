@@ -24,9 +24,20 @@ JWT_ALG = "HS256"
 
 ROLE_PERMS: Dict[str, List[str]] = {
     "citizen": ["report", "read"],
+    "public_user": ["report", "read"],
+    "volunteer": ["report", "read"],
     "field_officer": ["report", "read", "verify"],
+    "field_responder": ["report", "read", "verify"],
+    "emergency_responder": ["report", "read", "verify", "alert"],
+    "police": ["report", "read", "verify", "alert"],
+    "fire_service": ["report", "read", "verify", "alert"],
+    "healthcare": ["report", "read", "verify"],
+    "municipal_operator": ["report", "read", "verify", "alert", "roads"],
+    "district_operator": ["report", "read", "verify", "alert", "roads"],
     "district_admin": ["report", "read", "verify", "alert", "roads"],
+    "state_operator": ["report", "read", "verify", "alert", "roads", "admin"],
     "state_admin": ["report", "read", "verify", "alert", "roads", "admin"],
+    "admin": ["*"],
     "sys_admin": ["*"],
 }
 

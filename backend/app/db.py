@@ -41,12 +41,15 @@ def _ensure_ready() -> None:
     if _ready:
         return
     try:
-        from .models import platform  # noqa: F401
+        from .models import platform, geo  # noqa: F401
         Base.metadata.create_all(bind=engine)
+        _migrate_additive()
         from .seed_demo import seed_demo
+        from .seed_geo import seed_geo
         db = SessionLocal()
         try:
             seed_demo(db)
+            seed_geo(db)
         finally:
             db.close()
         _ready = True
@@ -54,6 +57,19 @@ def _ensure_ready() -> None:
         pass
 
 
+def _migrate_additive() -> None:
+    """Tiny additive migrations for pre-existing dev DBs (no data loss)."""
+    try:
+        from sqlalchemy import inspect, text
+        cols = [c["name"] for c in inspect(engine).get_columns("field_reports")]
+        if "status" not in cols:
+            with engine.begin() as conn:
+                conn.execute(text("ALTER TABLE field_reports ADD COLUMN "
+                                  "status VARCHAR(20) DEFAULT 'UNVERIFIED'"))
+    except Exception:
+        pass
+
+
 def init_db() -> None:
-    from .models import platform  # noqa: F401  (register tables)
+    from .models import platform, geo  # noqa: F401  (register tables)
     Base.metadata.create_all(bind=engine)

@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { get } from '@/platform/api';
+import { cacheGet, cachePut } from '@/platform/offlineDb';
 
 export default function WeatherPage() {
   const [lat, setLat] = useState(25.57);
@@ -11,12 +12,21 @@ export default function WeatherPage() {
   const cur = usePlatform<Record<string, unknown>>(`/api/v1/rainfall/current?lat=${q.split(',')[0]}&lon=${q.split(',')[1]}`);
   const th = usePlatform<{ warn_24h_mm: number; crit_24h_mm: number }>('/api/v1/weather/thresholds');
   const pv = usePlatform<{ providers: { name: string; status: string; key_required: boolean; detail?: string }[] }>('/api/v1/weather/providers');
+  const [cached, setCached] = useState<{ value: Record<string, unknown>; ts: number } | null>(null);
+
+  useEffect(() => {
+    if (cur.data) cachePut('weather:last', cur.data);
+    else if (!cur.loading) cacheGet<Record<string, unknown>>('weather:last').then(setCached);
+  }, [cur.data, cur.loading]);
 
   const go = () => setQ(`${lat},${lon}`);
 
-  const d = cur.data as Record<string, unknown> | null;
+  const live = cur.data as Record<string, unknown> | null;
+  const d = live ?? cached?.value ?? null;
+  const badge = live ? String(live.data_status ?? cur.status) : cached ? 'CACHED' : cur.status;
   return (
-    <ModuleShell title="Weather Intelligence" sub="Rainfall 1/6/24/72h · accumulation · anomaly · forecast · thresholds" status={String(d?.data_status ?? cur.status)} source={String(d?.source ?? 'provider chain')}>
+    <ModuleShell title="Weather Intelligence" sub="Rainfall 1/6/24/72h · accumulation · anomaly · forecast · thresholds" status={badge} source={String(d?.source ?? 'provider chain')}>
+      {cached && !live && <p className="text-[11px] text-sky-300">CACHED DATA from {new Date(cached.ts).toLocaleString()} — backend unreachable.</p>}
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="flex gap-2 text-xs flex-wrap">

@@ -14,15 +14,18 @@ from ..services.security import require_perm
 
 router = APIRouter(prefix="/api/v1/alerts", tags=["alerts"])
 
-LEVELS = ["WATCH", "ALERT", "WARNING", "CRITICAL"]
+LEVELS = ["INFO", "ADVISORY", "WATCH", "ALERT", "WARNING", "EMERGENCY", "CRITICAL"]
 
 # Reviewed short templates (operator-facing). Life-safety wording per locale
 # ships in frontend src/platform/alertTemplates.ts (9 languages).
 TITLES = {
-    "WATCH": {"en": "Watch: conditions being monitored", "hi": "निगरानी: स्थिति पर नज़र"},
-    "ALERT": {"en": "Alert: heightened risk — stay informed", "hi": "अलर्ट: बढ़ा जोखिम — सतर्क रहें"},
-    "WARNING": {"en": "Warning: dangerous conditions likely", "hi": "चेतावनी: खतरनाक स्थिति संभावित"},
-    "CRITICAL": {"en": "CRITICAL: act now per official orders", "hi": "गंभीर: आधिकारिक आदेशों का पालन करें"},
+    "INFO": {"en": "Info: situation update", "hi": "जानकारी: स्थिति अद्यतन", "te": "సమాచారం: పరిస్థితి నవీకరణ"},
+    "ADVISORY": {"en": "Advisory: be prepared", "hi": "परामर्श: तैयार रहें", "te": "సూచన: సిద్ధంగా ఉండండి"},
+    "WATCH": {"en": "Watch: conditions being monitored", "hi": "निगरानी: स्थिति पर नज़र", "te": "నిఘా: పరిస్థితిని గమనిస్తున్నాం"},
+    "ALERT": {"en": "Alert: heightened risk — stay informed", "hi": "अलर्ट: बढ़ा जोखिम — सतर्क रहें", "te": "హెచ్చరిక: ప్రమాదం పెరిగింది — అప్రమత్తంగా ఉండండి"},
+    "WARNING": {"en": "Warning: dangerous conditions likely", "hi": "चेतावनी: खतरनाक स्थिति संभावित", "te": "హెచ్చరిక: ప్రమాదకర పరిస్థితులు రావచ్చు"},
+    "EMERGENCY": {"en": "EMERGENCY: follow official orders now", "hi": "आपातकाल: अभी आधिकारिक आदेश मानें", "te": "అత్యవసరం: ఇప్పుడే అధికారిక ఆదేశాలు పాటించండి"},
+    "CRITICAL": {"en": "CRITICAL: act now per official orders", "hi": "गंभीर: आधिकारिक आदेशों का पालन करें", "te": "తీవ్రం: అధికారిక ఆదేశాల ప్రకారం వెంటనే చర్య తీసుకోండి"},
 }
 
 

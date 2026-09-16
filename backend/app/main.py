@@ -31,6 +31,9 @@ from .routers.alerts import router as alerts_router
 from .routers.sync import router as sync_router
 from .routers.model_health import router as model_health_router
 from .routers.admin import router as admin_router
+from .routers.regions import router as regions_router
+from .routers.ai import router as ai_router
+from .routers.resources import router as resources_router
 
 security = HTTPBearer(auto_error=False)
 
@@ -84,6 +87,9 @@ app.include_router(alerts_router)
 app.include_router(sync_router)
 app.include_router(model_health_router)
 app.include_router(admin_router)
+app.include_router(regions_router)
+app.include_router(ai_router)
+app.include_router(resources_router)
 
 
 @app.on_event("startup")

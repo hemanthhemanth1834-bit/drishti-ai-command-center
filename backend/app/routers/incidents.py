@@ -58,23 +58,32 @@ async def create(lat: float = Form(...), lon: float = Form(...),
         reporter_type=reporter_type, media=";".join(stored)[:400],
         ai_suggestion=" | ".join(ai_notes)[:400], verified=False))
     db.commit()
-    return {"ok": True, "id": rid, "verified": False,
+    return {"ok": True, "id": rid, "verified": False, "status": "UNVERIFIED",
             "ai_suggestion": ai_notes,
             "note": "Decision support only — needs human verification."}
 
 
+REPORT_STATUS = ["UNVERIFIED", "UNDER_REVIEW", "VERIFIED", "REJECTED"]
+
+
 @router.get("")
-def list_incidents(verified: Optional[bool] = None, limit: int = 50,
-                   db: Session = Depends(get_db)):
+def list_incidents(verified: Optional[bool] = None, status: str = "",
+                   limit: int = 50, db: Session = Depends(get_db)):
     q = db.query(m.FieldReport).order_by(m.FieldReport.ts.desc())
     if verified is not None:
         q = q.filter_by(verified=verified)
+    if status:
+        if status not in REPORT_STATUS:
+            raise HTTPException(status_code=400,
+                                detail=f"status in {REPORT_STATUS}")
+        q = q.filter_by(status=status)
     rows = q.limit(min(limit, 200)).all()
-    return {"count": len(rows), "incidents": [
+    return {"count": len(rows), "statuses": REPORT_STATUS, "incidents": [
         {"id": r.id, "type": r.incident_type, "severity": r.severity,
          "description": r.description, "lat": r.lat, "lon": r.lon,
          "reporter": r.reporter_type, "media": r.media,
-         "ai_suggestion": r.ai_suggestion, "verified": r.verified}
+         "ai_suggestion": r.ai_suggestion, "verified": r.verified,
+         "status": getattr(r, "status", "UNVERIFIED") or "UNVERIFIED"}
         for r in rows]}
 
 
@@ -86,7 +95,8 @@ def detail(rid: str, db: Session = Depends(get_db)):
     return {"id": r.id, "type": r.incident_type, "severity": r.severity,
             "description": r.description, "lat": r.lat, "lon": r.lon,
             "reporter": r.reporter_type, "media": r.media,
-            "ai_suggestion": r.ai_suggestion, "verified": r.verified}
+            "ai_suggestion": r.ai_suggestion, "verified": r.verified,
+            "status": getattr(r, "status", "UNVERIFIED") or "UNVERIFIED"}
 
 
 @router.post("/{rid}/verify")
@@ -96,7 +106,26 @@ def verify(rid: str, db: Session = Depends(get_db),
     if not r:
         raise HTTPException(status_code=404, detail="Unknown incident")
     r.verified = True
+    r.status = "VERIFIED"
     db.add(m.AuditLog(actor=ident.get("sub", "?"), action="verify-incident",
                       detail=rid))
     db.commit()
-    return {"ok": True, "id": rid, "verified": True}
+    return {"ok": True, "id": rid, "verified": True, "status": "VERIFIED"}
+
+
+@router.post("/{rid}/review")
+def review(rid: str, status: str = "UNDER_REVIEW",
+           db: Session = Depends(get_db),
+           ident=Depends(require_perm("verify"))):
+    if status not in REPORT_STATUS:
+        raise HTTPException(status_code=400,
+                            detail=f"status in {REPORT_STATUS}")
+    r = db.get(m.FieldReport, rid)
+    if not r:
+        raise HTTPException(status_code=404, detail="Unknown incident")
+    r.status = status
+    r.verified = status == "VERIFIED"
+    db.add(m.AuditLog(actor=ident.get("sub", "?"),
+                      action=f"review-incident:{status}", detail=rid))
+    db.commit()
+    return {"ok": True, "id": rid, "status": status}

@@ -7,9 +7,13 @@ import type { DataStatus } from './api';
 
 const COLORS: Record<string, string> = {
   LIVE: '#34d399', MODEL: '#34d399', FORECAST: '#00d2ff', EXTERNAL: '#00d2ff',
+  CACHED: '#38bdf8',
   DEMO: '#fbbf24', SIMULATION: '#fbbf24', MIXED: '#fbbf24',
   OFFLINE: '#64748b', STALE: '#fb923c', NOT_CONFIGURED: '#fb923c',
   NOT_AVAILABLE: '#64748b',
+  INFO: '#00d2ff', ADVISORY: '#a7f3d0', WATCH: '#7de9ff', ALERT: '#fbbf24',
+  WARNING: '#fb923c', EMERGENCY: '#ff5470', CRITICAL: '#ff5470',
+  'HIGH RISK': '#fb923c',
 };
 
 export function StatusBadge({ status, small }: { status: string; small?: boolean }) {

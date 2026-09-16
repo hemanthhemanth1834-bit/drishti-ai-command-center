@@ -6,8 +6,8 @@ const DICT: Record<string, Partial<Record<Lang, string>>> = {
   // Nav
   nav_nesafe: { en: 'NE-SAFE AI', te: 'NE-SAFE AI', hi: 'NE-SAFE AI', as: 'NE-SAFE AI', bn: 'NE-SAFE AI', ne: 'NE-SAFE AI', mni: 'NE-SAFE AI', mizo: 'NE-SAFE AI', kh: 'NE-SAFE AI' },
   nav_intelligence: { en: 'Intelligence', te: 'ఇంటెలిజెన্স', hi: 'इंटेलिजेंस', as: 'ইণ্টেলিজেন্স', bn: 'ইন্টেলিজেন্স', ne: 'इन्टेलिजेन्स', mni: 'Intelligence', mizo: 'Intelligence', kh: 'Intelligence' },
-  nav_command: { en: 'Command Center', te: 'కమాండ్ సెంటర్', hi: 'कमांड सेंटर', as: 'কমাণ্ড চেণ্টাৰ', bn: 'কমান্ড সেন্টার', ne: 'कमाण्ड सेन्टर', mni: 'কমান্ড সেন্টর', mizo: 'Command Center', kh: 'Command Center' },
-  nav_drones: { en: 'Drone Swarm & SAR', te: 'డ్రోన్ దళం', hi: 'ड्रोन दस्ता' },
+  nav_regions: { en: 'Regions', te: 'ప్రాంతాలు', hi: 'क्षेत्र' },
+  nav_command: { en: 'Command Center', te: 'కమాండ్ సెంటర్', hi: 'कमांड सेंटर', as: 'কমাণ্ড চেণ্টাৰ', bn: 'কমান্ড সেন্টার', ne: 'कमाण्ड सेन्टर', mni: 'কমান্ড সেন্টর', mizo: 'Command Center', kh: 'Command Center' },  nav_drones: { en: 'Drone Swarm & SAR', te: 'డ్రోన్ దళం', hi: 'ड्रोन दस्ता' },
   nav_twin: { en: '3D Digital Twin', te: '3D డిజిటల్ ట్విన్', hi: '3D डिजिटल ट्विन' },
   nav_location: { en: 'Location Intel', te: 'ప్రదేశ సమాచారం', hi: 'स्थान जानकारी' },
   nav_sim: { en: 'What-If Copilot', te: 'ఏమైతే కో-పైలట్', hi: 'क्या-हो को-पायलट' },

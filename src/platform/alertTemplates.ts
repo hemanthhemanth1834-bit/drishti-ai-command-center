@@ -6,7 +6,8 @@ mni Manipuri (Meitei Mayek transliterated Latin-safe), kh Khasi,
 mizo Mizo (Lushai), ne Nepali.
 */
 export const ALERT_LANGS = [
-  { code: 'en', label: 'English' }, { code: 'hi', label: 'हिन्दी' },
+  { code: 'en', label: 'English' }, { code: 'te', label: 'తెలుగు' },
+  { code: 'hi', label: 'हिन्दी' },
   { code: 'as', label: 'অসমীয়া' }, { code: 'bn', label: 'বাংলা' },
   { code: 'brx', label: 'बड़ो' }, { code: 'mni', label: 'Manipuri' },
   { code: 'kh', label: 'Khasi' }, { code: 'mizo', label: 'Mizo' },
@@ -19,6 +20,7 @@ export type AlertLevel = 'WATCH' | 'ALERT' | 'WARNING' | 'CRITICAL';
 const T: Record<AlertLevel, Record<AlertLang, string>> = {
   WATCH: {
     en: 'WATCH: Landslide conditions near {place} are being monitored. Risk {prob}. Stay informed. Helpline 1078.',
+    te: 'నిఘా: {place} దగ్గర పరిస్థితిని గమనిస్తున్నాం. రిస్క్ {prob}. అప్రమత్తంగా ఉండండి. హెల్ప్‌లైన్ 1078.',
     hi: 'निगरानी: {place} के पास भूस्खलन की स्थिति पर नज़र है। जोखिम {prob}। सतर्क रहें। हेल्पलाइन 1078।',
     as: 'নিৰীক্ষণ: {place}ৰ ওচৰত ভূমিস্খলনৰ পৰিস্থিতি নিৰীক্ষণত আছে। বিপদ {prob}। সতৰ্ক থাকক। 1078।',
     bn: 'নজরদারি: {place}-এর কাছে ভূমিধস পরিস্থিতি পর্যবেক্ষণে আছে। ঝুঁকি {prob}। সতর্ক থাকুন। 1078।',
@@ -30,6 +32,7 @@ const T: Record<AlertLevel, Record<AlertLang, string>> = {
   },
   ALERT: {
     en: 'ALERT: Heightened landslide risk near {place} ({prob}). Avoid steep slopes. Follow official updates. 1078.',
+    te: 'హెచ్చరిక: {place} దగ్గర ప్రమాదం పెరిగింది ({prob}). ఏటవాలులకు దూరంగా ఉండండి. అధికారిక సమాచారం చూడండి. 1078.',
     hi: 'अलर्ट: {place} के पास भूस्खलन का बढ़ा जोखिम ({prob})। खड़ी ढलानों से बचें। आधिकारिक सूचना देखें। 1078।',
     as: 'সতৰ্কবাণী: {place}ৰ ওচৰত ভূমিস্খলনৰ বিপদ বৃদ্ধি ({prob})। ঠিয় গড়া এৰক। চৰকাৰী নিৰ্দেশ মানক। 1078।',
     bn: 'সতর্কতা: {place}-এর কাছে ভূমিধসের ঝুঁকি বেশি ({prob})। খাড়া ঢাল এড়িয়ে চলুন। সরকারি নির্দেশ মানুন। 1078।',
@@ -41,6 +44,7 @@ const T: Record<AlertLevel, Record<AlertLang, string>> = {
   },
   WARNING: {
     en: 'WARNING: Dangerous landslide conditions likely near {place} ({prob}). Prepare to move to safe ground. 1078.',
+    te: 'హెచ్చరిక: {place} దగ్గర ప్రమాదకర పరిస్థితులు రావచ్చు ({prob}). సురక్షిత ప్రాంతానికి వెళ్లడానికి సిద్ధంగా ఉండండి. 1078.',
     hi: 'चेतावनी: {place} के पास खतरनाक भूस्खलन स्थिति संभावित ({prob})। सुरक्षित स्थान जाने की तैयारी करें। 1078।',
     as: 'সতৰ্কবাণী: {place}ৰ ওচৰত বিপদজনক ভূমিস্খলনৰ সম্ভাৱনা ({prob})। নিৰাপদ স্থানলৈ যাবলৈ সাজু হওক। 1078।',
     bn: 'সতর্কীকরণ: {place}-এর কাছে বিপজ্জনক ভূমিধসের সম্ভাবনা ({prob})। নিরাপদ স্থানে যাওয়ার প্রস্তুতি নিন। 1078।',
@@ -52,6 +56,7 @@ const T: Record<AlertLevel, Record<AlertLang, string>> = {
   },
   CRITICAL: {
     en: 'CRITICAL: Move to safe ground NOW near {place} ({prob}). Follow official orders only. Emergency 112 / 1078.',
+    te: 'తీవ్రం: {place} దగ్గర ఇప్పుడే సురక్షిత ప్రాంతానికి వెళ్లండి ({prob}). అధికారిక ఆదేశాలు మాత్రమే పాటించండి. 112 / 1078.',
     hi: 'गंभीर: {place} के पास अभी सुरक्षित स्थान जाएं ({prob})। केवल आधिकारिक आदेश मानें। आपातकाल 112 / 1078।',
     as: 'গুৰুতৰ: {place}ৰ ওচৰত এতিয়াই নিৰাপদ স্থানলৈ যাওক ({prob})। কেৱল চৰকাৰী নিৰ্দেশ মানক। 112 / 1078।',
     bn: 'গুরুতর: {place}-এর কাছে এখনই নিরাপদ স্থানে যান ({prob})। শুধু সরকারি নির্দেশ মানুন। 112 / 1078।',

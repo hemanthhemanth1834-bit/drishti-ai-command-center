@@ -154,6 +154,7 @@ class FieldReport(Base):
     media: Mapped[str] = mapped_column(String(400), default="")
     ai_suggestion: Mapped[str] = mapped_column(String(400), default="")
     verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    status: Mapped[str] = mapped_column(String(20), default="UNVERIFIED")
     ts: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 

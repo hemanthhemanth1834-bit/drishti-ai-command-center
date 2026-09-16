@@ -114,7 +114,7 @@ flowchart TD
 
 | Layer | Technology | Version | Role |
 |---|---|---|---|
-| Frontend | Next.js / React / TypeScript | 14.2.5 / 18.3.1 / 5.5 | App Router, 46 routes |
+| Frontend | Next.js / React / TypeScript | 14.2.5 / 18.3.1 / 5.5 | App Router, 47 routes |
 | 3D | three / @react-three/fiber / @react-three/drei | 0.169 / 8.18 / 9.122 | twin, terrain center, globe |
 | Maps | leaflet / maplibre-gl | 1.9.4 / 6.10 | risk heatmap, 3D GIS |
 | UI | Tailwind 3.4, framer-motion 13.3, lucide-react | — | cinematic HUD, glassmorphism |
@@ -126,13 +126,14 @@ flowchart TD
 
 ---
 
-## 5. Application routes (all 45 verified in `src/app` + production build)
+## 5. Application routes (all 47 verified in `src/app` + production build)
 
 **Intelligence platform (new, all deployed, backend-backed with DEMO fallback):**
 
 | Route | Purpose | Backend API |
 |---|---|---|
 | `/intelligence` | hub: status + pipeline + module cards | ml/health, weather, notify, sync |
+| `/regions` | dynamic region command: Country → State → District → City | `/api/regions/*`, rainfall, risk, resources |
 | `/prediction` | citizen/officer predictor + WHY | `ml/predict`, `ml/explain` |
 | `/risk-map` | NER heatmap + legend + layers | `grid/risk-cells`, sensors, roads |
 | `/weather` | rainfall 1/6/24/72h, anomaly, thresholds | `rainfall/*`, `weather/*` |
@@ -151,6 +152,18 @@ flowchart TD
 | `/admin` | roles, thresholds, models, audit | `admin/*`, `warnings/config` |
 
 **Existing DRISHTI-X + NE-SAFE (preserved):** `/` → `/welcome`, `/command`, `/nesafe` (3D landslide center), `/twin`, `/drones`, `/simulation`, `/location`, `/safety`, `/risk`, `/alerts`, `/nearby`, `/evacuate`, `/emergency`, `/report`, `/family`, `/plan`, `/kit`, `/learn`, `/talk`, `/ops`, `/demo`, `/sources`, `/platform`, `/portal`, `/resources`, `/shelter`, `/reunion`, `/recovery`.
+
+### Universal, multi-region, Telugu-first platform
+
+- **Geography:** DB-driven Country → State → District → City → Locality (`/regions`, `/api/regions/*`). Showcase: **Andhra Pradesh (26 districts) + Telangana (33 districts)** with verified city coordinates; 20 Indian states seeded; US/GB/AU/JP stub rows for global extensibility. No code changes needed for new regions. Boundary overlays stay schematic until open boundary datasets are wired.
+- **Sectors:** 7 sectors × 15 disaster types (EN + TE), 9 agency records — config + DB, filterable.
+- **Telugu-first:** full EN/TE platform strings (`src/platform/i18n.ts`), TE nav, TE emergency phrases, TE alert templates; app language switch already in Navbar.
+- **AI:** `/api/v1/ai/*` — Ollama-optional summarization/classification; LLM explains text only, never computes risk. Output classes OBSERVED/ANALYZED/ESTIMATED/PREDICTED/SIMULATED.
+- **Maps:** OSRM routing + Nominatim geocoding adapters (cached, throttled, labeled CACHED/LIVE/DEMO).
+- **Shelters/resources:** live registry with occupancy workflow + nearest-open-shelter.
+- **Reports:** UNVERIFIED → UNDER_REVIEW → VERIFIED/REJECTED workflow (backwards-compatible `verified` flag kept).
+- **Alerts:** INFO/ADVISORY/WATCH/ALERT/WARNING/EMERGENCY/CRITICAL (superset; old levels unchanged).
+- Docs: `FREE-STACK.md`, `THIRD-PARTY-LICENSES.md`, `data/README.md`, `docs/` (architecture, GIS, AI, data-sources, API, database, deployment, security, demo-mode, local-development).
 
 ---
 
@@ -230,6 +243,7 @@ docker compose --profile full up --build                    # + PostGIS/Valkey/M
 | `IMD_API_KEY`, `COPERNICUS_USER`, `EARTHDATA_TOKEN` | official/satellite feeds | only for those feeds |
 | `SMS_PROVIDER_KEY`, `PUSH_PROVIDER_KEY`, `WEB_PUSH_*`, `SMTP_*` | notifications | only for those channels |
 | `STORAGE_*`, `RAIN_*`, `WARN_PROB_*`, `MAX_UPLOAD_MB`, `ML_MODEL_DIR` | storage/thresholds/uploads/model | optional tuning |
+| `AI_PROVIDER`, `OLLAMA_BASE_URL`, `OLLAMA_MODEL` | local LLM (optional, nothing auto-downloaded) | optional |
 
 Never commit real values (gitignored: `.env*`, `backend/.env`, `*.db`, `ml/artifacts/`).
 
@@ -243,17 +257,17 @@ Default: FastAPI + Next.js dev, SQLite, no keys. Full profile (`--profile full`)
 
 ## 13. API documentation
 
-Groups (all under `/api/v1/`): `ml` (predict/batch/model/health/features/explain), `model-health`, `weather`, `rainfall`, `sensors` (+legacy `GET /sensors` extended, preserved), `satellite`, `terrain`, `history`, `warnings`, `roads`, `response`, `notifications`, `incidents`, `vision`, `grid`, `risk`, `alerts`, `sync`, `admin`, `nesafe`. Interactive docs: **http://localhost:8000/docs** (backend running). Mutations need `Authorization: Bearer <GATEWAY_KEY>` (or JWT when configured); honest `401/403/429` otherwise.
+Groups (all under `/api/v1/`): `ml` (predict/batch/model/health/features/explain), `model-health`, `weather`, `rainfall`, `sensors` (+legacy `GET /sensors` extended, preserved), `satellite`, `terrain`, `history`, `warnings`, `roads`, `response`, `notifications`, `incidents`, `vision`, `grid`, `risk`, `alerts`, `sync`, `admin`, `nesafe`, plus `/api/regions/*` (countries/states/districts/cities/disasters/sectors/agencies/geocode/route), `/api/v1/ai/*` (status/summarize/classify), `/api/v1/resources/*` (units/shelters/occupancy/nearest-shelter). Interactive docs: **http://localhost:8000/docs** (backend running). Mutations need `Authorization: Bearer <GATEWAY_KEY>` (or JWT when configured); honest `401/403/429` otherwise.
 
 ---
 
 ## 14. Testing & verification (latest verified runs)
 
 ```bash
-cd backend && python -m pytest -q     # 35 passed (9 legacy + 26 platform)
+cd backend && python -m pytest -q     # 44 passed (9 legacy + 26 platform + 9 universal)
 npm run typecheck                      # clean
 npm run lint                           # clean
-npm run build                          # 45/45 routes static
+npm run build                          # 47/47 routes static
 ```
 
 These verify contracts, validation, honesty flags, and builds — **not** real-world prediction skill.

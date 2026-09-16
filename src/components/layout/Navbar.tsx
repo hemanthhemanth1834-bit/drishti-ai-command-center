@@ -38,6 +38,7 @@ import {
 
 const COMMAND_ITEMS = [
   { href: '/nesafe', labelKey: 'nav_nesafe', icon: ShieldAlert },
+  { href: '/regions', labelKey: 'nav_regions', icon: MapPin },
   { href: '/intelligence', labelKey: 'nav_intelligence', icon: Crosshair },
   { href: '/command', labelKey: 'nav_command', icon: Activity },
   { href: '/ops', labelKey: 'nav_ops', icon: Gauge },
@@ -57,6 +58,7 @@ const COMMAND_ITEMS = [
 
 const PUBLIC_ITEMS = [
   { href: '/nesafe', labelKey: 'nav_nesafe', icon: ShieldAlert },
+  { href: '/regions', labelKey: 'nav_regions', icon: MapPin },
   { href: '/intelligence', labelKey: 'nav_intelligence', icon: Crosshair },
   { href: '/welcome', labelKey: 'nav_welcome', icon: House },
   { href: '/safety', labelKey: 'nav_safety', icon: HeartPulse },
