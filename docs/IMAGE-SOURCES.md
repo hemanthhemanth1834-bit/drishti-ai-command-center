@@ -41,3 +41,15 @@ responsive (`nesafe-vizgrid`), meaningful alt text in `VizFigure` (`src/platform
 ## Deliberately NOT used
 - No scraped news/copyrighted disaster photos. No paid image APIs. No stock-photo grids.
 - `dis-earthquake.svg` / `dis-storm.svg` ship unused for future sector pages (documented here, not dead code).
+
+## Live EO tile layers (verified HTTP 200, 2026-09-16, keyless)
+
+| Layer | GIBS endpoint (EPSG:3857, `default` = latest NRT composite) | Use |
+|---|---|---|
+| VIIRS SNPP True Color | `.../VIIRS_SNPP_CorrectedReflectance_TrueColor/default/...` | daily NRT base |
+| MODIS Terra True Color | `.../MODIS_Terra_CorrectedReflectance_TrueColor/default/...` | alternate daily sensor |
+| MODIS Terra 7-2-1 | `.../MODIS_Terra_CorrectedReflectance_Bands721/default/...` | water dark / burn scars red |
+| Base maps | OSM, CartoDB dark/light, Esri World Imagery, OpenTopoMap | all HTTP 200 |
+
+Probed and REJECTED (do not wire without re-verification): dated GIBS URLs (400 — `best` serves `default` only), thermal-anomaly layers (400), `MODIS_Combined_Flood_3-Day` (404), IMERG rate names tried (400), FIRMS (needs free MAP_KEY).
+License: NASA Worldview/GIBS open use with attribution; tiles © OSM/CARTO/Esri/OpenTopoMap per base. Catalog: `src/platform/eoLayers.ts`.
