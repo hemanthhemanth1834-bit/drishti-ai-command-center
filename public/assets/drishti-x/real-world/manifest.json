@@ -1,6 +1,6 @@
 {
   "project": "DRISHTI-X",
-  "note": "Metadata-only manifest. No binaries vendored; live imagery via provider layers; historical/reference via outbound source links.",
+  "note": "Five NASA public-domain historical photos vendored with attribution; all other folders metadata-only. Live imagery via provider layers.",
   "count": 30,
   "items": [
     {
@@ -17,10 +17,10 @@
     {
       "id": "02_cyclone",
       "path": "public/assets/drishti-x/real-world/02_cyclone/",
-      "contents": "source.json (+README where provided) - metadata only, no binaries",
+      "contents": "source.json + cyclone-ilsa.jpg (NASA public domain, vendored with attribution)",
       "source": "NASA Earth Observatory - Cyclone Ilsa",
       "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/cyclone-ilsa-37599/",
-      "license": "see source URL terms - nothing vendored",
+      "license": "NASA public domain",
       "status": "HISTORICAL",
       "description": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live.",
       "targetModule": "see docs/IMAGE-MAPPING.md"
@@ -28,10 +28,10 @@
     {
       "id": "03_flood_india",
       "path": "public/assets/drishti-x/real-world/03_flood_india/",
-      "contents": "source.json (+README where provided) - metadata only, no binaries",
+      "contents": "source.json + ganges-flood.jpg (NASA public domain, vendored with attribution)",
       "source": "NASA Earth Observatory - Flooding in Northern India",
       "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/flooding-in-northern-india-45933/",
-      "license": "see source URL terms - nothing vendored",
+      "license": "NASA public domain",
       "status": "HISTORICAL",
       "description": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live.",
       "targetModule": "see docs/IMAGE-MAPPING.md"
@@ -39,10 +39,10 @@
     {
       "id": "04_flood_orissa",
       "path": "public/assets/drishti-x/real-world/04_flood_orissa/",
-      "contents": "source.json (+README where provided) - metadata only, no binaries",
+      "contents": "source.json + mahanadi-flood.jpg (NASA public domain, vendored with attribution)",
       "source": "NASA Earth Observatory - Floods in Orissa, India",
       "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/floods-in-orissa-india-35390/",
-      "license": "see source URL terms - nothing vendored",
+      "license": "NASA public domain",
       "status": "HISTORICAL",
       "description": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live.",
       "targetModule": "see docs/IMAGE-MAPPING.md"
@@ -50,10 +50,10 @@
     {
       "id": "05_landslide_india",
       "path": "public/assets/drishti-x/real-world/05_landslide_india/",
-      "contents": "source.json (+README where provided) - metadata only, no binaries",
+      "contents": "source.json + debris-flow.jpg (NASA public domain, vendored with attribution)",
       "source": "NASA Earth Observatory - Deadly Debris Flow in India",
       "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/a-deadly-debris-flow-in-india-147973/",
-      "license": "see source URL terms - nothing vendored",
+      "license": "NASA public domain",
       "status": "HISTORICAL",
       "description": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live.",
       "targetModule": "see docs/IMAGE-MAPPING.md"
@@ -105,10 +105,10 @@
     {
       "id": "10_lightning",
       "path": "public/assets/drishti-x/real-world/10_lightning/",
-      "contents": "source.json (+README where provided) - metadata only, no binaries",
+      "contents": "source.json + lightning-flashrate.png (NASA public domain, vendored with attribution)",
       "source": "NASA India Lightning Flash Rate Map",
       "sourceUrl": "https://science.nasa.gov/earth/earth-observatory/weeks-of-extreme-weather-in-india-92196/",
-      "license": "see source URL terms - nothing vendored",
+      "license": "NASA public domain",
       "status": "HISTORICAL",
       "description": "Source registry entry. Use the source URL to obtain the latest permitted image or live layer; do not label historical/reference material as live.",
       "targetModule": "see docs/IMAGE-MAPPING.md"

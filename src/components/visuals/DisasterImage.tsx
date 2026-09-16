@@ -6,12 +6,17 @@ import { StatusBadge } from '@/platform/provenance';
 
 export default function DisasterImage({ entry, showLocal = true }: { entry: DisasterImage; showLocal?: boolean }) {
   const [failed, setFailed] = useState(false);
+  const photo = entry.image && !failed ? entry.image : null;
+  const visual = !photo && entry.localVisual && showLocal && !failed ? entry.localVisual : null;
+  const alt = photo
+    ? `${entry.title} — historical NASA photo, not a current event`
+    : `${entry.title} — project illustration, not evidence`;
   return (
     <div className="nesafe-fig" style={{ margin: 0 }}>
-      {entry.localVisual && showLocal && !failed ? (
+      {photo || visual ? (
         <div className="nesafe-fig-img" style={{ aspectRatio: '16 / 9' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={entry.localVisual} alt={`${entry.title} — project illustration, not evidence`} loading="lazy" decoding="async"
+          <img src={(photo ?? visual) as string} alt={alt} loading="lazy" decoding="async"
             onError={() => setFailed(true)}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
         </div>
