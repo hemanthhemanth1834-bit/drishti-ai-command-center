@@ -140,3 +140,33 @@ def test_rainfall_observed_forecast_split():
         assert "rain_7d_mm" in j
     else:
         assert j["data_status"] == "DEMO"
+
+
+def test_auth_unconfigured_honest(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "")
+    r = client.post("/api/v1/auth/token", json={"username": "x", "secret": "y"})
+    assert r.status_code == 503
+
+
+def test_auth_bootstrap_and_me(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv("OPERATOR_KEYS", "op1:field_officer:s3cret")
+    # wrong secret
+    assert client.post("/api/v1/auth/token",
+                       json={"username": "op1", "secret": "nope"}).status_code == 401
+    # operator key
+    r = client.post("/api/v1/auth/token",
+                    json={"username": "op1", "secret": "s3cret"})
+    assert r.status_code == 200 and r.json()["role"] == "field_officer"
+    me = client.get("/api/v1/auth/me",
+                    headers={"Authorization": f"Bearer {r.json()['access_token']}"})
+    assert me.json()["sub"] == "op1"
+    # gateway bootstrap
+    g = client.post("/api/v1/auth/token", headers=AUTH, json={})
+    assert g.status_code == 200 and g.json()["method"] == "gateway-bootstrap"
+    # logout audited
+    lo = client.post("/api/v1/auth/logout",
+                     headers={"Authorization": f"Bearer {r.json()['access_token']}"})
+    assert lo.json()["ok"] is True

@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, Siren, ShieldAlert, Languages } from 'lucide-react';
+import { Menu, X, Siren, ShieldAlert, Languages, LogOut } from 'lucide-react';
 import { HEADER_NAV } from '@/config/navigation';
 import { useApp, setApp, type Lang } from '@/store/appStore';
+import { signOut, useAuth } from '@/store/authStore';
+import LoginCard from '@/components/auth/LoginCard';
 
 const LANGS: { code: Lang; label: string }[] = [
   { code: 'en', label: 'EN' },
@@ -16,8 +18,10 @@ const LANGS: { code: Lang; label: string }[] = [
 export default function HomeHeader() {
   const pathname = usePathname();
   const router = useRouter();
-  const { lang, mode } = useApp();
+  const { lang } = useApp();
+  const { identity } = useAuth();
   const [open, setOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
 
   return (
     <header className="home-header" role="banner">
@@ -56,15 +60,37 @@ export default function HomeHeader() {
               ))}
             </select>
           </label>
-          <button
-            type="button"
-            className="home-admin"
-            onClick={() => router.push(mode === 'command' ? '/admin' : '/command')}
-            aria-label="Open command administration"
-          >
-            <ShieldAlert className="w-3.5 h-3.5" aria-hidden="true" />
-            <span className="home-admin-label">{mode === 'command' ? 'ADMIN' : 'COMMAND'}</span>
-          </button>
+          {identity ? (
+            <>
+              <button
+                type="button"
+                className="home-admin"
+                onClick={() => router.push('/command')}
+                aria-label={`Signed in as ${identity.sub}, open command deck`}
+              >
+                <ShieldAlert className="w-3.5 h-3.5" aria-hidden="true" />
+                <span className="home-admin-label">{identity.sub.toUpperCase().slice(0, 12)}</span>
+              </button>
+              <button
+                type="button"
+                className="home-admin"
+                onClick={() => { void signOut(); router.push('/'); }}
+                aria-label="Sign out"
+              >
+                <LogOut className="w-3.5 h-3.5" aria-hidden="true" />
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="home-admin"
+              onClick={() => setLoginOpen(true)}
+              aria-label="Sign in as operator"
+            >
+              <ShieldAlert className="w-3.5 h-3.5" aria-hidden="true" />
+              <span className="home-admin-label">SIGN IN</span>
+            </button>
+          )}
           <Link href="/emergency" className="home-emergency" aria-label="Emergency SOS">
             <Siren className="w-3.5 h-3.5" aria-hidden="true" />
             <span className="home-emergency-label">EMERGENCY</span>
@@ -99,6 +125,7 @@ export default function HomeHeader() {
           </Link>
         </nav>
       )}
+      {loginOpen && <LoginCard onClose={() => setLoginOpen(false)} />}
     </header>
   );
 }

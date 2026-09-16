@@ -38,6 +38,7 @@ from .routers.ai import router as ai_router
 from .routers.resources import router as resources_router
 from .routers.sectors import router as sectors_router
 from .routers.ops import router as ops_router, OpsMiddleware
+from .routers.auth import router as auth_router
 
 security = HTTPBearer(auto_error=False)
 
@@ -107,6 +108,7 @@ app.include_router(ai_router)
 app.include_router(resources_router)
 app.include_router(sectors_router)
 app.include_router(ops_router)
+app.include_router(auth_router)
 app.add_middleware(OpsMiddleware)
 
 
