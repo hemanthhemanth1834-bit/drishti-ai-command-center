@@ -62,10 +62,17 @@ export function DisasterOverview() {
 
 export function RegionalStatus() {
   const states = usePlatform<{ count?: number; states?: { code: string; name: string }[] }>('/api/regions/states?country=IN');
+  const ap = usePlatform<{ count?: number }>('/api/regions/districts?state=IN-AP');
+  const tg = usePlatform<{ count?: number }>('/api/regions/districts?state=IN-TG');
   const alerts = usePlatform<{ count?: number }>('/api/v1/alerts?limit=1');
   const live = !!states.data;
-  const ap = live ? 'Andhra Pradesh · 26 districts' : 'Andhra Pradesh';
-  const tg = live ? 'Telangana · 33 districts' : 'Telangana';
+  const rows = [
+    { name: 'Andhra Pradesh', href: '/regions', meta: ap.data ? `${ap.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
+    { name: 'Telangana', href: '/regions', meta: tg.data ? `${tg.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
+    { name: 'India', href: '/regions', meta: live ? `${states.data?.count ?? '—'} states in registry · Country → GPS` : 'Country → State → District → City → GPS' },
+    { name: 'Global', href: '/regions', meta: 'US · UK · AU · JP ready; expansion without code changes' },
+  ];
+  const alertNote = live && alerts.data ? `${alerts.data.count ?? 0} alerts tracked` : 'Alerts unreachable — demo view';
 
   return (
     <section className="home-section" aria-labelledby="home-regions">
@@ -74,19 +81,14 @@ export function RegionalStatus() {
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
       <div className="home-grid home-grid-regions">
-        {[
-          { name: ap, href: '/regions', meta: live ? `${states.data?.count ?? '—'} states in registry` : 'Registry unreachable — demo view' },
-          { name: tg, href: '/regions', meta: live && alerts.data ? `${alerts.data.count ?? 0} alerts tracked` : 'Alerts unreachable — demo view' },
-          { name: 'India', href: '/regions', meta: 'Country → State → District → City → GPS' },
-          { name: 'Global', href: '/regions', meta: 'US · UK · AU · JP ready; expansion without code changes' },
-        ].map((r) => (
+        {rows.map((r) => (
           <Link key={r.name} href={r.href} className="home-mini" aria-label={`Region: ${r.name}`}>
             <span className="home-mini-title">{r.name}</span>
             <span className="home-mini-meta">{r.meta}</span>
           </Link>
         ))}
       </div>
-      <p className="home-muted">District counts come from the live region registry when the backend is reachable; risk states are DEMO unless a live feed is connected.</p>
+      <p className="home-muted">{alertNote}. District counts come from the live region registry when the backend is reachable; risk states are DEMO unless a live feed is connected.</p>
     </section>
   );
 }

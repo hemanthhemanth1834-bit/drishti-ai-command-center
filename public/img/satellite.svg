@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120" role="img" aria-label="Illustrative observation satellite">
+  <rect x="86" y="48" width="28" height="24" rx="3" fill="#12324a" stroke="#00d2ff" stroke-width="1.5"/>
+  <circle cx="100" cy="60" r="6" fill="none" stroke="#7de9ff" stroke-width="2"/>
+  <circle cx="100" cy="60" r="2" fill="#7de9ff"/>
+  <g fill="#1b4a68" stroke="#00d2ff" stroke-width="1">
+    <polygon points="86,52 30,30 30,90 86,68"/><polygon points="114,52 170,30 170,90 114,68"/>
+  </g>
+  <g stroke="#00d2ff" stroke-width="1" opacity=".7">
+    <line x1="40" y1="36" x2="76" y2="52"/><line x1="40" y1="84" x2="76" y2="68"/>
+    <line x1="124" y1="52" x2="160" y2="36"/><line x1="124" y1="68" x2="160" y2="84"/>
+  </g>
+  <line x1="100" y1="72" x2="100" y2="96" stroke="#7de9ff" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <circle cx="100" cy="102" r="8" fill="none" stroke="#7de9ff" stroke-width="1.5" opacity=".6"/>
+  <circle cx="100" cy="102" r="3" fill="#34d399"/>
+</svg>
