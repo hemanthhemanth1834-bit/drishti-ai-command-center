@@ -906,6 +906,39 @@ This project is open-source for educational and hackathon purposes.
 
 ---
 
+---
+
+## 🌋 DRISHTI-X Full Intelligence Platform (free-first upgrade)
+
+Additive upgrade — all routes above preserved. New hub: `/intelligence`.
+
+| Area | Status | Notes |
+|---|---|---|
+| ML pipeline (`backend/ml`) | 🟢 Implemented | RandomForest, 22 features, stratified split, metrics from real runs only |
+| ML API (`/api/v1/ml/*`, `/api/v1/model-health`) | 🟢 Implemented | predict/batch/model/health/features/explain; DEMO-labeled fallback when untrained |
+| NER risk grid (`/api/v1/grid`, `/risk-map`) | 🟢 Implemented | Leaflet heat + legend + layers, OSM attribution |
+| Weather (`/api/v1/weather`, `/api/v1/rainfall`, `/weather`) | 🟢 + 🔵 | Open-Meteo free/live; IMD opt-in stub (never synthesized) |
+| Soil hierarchy | 🟢 Implemented | ISRO → SoilGrids → Open-Meteo → DEMO, chain recorded |
+| Sensors (`/api/v1/sensors/*`, `/sensors`) | 🟢 Implemented | ESP32/LoRa/MQTT/HTTP ingest, anomaly + battery gates |
+| Satellite (`/api/v1/satellite/*`, `/satellite`) | 🟢 + 🔵 | Copernicus/NASA/ISRO adapters with honest status; GIBS keyless |
+| Terrain (`/api/v1/terrain/*`, `/terrain`) | 🟢 Implemented | slope/aspect/curvature + twin params; SRTM-ready |
+| History (`/api/v1/history/*`, `/history`) | 🟢 Implemented | CSV import + validation; seeds are DEMO |
+| Early warning (`/api/v1/warnings/*`) | 🟢 Implemented | WATCH/ALERT/WARNING/CRITICAL, decision-support wording |
+| Roads (`/api/v1/roads/*`, `/roads`) | 🟢 Implemented | 5 statuses, blockage, impact (villages + units) |
+| Incidents (`/api/v1/incidents/*`, `/incidents`) | 🟢 Implemented | photo/video + GPS, validated uploads, human verify |
+| Vision (`/api/v1/vision/*`) | 🟡 Simulated | pluggable interface, DEMO heuristic labeled |
+| Response (`/api/v1/response/*`, `/response`) | 🟢 Implemented | P1..P4 with WHY |
+| Notifications (`/api/v1/notifications/*`, `/notifications`) | 🟢 Implemented | web/push/sms/email; NOT_CONFIGURED honesty; VAPID-ready SW push |
+| Alerts (`/api/v1/alerts/*`) + 9-lang templates | 🟢 Implemented | EN/HI/ASM/BN/Bodo/Manipuri/Khasi/Mizo/Nepali reviewed shorts |
+| Offline PWA (`/api/v1/sync/*`, `/offline`) | 🟢 Implemented | IndexedDB queue + receipts + auto-sync; SW push handler |
+| DB (PostgreSQL-ready, SQLite fallback) | 🟢 Implemented | 17 tables, seed-on-empty (DEMO only), PostGIS path documented |
+| Docker Compose | 🟢 Implemented | default keyless; `--profile full` adds PostGIS + Valkey + MinIO + Mailpit |
+| Security | 🟢 Implemented | JWT-ready, RBAC 5 roles, rate limits, upload guards, audit log |
+| Model monitoring (`/model-health`) | 🟢 Implemented | real metrics or NOT AVAILABLE — never invented |
+
+Demo model card (SYNTHETIC-DEMO, seed 42, 3000 rows): acc 0.887 · precision 0.977 · recall 0.890 · F1 0.931 · ROC-AUC 0.941. Regenerate: `cd backend && python -m ml.train`.
+New tests: `backend/tests/test_platform.py` (26 tests). Full suite: 35 passed.
+
 ## 👨‍💻 Author
 
 **Muchakarla Hemanth Kumar**

@@ -39,12 +39,29 @@ def list_drones(_: str = Depends(verify_gateway_key)):
 
 @router.get("/sensors")
 def list_sensors():
-    return {
+    """Legacy demo pair (preserved) + additive live network (spec path)."""
+    payload = {
         "sensors": [
             {"sensor_id": "THM-01", "kind": "thermal", "value": 38.2, "unit": "C"},
             {"sensor_id": "AIR-02", "kind": "air-quality", "value": 72.0, "unit": "AQI"},
         ]
     }
+    try:
+        from ..db import SessionLocal
+        from ..models import platform as m
+        db = SessionLocal()
+        try:
+            net = db.query(m.Sensor).all()
+            payload["network"] = [
+                {"sensor_id": s.id, "lat": s.lat, "lon": s.lon,
+                 "status": s.status, "source": s.source} for s in net
+            ]
+            payload["network_status"] = "DEMO" if net else "EMPTY"
+        finally:
+            db.close()
+    except Exception:
+        payload["network_status"] = "UNAVAILABLE"
+    return payload
 
 
 @router.post("/scenario")

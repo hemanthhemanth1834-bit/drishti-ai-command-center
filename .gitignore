@@ -35,6 +35,13 @@ desktop.ini
 *.log
 npm-debug.log*
 
+# Local runtime data (regenerable, never commit)
+*.db
+*.sqlite3
+backend/ml/artifacts/
+storage/
+backend/storage/
+
 # Build info
 tsconfig.tsbuildinfo
 .vercel

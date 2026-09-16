@@ -1,5 +1,8 @@
-# DRISHTI-X one-click multi-container launcher
+# DRISHTI-X one-click multi-container launcher (free / self-hostable only)
 # Usage: docker compose up --build
+# Profiles: default = backend + frontend (SQLite). Full stack:
+#   docker compose --profile full up --build   (adds PostGIS + Valkey + MinIO + Mailpit)
+# Train the demo model locally first: cd backend && python -m ml.train
 services:
   backend:
     build: ./backend
@@ -10,6 +13,8 @@ services:
     environment:
       - CORS_ORIGINS=http://localhost:3000
       - TELEMETRY_HZ=2
+      # - DATABASE_URL=postgresql+psycopg2://drishti:drishti@postgis:5432/drishti
+      # - REDIS_URL=redis://valkey:6379/0
     restart: unless-stopped
 
   frontend:
@@ -26,3 +31,53 @@ services:
     command: sh -c "npm install && npm run dev -- -p 3000 -H 0.0.0.0"
     depends_on:
       - backend
+
+  # ---- full profile: free self-hosted data layer ----
+  postgis:
+    image: postgis/postgis:16-3.4
+    profiles: ["full"]
+    environment:
+      - POSTGRES_USER=drishti
+      - POSTGRES_PASSWORD=drishti
+      - POSTGRES_DB=drishti
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgis-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  valkey:
+    image: valkey/valkey:8
+    profiles: ["full"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - valkey-data:/data
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    profiles: ["full"]
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=drishti
+      - MINIO_ROOT_PASSWORD=drishti1234
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:latest
+    profiles: ["full"]
+    ports:
+      - "8025:8025"   # web UI
+      - "1025:1025"   # SMTP (SMTP_HOST=mailpit)
+    restart: unless-stopped
+
+volumes:
+  postgis-data:
+  valkey-data:
+  minio-data:

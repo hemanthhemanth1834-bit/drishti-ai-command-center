@@ -35,3 +35,25 @@ self.addEventListener('fetch', (event) => {
     }))
   );
 });
+
+// Web Push (free, VAPID): show notification, focus/open app on click.
+self.addEventListener('push', (event) => {
+  let data = { title: 'DRISHTI-X alert', body: 'New warning — open the app.' };
+  try { data = Object.assign(data, event.data ? event.data.json() : {}); } catch (e) {}
+  event.waitUntil(
+    self.registration.showNotification(data.title, {
+      body: data.body,
+      icon: '/icon.svg',
+      tag: data.tag || 'drishti-alert',
+    })
+  );
+});
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window' }).then((wins) => {
+      for (const w of wins) { try { w.focus(); return; } catch (e) {} }
+      return self.clients.openWindow('/alerts');
+    })
+  );
+});

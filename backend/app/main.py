@@ -7,10 +7,30 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 
 from .config import CORS_ORIGINS, DEV_GATEWAY_KEY, TELEMETRY_HZ
+from .db import SessionLocal, init_db
 from .telemetry import make_packet
 from .routers.api_v1 import router as api_v1_router
 from .routers.ws_telemetry import router as ws_router
 from .routers.nesafe import router as nesafe_router
+from .routers.ml import router as ml_router
+from .routers.sensors import router as sensors_router
+from .routers.weather import router as weather_router
+from .routers.satellite import router as satellite_router
+from .routers.terrain import router as terrain_router
+from .routers.history import router as history_router
+from .routers.warnings import router as warnings_router
+from .routers.roads import router as roads_router
+from .routers.response import router as response_router
+from .routers.notifications import router as notifications_router
+from .routers.incidents import router as incidents_router
+from .routers.vision import router as vision_router
+from .routers.grid import router as grid_router
+from .routers.rainfall import router as rainfall_router
+from .routers.risk import router as risk_router
+from .routers.alerts import router as alerts_router
+from .routers.sync import router as sync_router
+from .routers.model_health import router as model_health_router
+from .routers.admin import router as admin_router
 
 security = HTTPBearer(auto_error=False)
 
@@ -45,6 +65,40 @@ _current_scenario = "nominal"
 app.include_router(api_v1_router)
 app.include_router(ws_router)
 app.include_router(nesafe_router)
+app.include_router(ml_router)
+app.include_router(sensors_router)
+app.include_router(weather_router)
+app.include_router(satellite_router)
+app.include_router(terrain_router)
+app.include_router(history_router)
+app.include_router(warnings_router)
+app.include_router(roads_router)
+app.include_router(response_router)
+app.include_router(notifications_router)
+app.include_router(incidents_router)
+app.include_router(vision_router)
+app.include_router(grid_router)
+app.include_router(rainfall_router)
+app.include_router(risk_router)
+app.include_router(alerts_router)
+app.include_router(sync_router)
+app.include_router(model_health_router)
+app.include_router(admin_router)
+
+
+@app.on_event("startup")
+def startup_platform():
+    """Init tables + demo seed. Never drops data, never touches telemetry."""
+    try:
+        init_db()
+        from .seed_demo import seed_demo
+        db = SessionLocal()
+        try:
+            seed_demo(db)
+        finally:
+            db.close()
+    except Exception:
+        pass  # platform degrades to in-memory demo; telemetry unaffected
 
 
 @app.get("/api/health")
