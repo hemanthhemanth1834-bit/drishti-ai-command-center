@@ -85,7 +85,7 @@ class FreeMap implements MapProvider {
   readonly name = 'OpenFreeMap/OSM(free)';
   mode(): ProviderMode { return 'DEMO'; }
   styleUrl(): string {
-    return envFlag('NEXT_PUBLIC_MAP_STYLE') || 'https://tiles.openfreemap.org/plain';
+    return envFlag('NEXT_PUBLIC_MAP_STYLE') || 'https://tiles.openfreemap.org/styles/bright';
   }
   attribution(): string { return '© OpenMapTiles © OpenStreetMap contributors'; }
 }
