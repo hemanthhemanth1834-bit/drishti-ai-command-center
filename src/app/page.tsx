@@ -3,6 +3,7 @@ import HomeHeader from '@/components/home/HomeHeader';
 import HeroCommandCenter from '@/components/home/HeroCommandCenter';
 import { PrimaryActionGrid, IntelligenceFeatureGrid, OperationalGrid } from '@/components/home/HomeGrids';
 import { DisasterOverview, RegionalStatus, RealtimeFeed, MissionBanner } from '@/components/home/HomePanels';
+import { MissionSection, DataSourcesSection, AiMlSection, GisSection, SatelliteSection, TwinSection, CommandSection, EmergencySection, FinalCta } from '@/components/home/HomeSections';
 import HomeFooter from '@/components/home/HomeFooter';
 
 export const metadata: Metadata = {
@@ -19,13 +20,22 @@ export default function Home() {
       <HomeHeader />
       <main id="home-main">
         <HeroCommandCenter />
+        <MissionSection />
         <PrimaryActionGrid />
+        <DataSourcesSection />
+        <AiMlSection />
+        <GisSection />
+        <SatelliteSection />
+        <TwinSection />
+        <CommandSection />
+        <EmergencySection />
         <IntelligenceFeatureGrid />
         <OperationalGrid />
         <DisasterOverview />
         <RegionalStatus />
         <RealtimeFeed />
         <MissionBanner />
+        <FinalCta />
       </main>
       <HomeFooter />
     </div>

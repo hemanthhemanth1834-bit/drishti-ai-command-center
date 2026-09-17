@@ -892,6 +892,21 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 .home-footer-strip { grid-column: 1 / -1; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; border-top: 1px solid #1b314b; padding-top: 12px; color: #64748b; font-size: 10px; letter-spacing: .1em; }
 .home-footer-sos { color: #ff8ba0; font-weight: 800; }
 
+/* ============ STEP 01 — HOME FLOW SECTIONS (additive, GPU-cheap) ============ */
+.home-flow-section { position: relative; }
+.home-flow-title { font-size: clamp(18px, 2.6vw, 26px); }
+.home-split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: center; margin-top: 12px; }
+.home-particles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.home-particle { position: absolute; bottom: -8px; width: 3px; height: 3px; border-radius: 50%; background: var(--dx-cyan); opacity: .5; animation: home-rise-particle 6s linear infinite; }
+@keyframes home-rise-particle { from { transform: translateY(0); opacity: 0; } 15% { opacity: .6; } to { transform: translateY(-180px); opacity: 0; } }
+.home-final { text-align: center; position: relative; overflow: hidden; border: 1px solid rgba(0,210,255,.25); border-radius: 18px; margin-top: 26px; padding: 44px 16px; background: rgba(3,15,30,.6); }
+.home-holo { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,210,255,.05) 0 1px, transparent 1px 4px); pointer-events: none; animation: home-holo-drift 9s linear infinite; }
+@keyframes home-holo-drift { from { background-position: 0 0; } to { background-position: 0 80px; } }
+@media (max-width: 760px) { .home-split { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) {
+  .home-particle, .home-holo { animation: none !important; display: none; }
+}
+
 /* Operator sign-in */
 .login-overlay { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 16px; background: rgba(2,7,18,.72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: home-rise .25s ease both; }
 .login-card { width: min(420px, 100%); background: rgba(3,15,30,.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(0,210,255,.35); border-radius: 18px; padding: 24px 22px; box-shadow: 0 0 44px rgba(0,210,255,.16), 0 24px 70px rgba(0,0,0,.6); animation: home-rise .3s ease both; }
