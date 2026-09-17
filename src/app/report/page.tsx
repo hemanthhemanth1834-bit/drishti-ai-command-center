@@ -2,6 +2,7 @@
 'use client';
 import { useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import JourneySteps from '@/components/citizen/JourneySteps';
 import TrustBadge from '@/components/TrustBadge';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
@@ -72,6 +73,7 @@ export default function ReportPage() {
       <Navbar wsConnected={connected} />
       <StatusHeader wsConnected={connected} />
       <div className="p-4 max-w-3xl mx-auto flex flex-col gap-3">
+        <JourneySteps />
         <HudPanel micro="CITIZEN PORTAL · SIMULATED INTAKE" title="REPORT INCIDENT" right={<TrustBadge kind="DEMO" source="stored on this device only" />}>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-[10px] mb-3">
             {[['LOW', '#34d399'], ['MEDIUM', '#00d2ff'], ['HIGH', '#ffb020'], ['CRITICAL', '#ff5470']].map(([k, c]) => (

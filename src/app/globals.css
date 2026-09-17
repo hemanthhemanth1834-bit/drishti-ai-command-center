@@ -952,6 +952,16 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
   .home-cta a { width: 100%; justify-content: center; }
 }
 
+/* ============ PHASE 4 — CITIZEN JOURNEY STEPPER (additive) ============ */
+.dx-journey { display: flex; gap: 4px; overflow-x: auto; padding: 10px 12px; background: rgba(3,13,23,.7); border: 1px solid var(--dx-border); border-radius: var(--dx-radius-sm); scrollbar-width: thin; }
+.dx-journey-step { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .08em; color: var(--dx-muted); text-decoration: none; padding: 6px 9px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }
+.dx-journey-step:hover { color: #fff; border-color: rgba(0,210,255,.4); }
+.dx-journey-dot { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; font-size: 9px; background: rgba(9,26,46,.9); border: 1px solid var(--dx-border); }
+.dx-journey-now { color: #fff; border-color: var(--dx-cyan); background: rgba(0,210,255,.1); box-shadow: 0 0 12px rgba(0,210,255,.2); }
+.dx-journey-now .dx-journey-dot { background: var(--dx-cyan); color: #020712; border-color: var(--dx-cyan); }
+.dx-journey-done { color: var(--dx-faint); }
+.dx-journey-done .dx-journey-dot { background: rgba(52,211,153,.2); border-color: rgba(52,211,153,.5); color: #6ee7b7; }
+
 /* ============ PHASE 2 — 3D SCENE PRIMITIVES (additive) ============ */
 .dx-scene { position: relative; border: 1px solid var(--dx-border); border-radius: var(--dx-radius); overflow: hidden; background: #020b14; }
 .dx-streams { position: absolute; left: 10px; right: 10px; bottom: 8px; display: flex; justify-content: space-between; gap: 6px; pointer-events: none; }

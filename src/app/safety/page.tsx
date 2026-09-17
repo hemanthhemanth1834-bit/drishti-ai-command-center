@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
+import JourneySteps from '@/components/citizen/JourneySteps';
 import RiskChecker from '@/components/RiskChecker';
 import TrustBadge from '@/components/TrustBadge';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
@@ -44,6 +45,7 @@ export default function SafetyPage() {
     <main className="min-h-screen bg-[#020b14] text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
       <div className="p-4 max-w-6xl mx-auto flex flex-col gap-4">
+        <JourneySteps />
         <section className="flex items-center gap-2 flex-wrap">
           <HeartPulse className="w-5 h-5 text-emerald-400" />
           <h1 className="text-xl font-extrabold text-white">MY SAFETY</h1>
