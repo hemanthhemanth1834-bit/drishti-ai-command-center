@@ -952,6 +952,23 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
   .home-cta a { width: 100%; justify-content: center; }
 }
 
+/* ============ PHASE 2 — 3D SCENE PRIMITIVES (additive) ============ */
+.dx-scene { position: relative; border: 1px solid var(--dx-border); border-radius: var(--dx-radius); overflow: hidden; background: #020b14; }
+.dx-streams { position: absolute; left: 10px; right: 10px; bottom: 8px; display: flex; justify-content: space-between; gap: 6px; pointer-events: none; }
+.dx-stream-node { font-size: 9px; font-weight: 800; letter-spacing: .14em; color: var(--dx-cyan); background: rgba(3,13,23,.78); border: 1px solid rgba(0,210,255,.35); border-radius: 999px; padding: 3px 9px; animation: dx-stream-pulse 2.2s ease-in-out infinite; }
+@keyframes dx-stream-pulse { 0%,100% { opacity: .45; box-shadow: none; } 50% { opacity: 1; box-shadow: 0 0 12px rgba(0,210,255,.45); } }
+.dx-epulse { position: relative; display: inline-flex; width: 18px; height: 18px; flex-shrink: 0; }
+.dx-epulse-dot { position: absolute; inset: 5px; border-radius: 50%; background: var(--dx-red); }
+.dx-epulse-warning .dx-epulse-dot { background: var(--dx-amber); }
+.dx-epulse-info .dx-epulse-dot { background: var(--dx-cyan); }
+.dx-epulse-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--dx-red); animation: dx-epulse-ring 1.8s ease-out infinite; }
+.dx-epulse-warning .dx-epulse-ring { border-color: var(--dx-amber); }
+.dx-epulse-info .dx-epulse-ring { border-color: var(--dx-cyan); }
+@keyframes dx-epulse-ring { from { transform: scale(.4); opacity: 1; } to { transform: scale(1.25); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .dx-stream-node, .dx-epulse-ring { animation: none !important; }
+}
+
 /* ============ PHASE 1 — UNIFIED DESIGN PRIMITIVES (additive) ============
    Buttons, badges, tables, inputs, modal, toast, empty/error/loading states.
    New classes only; no existing selector is modified below this line. */

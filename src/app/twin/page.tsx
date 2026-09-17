@@ -6,6 +6,7 @@ import Navbar from '@/components/layout/Navbar';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import FloodTimeline from '@/components/three/FloodTimeline';
+import SceneShell from '@/components/3d/SceneShell';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import type { TwinEntity, TerrainMode } from '@/components/3d/TwinViewport';
 import { Box, Waves, Flashlight, MousePointerClick, Package } from 'lucide-react';
@@ -67,6 +68,7 @@ export default function TwinPage() {
               ))}
             </span>
           </div>
+          <SceneShell label="3D elevation twin with drone, surge plane and telemetry" streams>
           <div className="bg-black relative">
             <TwinViewport
               alt={alt}
@@ -141,6 +143,7 @@ export default function TwinPage() {
               </div>
             </div>
           </div>
+          </SceneShell>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">
             <MousePointerClick className="w-3.5 h-3.5 text-[#00d2ff]" />
             Click a marker to pick an entity • drag-free orbit cam • fog depth 12–30u
