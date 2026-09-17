@@ -952,6 +952,16 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
   .home-cta a { width: 100%; justify-content: center; }
 }
 
+/* ============ PHASE 9 — DATA FLOW STRIP (additive) ============ */
+.dx-flow { border: 1px solid var(--dx-border); border-radius: var(--dx-radius-sm); background: rgba(2,11,20,.55); padding: 12px; }
+.dx-flow-inputs, .dx-flow-stages { display: flex; flex-wrap: wrap; gap: 6px; }
+.dx-flow-chip { font-size: 9px; font-weight: 800; letter-spacing: .12em; color: var(--dx-cyan); background: rgba(0,210,255,.07); border: 1px solid rgba(0,210,255,.3); border-radius: 999px; padding: 4px 10px; animation: dx-stream-pulse 2.6s ease-in-out infinite; text-decoration: none; }
+.dx-flow-link:hover { border-color: var(--dx-cyan); color: #fff; }
+.dx-flow-arrow { text-align: center; font-size: 10px; font-weight: 800; letter-spacing: .2em; color: var(--dx-muted); margin: 8px 0; }
+@media (prefers-reduced-motion: reduce) {
+  .dx-flow-chip { animation: none !important; }
+}
+
 /* ============ PHASE 4 — CITIZEN JOURNEY STEPPER (additive) ============ */
 .dx-journey { display: flex; gap: 4px; overflow-x: auto; padding: 10px 12px; background: rgba(3,13,23,.7); border: 1px solid var(--dx-border); border-radius: var(--dx-radius-sm); scrollbar-width: thin; }
 .dx-journey-step { display: flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .08em; color: var(--dx-muted); text-decoration: none; padding: 6px 9px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; }

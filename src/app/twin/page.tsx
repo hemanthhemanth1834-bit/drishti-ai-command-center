@@ -178,6 +178,22 @@ export default function TwinPage() {
               WATER RISE: <span className="text-white font-bold">+{surgeM.toFixed(1)}m</span>
               <span className="text-slate-500"> (max +3.8m)</span>
             </label>
+            <div className="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Disaster scenario presets (simulation)">
+              {([
+                ['Flood', 2.4], ['Storm', 1.8], ['Cyclone', 3.2], ['Landslide', 0.6], ['Fire', 0],
+              ] as const).map(([label, surge]) => (
+                <button
+                  key={label}
+                  onClick={() => {
+                    setSurgeM(surge);
+                    setEvents((e) => [`${new Date().toLocaleTimeString()} — SCENARIO ${label.toUpperCase()} loaded (SIMULATION, not a real event)`, ...e].slice(0, 8));
+                  }}
+                  className="px-2 py-1 rounded text-[10px] font-bold border border-[#1b314b] bg-[#091a2e] hover:border-[#00d2ff]/60 text-slate-200"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
             <input
               type="range"
               min={0}
