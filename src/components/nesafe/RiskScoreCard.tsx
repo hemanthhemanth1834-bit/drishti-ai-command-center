@@ -68,10 +68,10 @@ export default function RiskScoreCard() {
         satelliteDeformMm: sim.satelliteDeformMm, roadExposure: 40, citizenReports: 2,
       }} />
       <div className="nesafe-grid2">
-        <div>🌧 Rain <b>{sim.rainfallMmHr} mm/hr</b></div>
-        <div>💧 Soil <b>{sim.soilPct}%</b></div>
-        <div>📈 Movement <b>{sim.groundMoveMm} mm</b></div>
-        <div>🛰 Deformation <b>{sim.satelliteDeformMm} mm</b></div>
+        <div>🌧 Rain <b>{Number(sim.rainfallMmHr).toFixed(1)} mm/hr</b></div>
+        <div>💧 Soil <b>{Number(sim.soilPct).toFixed(1)}%</b></div>
+        <div>📈 Movement <b>{Number(sim.groundMoveMm).toFixed(1)} mm</b></div>
+        <div>🛰 Deformation <b>{Number(sim.satelliteDeformMm).toFixed(1)} mm</b></div>
       </div>
     </div>
   );
