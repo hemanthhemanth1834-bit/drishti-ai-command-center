@@ -476,6 +476,12 @@ export default function MasterCommandCenter() {
                   ['/shelter', 'SHELTER SCANNER'],
                   ['/reunion', 'OP-MILAN REUNION'],
                   ['/recovery', 'RECOVERY & AUDIT'],
+                  ['/weather', 'WEATHER INTEL'],
+                  ['/satellite', 'SATELLITE INTEL'],
+                  ['/sensors', 'SENSOR NETWORK'],
+                  ['/roads', 'ROAD INTEL'],
+                  ['/response', 'RESPONSE BOARD'],
+                  ['/alerts', 'ALERT CENTER'],
                 ].map(([href, label]) => (
                   <Link key={href} href={href} className="px-3 py-2 rounded-lg bg-[#091a2e] border border-[#1b314b] hover:border-[#00d2ff]/60 text-slate-200 font-bold text-center">
                     {label}

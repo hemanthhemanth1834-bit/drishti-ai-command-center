@@ -12,6 +12,12 @@ export interface BaseLayer {
   id: string; name: string; url: string; attribution: string; maxZoom: number;
 }
 
+// Single source of truth lives in mapProvider (Step 8); re-exported here
+// so existing map consumers keep working unchanged.
+export { MAP_BASES } from '@/platform/mapProvider';
+import { MAP_BASES as _MAP_BASES } from '@/platform/mapProvider';
+export const BASE_LAYERS: BaseLayer[] = _MAP_BASES.leaflet;
+
 export interface EOLayer {
   id: string; group: 'Earth observation' | 'Disaster' | 'Environment' | 'Infrastructure' | 'Intelligence';
   name: string; kind: 'gibs' | 'registry' | 'stub';
@@ -21,14 +27,6 @@ export interface EOLayer {
 
 const GIBS = 'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best';
 const G = '/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg';
-
-export const BASE_LAYERS: BaseLayer[] = [
-  { id: 'dark', name: 'Dark', url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', attribution: '© OpenStreetMap contributors © CARTO', maxZoom: 19 },
-  { id: 'satellite', name: 'Satellite (Esri)', url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', attribution: 'Esri, Maxar, Earthstar Geographics', maxZoom: 18 },
-  { id: 'terrain', name: 'Terrain (OpenTopoMap)', url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', attribution: '© OpenStreetMap contributors, SRTM | style: © OpenTopoMap (CC-BY-SA)', maxZoom: 17 },
-  { id: 'street', name: 'Street (OSM)', url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '© OpenStreetMap contributors', maxZoom: 19 },
-  { id: 'light', name: 'Light', url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', attribution: '© OpenStreetMap contributors © CARTO', maxZoom: 19 },
-];
 
 export const EO_LAYERS: EOLayer[] = [
   // ---- verified live (HTTP 200 tile probes) ----

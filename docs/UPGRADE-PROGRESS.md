@@ -14,6 +14,7 @@ Rule: one phase at a time; each phase ends with tests + typecheck + lint + build
 - [x] **PHASE 9 — COMPLETE**: `DataFlowStrip` (DATA→…→RESPONSE, real page links) on `/prediction` + existing ml-pipeline visual.
 - [x] **PHASE 10 — COMPLETE (verified)**: `/command` module grid links to dedicated workflows; no mega-screen merge.
 - [x] **PHASE 11 — COMPLETE**: twin disaster scenario presets (Flood/Storm/Cyclone/Landslide/Fire) driving surge + SIMULATION log.
+- [x] **STEPS 0–22 CYCLE — COMPLETE**: audit (CURRENT-AUDIT.md), weather conditions, MapProvider abstraction, command modules 8→14, docs (MAP/SATELLITE/3D/API-MAP/PROVENANCE/FINAL-UPGRADE-REPORT); full suite green; deployed.
 - [ ] PHASE 3 — Home / landing flow
 - [ ] PHASE 4 — Citizen experience
 - [ ] PHASE 5 — Intelligence center

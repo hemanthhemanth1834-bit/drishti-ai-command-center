@@ -11,6 +11,7 @@ export default function WeatherPage() {
   const [lon, setLon] = useState(91.89);
   const [q, setQ] = useState(`${lat},${lon}`);
   const cur = usePlatform<Record<string, unknown>>(`/api/v1/rainfall/current?lat=${q.split(',')[0]}&lon=${q.split(',')[1]}`);
+  const now = usePlatform<Record<string, unknown>>(`/api/v1/weather/current?lat=${q.split(',')[0]}&lon=${q.split(',')[1]}`);
   const th = usePlatform<{ warn_24h_mm: number; crit_24h_mm: number }>('/api/v1/weather/thresholds');
   const pv = usePlatform<{ providers: { name: string; status: string; key_required: boolean; detail?: string }[] }>('/api/v1/weather/providers');
   const [cached, setCached] = useState<{ value: Record<string, unknown>; ts: number } | null>(null);
@@ -49,6 +50,16 @@ export default function WeatherPage() {
           </div>
         ) : <p className="text-xs mt-2">Backend offline — showing DEMO fallback only where labeled.</p>}
         <p className="text-[11px] text-slate-400 mt-2">Thresholds: warn ≥ {th.data?.warn_24h_mm}mm/24h · critical ≥ {th.data?.crit_24h_mm}mm/24h (env RAIN_WARN_24H / RAIN_CRIT_24H).</p>
+        {now.data && !('error' in now.data) && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2" aria-label="Current conditions">
+            {[['TEMP', `${String(now.data.temp_c ?? '—')}°C`], ['HUMIDITY', `${String(now.data.humidity ?? '—')}%`], ['WIND', `${String(now.data.wind_kmh ?? '—')} km/h`], ['CONDITION', String(now.data.condition ?? now.data.source ?? '—')]].map(([l, v]) => (
+              <div key={l as string} className="bg-[#091a2e] rounded-lg border border-[#1b314b] p-2">
+                <div className="dx-micro">{l}</div>
+                <div className="text-base font-bold text-white">{v as string}</div>
+              </div>
+            ))}
+          </div>
+        )}
         {d && <div className="mt-2"><VizFigure src={wxImg} alt={wxAlt} caption={`Visual state for ${rain24}mm/24h — context only, data above is authoritative`} status={badge} /></div>}
       </div>
       <div className="dx-hud">

@@ -5,6 +5,7 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import VizFigure from '@/platform/VizFigure';
 import { get } from '@/platform/api';
 import { BASE_LAYERS, EO_LAYERS, HISTORICAL_PRESETS, type Preset } from '@/platform/eoLayers';
+import { googleStatus } from '@/platform/mapProvider';
 import type { InspectPoint } from '@/platform/RiskGridMap';
 
 const RiskGridMap = dynamic(() => import('@/platform/RiskGridMap'), {
@@ -53,6 +54,7 @@ export default function RiskMapPage() {
               <select value={base} onChange={(e) => setBase(e.target.value)} className="w-full bg-[#051424] border border-[#1b314b] rounded px-2 py-1 text-xs mt-1" aria-label="Base map">
                 {BASE_LAYERS.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
+              <p className="text-[10px] text-slate-500 mt-1">Google Maps: {googleStatus().status} — {googleStatus().detail}</p>
             </div>
             {GROUPS.map((g) => (
               <div key={g} className="mt-2">
