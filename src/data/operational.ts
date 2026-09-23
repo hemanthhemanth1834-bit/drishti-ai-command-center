@@ -63,3 +63,61 @@ export function severitySignal(sev: Severity): { color: string; icon: string; la
   };
   return { color: SEVERITY_COLOR[sev], icon: icons[sev], label: sev };
 }
+
+/* ============ OPEN DESIGN mockData.js deltas (typed DEMO fallback) ============
+   Ported from pasted `src/data/mockData.js` (Delhi Zone-4 demo). Existing
+   DEMO_INCIDENTS/FACILITIES above stay canonical. These additions preserve the
+   Open Design relations — critical incident ⇒ critical alert; drone deploy ⇒
+   fleet status change; shelter % ⇒ alert text — in typed form. UI never owns
+   datasets; all rows render ONLY when the backend API is unreachable. */
+
+export type OdSeverity = 'low' | 'medium' | 'high' | 'critical';
+
+export interface DemoAlert {
+  sev: OdSeverity;
+  title: string;
+  loc: string;
+  time: string;
+  action: string;
+  ack: boolean;
+}
+
+export interface DemoDrone {
+  id: string;
+  bat: number;
+  st: 'ACTIVE' | 'RETURNING' | 'AVAILABLE' | 'LOW BATTERY';
+  mission: string;
+  sig: 'Strong' | 'Good' | 'Weak';
+}
+
+export const DEMO_ALERTS: DemoAlert[] = [
+  { sev: 'critical', title: 'Flood risk escalation', loc: 'Zone 4', time: '2 min ago', action: 'Deploy rescue team + open Route B', ack: false },
+  { sev: 'high', title: 'Road blockage detected', loc: 'Highway 16', time: '8 min ago', action: 'Reroute via Ring Road', ack: false },
+  { sev: 'medium', title: 'Shelter capacity increasing', loc: 'Shelter B · 71%', time: '14 min ago', action: 'Reserve 800 beds', ack: false },
+];
+
+export const DEMO_DRONES: DemoDrone[] = [
+  { id: 'DX-01', bat: 82, st: 'ACTIVE', mission: 'Zone 4 survey', sig: 'Strong' },
+  { id: 'DX-02', bat: 34, st: 'RETURNING', mission: 'Sector 9 thermal', sig: 'Good' },
+  { id: 'DX-03', bat: 96, st: 'AVAILABLE', mission: 'Standby · flood kit', sig: 'Strong' },
+  { id: 'DX-04', bat: 18, st: 'LOW BATTERY', mission: 'Dock · charge', sig: 'Weak' },
+];
+
+export const DEMO_RESOURCE_SUMMARY = {
+  ambulances: '22 / 32 available',
+  teams: '8 / 12 deployed',
+  shelters: '71% occupied',
+  kits: '3.2k kits ready',
+};
+
+export const DEMO_DEPLOYMENTS = [
+  'Rescue Team Alpha → #104 · ETA 08 min',
+  'Ambulance 27 → Hospital Central · ETA 05 min',
+];
+
+export const DEMO_INTEL_BRIEF = {
+  level: 'High',
+  confidence: 91,
+  impact: '12,400 people',
+  prediction: 'Water may expand east in 3–6 hours.',
+};

@@ -305,3 +305,50 @@ export function droneFleetStatus(): FeedResult<null> {
     note: 'NO LIVE FEED AVAILABLE — telemetry shown is SIMULATION',
   };
 }
+
+/* ============ OPEN DESIGN liveServices.js deltas (additive, 2026-09) ============
+   Ported attributions + free-tile endpoints + vision-feed model from the pasted
+   reference. Canonical states above (LIVE/RECENT/LATEST_AVAILABLE/STALE/
+   OFFLINE/DEMO/NO_FEED/NOT_CONFIGURED) are unchanged. Secrets stay
+   backend-side; mock is never labeled LIVE. */
+
+export const OD_ATTRIBUTION = {
+  imagery: 'Imagery © Esri World Imagery · Tiles © CARTO · © OpenStreetMap contributors',
+  weather: 'Weather © Open-Meteo (CC-BY 4.0)',
+  earthquake: 'Earthquakes © USGS Earthquake Hazards Program (public domain)',
+  fire: 'Hotspots: NASA FIRMS (registration key required — keep key server-side)',
+};
+
+/** Free tile endpoints from the Open Design reference (alternatives to OSM/GIBS defaults). */
+export const OD_TILES = {
+  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+};
+
+export interface VisionFeed {
+  id: string;
+  kind: 'drone' | 'webcam';
+  status: 'DEMO' | 'OFFLINE';
+  loc: string;
+  note: string;
+}
+
+/** Vision feeds: no approved public live video in this deployment — honest gaps only. */
+export function visionFeeds(): VisionFeed[] {
+  return [
+    { id: 'DX-03', kind: 'drone', status: 'DEMO', loc: 'Zone 4', note: 'Simulated recon loop — no live video' },
+    { id: 'PUB-CAM-1', kind: 'webcam', status: 'OFFLINE', loc: 'Highway 16', note: 'No approved public feed configured' },
+  ];
+}
+
+/** Satellite latest-available summary (Esri/CARTO wording from the reference). */
+export function satelliteLatest(): FeedResult<{ label: string }> {
+  const gibs = gibsStatus();
+  return {
+    data: { label: 'Latest available imagery' },
+    state: 'LATEST_AVAILABLE',
+    source: 'Esri World Imagery (free tile tier) · NASA GIBS daily NRT',
+    updatedAt: new Date().toISOString(),
+    note: `${gibs.note}. Basemap tiles are recent but not real-time captures.`,
+  };
+}

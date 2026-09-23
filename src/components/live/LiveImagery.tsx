@@ -23,6 +23,24 @@ interface Panel {
 
 const CENTER = { lat: 21.5, lon: 79.0 };
 
+/* Open Design LiveImagery.js deltas: shared status labels + honest no-feed helper.
+   Panels below stay canonical; these exports let other walls reuse the same
+   SOURCE · LOCATION · TIMESTAMP · STATUS language (max 4–6 panels per wall). */
+export const STATUS_LABEL: Record<string, string> = {
+  LIVE: '● LIVE',
+  RECENT: 'UPDATED',
+  LATEST_AVAILABLE: 'UPDATED',
+  STALE: '⚠ STALE',
+  OFFLINE: '⚠ OFFLINE',
+  DEMO: 'DEMO DATA',
+  NO_FEED: 'NO LIVE FEED',
+  NOT_CONFIGURED: 'NOT CONFIGURED',
+};
+
+export function noFeedText(kind: string, loc: string): string {
+  return `NO LIVE FEED AVAILABLE — ${kind} · ${loc} · approved public feeds only`;
+}
+
 export default function LiveImagery() {
   const [panels, setPanels] = useState<Panel[]>([]);
   const [loading, setLoading] = useState(true);

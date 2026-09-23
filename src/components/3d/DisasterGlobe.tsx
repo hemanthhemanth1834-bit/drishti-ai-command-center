@@ -9,6 +9,11 @@
  * Accessibility/performance: reduced-motion disables rotation, quality
  * control + performance mode lower pixel ratio/geometry, and a 2D fallback
  * list renders when WebGL is unavailable or the user prefers it.
+ *
+ * Open Design note: the pasted `DisasterGlobe.js` reference is a dependency-free
+ * 2D canvas globe for landing-only lazy use. This R3F globe stays canonical
+ * (already lazy via next/dynamic); the 2D list fallback below preserves the
+ * same reduced-motion + quality + no-WebGL guarantees without adding three.js.
  */
 import { useMemo, useRef, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';

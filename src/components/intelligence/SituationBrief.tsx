@@ -135,6 +135,11 @@ export default function SituationBrief({ lat = 17.385, lon = 78.4867, place = 'H
         <li>If rainfall crosses 120mm/24h, raise WATCH; at 200mm/24h escalate to CRITICAL per warning bands.</li>
         <li>Check shelter capacity and road status in the map layers before routing evacuations.</li>
       </ul>
+      <div className="dx-micro mt-3">WHY (EVIDENCE CHAIN)</div>
+      <p className="text-xs text-slate-300 mt-1">
+        Open-Meteo observed rainfall + USGS earthquake context + backend model health (see OBSERVED above)
+        combine into the posture score. No chatbot claims — every line above carries source + timestamp + status.
+      </p>
       <p className="text-[10px] text-slate-500 mt-2">
         Observed → Analysis → Recommendation. Predictions are decision support, never confirmed facts.
       </p>

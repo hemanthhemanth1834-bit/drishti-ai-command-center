@@ -53,6 +53,13 @@ function loadView() {
 const GIBS_VIIRS =
   'https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_SNPP_CorrectedReflectance_TrueColor/default/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg';
 const OSM = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+/* Open Design free-tile alternatives (CARTO dark + Esri satellite) + Evac Route B.
+   Defaults above stay canonical; these are documented alternates from the pasted
+   DisasterMap.js reference. Route B renders as a DEMO polyline when EVACUATION is on. */
+const OD_DARK = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const OD_SAT = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+const OD_ROUTE_B: [number, number][] = [[28.6, 77.2], [28.63, 77.25], [28.66, 77.3]];
+void OD_DARK; void OD_SAT;
 
 export default function DisasterMap({ height = 460 }: { height?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -137,6 +144,10 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
               .bindPopup(`${f.name} · ${f.detail} (DEMO)`).addTo(map!);
           }
         }
+        // Open Design Evac Route B (DEMO reference corridor, always labeled).
+        L.polyline(OD_ROUTE_B, { color: '#38BDF8', dashArray: '6 6', weight: 2 })
+          .bindPopup('Evac Route B · OPEN (DEMO reference)')
+          .addTo(map!);
       }
       if (layers.includes('RESPONDERS')) {
         try {

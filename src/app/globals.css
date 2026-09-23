@@ -1120,3 +1120,23 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 /* visible focus + severity never color-alone (icon + text always accompany) */
 .dx-sev::before { content: attr(data-icon); font-size: 9px; }
 :focus-visible { outline: 2px solid var(--dx-cyan); outline-offset: 2px; border-radius: 4px; }
+
+/* ============ OPEN DESIGN tokens.css deltas (additive aliases, 2026-09) ============
+   Ported from pasted `src/styles/tokens.css` reference. Existing --dx-* values
+   above stay canonical; these --od-* aliases preserve the Open Design palette
+   (Delhi Zone-4 demo) for reference without changing the cinematic theme.
+   Severity must always be color + icon + label, never color alone. */
+:root {
+  --od-bg: #060B16; --od-bg2: #0A1222; --od-surface: #0C1526; --od-surface2: #111E33;
+  --od-border: #1C2C47; --od-border2: #274067;
+  --od-text: #E8EEF7; --od-muted: #93A3BE;
+  --od-critical: #F04452; --od-high: #F79009; --od-medium: #FACC15;
+  --od-low: #2DD4BF; --od-success: #22C55E; --od-info: #38BDF8;
+  --od-radius: 12px;
+  --od-font-body: 'Manrope', system-ui, sans-serif;
+  --od-font-display: 'Space Grotesk', 'Manrope', system-ui, sans-serif;
+}
+.od-sev-critical { color: #FF8A94; border-color: #5C1A22; background: rgba(240,68,82,.14); }
+.od-sev-high { color: #FFB86B; border-color: #5C3A12; background: rgba(247,144,9,.14); }
+.od-sev-medium { color: #FDE68A; border-color: #5C4A10; background: rgba(250,204,21,.12); }
+.od-sev-low { color: #5EEAD4; border-color: #134E4A; background: rgba(45,212,191,.12); }
