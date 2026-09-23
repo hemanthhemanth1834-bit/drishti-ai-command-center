@@ -3,6 +3,7 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 import DisasterImage from '@/components/visuals/DisasterImage';
+import LiveImagery from '@/components/live/LiveImagery';
 import { imagesByCategory } from '@/config/imageSources';
 
 const ADAPTERS = [
@@ -18,6 +19,7 @@ export default function SatellitePage() {
   const obs = usePlatform<{ count: number; observations: { id: number; lat: number; lon: number; change_pct: number; source: string; captured_at: string }[] }>('/api/v1/satellite/observations?limit=10');
   return (
     <ModuleShell title="Satellite Intelligence" sub="Imagery → preprocessing → change detection → risk engine. Gallery images are NEVER live observations." status="DEMO" source="SIMULATED + open tiles">
+      <LiveImagery />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PROVIDER ADAPTERS</div>

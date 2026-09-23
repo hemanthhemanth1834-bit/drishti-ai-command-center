@@ -275,3 +275,25 @@ See `CONTRIBUTING.md` (additive PRs, no synthetic-as-live, typecheck+lint+build+
 ## 🙏 Acknowledgements
 
 NASA (Worldview/GIBS/FIRMS/GPM/Earth Observatory/JPL), Copernicus, ISRO/Bhuvan, OpenStreetMap/Overpass/Nominatim, Open-Meteo, SoilGrids/ISRIC, Esri/CARTO/OpenTopoMap, U-Tokyo DMEWS, ready.gov/fema.gov/usa.gov (reference links), scikit-learn, FastAPI, Next.js, Leaflet, three.js. Full licenses: `THIRD-PARTY-LICENSES.md`.
+
+## 🆕 DRISHTI-X Command-Center Upgrade (2026-09)
+
+Integrated the UI/UX + 3D + live-data upgrade **additively** — no working route, API, or backend workflow was removed.
+
+**New modules (all adapted to this repo's structure, not blindly copied):**
+
+| Design reference | Real implementation | Notes |
+|---|---|---|
+| `src/styles/tokens.css` | `src/app/globals.css` (upgrade-tokens layer) | Severity + feed-state colors, responsive grid, focus states |
+| `src/data/mockData.js` | `src/data/operational.ts` | Typed DEMO fallback only; backend APIs keep priority |
+| `src/services/liveServices.js` | `src/lib/liveServices.ts` | Open-Meteo + USGS live; GIBS LATEST_AVAILABLE; FIRMS NOT_CONFIGURED; 12s timeout + abort + TTL cache |
+| `src/components/map/DisasterMap.js` | `src/components/map/DisasterMap.tsx` | 8 layers (RISK/EVACUATION/RESPONDERS/INFRA/SAT/WX/QUAKE/FIRE), position preserved in localStorage |
+| `src/components/intelligence/SituationBrief.js` | `src/components/intelligence/SituationBrief.tsx` | Observed → Analysis → Recommendation; analyses never stated as facts |
+| `src/components/3d/DisasterGlobe.js` | `src/components/3d/DisasterGlobe.tsx` | R3F globe, India focus, quality + performance mode, reduced-motion, 2D fallback |
+| `src/components/live/LiveImagery.js` | `src/components/live/LiveImagery.tsx` | 6-panel wall with SOURCE/LOCATION/TIMESTAMP/STATUS; NO LIVE FEED where none exists |
+| — | `src/components/command/LiveStatusStrip.tsx` | Feed-status strip on `/command` |
+| — | `src/app/reports/page.tsx`, `src/app/settings/page.tsx` | Missing command-center routes added |
+
+**Live vs Demo (honest states):** `LIVE` (Open-Meteo, USGS, backend when reachable) · `RECENT`/`STALE` (TTL cache) · `LATEST_AVAILABLE` (GIBS daily NRT) · `OFFLINE` (unreachable) · `DEMO` (local fallback rows) · `NO_FEED` (drone fleet — none connected) · `NOT_CONFIGURED` (FIRMS/Copernicus/SMS — keys absent).
+
+**New routes:** `/reports` (ledger + CSV export) · `/settings` (local prefs + source transparency). **No new dependencies** — Leaflet, Three.js/R3F, and Tailwind were already present and are reused.

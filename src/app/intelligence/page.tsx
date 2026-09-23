@@ -1,8 +1,15 @@
 'use client';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
+import SituationBrief from '@/components/intelligence/SituationBrief';
+
+const DisasterGlobe = dynamic(
+  () => import('@/components/3d/DisasterGlobe'),
+  { ssr: false, loading: () => <p className="text-xs text-slate-400">Loading 3D globe…</p> }
+);
 
 const MODULES = [
   ['/prediction', 'Prediction', 'AI landslide probability + WHY'],
@@ -34,6 +41,8 @@ export default function IntelligencePage() {
   const sy = usePlatform<{ pending_verification: number }>('/api/v1/sync/status');
   return (
     <ModuleShell title="Intelligence Hub" sub="REAL/OPEN DATA → AI/ML → RISK → GIS → EARLY WARNING → RESPONSE → VERIFY → LEARN" status="LIVE" source="Platform APIs + open providers">
+      <SituationBrief />
+      <DisasterGlobe height={320} />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">SYSTEM STATUS</div>

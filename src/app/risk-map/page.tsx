@@ -11,6 +11,9 @@ import type { InspectPoint } from '@/platform/RiskGridMap';
 const RiskGridMap = dynamic(() => import('@/platform/RiskGridMap'), {
   ssr: false, loading: () => <p className="text-xs">Loading GIS…</p>,
 });
+const DisasterMap = dynamic(() => import('@/components/map/DisasterMap'), {
+  ssr: false, loading: () => <p className="text-xs">Loading operational overlay…</p>,
+});
 
 interface Cell {
   id: string; lat: number; lon: number; probability: number; risk_level: string;
@@ -115,6 +118,16 @@ export default function RiskMapPage() {
           <p className="text-[11px] text-slate-400 mt-2">Imagery: NASA Worldview/GIBS (daily, ~1-day latency). Analysis layers (risk/incidents) come from DRISHTI-X APIs with their own provenance.</p>
         </div>
       )}
+
+      <div className="dx-hud">
+        <div className="dx-hud-edge" />
+        <div className="dx-micro">OPERATIONAL OVERLAY — RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX · QUAKE · FIRE</div>
+        <p className="text-[11px] text-slate-400 mt-1 mb-2">
+          Unified 8-layer view with live USGS earthquakes and position preserved across refresh.
+          Fire markers stay off until a FIRMS key is configured — hotspots are never synthesized.
+        </p>
+        <DisasterMap height={440} />
+      </div>
 
       <div className="dx-hud">
         <div className="dx-hud-edge" />

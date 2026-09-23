@@ -1068,3 +1068,55 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 @media (prefers-reduced-motion: reduce) {
   .dx-spinner, .dx-skeleton::after { animation: none !important; }
 }
+
+/* ============ DRISHTI-X UPGRADE TOKENS (additive, 2026-09) ============
+   Adapted from the Open Design `tokens.css` reference. Dark-navy command
+   language, cyan/blue accents, semantic severity + feed-state colors,
+   premium type scale, responsive + a11y helpers. CLARITY > EFFECTS. */
+:root {
+  --dx-navy-950: #01060d;
+  --dx-navy-900: #020b14;
+  --dx-navy-800: #051424;
+  --dx-navy-700: #091a2e;
+  --dx-line: #1b314b;
+  --dx-ink: #eef6fc;
+  --dx-sev-low: #34d399;
+  --dx-sev-moderate: #fbbf24;
+  --dx-sev-high: #fb923c;
+  --dx-sev-critical: #ff5470;
+  --dx-feed-live: #34d399;
+  --dx-feed-recent: #00d2ff;
+  --dx-feed-latest: #00d2ff;
+  --dx-feed-stale: #fb923c;
+  --dx-feed-offline: #64748b;
+  --dx-feed-demo: #fbbf24;
+  --dx-feed-nofeed: #64748b;
+  --dx-feed-unconfigured: #fb923c;
+  --dx-font-display: ui-sans-system, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+  --dx-font-body: ui-sans-system, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+}
+.dx-sev { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .1em; padding: 3px 10px; border-radius: 999px; border: 1px solid; white-space: nowrap; }
+.dx-sev-low { color: var(--dx-sev-low); border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.08); }
+.dx-sev-moderate { color: var(--dx-sev-moderate); border-color: rgba(251,191,36,.5); background: rgba(251,191,36,.08); }
+.dx-sev-high { color: var(--dx-sev-high); border-color: rgba(251,146,60,.55); background: rgba(251,146,60,.1); }
+.dx-sev-critical { color: var(--dx-sev-critical); border-color: rgba(255,84,112,.6); background: rgba(255,84,112,.12); }
+.dx-feed { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; font-weight: 800; letter-spacing: .1em; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--dx-line); color: var(--dx-muted); background: rgba(9,26,46,.7); white-space: nowrap; }
+.dx-feed-live { color: var(--dx-feed-live); border-color: rgba(52,211,153,.5); }
+.dx-feed-recent, .dx-feed-latest { color: var(--dx-feed-recent); border-color: rgba(0,210,255,.45); }
+.dx-feed-stale { color: var(--dx-feed-stale); border-color: rgba(251,146,60,.5); }
+.dx-feed-offline, .dx-feed-nofeed { color: #94a3b8; }
+.dx-feed-demo { color: var(--dx-feed-demo); border-color: rgba(251,191,36,.5); }
+.dx-feed-unconfigured { color: var(--dx-feed-unconfigured); border-color: rgba(251,146,60,.5); }
+/* responsive command grid: 375 / 768 / 1024 / 1440 / 1920 */
+.dx-cmd-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 768px) { .dx-cmd-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .dx-cmd-grid { grid-template-columns: repeat(12, 1fr); } .dx-cmd-span7 { grid-column: span 7; } .dx-cmd-span5 { grid-column: span 5; } }
+@media (min-width: 1440px) { .dx-cmd-grid { gap: 16px; } }
+/* stacked mobile sheets + bottom-nav clearance (MobileQuickBar already fixed) */
+@media (max-width: 767px) {
+  .dx-hud-head { flex-direction: column; align-items: stretch; }
+  .dx-status-ticker { font-size: 8px; }
+}
+/* visible focus + severity never color-alone (icon + text always accompany) */
+.dx-sev::before { content: attr(data-icon); font-size: 9px; }
+:focus-visible { outline: 2px solid var(--dx-cyan); outline-offset: 2px; border-radius: 4px; }

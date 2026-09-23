@@ -22,6 +22,9 @@ import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
 import FloodTimeline from '@/components/three/FloodTimeline';
 import GeospatialIntelGallery from '@/components/cinematic/GeospatialIntelGallery';
+import LiveStatusStrip from '@/components/command/LiveStatusStrip';
+import SituationBrief from '@/components/intelligence/SituationBrief';
+import LiveImagery from '@/components/live/LiveImagery';
 import { soundSynth } from '@/utils/audioSynth';
 import { Activity, Radio, Compass, Satellite } from 'lucide-react';
 
@@ -37,6 +40,14 @@ const DroneLeafletTracker = dynamic(
 const AiCoreScene = dynamic(
   () => import('@/components/cinematic/AiCoreScene'),
   { ssr: false }
+);
+const DisasterGlobe = dynamic(
+  () => import('@/components/3d/DisasterGlobe'),
+  { ssr: false, loading: () => <p className="text-xs text-slate-400">Loading 3D globe…</p> }
+);
+const DisasterMap = dynamic(
+  () => import('@/components/map/DisasterMap'),
+  { ssr: false, loading: () => <p className="text-xs text-slate-400">Loading live map…</p> }
 );
 
 const SCENARIOS = ['nominal', 'storm', 'swarm-surge', 'gps-denied'];
@@ -163,6 +174,8 @@ export default function MasterCommandCenter() {
           sosActive={intel.sos.phase !== 'idle'}
         />
 
+        {/* Live feed status — honest LIVE/DEMO/OFFLINE per source */}
+        <LiveStatusStrip />
         {/* Shared-intelligence banners: SOS + citizen risk-check follow the
             operator across routes — same state as /emergency and /risk. */}
         {intel.sos.phase !== 'idle' && (
@@ -429,6 +442,9 @@ export default function MasterCommandCenter() {
             {/* AI Decision Timeline (V3.1): live view of the shared event stream */}
             <AiDecisionTimeline />
 
+            {/* AI situation brief: observed → analysis → recommendation */}
+            <SituationBrief />
+
             {/* Live Telemetry Feed Log */}
             <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4 flex-1 flex flex-col">
               <div className="flex items-center justify-between pb-2 border-b border-[#1b314b]">
@@ -490,6 +506,24 @@ export default function MasterCommandCenter() {
               </div>
             </HudPanel>
           </section>
+        </div>
+
+        {/* Live operational map — 8-layer DisasterMap (position preserved) */}
+        <div className="px-4 pb-4">
+          <div className="bg-[#051424]/80 border border-[#1b314b] rounded-xl p-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-[#1b314b] mb-3">
+              <Compass className="w-4 h-4 text-[#00d2ff]" />
+              <span className="text-xs font-bold text-white tracking-wider">LIVE DISASTER MAP // RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX · QUAKE · FIRE</span>
+              <span className="ml-auto text-[10px] text-slate-400">POSITION PRESERVED ACROSS REFRESH</span>
+            </div>
+            <DisasterMap height={420} />
+          </div>
+        </div>
+
+        {/* Imagery wall + 3D globe */}
+        <div className="px-4 pb-4 grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <LiveImagery />
+          <DisasterGlobe height={380} />
         </div>
 
         {/* Geospatial Intelligence Feeds — Real-World Visual Examples */}
