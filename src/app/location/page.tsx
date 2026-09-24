@@ -15,13 +15,7 @@ import {
   toDMS,
   type Place,
 } from '@/utils/geocode';
-import {
-  fetchGooglePlace,
-  googleKey,
-  GOOGLE_KEY_MISSING,
-  type GooglePlaceDetails,
-} from '@/utils/googlePlaces';
-import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check, ExternalLink, Star, Phone, Clock } from 'lucide-react';
+import { MapPin, Search, Crosshair, History, Navigation, LocateFixed, FileText, Copy, Check, ExternalLink } from 'lucide-react';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import { DEMO_FACILITIES, DEMO_HAZARDS } from '@/data/providers';
@@ -101,19 +95,11 @@ export default function LocationPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [layersOff]
   );
-  const [gplace, setGplace] = useState<GooglePlaceDetails | null>(null);
-  const [gloading, setGloading] = useState(false);
-  const [gerror, setGerror] = useState('');
-  const [mapSrc, setMapSrc] = useState<'OSM' | 'GOOGLE'>('OSM');
-  const gmapsKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY ?? '';
-  const gmapsEmbed = place
-    ? gmapsKey
-      ? `https://www.google.com/maps/embed/v1/place?key=${gmapsKey}&q=${place.lat},${place.lon}&zoom=15`
-      : `https://maps.google.com/maps?q=${place.lat},${place.lon}&z=15&output=embed`
-    : '';
-  const gmapsLink = place
-    ? `https://www.google.com/maps/search/?api=1&query=${place.lat},${place.lon}`
-    : 'https://www.google.com/maps';
+  // Free-sources-only: place enrichment is OSM/Nominatim (see select()).
+  // The outbound "Open in OSM" link below needs no key.
+  const osmLink = place
+    ? `https://www.openstreetmap.org/?mlat=${place.lat}&mlon=${place.lon}#map=15/${place.lat}/${place.lon}`
+    : 'https://www.openstreetmap.org/';
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Debounced search (~1 req/sec per Nominatim policy)
@@ -156,14 +142,7 @@ export default function LocationPage() {
     setResults([]);
     setQuery(shortName(p.name));
     setRecent((r) => [p, ...r.filter((x) => x.id !== p.id)].slice(0, 5));
-    // Google enrichment follows the selection (no-op + guide when keyless).
-    setGplace(null);
-    setGerror('');
-    setGloading(true);
-    fetchGooglePlace(shortName(p.name), p.lat, p.lon)
-      .then((g) => setGplace(g))
-      .catch((e: Error) => setGerror(e.message === GOOGLE_KEY_MISSING ? GOOGLE_KEY_MISSING : e.message))
-      .finally(() => setGloading(false));
+    // Free-sources-only: OSM/Nominatim details already in `p`; no paid enrichment.
   }
 
   async function locateMe() {
@@ -215,9 +194,6 @@ export default function LocationPage() {
           (etaMin !== null ? ` — ETA ~${etaMin.toFixed(0)} min` : '')
         : 'Nearest drone: no live fix',
       `Scenario: ${live?.scenario ?? '—'} | Link: ${live ? `${live.signal_pct.toFixed(0)}%` : '—'}`,
-      ...(gplace?.rating !== undefined
-        ? [`Google: ★${gplace.rating.toFixed(1)} (${gplace.ratingCount ?? 0} reviews)`]
-        : []),
     ];
     return lines.join('\n');
   }
@@ -361,19 +337,13 @@ export default function LocationPage() {
                 <Crosshair className="w-3.5 h-3.5" /> TRACK ON SAR RADAR
               </Link>
               <a
-                href={gmapsLink}
+                href={osmLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 flex items-center justify-center gap-1.5 w-full py-2 rounded text-xs font-bold border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60"
               >
-                <ExternalLink className="w-3.5 h-3.5" /> OPEN IN GOOGLE MAPS
+                <ExternalLink className="w-3.5 h-3.5" /> OPEN IN OPENSTREETMAP
               </a>
-              {!gmapsKey && (
-                <div className="mt-1.5 text-[10px] text-slate-500">
-                  Keyless Google embed. Ratings, hours & photos need a billing-enabled
-                  Maps key (set NEXT_PUBLIC_GOOGLE_MAPS_KEY).
-                </div>
-              )}
             </div>
           )}
 
@@ -428,96 +398,13 @@ export default function LocationPage() {
           {place && (
             <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
               <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
-                <Star className="w-4 h-4 text-amber-300" /> GOOGLE PLACE DATA
+                <MapPin className="w-4 h-4 text-[#00d2ff]" /> PLACE DATA (OPENSTREETMAP)
               </div>
-              {gloading && (
-                <div className="text-[11px] text-slate-500 py-3 text-center">
-                  Fetching Google data…
-                </div>
-              )}
-              {!gloading && gerror === GOOGLE_KEY_MISSING && (
-                <div className="mt-2 text-[11px] text-slate-400 leading-relaxed">
-                  <div className="text-amber-300 font-bold">NO GOOGLE KEY CONFIGURED</div>
-                  <ol className="list-decimal ml-4 mt-1 space-y-0.5">
-                    <li>Create a key: Google Cloud Console → APIs & Services → Credentials → Create Credentials → API key.</li>
-                    <li>Enable the <b>Places API (New)</b> on the project (free $200/mo credit covers testing).</li>
-                    <li>Restrict the key by HTTP referrer to your domains.</li>
-                    <li>Set <b>NEXT_PUBLIC_GOOGLE_MAPS_KEY</b> in <b>.env.local</b> (local) and Vercel → Project → Settings → Environment Variables (live), then redeploy.</li>
-                  </ol>
-                </div>
-              )}
-              {!gloading && gerror !== '' && gerror !== GOOGLE_KEY_MISSING && (
-                <div className="text-[11px] text-rose-400 mt-2">Google: {gerror}</div>
-              )}
-              {!gloading && gplace && (
-                <div className="mt-2 text-[11px]">
-                  {gplace.photoUrl && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={gplace.photoUrl}
-                      alt={gplace.name}
-                      className="w-full h-36 object-cover rounded border border-[#1b314b]"
-                      loading="lazy"
-                    />
-                  )}
-                  <div className="mt-2 flex items-center gap-2 flex-wrap">
-                    <span className="flex items-center gap-1 text-amber-300 font-bold text-sm">
-                      <Star className="w-4 h-4" /> {gplace.rating?.toFixed(1) ?? '—'}
-                    </span>
-                    <span className="text-slate-500">
-                      {gplace.ratingCount !== undefined ? `${gplace.ratingCount.toLocaleString()} reviews` : ''}
-                    </span>
-                    {gplace.openNow !== undefined && (
-                      <span className={gplace.openNow ? 'text-emerald-400' : 'text-rose-400'}>
-                        • {gplace.openNow ? 'OPEN NOW' : 'CLOSED'}
-                      </span>
-                    )}
-                  </div>
-                  {gplace.types && gplace.types.length > 0 && (
-                    <div className="mt-1 text-slate-500">
-                      {gplace.types.slice(0, 4).join(' • ').replaceAll('_', ' ')}
-                    </div>
-                  )}
-                  <div className="mt-2 flex flex-col gap-1">
-                    {gplace.phone && (
-                      <a href={`tel:${gplace.phone.replace(/\s/g, '')}`} className="flex items-center gap-1.5 text-[#00d2ff]">
-                        <Phone className="w-3.5 h-3.5" /> {gplace.phone}
-                      </a>
-                    )}
-                    {gplace.website && (
-                      <a href={gplace.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-[#00d2ff] truncate">
-                        <ExternalLink className="w-3.5 h-3.5 shrink-0" />
-                        <span className="truncate">{gplace.website.replace(/^https?:\/\//, '').split('/')[0]}</span>
-                      </a>
-                    )}
-                  </div>
-                  {gplace.weekdayHours && gplace.weekdayHours.length > 0 && (
-                    <details className="mt-2">
-                      <summary className="flex items-center gap-1.5 text-slate-300 cursor-pointer">
-                        <Clock className="w-3.5 h-3.5" /> OPENING HOURS
-                      </summary>
-                      <div className="mt-1 text-slate-400 space-y-0.5">
-                        {gplace.weekdayHours.map((h) => (
-                          <div key={h}>{h}</div>
-                        ))}
-                      </div>
-                    </details>
-                  )}
-                  {gplace.reviews && gplace.reviews.length > 0 && (
-                    <div className="mt-2 space-y-1.5">
-                      {gplace.reviews.map((r, i) => (
-                        <div key={i} className="p-2 rounded bg-[#081a2c] border border-[#132d4a]">
-                          <div className="flex justify-between">
-                            <span className="text-white font-bold">{r.author}</span>
-                            <span className="text-amber-300">★ {r.rating}{r.time ? ` • ${r.time}` : ''}</span>
-                          </div>
-                          <div className="text-slate-300 mt-0.5 line-clamp-3">{r.text}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+              <div className="mt-2 text-[11px] text-slate-400 leading-relaxed">
+                Free-sources-only: ratings, hours & photos from paid providers are
+                intentionally unavailable. OSM name, address, type and coordinates
+                above are the complete place record.
+              </div>
             </div>
           )}
         </section>
@@ -531,37 +418,17 @@ export default function LocationPage() {
                 {place ? `${place.lat.toFixed(4)}°N, ${place.lon.toFixed(4)}°E` : '—.————°N, —.————°E'}
               </span>
               <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">
-                {(['OSM', 'GOOGLE'] as const).map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setMapSrc(s)}
-                    className={`px-2.5 py-0.5 text-[10px] rounded transition-all ${
-                      mapSrc === s ? 'bg-[#00d2ff] text-black font-bold' : 'text-slate-400'
-                    }`}
-                  >
-                    {s === 'OSM' ? 'OSM RADAR' : 'GOOGLE MAPS'}
-                  </button>
-                ))}
+                <span className="px-2.5 py-0.5 text-[10px] rounded bg-[#00d2ff] text-black font-bold">
+                  OSM RADAR
+                </span>
               </span>
             </div>
             <div className="h-[380px] bg-black">
-              {mapSrc === 'OSM' || !place ? (
-                <DroneLeafletTracker
-                  lat={place?.lat ?? 17.385}
-                  lon={place?.lon ?? 78.4867}
-                  circles={mapSrc === 'OSM' ? layerCircles : []}
-                />
-              ) : (
-                <iframe
-                  title={`Google Maps — ${shortName(place.name)}`}
-                  src={gmapsEmbed}
-                  className="w-full border-0"
-                  style={{ height: 380 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              )}
+              <DroneLeafletTracker
+                lat={place?.lat ?? 17.385}
+                lon={place?.lon ?? 78.4867}
+                circles={layerCircles}
+              />
             </div>
           </div>
 
