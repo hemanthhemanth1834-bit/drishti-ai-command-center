@@ -5,7 +5,7 @@ import HeroFeatureStrip from '@/components/home/HeroFeatureStrip';
 import DisasterTypes from '@/components/home/DisasterTypes';
 import { PrimaryActionGrid, IntelligenceFeatureGrid, OperationalGrid } from '@/components/home/HomeGrids';
 import { DisasterOverview, RegionalStatus, RealtimeFeed, MissionBanner } from '@/components/home/HomePanels';
-import { MissionSection, DataSourcesSection, AiMlSection, GisSection, SatelliteSection, TwinSection, CommandSection, EmergencySection, FinalCta } from '@/components/home/HomeSections';
+import { MissionSection, DataSourcesSection, AiMlSection, GisSection, SatelliteSection, TwinSection, TerrainSection, CommandSection, EmergencySection, FinalCta } from '@/components/home/HomeSections';
 import HomeFooter from '@/components/home/HomeFooter';
 
 export const metadata: Metadata = {
@@ -31,6 +31,7 @@ export default function Home() {
         <GisSection />
         <SatelliteSection />
         <TwinSection />
+        <TerrainSection />
         <CommandSection />
         <EmergencySection />
         <IntelligenceFeatureGrid />

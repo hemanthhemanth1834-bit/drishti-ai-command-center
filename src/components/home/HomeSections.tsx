@@ -151,14 +151,41 @@ export function SatelliteSection() {
   );
 }
 
-export function TwinSection() {
-  return (
+export function TwinSection() {  return (
     <Section id="home-twin" kicker="3D DIGITAL TWIN" title="Terrain you can rotate, scenarios you can run">
       <div className="home-split">
         <VizFigure src="/img/hero-scene.svg" alt="Command-center situation render" caption="R3F terrain · sensor masts · rain · WebGL fallback included" status="SIMULATION" />
         <div>
           <p className="home-side-small">Procedural Himalayan-scale terrain with live-style sensor nodes, disaster scenario presets, and a global→slope drill-down globe. Simulation is always labeled — never live reality.</p>
           <CtaRow items={[{ href: '/twin', label: 'Open digital twin', primary: true }, { href: '/nesafe', label: 'NE-SAFE 3D center' }]} />
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+export function TerrainSection() {
+  const caps = [
+    { title: 'Elevation & Terrain', desc: 'Slope and elevation context for hazard understanding.', href: '/terrain' },
+    { title: 'Rivers & Watersheds', desc: 'Basin geography behind flood exposure assessment.', href: '/regions' },
+    { title: 'Urban Exposure', desc: 'Settlements and infrastructure in harm\u2019s way.', href: '/risk-map' },
+    { title: 'Response Accessibility', desc: 'Road-aware routing for reachable relief planning.', href: '/roads' },
+  ];
+  return (
+    <Section id="home-terrain" kicker="TERRAIN" title="Geography shapes every disaster">
+      <div className="home-split">
+        <VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Procedural elevation model (demo) · SRTM path documented" status="DEMO" />
+        <div>
+          <p className="home-side-small">Mountains funnel rain, rivers carry floods, roads decide who can be reached. DRISHTI-X reads terrain alongside weather and incidents so exposure and access stay in the same picture.</p>
+          <div className="home-grid home-grid-secondary" style={{ marginTop: 10 }}>
+            {caps.map((c) => (
+              <Link key={c.title} href={c.href} className="home-mini">
+                <span className="home-mini-title">{c.title}</span>
+                <span className="home-mini-meta">{c.desc}</span>
+              </Link>
+            ))}
+          </div>
+          <CtaRow items={[{ href: '/terrain', label: 'Open terrain', primary: true }, { href: '/twin', label: '3D digital twin' }]} />
         </div>
       </div>
     </Section>
