@@ -810,6 +810,8 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 .home-eyebrow { color: #7de9ff; font-size: 11px; letter-spacing: .28em; font-weight: 800; }
 .home-title { color: #fff; font-size: clamp(34px, 5.2vw, 72px); font-weight: 900; letter-spacing: .08em; margin: 6px 0 2px; text-shadow: 0 0 34px rgba(0,210,255,.45); animation: home-rise .7s ease both; white-space: nowrap; }
 .home-tagline { color: #00d2ff; font-size: clamp(11px, 1.6vw, 14px); letter-spacing: .18em; font-weight: 800; }
+.home-spec { color: #8fa6bd; font-size: clamp(10px, 1.3vw, 12px); letter-spacing: .22em; font-weight: 700; margin-top: 6px; }
+.home-live-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; font-size: 11px; color: #8fa6bd; }
 .home-mission { color: #94a3b8; font-size: 12px; letter-spacing: .12em; margin-top: 8px; }
 .home-core { position: relative; height: 300px; margin: 8px auto 0; max-width: 520px; }
 .home-core canvas { border-radius: 16px; position: relative; z-index: 1; }

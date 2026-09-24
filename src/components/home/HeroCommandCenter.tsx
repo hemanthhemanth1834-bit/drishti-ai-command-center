@@ -1,8 +1,11 @@
 'use client';
 /** Cinematic hero: brand, mission, live 3D core (graceful fallback), side panels, CTAs. */
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Activity, HeartPulse, Box, ChevronRight } from 'lucide-react';
+import { get } from '@/platform/api';
+import { StatusBadge } from '@/platform/provenance';
 
 const AiCoreScene = dynamic(() => import('@/components/cinematic/AiCoreScene'), {
   ssr: false,
@@ -16,6 +19,16 @@ const AiCoreScene = dynamic(() => import('@/components/cinematic/AiCoreScene'), 
 const FLOW = ['SPACE', 'SATELLITE', 'EARTH OBSERVATION', 'AI', 'GIS', 'FIELD INTELLIGENCE', 'EARLY WARNING', 'RESPONSE', 'RECOVERY'];
 
 export default function HeroCommandCenter() {
+  // Hero live-status indication (existing data-state architecture only):
+  // backend reachable → LIVE, otherwise DEMO fallback. Never faked.
+  const [backendLive, setBackendLive] = useState<boolean | null>(null);
+  useEffect(() => {
+    let dead = false;
+    get<{ status?: string }>('/api/v1/model-health')
+      .then((r) => { if (!dead) setBackendLive(Boolean(r.data)); })
+      .catch(() => { if (!dead) setBackendLive(false); });
+    return () => { dead = true; };
+  }, []);
   return (
     <section className="home-hero" aria-labelledby="home-hero-title">
       <div className="home-hero-bg" aria-hidden="true">
@@ -39,6 +52,14 @@ export default function HeroCommandCenter() {
         <h1 id="home-hero-title" className="home-title">DRISHTI-X</h1>
         <p className="home-pillars" aria-label="Mission pillars">PEOPLE&nbsp;&nbsp;|&nbsp;&nbsp;PLANET&nbsp;&nbsp;|&nbsp;&nbsp;PREPARE&nbsp;&nbsp;|&nbsp;&nbsp;RESPOND&nbsp;&nbsp;|&nbsp;&nbsp;RECOVER</p>
         <p className="home-tagline">SEE EARLY • UNDERSTAND BETTER • ACT FASTER • SAVE LIVES</p>
+        <p className="home-spec">AI POWERED • GEO-SPATIAL • REAL-TIME • NATION READY</p>
+        <p className="home-live-row" role="status" aria-label="Platform status">
+          <StatusBadge
+            status={backendLive == null ? 'OFFLINE' : backendLive ? 'LIVE' : 'DEMO'}
+            small
+          />
+          <span>{backendLive == null ? 'Checking backend…' : backendLive ? 'Backend connected · live intelligence' : 'Backend unreachable · demo fallback'}</span>
+        </p>
         <p className="home-mission">FOR A SAFER, STRONGER, RESILIENT INDIA — FOR A SAFER WORLD</p>
 
         <div className="home-core">
