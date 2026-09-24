@@ -41,6 +41,11 @@ export function MissionSection() {
   return (
     <Section id="home-mission" kicker="MISSION" title="One platform, every signal, zero guesswork">
       <p className="home-side-small" style={{ maxWidth: 720 }}>
+        <strong className="text-white">DRISHTI-X is an AI-powered disaster-intelligence platform</strong> for
+        real-time situational awareness — geo-spatial intelligence that watches hazards, predicts risk,
+        assesses impact, and supports emergency response.
+      </p>
+      <p className="home-side-small" style={{ maxWidth: 720 }}>
         Disasters don&apos;t wait for fragmented dashboards. DRISHTI-X fuses open Earth observation,
         weather, terrain, sensors, and citizen reports into a single intelligence loop —
         every value labeled <StatusBadge status="LIVE" small /> <StatusBadge status="DEMO" small /> or honestly in between.
