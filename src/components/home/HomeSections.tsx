@@ -145,6 +145,13 @@ export function GisSection() {
             Live operational layers — risk, evacuation, responders, satellite, quakes.{' '}
             <span className="home-photo-src">Tiles: OpenStreetMap · quakes: USGS (LIVE)</span>
           </p>
+          <ul className="home-layer-chips" aria-label="Map layers available on the risk map">
+            {['RISK', 'EVACUATION', 'RESPONDERS', 'INFRA', 'SATELLITE', 'WEATHER', 'QUAKE', 'FIRE'].map((l) => (
+              <li key={l}>
+                <Link href="/risk-map" className="home-layer-chip">{l}</Link>
+              </li>
+            ))}
+          </ul>
         </div>
         <div>
           <p className="home-side-small">Leaflet heatmaps, MapLibre 3D GIS, Nominatim search, Overpass POIs, OSRM routing — all keyless. Google stays strictly optional.</p>

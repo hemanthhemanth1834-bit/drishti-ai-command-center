@@ -1171,6 +1171,10 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 .home-ba-tag-before { left: 8px; }
 .home-ba-tag-after { right: 8px; }
 .home-ba-slider { width: 100%; margin-top: 10px; accent-color: #00d2ff; min-height: 44px; }
+/* GIS layer chips (mirror the live DisasterMap layers, link to /risk-map) */
+.home-layer-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 10px 0 0; }
+.home-layer-chip { display: inline-flex; align-items: center; min-height: 32px; padding: 4px 10px; font-size: 10px; font-weight: 800; letter-spacing: .1em; color: #9be9ff; background: rgba(0,210,255,.07); border: 1px solid rgba(0,210,255,.3); border-radius: 999px; text-decoration: none; }
+.home-layer-chip:hover { border-color: rgba(0,210,255,.6); color: #fff; }
 
 /* ============ OPEN DESIGN UI polish v1.0.1 (additive, 2026-09-24) ============
    Ported from the polished reference spec. Desktop density untouched; the
