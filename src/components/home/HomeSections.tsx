@@ -190,6 +190,11 @@ export function CommandSection() {
 }
 
 export function EmergencySection() {
+  const steps = [
+    { step: '1 · DETECT', title: 'Live hazard layers', desc: 'Risk grid, quakes, weather and satellite on one map.', href: '/risk-map' },
+    { step: '2 · ASSESS', title: 'Observed → analysis', desc: 'Situation brief with evidence, never bare alarms.', href: '/intelligence' },
+    { step: '3 · RESPOND', title: 'SOS + triage board', desc: 'One-tap SOS and a transparent P1–P4 queue.', href: '/emergency' },
+  ];
   return (
     <Section id="home-emergency" kicker="EMERGENCY RESPONSE" title="Help in one tap, no account needed">
       <div className="home-split">
@@ -206,6 +211,15 @@ export function EmergencySection() {
         </div>
         <div>
           <p className="home-side-small">SOS, evacuation routes, shelters with live capacity math, offline reporting with server receipts — emergency info never sits behind a login.</p>
+          <div className="home-grid home-grid-secondary" style={{ marginTop: 10 }}>
+            {steps.map((s) => (
+              <Link key={s.step} href={s.href} className="home-mini">
+                <span className="home-mini-status">{s.step}</span>
+                <span className="home-mini-title">{s.title}</span>
+                <span className="home-mini-meta">{s.desc}</span>
+              </Link>
+            ))}
+          </div>
           <CtaRow items={[{ href: '/emergency', label: 'Emergency SOS', primary: true }, { href: '/evacuate', label: 'Evacuate' }, { href: '/response', label: 'Response board' }]} />
         </div>
       </div>
