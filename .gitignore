@@ -48,3 +48,6 @@ tsconfig.tsbuildinfo
 
 # Local artwork sources (web copy lives in public/)
 ChatGPT Image*.png
+
+# Design reference only — local visual-comparison asset, never publish
+public/reference-home.png
