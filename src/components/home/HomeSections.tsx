@@ -8,6 +8,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import RealPhoto from '@/components/home/RealPhoto';
 import BeforeAfter from '@/components/home/BeforeAfter';
+import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 import { StatusBadge } from '@/platform/provenance';
 
@@ -99,12 +100,34 @@ export function DataSourcesSection() {
 }
 
 export function AiMlSection() {
+  const health = usePlatform<{ status?: string; model_version?: string; data_kind?: string }>('/api/v1/model-health');
+  const steps = [
+    { step: 'OBSERVE', title: 'Earth + sensors', desc: 'Satellite, weather and field signals enter the loop.', href: '/satellite' },
+    { step: 'ANALYZE', title: 'Evidence first', desc: 'Contributing factors surfaced with every output.', href: '/intelligence' },
+    { step: 'PREDICT', title: 'RF risk models', desc: 'RandomForest probabilities, versioned and labeled.', href: '/prediction' },
+    { step: 'SUPPORT', title: 'Decide + act', desc: 'Triage and response workflows consume the scores.', href: '/response' },
+  ];
   return (
     <Section id="home-ai" kicker="AI / ML" title="Explainable risk, never a black box">
       <div className="home-split">
         <VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from weather and terrain data to warning" caption="RandomForest · 22 features · SYNTHETIC-DEMO training" status="DEMO" />
         <div>
           <p className="home-side-small">Every prediction ships its contributing factors, model version, and confidence. The demo model trains on synthetic data — metrics are labeled, never sold as field accuracy.</p>
+          <p className="home-side-small" role="status" style={{ marginTop: 8 }}>
+            <StatusBadge status={health.data ? 'MODEL' : health.status} small />{' '}
+            {health.data
+              ? `Model ${health.data.status ?? 'UNKNOWN'} · ${health.data.model_version ?? 'unversioned'} · ${health.data.data_kind ?? ''}`.trim()
+              : 'Model registry unreachable — demo fallback'}
+          </p>
+          <div className="home-grid home-grid-secondary" style={{ marginTop: 10 }}>
+            {steps.map((s) => (
+              <Link key={s.step} href={s.href} className="home-mini">
+                <span className="home-mini-status">{s.step}</span>
+                <span className="home-mini-title">{s.title}</span>
+                <span className="home-mini-meta">{s.desc}</span>
+              </Link>
+            ))}
+          </div>
           <CtaRow items={[{ href: '/prediction', label: 'Try prediction', primary: true }, { href: '/ml', label: 'Model lab' }, { href: '/model-health', label: 'Model health' }]} />
         </div>
       </div>
