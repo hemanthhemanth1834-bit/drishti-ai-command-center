@@ -223,6 +223,7 @@ export function TerrainSection() {
 }
 
 export function CommandSection() {
+  const deck = usePlatform<{ status?: string }>('/api/v1/ml/health');
   return (
     <Section id="home-command" kicker="COMMAND CENTER" title="Operators see everything at once">
       <div className="home-split">
@@ -239,6 +240,12 @@ export function CommandSection() {
         </div>
         <div>
           <p className="home-side-small">Situation, incidents, risk, weather, satellite, sensors, roads, shelters, resources, drones, alerts, evacuation, response, recovery — each a dedicated workflow behind role-aware sign-in.</p>
+          <p className="home-side-small" role="status" style={{ marginTop: 8 }}>
+            <StatusBadge status={deck.data ? 'LIVE' : deck.status} small />{' '}
+            {deck.data
+              ? `Command deck backend connected${deck.data.status ? ` · ${deck.data.status}` : ''}`
+              : 'Command deck backend unreachable — demo fallback'}
+          </p>
           <CtaRow items={[{ href: '/command', label: 'Launch command deck', primary: true }, { href: '/ops', label: 'Ops overview' }]} />
         </div>
       </div>
