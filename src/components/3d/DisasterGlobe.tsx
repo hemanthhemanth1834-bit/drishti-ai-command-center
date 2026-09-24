@@ -147,7 +147,7 @@ export default function DisasterGlobe({ height = 340 }: { height?: number }) {
           <li className="text-[10px] text-slate-500">2D fallback — same signals, no WebGL. Schematic positions, DEMO data.</li>
         </ul>
       ) : (
-        <div style={{ height }} className="rounded-xl overflow-hidden border border-[#1b314b] bg-[#020b14]">
+        <div style={{ height }} className="dx-globe-wrap rounded-xl overflow-hidden border border-[#1b314b] bg-[#020b14]">
           <Canvas
             camera={{ position: [0, 1.2, 5.6], fov: 46 }}
             dpr={quality === 'high' ? [1, 2] : [1, 1]}

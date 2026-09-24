@@ -16,7 +16,7 @@ export default function SatellitePanel() {
       <p className="nesafe-note">SIMULATED SATELLITE OBSERVATION · pass DEMO-PASS-042 · deformation {def.toFixed(1)}mm feeds the AI risk engine.</p>
       <div className="nesafe-row">
         {(['BEFORE', 'AFTER', 'DEFORMATION'] as const).map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={tab === t ? 'nesafe-btn-on' : ''}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={`dx-touch ${tab === t ? 'nesafe-btn-on' : ''}`}>{t}</button>
         ))}
       </div>
       <div className={`nesafe-sat nesafe-sat-${tab.toLowerCase()}`} role="img" aria-label={`Simulated satellite ${tab} view`}>

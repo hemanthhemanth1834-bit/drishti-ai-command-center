@@ -442,7 +442,7 @@ export default function LocationPage() {
                   key={t}
                   onClick={() => toggleLayer(t)}
                   aria-pressed={!layersOff[t]}
-                  className={`px-2 py-1 rounded text-[10px] border ${
+                  className={`dx-touch px-2 py-1 rounded text-[10px] border ${
                     layersOff[t]
                       ? 'border-[#1b314b] text-slate-500'
                       : 'border-[#00d2ff]/60 text-[#00d2ff]'
@@ -456,7 +456,7 @@ export default function LocationPage() {
                   key={k}
                   onClick={() => toggleLayer(k)}
                   aria-pressed={!layersOff[k]}
-                  className={`px-2 py-1 rounded text-[10px] border ${
+                  className={`dx-touch px-2 py-1 rounded text-[10px] border ${
                     layersOff[k]
                       ? 'border-[#1b314b] text-slate-500'
                       : 'border-emerald-500/60 text-emerald-300'

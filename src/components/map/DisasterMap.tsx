@@ -223,7 +223,7 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
     <div>
       <div className="flex gap-2 flex-wrap mb-2" role="group" aria-label="Disaster map layers">
         {ALL_LAYERS.map((l) => (
-          <label key={l.id} title={l.hint} className="flex items-center gap-1.5 text-[11px] text-slate-300 bg-[#091a2e] border border-[#1b314b] rounded-lg px-2.5 py-1.5 cursor-pointer">
+          <label key={l.id} title={l.hint} className="dx-touch flex items-center gap-1.5 text-[11px] text-slate-300 bg-[#091a2e] border border-[#1b314b] rounded-lg px-2.5 py-1.5 cursor-pointer">
             <input
               type="checkbox"
               checked={on.includes(l.id)}

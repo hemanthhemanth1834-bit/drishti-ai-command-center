@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { HYDERABAD_GEOFENCE, isInsideGeofence } from "../../utils/geofenceDetection";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 
 type Props = {
   lat: number;
@@ -20,7 +21,11 @@ export default function GeofenceBreachModal({ lat, lon, droneId }: Props) {
     if (!breached) setDismissed(false);
   }, [breached]);
 
-  if (!breached || dismissed) return null;
+  // UI polish: focus moves into the alert on open, Escape acknowledges it.
+  const open = breached && !dismissed;
+  useDialogA11y(open, "dx-geofence-dialog", () => setDismissed(true));
+
+  if (!open) return null;
 
   return (
     <div
@@ -37,6 +42,8 @@ export default function GeofenceBreachModal({ lat, lon, droneId }: Props) {
       }}
     >
       <div
+        id="dx-geofence-dialog"
+        tabIndex={-1}
         className="card"
         style={{ maxWidth: 420, borderColor: "#ff5470", background: "#160a12" }}
       >

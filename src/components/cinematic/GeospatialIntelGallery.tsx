@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useState } from "react";
 import { Eye, Satellite, Plane, Crosshair, Map, ShieldAlert, Sparkles, X, ExternalLink } from "lucide-react";
+import { useDialogA11y } from "@/hooks/useDialogA11y";
 
 export type IntelExample = {
   id: string;
@@ -135,6 +136,9 @@ export default function GeospatialIntelGallery() {
 
   const filtered = filter === "all" ? INTEL_EXAMPLES : INTEL_EXAMPLES.filter((x) => x.category === filter);
 
+  // UI polish: focus moves into the detail dialog on open, Escape closes it.
+  useDialogA11y(activeModal !== null, "dx-geoint-dialog", () => setActiveModal(null));
+
   return (
     <div className="w-full">
       {/* Category filter tabs */}
@@ -156,7 +160,7 @@ export default function GeospatialIntelGallery() {
             <button
               key={tab.key}
               onClick={() => setFilter(tab.key as any)}
-              className={`px-3 py-1 rounded-md border text-[11px] font-bold tracking-wider flex items-center gap-1.5 transition-all ${
+              className={`dx-touch px-3 py-1 rounded-md border text-[11px] font-bold tracking-wider flex items-center gap-1.5 transition-all ${
                 isActive
                   ? "bg-[#00d2ff]/20 border-[#00d2ff] text-[#00d2ff] shadow-[0_0_12px_rgba(0,210,255,0.3)]"
                   : "bg-[#051424] border-[#1b314b] text-slate-400 hover:text-slate-200 hover:border-slate-500"
@@ -257,8 +261,11 @@ export default function GeospatialIntelGallery() {
       {/* Detail Inspection Modal */}
       {activeModal && (
         <div
+          id="dx-geoint-dialog"
+          tabIndex={-1}
           role="dialog"
           aria-modal="true"
+          aria-label={`Geospatial intelligence detail: ${activeModal.title}`}
           className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-mono animate-in fade-in duration-200"
           onClick={() => setActiveModal(null)}
         >
@@ -276,7 +283,8 @@ export default function GeospatialIntelGallery() {
               </div>
               <button
                 onClick={() => setActiveModal(null)}
-                className="w-7 h-7 rounded-lg bg-[#020b14] border border-[#1b314b] text-slate-400 hover:text-white flex items-center justify-center hover:border-rose-500 transition-colors"
+                aria-label="Close detail view"
+                className="dx-touch w-7 h-7 rounded-lg bg-[#020b14] border border-[#1b314b] text-slate-400 hover:text-white flex items-center justify-center hover:border-rose-500 transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>

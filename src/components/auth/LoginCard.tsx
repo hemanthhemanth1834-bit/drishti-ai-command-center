@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Siren, Users, X } from 'lucide-react';
 import { signIn, useAuth } from '@/store/authStore';
 import { setApp } from '@/store/appStore';
+import { useDialogA11y } from '@/hooks/useDialogA11y';
 
 function isEmailLike(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || /^[a-zA-Z0-9._-]{2,60}$/.test(v);
@@ -20,6 +21,9 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+
+  // UI polish: focus moves into the sign-in dialog on open, Escape closes it.
+  useDialogA11y(true, 'dx-login-dialog', onClose);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +42,7 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="login-overlay" role="dialog" aria-modal="true" aria-labelledby="login-title" onClick={onClose}>
-      <div className="login-card" onClick={(e) => e.stopPropagation()}>
+      <div className="login-card" id="dx-login-dialog" tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <div className="login-card-head">
           <div>
             <p className="login-brand">DRISHTI-X</p>

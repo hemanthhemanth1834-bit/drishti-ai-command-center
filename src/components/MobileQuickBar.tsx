@@ -26,7 +26,7 @@ export default function MobileQuickBar() {
           <Link
             key={it.href}
             href={it.href}
-            className={`flex flex-col items-center gap-0.5 py-2 text-[10px] ${
+            className={`flex flex-col items-center justify-center gap-0.5 py-2 min-h-[44px] text-[10px] ${
               active ? 'text-[#00d2ff]' : 'text-slate-400'
             } ${it.href === '/emergency' ? 'text-rose-400 font-bold' : ''}`}
           >

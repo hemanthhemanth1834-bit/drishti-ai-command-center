@@ -28,10 +28,10 @@ export default function SensorsPage() {
                 <tr key={s.sensor_id} className="border-t border-[#1b314b]">
                   <td className="text-white font-bold">{s.sensor_id}</td>
                   <td><StatusBadge status={s.status === 'online' ? 'LIVE' : s.status === 'anomaly' ? 'HIGH RISK' : 'OFFLINE'} small /></td>
-                  <td>{s.last?.soil_moisture ?? '—'}{s.last?.anomaly ? ' ⚠' : ''}</td>
-                  <td>{s.last?.temperature ?? '—'}</td>
-                  <td>{s.last?.battery ?? '—'}{s.last?.low_battery ? ' 🪫' : ''}</td>
-                  <td>{s.last?.signal ?? '—'}</td>
+                  <td className="tnum">{s.last?.soil_moisture ?? '—'}{s.last?.anomaly ? ' ⚠' : ''}</td>
+                  <td className="tnum">{s.last?.temperature ?? '—'}</td>
+                  <td className="tnum">{s.last?.battery ?? '—'}{s.last?.low_battery ? ' 🪫' : ''}</td>
+                  <td className="tnum">{s.last?.signal ?? '—'}</td>
                   <td>{s.source}</td>
                 </tr>
               ))}

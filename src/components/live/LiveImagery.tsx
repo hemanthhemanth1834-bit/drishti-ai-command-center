@@ -124,7 +124,7 @@ export default function LiveImagery() {
       {loading && <p className="text-xs text-slate-400">Probing feeds…</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {panels.map((p) => (
-          <article key={p.id} className="bg-[#091a2e] border border-[#1b314b] rounded-lg p-3">
+          <article key={p.id} className="min-w-0 bg-[#091a2e] border border-[#1b314b] rounded-lg p-3">
             <div className="flex items-center justify-between gap-2">
               <h3 className="text-[11px] font-extrabold tracking-wider text-white">{p.title}</h3>
               <StatusBadge status={p.status} small />

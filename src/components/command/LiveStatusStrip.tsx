@@ -69,7 +69,7 @@ export default function LiveStatusStrip() {
     : s === 'DEMO' || s === 'STALE' ? '#fbbf24' : s === 'NOT_CONFIGURED' ? '#fb923c' : '#64748b';
 
   return (
-    <div className="dx-status-ticker mx-4 mt-3" role="status" aria-label="Live feed status">
+    <div className="dx-status-ticker mx-4 mt-3" role="status" aria-live="polite" aria-label="Live feed status">
       <span><b className="text-white">FEEDS</b></span>
       {pills.length === 0 && <span>Probing feeds…</span>}
       {pills.map((p) => (
@@ -78,7 +78,7 @@ export default function LiveStatusStrip() {
           {p.label}: <b style={{ color: color(p.state) }}>{p.state}</b> · {p.detail}
         </span>
       ))}
-      <span className="ml-auto">{clock}</span>
+      <span className="ml-auto tnum" aria-hidden="true">{clock}</span>
     </div>
   );
 }

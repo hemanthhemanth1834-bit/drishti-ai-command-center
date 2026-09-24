@@ -44,7 +44,7 @@ export default function WeatherPage() {
             {([['1h', d.rain_1h_mm], ['6h', d.rain_6h_mm], ['24h', d.rain_24h_mm], ['72h', d.rain_72h_mm]] as [string, unknown][]).map(([l, v]) => (
               <div key={l as string} className="bg-[#091a2e] rounded-lg border border-[#1b314b] p-2">
                 <div className="dx-micro">RAIN {l}</div>
-                <div className="text-lg font-bold text-white">{v === null || v === undefined ? '—' : `${v}mm`}</div>
+                <div className="text-lg font-bold text-white tnum">{v === null || v === undefined ? '—' : `${v}mm`}</div>
               </div>
             ))}
           </div>
@@ -55,7 +55,7 @@ export default function WeatherPage() {
             {[['TEMP', `${String(now.data.temp_c ?? '—')}°C`], ['HUMIDITY', `${String(now.data.humidity ?? '—')}%`], ['WIND', `${String(now.data.wind_kmh ?? '—')} km/h`], ['CONDITION', String(now.data.condition ?? now.data.source ?? '—')]].map(([l, v]) => (
               <div key={l as string} className="bg-[#091a2e] rounded-lg border border-[#1b314b] p-2">
                 <div className="dx-micro">{l}</div>
-                <div className="text-base font-bold text-white">{v as string}</div>
+                <div className="text-base font-bold text-white tnum">{v as string}</div>
               </div>
             ))}
           </div>

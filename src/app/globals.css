@@ -1140,3 +1140,23 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 .od-sev-high { color: #FFB86B; border-color: #5C3A12; background: rgba(247,144,9,.14); }
 .od-sev-medium { color: #FDE68A; border-color: #5C4A10; background: rgba(250,204,21,.12); }
 .od-sev-low { color: #5EEAD4; border-color: #134E4A; background: rgba(45,212,191,.12); }
+
+/* ============ OPEN DESIGN UI polish v1.0.1 (additive, 2026-09-24) ============
+   Ported from the polished reference spec. Desktop density untouched; the
+   44px touch rule applies only on coarse pointers (touch). No data, provider,
+   or backend logic is affected by anything in this layer. */
+
+/* 1. 44px minimum touch targets (touch devices only — desktop unchanged) */
+@media (pointer: coarse) {
+  .dx-touch { min-height: 44px; display: inline-flex; align-items: center; }
+  button.dx-touch, a.dx-touch { min-width: 44px; }
+}
+/* 2+3. Tables: top-aligned cells + tabular numerals utility */
+table td, table th { vertical-align: top; }
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+/* 5. Reduced map/globe/comparison heights on short viewports */
+@media (max-height: 820px) {
+  .leaflet-container { height: 200px; }
+  .dx-globe-wrap { height: 240px !important; }
+  .nesafe-sat { height: 140px; }
+}
