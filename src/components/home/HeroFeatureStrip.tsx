@@ -70,8 +70,8 @@ export default function HeroFeatureStrip() {
               <span className="home-card-icon" style={{ color: f.accent }} aria-hidden="true">
                 <Icon className="w-5 h-5" />
               </span>
-              <strong>{f.title}</strong>
-              <span>{f.desc}</span>
+              <span className="home-card-title">{f.title}</span>
+              <span className="home-card-desc">{f.desc}</span>
             </Link>
           );
         })}

@@ -37,7 +37,11 @@ export function PrimaryActionGrid() {
 export function IntelligenceFeatureGrid() {
   return (
     <section className="home-section" aria-labelledby="home-features">
+      <p className="home-eyebrow">CAPABILITIES</p>
       <h2 id="home-features" className="home-section-title">INTELLIGENCE CAPABILITIES</h2>
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        Citizen-first tools for help, reporting, readiness and recovery — every card opens a working route.
+      </p>
       <div className="home-grid home-grid-secondary">
         {SECONDARY_FEATURES.map((item) => (
           <Card key={item.href + item.label} item={item} />
