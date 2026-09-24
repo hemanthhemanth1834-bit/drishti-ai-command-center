@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu, X, Siren, ShieldAlert, Languages, LogOut } from 'lucide-react';
+import { Menu, X, Siren, ShieldAlert, Languages, LogOut, Search } from 'lucide-react';
 import { HEADER_NAV } from '@/config/navigation';
 import { useApp, setApp, type Lang } from '@/store/appStore';
 import { signOut, useAuth } from '@/store/authStore';
@@ -48,6 +48,14 @@ export default function HomeHeader() {
         </nav>
 
         <div className="home-header-actions">
+          <Link
+            href="/location"
+            className="home-admin"
+            aria-label="Search places (OpenStreetMap, no key)"
+            title="Search places"
+          >
+            <Search className="w-3.5 h-3.5" aria-hidden="true" />
+          </Link>
           <label className="home-lang" aria-label="Language">
             <Languages className="w-3.5 h-3.5" aria-hidden="true" />
             <select
@@ -122,6 +130,9 @@ export default function HomeHeader() {
           ))}
           <Link href="/emergency" onClick={() => setOpen(false)} className="sos">
             <Siren className="w-4 h-4" aria-hidden="true" /> EMERGENCY / SOS
+          </Link>
+          <Link href="/location" onClick={() => setOpen(false)}>
+            <Search className="w-4 h-4" aria-hidden="true" /> Search places
           </Link>
         </nav>
       )}

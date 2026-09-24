@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import HomeHeader from '@/components/home/HomeHeader';
 import HeroCommandCenter from '@/components/home/HeroCommandCenter';
+import HeroFeatureStrip from '@/components/home/HeroFeatureStrip';
 import { PrimaryActionGrid, IntelligenceFeatureGrid, OperationalGrid } from '@/components/home/HomeGrids';
 import { DisasterOverview, RegionalStatus, RealtimeFeed, MissionBanner } from '@/components/home/HomePanels';
 import { MissionSection, DataSourcesSection, AiMlSection, GisSection, SatelliteSection, TwinSection, CommandSection, EmergencySection, FinalCta } from '@/components/home/HomeSections';
@@ -20,6 +21,7 @@ export default function Home() {
       <HomeHeader />
       <main id="home-main">
         <HeroCommandCenter />
+        <HeroFeatureStrip />
         <MissionSection />
         <PrimaryActionGrid />
         <DataSourcesSection />

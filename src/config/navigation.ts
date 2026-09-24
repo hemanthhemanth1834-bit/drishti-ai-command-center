@@ -99,6 +99,9 @@ export const FOOTER_LINKS: NavigationItem[] = [
   { label: 'Data Sources', href: '/data-sources', icon: Database },
   { label: 'Accessibility', href: '/learn', icon: Accessibility },
   { label: 'Documentation', href: '/platform', icon: BookOpen },
+  { label: 'Contact', href: '/contact', icon: Globe },
+  { label: 'Privacy', href: '/privacy', icon: Globe },
+  { label: 'Terms', href: '/terms', icon: Globe },
   { label: 'GitHub', href: 'https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center', icon: Globe },
 ];
 
