@@ -1,6 +1,6 @@
 // src/app/command/page.tsx — DRISHTI-X Master Command Center (cinematic upgrade)
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -17,7 +17,8 @@ import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
 import AiDecisionTimeline from '@/components/cinematic/AiDecisionTimeline';
 import DemoMode from '@/components/cinematic/DemoMode';
-import AnimatedCounter, { Sparkline, Waveform } from '@/components/cinematic/AnimatedCounter';
+import { Waveform } from '@/components/cinematic/AnimatedCounter';
+import CommandKpiRow from '@/components/command/CommandKpiRow';
 import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
 import FloodTimeline from '@/components/three/FloodTimeline';
@@ -118,18 +119,11 @@ export default function MasterCommandCenter() {
     droneId: live?.drone_id,
   });
 
-  // Live drill blend for the hero ticker. Single definition of truth lives in
-  // intelStore.scenarioScore — this is the SAME number every route derives.
-  const tickerRisk = intel.scenarioScore;
+  // Scenario drill numbers feed the simulation panels below (AI recommendation
+  // POP + unit staging). Operational KPIs above read real backend APIs.
   const tickerPeople =
     ({ storm: 24860, 'swarm-surge': 5200, 'gps-denied': 800, nominal: 120 } as Record<string, number>)[scenario] ?? 120;
-  const tickerBlocked = Math.round((tickerRisk / 100) * 62);
   const units = 26 + alerts.length * 3;
-
-  const riskSpark = useMemo(() => {
-    const base = [22, 28, 34, 41, 48, 55, tickerRisk];
-    return scenario === 'storm' ? base.map((v) => v + 8) : base;
-  }, [tickerRisk, scenario]);
 
   async function changeScenario(s: string) {
     setOps({ scenario: s, acked: [] });
@@ -225,9 +219,15 @@ export default function MasterCommandCenter() {
               <div className="flex gap-2">
                 <Link
                   href="/safety"
-                  className="px-4 py-2 rounded-lg bg-[#00d2ff] hover:bg-[#00b0d6] text-black text-xs font-extrabold"
+                  className="dx-touch px-4 py-2 rounded-lg bg-[#00d2ff] hover:bg-[#00b0d6] text-black text-xs font-extrabold"
                 >
                   CHECK MY RISK
+                </Link>
+                <Link
+                  href="/intelligence"
+                  className="dx-touch px-4 py-2 rounded-lg bg-[#091a2e]/85 border border-[#00d2ff]/60 text-[#00d2ff] text-xs font-bold hover:bg-[#00d2ff]/10"
+                >
+                  OPEN INTELLIGENCE
                 </Link>
                 <Link
                   href="/welcome"
@@ -240,42 +240,8 @@ export default function MasterCommandCenter() {
           </section>
         )}
 
-        {/* KPI Ticker Bar — animated counters + sparklines */}
-        <section className="px-4 py-2.5 grid grid-cols-2 md:grid-cols-6 gap-3" aria-label="Key metrics">
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Flood Inundation Risk</div>
-            <div className="text-xl font-bold text-rose-400 flex items-baseline gap-1">
-              <AnimatedCounter value={tickerRisk} /><span className="text-xs text-rose-500">/100</span>
-              <span className="text-[10px] text-rose-400 font-normal ml-auto">live drill</span>
-            </div>
-            <Sparkline data={riskSpark} stroke="#fb7185" />
-          </div>
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Citizens At Risk</div>
-            <div className="text-xl font-bold text-amber-300"><AnimatedCounter value={tickerPeople} /></div>
-            <Sparkline data={[120, 900, 3200, 9800, 18400, tickerPeople]} stroke="#fbbf24" />
-          </div>
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Active Incidents</div>
-            <div className="text-xl font-bold text-[#00d2ff]"><AnimatedCounter value={alerts.length} /> live</div>
-            <div className="text-[10px] text-slate-500 mt-1">{floodWater > 0 ? `surge +${floodWater.toFixed(1)}m` : 'surge nominal'}</div>
-          </div>
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Arterial Blockages</div>
-            <div className="text-xl font-bold text-orange-400"><AnimatedCounter value={tickerBlocked} /> / 62</div>
-            <Sparkline data={[4, 9, 14, 18, tickerBlocked]} stroke="#fb923c" />
-          </div>
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Shelter Capacity</div>
-            <div className="text-xl font-bold text-emerald-400">74.2% Occupied</div>
-            <div className="text-[10px] text-slate-500 mt-1">DEMO DATA</div>
-          </div>
-          <div className="dx-kpi bg-[#091a2e]/85 backdrop-blur p-2 rounded border border-[#1b314b]">
-            <div className="text-[10px] text-slate-400 uppercase">Active Air/Boat Units</div>
-            <div className="text-xl font-bold text-cyan-300"><AnimatedCounter value={units} /> Units</div>
-            <div className="text-[10px] text-slate-500 mt-1">SIMULATION</div>
-          </div>
-        </section>
+        {/* KPI row — real production data first, labeled DEMO/OFFLINE fallback */}
+        <CommandKpiRow />
 
         {/* Flood forecast strip */}
         <div className="px-4">
@@ -516,7 +482,7 @@ export default function MasterCommandCenter() {
               <span className="text-xs font-bold text-white tracking-wider">LIVE DISASTER MAP // RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX · QUAKE · FIRE</span>
               <span className="ml-auto text-[10px] text-slate-400">POSITION PRESERVED ACROSS REFRESH</span>
             </div>
-            <DisasterMap height={420} />
+            <DisasterMap height={460} />
           </div>
         </div>
 

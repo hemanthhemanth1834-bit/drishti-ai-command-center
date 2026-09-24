@@ -34,6 +34,8 @@ import {
   Gauge,
   Database,
   Clapperboard,
+  Search,
+  Settings,
 } from 'lucide-react';
 
 const COMMAND_ITEMS = [
@@ -145,8 +147,32 @@ export default function Navbar({
             );
           })}
         </nav>
-        {/* Status Badges */}
+        {/* Status Badges + command shortcuts (existing routes only) */}
         <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/location"
+            title="Search places (OSM, no key)"
+            aria-label="Search places"
+            className="dx-touch hidden sm:flex items-center justify-center w-8 h-8 rounded bg-[#051424] border border-[#1b314b] text-slate-400 hover:text-white hover:border-[#00d2ff]/60"
+          >
+            <Search className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/alerts"
+            title="Alert center"
+            aria-label="Alert center"
+            className="dx-touch hidden sm:flex items-center justify-center w-8 h-8 rounded bg-[#051424] border border-[#1b314b] text-slate-400 hover:text-white hover:border-[#00d2ff]/60"
+          >
+            <Bell className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/settings"
+            title="Settings"
+            aria-label="Settings"
+            className="dx-touch hidden sm:flex items-center justify-center w-8 h-8 rounded bg-[#051424] border border-[#1b314b] text-slate-400 hover:text-white hover:border-[#00d2ff]/60"
+          >
+            <Settings className="w-4 h-4" />
+          </Link>
           <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded bg-[#051424] border border-[#1b314b]">
             <span
               className={`w-2 h-2 rounded-full ${
