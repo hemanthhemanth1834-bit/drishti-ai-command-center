@@ -20,10 +20,19 @@ export default function HeroCommandCenter() {
     <section className="home-hero" aria-labelledby="home-hero-title">
       <div className="home-hero-bg" aria-hidden="true">
         {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/img/photos/hero-nilam.jpg"
+          alt=""
+          className="home-hero-photo"
+          loading="eager"
+          decoding="async"
+        />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/img/hero-scene.svg" alt="" className="home-hero-scene" loading="eager" decoding="async" />
         <span className="home-hero-grid" />
         <span className="home-hero-glow" />
       </div>
+      <span className="home-hero-photo-chip">ILLUSTRATIVE IMAGE · NASA MODIS cyclone over Bay of Bengal, 2012</span>
 
       <div className="home-hero-main">
         <p className="home-eyebrow">SOVEREIGN DISASTER INTELLIGENCE COMMAND CENTER</p>

@@ -5,8 +5,15 @@
  * reduced-motion safe via the global kill-switch + local media query).
  */
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+import RealPhoto from '@/components/home/RealPhoto';
 import VizFigure from '@/platform/VizFigure';
 import { StatusBadge } from '@/platform/provenance';
+
+const HomeMiniMap = dynamic(() => import('@/components/map/DisasterMap'), {
+  ssr: false,
+  loading: () => <p className="text-xs text-slate-400">Loading live risk map…</p>,
+});
 
 function Section({ id, kicker, title, children }: { id: string; kicker: string; title: string; children: React.ReactNode }) {
   return (
@@ -38,6 +45,20 @@ export function MissionSection() {
         weather, terrain, sensors, and citizen reports into a single intelligence loop —
         every value labeled <StatusBadge status="LIVE" small /> <StatusBadge status="DEMO" small /> or honestly in between.
       </p>
+      <div className="home-split">
+        <RealPhoto
+          src="/img/photos/mission-himalaya.jpg"
+          alt="The Himalayan range and northern India photographed from the International Space Station"
+          caption="OUR MISSION — To build a safer, more resilient India through AI-driven disaster intelligence."
+          source="NASA ISS (public domain)"
+          sourceHref="https://commons.wikimedia.org/wiki/File:ISS-64_India,_the_Himalayas_and_China.jpg"
+          ratio="16 / 10"
+        />
+        <div>
+          <p className="home-side-small">Satellite, ground and community data become early warning, informed decisions and faster response — from Himalayan slopes to coastal deltas.</p>
+          <CtaRow items={[{ href: '/regions', label: 'Explore regions', primary: true }, { href: '/learn', label: 'Prepare yourself' }]} />
+        </div>
+      </div>
       <div className="home-particles" aria-hidden="true">
         {Array.from({ length: 14 }).map((_, i) => (
           <span key={i} className="home-particle" style={{ left: `${(i * 67) % 100}%`, animationDelay: `${(i * 0.7) % 5}s`, animationDuration: `${5 + (i % 4)}s` }} />
@@ -89,7 +110,13 @@ export function GisSection() {
   return (
     <Section id="home-gis" kicker="GIS" title="Risk you can see on a map">
       <div className="home-split">
-        <VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Slope + elevation drive the grid" status="DEMO" />
+        <div className="min-w-0">
+          <HomeMiniMap height={300} />
+          <p className="home-photo-cap">
+            Live operational layers — risk, evacuation, responders, satellite, quakes.{' '}
+            <span className="home-photo-src">Tiles: OpenStreetMap · quakes: USGS (LIVE)</span>
+          </p>
+        </div>
         <div>
           <p className="home-side-small">Leaflet heatmaps, MapLibre 3D GIS, Nominatim search, Overpass POIs, OSRM routing — all keyless. Google stays strictly optional.</p>
           <CtaRow items={[{ href: '/risk-map', label: 'Open risk map', primary: true }, { href: '/regions', label: 'Browse regions' }]} />
@@ -102,7 +129,30 @@ export function GisSection() {
 export function SatelliteSection() {
   return (
     <Section id="home-satellite" kicker="SATELLITE" title="Earth observation, labeled truthfully">
-      <div className="home-split">
+      <p className="home-side-small" style={{ maxWidth: 720 }}>
+        Kerala, August 2018 — Landsat 8 before the flood (6 Feb 2018) and Sentinel-2 after
+        inundation (22 Aug 2018). False-color: flood water dark blue, vegetation bright green.
+        Historical reference, not a live feed.
+      </p>
+      <div className="home-ba-grid">
+        <RealPhoto
+          src="/img/photos/kerala-before.jpg"
+          alt="False-color satellite view of Kerala before the August 2018 floods"
+          caption="BEFORE — Kerala, 6 Feb 2018 (Landsat 8 OLI)."
+          source="NASA Earth Observatory (public domain)"
+          sourceHref="https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/"
+          ratio="4 / 5"
+        />
+        <RealPhoto
+          src="/img/photos/kerala-after.jpg"
+          alt="False-color satellite view of Kerala after flood water inundated the area in August 2018"
+          caption="AFTER — Kerala, 22 Aug 2018 (Sentinel-2 MSI)."
+          source="NASA Earth Observatory (public domain)"
+          sourceHref="https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/"
+          ratio="4 / 5"
+        />
+      </div>
+      <div className="home-split" style={{ marginTop: 4 }}>
         <VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="GIBS composites live · tasking needs accounts" status="LIVE" />
         <div>
           <p className="home-side-small">Daily VIIRS/MODIS composites stream straight into the risk map. Sentinel, FIRMS, and Bhuvan stay honest NOT_CONFIGURED stubs until credentials exist — gallery renders are never passed off as tasking.</p>
@@ -131,7 +181,17 @@ export function CommandSection() {
   return (
     <Section id="home-command" kicker="COMMAND CENTER" title="Operators see everything at once">
       <div className="home-split">
-        <VizFigure src="/img/hero-command.svg" alt="Command center situation wall illustration" caption="14 modules · role-gated actions · audited" status="DEMO" />
+        <div className="min-w-0">
+          <VizFigure src="/img/hero-command.svg" alt="Command center situation wall illustration" caption="14 modules · role-gated actions · audited" status="DEMO" />
+          <RealPhoto
+            src="/img/photos/command-eoc.jpg"
+            alt="Emergency operations center coordinating a hurricane response"
+            caption="Illustrative Command Center — a real emergency operations center at work (not DRISHTI-X itself)."
+            source="FEMA (public domain)"
+            sourceHref="https://commons.wikimedia.org/wiki/File:FEMA_-_38184_-_Emergency_Operations_Center_in_Texas.jpg"
+            ratio="16 / 9"
+          />
+        </div>
         <div>
           <p className="home-side-small">Situation, incidents, risk, weather, satellite, sensors, roads, shelters, resources, drones, alerts, evacuation, response, recovery — each a dedicated workflow behind role-aware sign-in.</p>
           <CtaRow items={[{ href: '/command', label: 'Launch command deck', primary: true }, { href: '/ops', label: 'Ops overview' }]} />
@@ -145,7 +205,17 @@ export function EmergencySection() {
   return (
     <Section id="home-emergency" kicker="EMERGENCY RESPONSE" title="Help in one tap, no account needed">
       <div className="home-split">
-        <VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="P1–P4 triage aid — commander decides, no auto-dispatch" status="DEMO" />
+        <div className="min-w-0">
+          <VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="P1–P4 triage aid — commander decides, no auto-dispatch" status="DEMO" />
+          <RealPhoto
+            src="/img/photos/emergency-rescue.jpg"
+            alt="Helicopter flood rescue during Hurricane Harvey relief operations"
+            caption="Illustrative Response — helicopter flood rescue (archive photo; the pictured crew is not affiliated with DRISHTI-X)."
+            source="U.S. Navy (public domain)"
+            sourceHref="https://commons.wikimedia.org/wiki/File:Hurricane_Harvey_rescue_(37833567051).jpg"
+            ratio="16 / 9"
+          />
+        </div>
         <div>
           <p className="home-side-small">SOS, evacuation routes, shelters with live capacity math, offline reporting with server receipts — emergency info never sits behind a login.</p>
           <CtaRow items={[{ href: '/emergency', label: 'Emergency SOS', primary: true }, { href: '/evacuate', label: 'Evacuate' }, { href: '/response', label: 'Response board' }]} />
