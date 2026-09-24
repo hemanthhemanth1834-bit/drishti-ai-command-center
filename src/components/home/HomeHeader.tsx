@@ -1,6 +1,6 @@
 'use client';
 /** Sticky glassmorphism home header: brand, nav, language, admin, emergency. */
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X, Siren, ShieldAlert, Languages, LogOut, Search } from 'lucide-react';
@@ -22,6 +22,21 @@ export default function HomeHeader() {
   const { identity } = useAuth();
   const [open, setOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const burgerRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the mobile menu and returns focus to the menu button.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setOpen(false);
+        burgerRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
+  }, [open]);
 
   return (
     <header className="home-header" role="banner">
@@ -105,6 +120,7 @@ export default function HomeHeader() {
           </Link>
           <button
             type="button"
+            ref={burgerRef}
             className="home-burger"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
