@@ -7,6 +7,7 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import RealPhoto from '@/components/home/RealPhoto';
+import BeforeAfter from '@/components/home/BeforeAfter';
 import VizFigure from '@/platform/VizFigure';
 import { StatusBadge } from '@/platform/provenance';
 
@@ -135,28 +136,10 @@ export function SatelliteSection() {
   return (
     <Section id="home-satellite" kicker="SATELLITE" title="Earth observation, labeled truthfully">
       <p className="home-side-small" style={{ maxWidth: 720 }}>
-        Kerala, August 2018 — Landsat 8 before the flood (6 Feb 2018) and Sentinel-2 after
-        inundation (22 Aug 2018). False-color: flood water dark blue, vegetation bright green.
-        Historical reference, not a live feed.
+        Kerala, August 2018 — drag the slider to compare Landsat 8 before the flood (6 Feb 2018)
+        with Sentinel-2 after inundation (22 Aug 2018). Historical reference, not a live feed.
       </p>
-      <div className="home-ba-grid">
-        <RealPhoto
-          src="/img/photos/kerala-before.jpg"
-          alt="False-color satellite view of Kerala before the August 2018 floods"
-          caption="BEFORE — Kerala, 6 Feb 2018 (Landsat 8 OLI)."
-          source="NASA Earth Observatory (public domain)"
-          sourceHref="https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/"
-          ratio="4 / 5"
-        />
-        <RealPhoto
-          src="/img/photos/kerala-after.jpg"
-          alt="False-color satellite view of Kerala after flood water inundated the area in August 2018"
-          caption="AFTER — Kerala, 22 Aug 2018 (Sentinel-2 MSI)."
-          source="NASA Earth Observatory (public domain)"
-          sourceHref="https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/"
-          ratio="4 / 5"
-        />
-      </div>
+      <BeforeAfter />
       <div className="home-split" style={{ marginTop: 4 }}>
         <VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="GIBS composites live · tasking needs accounts" status="LIVE" />
         <div>

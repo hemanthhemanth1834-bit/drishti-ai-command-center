@@ -1160,6 +1160,17 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 @media (max-width: 760px) { .home-ba-grid { grid-template-columns: 1fr; } }
 .home-hero-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .28; }
 .home-hero-photo-chip { position: absolute; right: 12px; bottom: 10px; z-index: 2; font-size: 9px; letter-spacing: .12em; color: #9be9ff; background: rgba(2,11,20,.8); border: 1px solid rgba(0,210,255,.35); border-radius: 6px; padding: 3px 8px; }
+/* Before/after comparison slider (verified NASA EO pair, user-driven) */
+.home-ba { margin-top: 12px; min-width: 0; }
+.home-ba-view { position: relative; overflow: hidden; border-radius: 12px; border: 1px solid rgba(0,210,255,.25); background: #04101d; aspect-ratio: 16 / 10; }
+.home-ba-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.home-ba-top { position: absolute; inset: 0; overflow: hidden; }
+.home-ba-img-top { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.home-ba-divider { position: absolute; top: 0; bottom: 0; width: 0; }
+.home-ba-tag { position: absolute; bottom: 8px; font-size: 9px; font-weight: 800; letter-spacing: .12em; color: #eaf6ff; background: rgba(2,11,20,.78); border: 1px solid rgba(0,210,255,.4); border-radius: 6px; padding: 3px 8px; }
+.home-ba-tag-before { left: 8px; }
+.home-ba-tag-after { right: 8px; }
+.home-ba-slider { width: 100%; margin-top: 10px; accent-color: #00d2ff; min-height: 44px; }
 
 /* ============ OPEN DESIGN UI polish v1.0.1 (additive, 2026-09-24) ============
    Ported from the polished reference spec. Desktop density untouched; the
