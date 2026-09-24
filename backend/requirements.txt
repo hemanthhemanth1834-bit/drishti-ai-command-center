@@ -9,3 +9,6 @@ sqlalchemy==2.0.54
 pandas==3.0.5
 python-multipart==0.0.32
 PyJWT==2.14.0
+# Optional: PostgreSQL driver. Only used when DATABASE_URL is set to a
+# postgresql:// URL; default remains local SQLite (no server needed).
+psycopg2-binary==2.9.13
