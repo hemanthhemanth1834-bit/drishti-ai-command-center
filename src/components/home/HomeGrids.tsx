@@ -78,7 +78,11 @@ export function OperationalGrid() {
 
   return (
     <section className="home-section" aria-labelledby="home-ops">
+      <p className="home-eyebrow">PLATFORM</p>
       <h2 id="home-ops" className="home-section-title">OPERATIONS &amp; PLATFORM</h2>
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        Live preferences and platform views — language, readability and operating mode apply instantly.
+      </p>
       <div className="home-grid home-grid-ops">
         {OPERATIONAL_FEATURES.map((item) => {
           const Icon = item.icon;
