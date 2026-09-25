@@ -4,7 +4,7 @@ import { FOOTER_LINKS } from '@/config/navigation';
 
 export default function HomeFooter() {
   return (
-    <footer className="home-footer" aria-label="Footer">
+    <footer className="home-footer" aria-label="Site footer">
       <div className="home-footer-brand">
         <strong>DRISHTI-X</strong>
         <span>AI Disaster Intelligence Command Center</span>
@@ -13,7 +13,7 @@ export default function HomeFooter() {
           government warnings in a real emergency.
         </p>
       </div>
-      <nav className="home-footer-nav" aria-label="Footer">
+      <nav className="home-footer-nav" aria-label="Footer pages">
         {FOOTER_LINKS.map((item) =>
           item.href.startsWith('http') ? (
             <a key={item.label} href={item.href} target="_blank" rel="noreferrer">{item.label}</a>

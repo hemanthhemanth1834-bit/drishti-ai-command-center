@@ -99,6 +99,7 @@ export const FOOTER_LINKS: NavigationItem[] = [
   { label: 'Data Sources', href: '/data-sources', icon: Database },
   { label: 'Accessibility', href: '/learn', icon: Accessibility },
   { label: 'Documentation', href: '/platform', icon: BookOpen },
+  { label: 'System Status', href: '/model-health', icon: Gauge },
   { label: 'Contact', href: '/contact', icon: Globe },
   { label: 'Privacy', href: '/privacy', icon: Globe },
   { label: 'Terms', href: '/terms', icon: Globe },
