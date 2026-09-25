@@ -1,10 +1,16 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 import DisasterImage from '@/components/visuals/DisasterImage';
 import LiveImagery from '@/components/live/LiveImagery';
 import { imagesByCategory } from '@/config/imageSources';
+
+const SatelliteViewer = dynamic(() => import('@/components/satellite/SatelliteViewer'), {
+  ssr: false,
+  loading: () => <p className="text-xs text-slate-400">Loading satellite viewer…</p>,
+});
 
 const ADAPTERS = [
   { name: 'Copernicus Sentinel-1 (SAR)', use: 'surface change, all-weather', status: 'NOT_CONFIGURED', note: 'Free account needed (COPERNICUS_USER)' },
@@ -20,6 +26,7 @@ export default function SatellitePage() {
   return (
     <ModuleShell title="Satellite Intelligence" sub="Imagery → preprocessing → change detection → risk engine. Gallery images are NEVER live observations." status="DEMO" source="SIMULATED + open tiles">
       <LiveImagery />
+      <SatelliteViewer />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PROVIDER ADAPTERS</div>
