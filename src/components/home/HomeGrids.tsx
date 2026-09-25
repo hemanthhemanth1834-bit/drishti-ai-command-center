@@ -24,7 +24,11 @@ const LANG_CYCLE: Lang[] = ['en', 'te', 'hi'];
 export function PrimaryActionGrid() {
   return (
     <section className="home-section" aria-labelledby="home-primary">
+      <p className="home-eyebrow">START HERE</p>
       <h2 id="home-primary" className="home-section-title">PRIMARY ACTIONS</h2>
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        The six fastest paths — check safety, explore hazards, and get help. No account needed.
+      </p>
       <div className="home-grid home-grid-primary">
         {PRIMARY_ACTIONS.map((item) => (
           <Card key={item.href + item.label} item={item} />
