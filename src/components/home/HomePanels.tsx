@@ -156,10 +156,14 @@ export function RealtimeFeed() {
 
   return (
     <section className="home-section" aria-labelledby="home-feed">
+      <p className="home-eyebrow">SIGNALS</p>
       <div className="home-section-head">
         <h2 id="home-feed" className="home-section-title">REAL-TIME FEEDS</h2>
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        Latest operations alerts with timestamp, severity and source — demo rows stay labeled DEMO.
+      </p>
       {feed.loading && <p className="home-muted" role="status">Loading feed…</p>}
       <ul className="home-feed">
         {items.map((a, i) => (
