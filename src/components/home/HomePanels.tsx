@@ -56,10 +56,14 @@ export function DisasterOverview() {
 
   return (
     <section className="home-section" aria-labelledby="home-overview">
+      <p className="home-eyebrow">MONITOR</p>
       <div className="home-section-head">
         <h2 id="home-overview" className="home-section-title">LIVE DISASTER OVERVIEW</h2>
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        Category watchboard fed by the operations alert pipeline — counts appear only when live data does.
+      </p>
       {alerts.loading && <p className="home-muted" role="status">Loading overview…</p>}
       <div className="home-grid home-grid-overview">
         {perCategory.map((c) => {
