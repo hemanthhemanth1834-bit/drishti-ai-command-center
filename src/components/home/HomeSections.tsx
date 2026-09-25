@@ -186,6 +186,9 @@ export function SatelliteSection() {
 
 export function TwinSection() {  return (
     <Section id="home-twin" kicker="3D DIGITAL TWIN" title="Terrain you can rotate, scenarios you can run">
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        In-browser WebGL with 2D and offline fallbacks — procedural simulation, never live terrain.
+      </p>
       <div className="home-split">
         <VizFigure src="/img/hero-scene.svg" alt="Command-center situation render" caption="R3F terrain · sensor masts · rain · WebGL fallback included" status="SIMULATION" />
         <div>
