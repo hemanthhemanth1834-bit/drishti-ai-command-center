@@ -4,7 +4,7 @@
  * backend risk/incident/sensor/road/shelter overlays. Tile events drive
  * per-layer LIVE/UNAVAILABLE — never claimed, always measured.
  */
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { get } from '@/platform/api';
 import { BASE_LAYERS, EO_LAYERS, type Preset } from '@/platform/eoLayers';
 
@@ -31,8 +31,11 @@ interface Props {
 
 export default function RiskGridMap({ base, eoOn, compare, preset, cells, gridStatus, onInspect, onLayerStatus }: Props) {
   const ref = useRef<HTMLDivElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const cb = useRef({ onInspect, onLayerStatus });
   cb.current = { onInspect, onLayerStatus };
+  const [cursor, setCursor] = useState<{ lat: number; lon: number; zoom: number } | null>(null);
+  const [isFull, setIsFull] = useState(false);
 
   useEffect(() => {
     let map: import('leaflet').Map | null = null;
@@ -43,6 +46,7 @@ export default function RiskGridMap({ base, eoOn, compare, preset, cells, gridSt
       if (dead || !ref.current) return;
       const view: [number, number] = preset ? [preset.lat, preset.lon] : [25.5, 92.5];
       const m: import('leaflet').Map = L.map(ref.current).setView(view, preset ? preset.zoom : 6);
+      L.control.scale({ imperial: false }).addTo(m);
       const bl = BASE_LAYERS.find((b) => b.id === base) ?? BASE_LAYERS[0];
       L.tileLayer(bl.url, { attribution: bl.attribution, maxZoom: bl.maxZoom }).addTo(m);
 
@@ -121,12 +125,57 @@ export default function RiskGridMap({ base, eoOn, compare, preset, cells, gridSt
       m.on('click', (e: import('leaflet').LeafletMouseEvent) => {
         cb.current.onInspect({ lat: Number(e.latlng.lat.toFixed(4)), lon: Number(e.latlng.lng.toFixed(4)) });
       });
+      m.on('mousemove', (e: import('leaflet').LeafletMouseEvent) => {
+        if (!dead) setCursor({ lat: Number(e.latlng.lat.toFixed(4)), lon: Number(e.latlng.lng.toFixed(4)), zoom: m.getZoom() });
+      });
+      m.on('zoomend', () => {
+        if (!dead) {
+          const c = m.getCenter();
+          setCursor({ lat: Number(c.lat.toFixed(4)), lon: Number(c.lng.toFixed(4)), zoom: m.getZoom() });
+        }
+      });
       map = m;
     })();
     return () => { dead = true; try { map?.remove(); } catch { /* noop */ } };
   }, [base, eoOn, compare, cells, gridStatus, preset]);
 
   return (
-    <div ref={ref} style={{ height: 480, borderRadius: 12 }} aria-label="DRISHTI-X disaster intelligence map (Leaflet + live EO)" />
+    <div ref={wrapRef}>
+      <div ref={ref} style={{ height: 480, borderRadius: 12 }} aria-label="DRISHTI-X disaster intelligence map (Leaflet + live EO)" />
+      <div className="flex items-center gap-3 flex-wrap text-[11px] text-slate-400 mt-1.5" aria-label="Map readout">
+        <span className="tnum" role="status">
+          {cursor ? `${cursor.lat.toFixed(4)}°N, ${cursor.lon.toFixed(4)}°E · ZOOM ${cursor.zoom}` : 'Hover the map for coordinates'}
+        </span>
+        <button
+          type="button"
+          aria-pressed={isFull}
+          aria-label={isFull ? 'Exit fullscreen map' : 'View map fullscreen'}
+          onClick={() => {
+            const el = wrapRef.current as (HTMLDivElement & { webkitRequestFullscreen?: () => void }) | null;
+            if (!el) return;
+            if (document.fullscreenElement) {
+              void document.exitFullscreen().catch(() => undefined);
+            } else if (el.requestFullscreen) {
+              void el.requestFullscreen().catch(() => undefined);
+            } else if (el.webkitRequestFullscreen) {
+              el.webkitRequestFullscreen();
+            }
+          }}
+          className="dx-touch ml-auto px-2.5 py-1 rounded border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60 font-bold"
+        >
+          {isFull ? 'EXIT FULLSCREEN' : 'FULLSCREEN'}
+        </button>
+      </div>
+      <MapFullscreenWatcher onChange={setIsFull} />
+    </div>
   );
+}
+
+function MapFullscreenWatcher({ onChange }: { onChange: (v: boolean) => void }) {
+  useEffect(() => {
+    const fn = () => onChange(Boolean(document.fullscreenElement));
+    document.addEventListener('fullscreenchange', fn);
+    return () => document.removeEventListener('fullscreenchange', fn);
+  }, [onChange]);
+  return null;
 }
