@@ -85,6 +85,9 @@ export function DataSourcesSection() {
   ];
   return (
     <Section id="home-data" kicker="MULTI-SOURCE DATA" title="Free-first data, honest provenance">
+      <p className="home-muted" style={{ marginTop: 6 }}>
+        Keyless public feeds where possible; credential-gated sources stay NOT_CONFIGURED until configured — never synthesized.
+      </p>
       <div className="home-grid home-grid-secondary">
         {rows.map(([name, use, status]) => (
           <div key={name} className="home-mini">
