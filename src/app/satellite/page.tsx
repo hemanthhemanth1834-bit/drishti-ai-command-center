@@ -11,6 +11,10 @@ const SatelliteViewer = dynamic(() => import('@/components/satellite/SatelliteVi
   ssr: false,
   loading: () => <p className="text-xs text-slate-400">Loading satellite viewer…</p>,
 });
+const FirePanel = dynamic(() => import('@/components/fire/FirePanel'), {
+  ssr: false,
+  loading: () => <p className="text-xs text-slate-400">Loading fire intelligence…</p>,
+});
 
 const ADAPTERS = [
   { name: 'Copernicus Sentinel-1 (SAR)', use: 'surface change, all-weather', status: 'NOT_CONFIGURED', note: 'Free account needed (COPERNICUS_USER)' },
@@ -27,6 +31,7 @@ export default function SatellitePage() {
     <ModuleShell title="Satellite Intelligence" sub="Imagery → preprocessing → change detection → risk engine. Gallery images are NEVER live observations." status="DEMO" source="SIMULATED + open tiles">
       <LiveImagery />
       <SatelliteViewer />
+      <FirePanel />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PROVIDER ADAPTERS</div>

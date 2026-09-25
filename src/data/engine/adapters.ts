@@ -26,6 +26,16 @@ export interface WeatherProperties {
   kind: 'observation' | 'forecast';
 }
 
+export interface FireProperties {
+  confidence: string | null;
+  satellite: string | null;
+  instrument: string | null;
+  brightnessK: number | null;
+  frpMw: number | null;
+  daynight: string | null;
+  version: string | null;
+}
+
 function num(v: unknown): number | null {
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
@@ -84,6 +94,62 @@ export function adaptUsgsEarthquakes(payload: unknown, retrievedAt: string = now
       attribution,
       limitations: 'USGS feed latency ~minutes; magnitudes revise; not a prediction.',
       rawSourceReference: typeof p.url === 'string' ? p.url : eventId,
+    });
+  }
+  return { records, skipped };
+}
+
+/** Normalize NASA FIRMS active-fire records (VIIRS/MODIS CSV or JSON). */
+export function adaptFirmsFires(
+  payload: unknown,
+  retrievedAt: string = nowIso(),
+): { records: DataRecord<FireProperties>[]; skipped: number } {
+  const { source, sourceUrl, attribution } = provenanceFor('nasa-firms', 'NEAR_REAL_TIME');
+  const records: DataRecord<FireProperties>[] = [];
+  let skipped = 0;
+  const rows = Array.isArray(payload)
+    ? payload
+    : Array.isArray((payload as { fires?: unknown })?.fires)
+      ? (payload as { fires: unknown[] }).fires
+      : null;
+  if (!rows) return { records, skipped: 0 };
+  for (const r of rows) {
+    const o = (r ?? {}) as Record<string, unknown>;
+    const lat = num(o.latitude ?? o.lat);
+    const lon = num(o.longitude ?? o.lon ?? o.lng);
+    const date = typeof o.acq_date === 'string' ? o.acq_date : typeof o.date === 'string' ? o.date : null;
+    const time = typeof o.acq_time === 'string' ? o.acq_time.padStart(4, '0') : null;
+    const ts = date && time
+      ? toUtcIso(`${date}T${time.slice(0, 2)}:${time.slice(2, 4)}:00Z`)
+      : toUtcIso(o.timestamp ?? o.time ?? null);
+    const id = typeof o.id === 'string' ? o.id : `${lat ?? 'x'},${lon ?? 'x'},${ts ?? 'x'}`;
+    if (!isValidCoordinates(lat, lon)) {
+      skipped += 1;
+      continue;
+    }
+    records.push({
+      id: `firms-${id}`,
+      source, sourceUrl,
+      dataType: 'active-fire',
+      timestamp: ts,
+      retrievedAt,
+      status: 'NEAR_REAL_TIME',
+      freshness: 'UNKNOWN',
+      coverage: null,
+      coordinates: { lat: lat as number, lon: lon as number },
+      geometry: { type: 'Point', coordinates: [lon, lat] },
+      properties: {
+        confidence: typeof o.confidence === 'string' ? o.confidence : o.confidence != null ? String(o.confidence) : null,
+        satellite: typeof o.satellite === 'string' ? o.satellite : null,
+        instrument: typeof o.instrument === 'string' ? o.instrument : null,
+        brightnessK: num(o.bright_t31 ?? o.brightness),
+        frpMw: num(o.frp),
+        daynight: typeof o.daynight === 'string' ? o.daynight : null,
+        version: typeof o.version === 'string' ? o.version : null,
+      },
+      attribution,
+      limitations: 'Detection latency ~1–3h; confidence varies; not a burned-area map.',
+      rawSourceReference: id,
     });
   }
   return { records, skipped };

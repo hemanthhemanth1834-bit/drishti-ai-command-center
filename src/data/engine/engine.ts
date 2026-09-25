@@ -10,7 +10,7 @@ import { cacheFresh, cacheGet, cacheSet, makeEntry } from './cache';
 import { request, type RequestOptions } from './client';
 import { dataError } from './errors';
 import { computeFreshness, getSource, recordHealth } from './registry';
-import { adaptOpenMeteoCurrent, adaptUsgsEarthquakes } from './adapters';
+import { adaptFirmsFires, adaptOpenMeteoCurrent, adaptUsgsEarthquakes } from './adapters';
 import type { DataRecord, DataStatus, Freshness, Provenance } from './types';
 import { nowIso } from './errors';
 
@@ -30,16 +30,18 @@ export interface FetchDatasetOptions extends RequestOptions {
   forceRefresh?: boolean;
 }
 
-export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current';
+export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current' | 'firms-fires';
 
 const KIND_SOURCE: Record<DatasetKind, string> = {
   'usgs-earthquakes-7d': 'usgs',
   'openmeteo-current': 'open-meteo',
+  'firms-fires': 'nasa-firms',
 };
 
 const KIND_TTL_MS: Record<DatasetKind, number> = {
   'usgs-earthquakes-7d': 5 * 60 * 1000,
   'openmeteo-current': 10 * 60 * 1000,
+  'firms-fires': 60 * 60 * 1000,
 };
 
 export function datasetCacheKey(kind: DatasetKind, params: Record<string, string | number>): string {
@@ -132,6 +134,14 @@ function buildUrl(kind: DatasetKind, params: Record<string, string | number>): {
       lat, lon,
     };
   }
+  if (kind === 'firms-fires') {
+    // Reached only if the registry enables FIRMS (server key configured).
+    // Never appends credentials — a server proxy holds the MAP_KEY.
+    return {
+      url: 'https://firms.modaps.eosdis.nasa.gov/api/area/csv/VERSION/VIIRS_SNPP_NRT/world/1',
+      lat, lon,
+    };
+  }
   return {
     url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&timezone=auto`,
     lat, lon,
@@ -140,6 +150,7 @@ function buildUrl(kind: DatasetKind, params: Record<string, string | number>): {
 
 function adapt(kind: DatasetKind, payload: unknown, params: Record<string, string | number>, retrievedAt: string) {
   if (kind === 'usgs-earthquakes-7d') return adaptUsgsEarthquakes(payload, retrievedAt);
+  if (kind === 'firms-fires') return adaptFirmsFires(payload, retrievedAt);
   return adaptOpenMeteoCurrent(payload, Number(params.lat ?? 21.5), Number(params.lon ?? 79.0), retrievedAt);
 }
 
@@ -152,7 +163,7 @@ function newestTimestamp(records: DataRecord<unknown>[]): string | null {
 }
 
 function buildProvenance(kind: DatasetKind, def: NonNullable<ReturnType<typeof getSource>>, retrievedAt: string, newest: string | null): Provenance {
-  const status: DataStatus = kind === 'usgs-earthquakes-7d' ? 'NEAR_REAL_TIME' : 'LIVE';
+  const status: DataStatus = kind === 'openmeteo-current' ? 'LIVE' : 'NEAR_REAL_TIME';
   return {
     source: def.name,
     sourceUrl: def.baseUrl,
