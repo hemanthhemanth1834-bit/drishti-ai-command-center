@@ -33,7 +33,7 @@ responsive (`nesafe-vizgrid`), meaningful alt text in `VizFigure` (`src/platform
 
 | Image | Purpose | Source / URL | License | Attribution | Used on |
 |---|---|---|---|---|---|
-| Gallery placeholders (6) | cinematic intel examples | Unsplash `images.unsplash.com` photo IDs in `GeospatialIntelGallery.tsx` | Unsplash License | "Illustrative image (Unsplash)" in UI | welcome/command gallery |
+| Gallery placeholders (6) | REPLACED 2026-09-26: NASA EO/FEMA/USN archival photos + project drone.svg concept | NASA EO / FEMA / U.S. Navy (public domain) + project-original | per-item badge in UI | /welcome, /command gallery |
 | Google Place photo | place context | Google Places API (key-gated) | Google terms | via API | /location |
 | User uploads | incident evidence | citizen/field devices | reporter's own | shown with GPS/type/status | /incidents |
 | `public/poster.jpg` | project artwork hero | project artwork | do not redistribute | — | /command |

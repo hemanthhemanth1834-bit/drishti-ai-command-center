@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
+import RealPhotoCard from '@/components/visuals/RealPhotoCard';
 import { useRegion } from '@/platform/regionStore';
 import { usePlatform } from '@/platform/usePlatform';
 import { get } from '@/platform/api';
@@ -43,6 +44,7 @@ export default function WeatherPage() {
       <LocationContextBar />
     <ModuleShell title="Weather Intelligence" sub="Rainfall 1/6/24/72h · accumulation · anomaly · forecast · thresholds" status={badge} source={String(d?.source ?? 'provider chain')}>
       {cached && !live && <p className="text-[11px] text-sky-300">CACHED DATA from {new Date(cached.ts).toLocaleString()} — backend unreachable.</p>}
+      <RealPhotoCard assetId="rain-nilam-modis" badge="HISTORICAL" contextNote="ARCHIVAL CYCLONE CONTEXT — Cyclonic Storm Nilam (2012). Rainfall measurements below are live Open-Meteo values, never derived from this photo." />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="flex gap-2 text-xs flex-wrap">

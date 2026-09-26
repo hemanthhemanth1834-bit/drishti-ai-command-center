@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { get } from '@/platform/api';
 import VizFigure from '@/platform/VizFigure';
+import RealPhotoCard from '@/components/visuals/RealPhotoCard';
 import { setRegion, useRegion } from '@/platform/regionStore';
 import { usePT } from '@/platform/i18n';
 import { SHOWCASE_CITIES, STATE_NAMES } from '@/config/regions';
@@ -99,6 +100,7 @@ export default function RegionsPage() {
         </div>
         <p className="text-[11px] text-slate-400 mt-2">{t('demo_geo')} {Object.values(STATE_NAMES).join(' · ')}</p>
         <div className="mt-2"><VizFigure src="/img/regions.svg" alt="Schematic region hierarchy India to Andhra Pradesh Telangana districts" caption="Hierarchy schematic — boundaries not to survey scale" status="DEMO" /></div>
+        <div className="mt-2"><RealPhotoCard assetId="terrain-himalaya-iss" badge="REFERENCE" contextNote="INDIA-LEVEL TERRAIN CONTEXT — archival orbital photo of India and the Himalayas. Country-level context only, never a city or survey map." /></div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

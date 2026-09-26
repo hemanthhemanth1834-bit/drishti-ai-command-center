@@ -15,6 +15,27 @@ presented as live data.
 | command-eoc.jpg | Emergency operations center coordinating hurricane response | Wikimedia Commons `FEMA - 38184 - Emergency Operations Center in Texas.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; verified on download |
 | emergency-rescue.jpg | Helicopter flood rescue, Hurricane Harvey relief | Wikimedia Commons `Hurricane Harvey rescue (37833567051).jpg` | Public domain (U.S. Navy) | File page confirms PD-US-Navy; verified on download |
 
+## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
+
+| File | Description | Record | License |
+|---|---|---|---|
+| `02_cyclone/cyclone-ilsa.jpg` | Cyclone Ilsa observation | [EO 37599](https://science.nasa.gov/earth/earth-observatory/cyclone-ilsa-37599/) | Public domain (NASA) |
+| `03_flood_india/ganges-flood.jpg` | Flooding in Northern India | [EO 45933](https://science.nasa.gov/earth/earth-observatory/flooding-in-northern-india-45933/) | Public domain (NASA) |
+| `04_flood_orissa/mahanadi-flood.jpg` | Floods in Orissa, India | [EO 35390](https://science.nasa.gov/earth/earth-observatory/floods-in-orissa-india-35390/) | Public domain (NASA) |
+| `05_landslide_india/debris-flow.jpg` | Deadly debris flow in India | [EO 147973](https://science.nasa.gov/earth/earth-observatory/a-deadly-debris-flow-in-india-147973/) | Public domain (NASA) |
+| `10_lightning/lightning-flashrate.png` | India lightning flash-rate map (data visualization) | [EO 92196](https://science.nasa.gov/earth/earth-observatory/weeks-of-extreme-weather-in-india-92196/) | Public domain (NASA) |
+
+## Intel gallery (`GeospatialIntelGallery`, /command + /welcome) — Unsplash placeholders removed 2026-09-26
+
+| Item | Image | Classification |
+|---|---|---|
+| Kerala Inundation | kerala-after.jpg | HISTORICAL (Sentinel-2, 2018-08-22) |
+| Helicopter Flood Rescue | emergency-rescue.jpg | ARCHIVAL (U.S. Navy; not a drone feed) |
+| Debris Flow reference | debris-flow.jpg | HISTORICAL (EO 147973) |
+| Himalayan Terrain | mission-himalaya.jpg | EARTH OBSERVATION (ISS, 2021-02-23; not a DEM) |
+| Cyclone Ilsa | cyclone-ilsa.jpg | HISTORICAL (EO 37599) |
+| Drone Swarm concept | drone.svg (project-original) | SIMULATION (no live feed) |
+
 Remaining `public/img/*.svg` files are original in-repo illustrations.
 
 ## Model-flow visuals (`src/components/ml/ModelFlowVisual.tsx`, /ml + /prediction)

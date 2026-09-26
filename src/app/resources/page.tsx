@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import LocationContextBar from '@/components/location/LocationContextBar';
+import RealPhotoCard from '@/components/visuals/RealPhotoCard';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
@@ -40,6 +41,7 @@ export default function ResourcesPage() {
       <StatusHeader wsConnected={connected} />
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-8 flex flex-col gap-4">
+        <RealPhotoCard assetId="response-eoc-fema" badge="ARCHIVAL" contextNote="ARCHIVAL OPS CONTEXT — FEMA emergency operations center coordinating hurricane response. Bed counts and waveforms on this page are DEMO telemetry, not from this photo." />
         <HudPanel micro="MEDICAL TELEMETRY · DEMO DATA" title="ICU TELEMETRY — LIVE WAVEFORMS" right={<span className="dx-sim">DEMO</span>}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {[['ECG · BED 03', '#34d399'], ['SPO2 · BED 07', '#00d2ff'], ['RESP · BED 11', '#ffb020']].map(([l, c]) => (
