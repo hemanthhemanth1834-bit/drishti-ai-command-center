@@ -133,6 +133,15 @@ export interface CopernicusState {
   status: 'NOT_CONFIGURED';
   detail: string;
   products: [];
+  /** Live probe evidence (Step 28, 2026-09-26): catalog metadata reachable
+   * keylessly, but no public imagery path — hence NOT_CONFIGURED. */
+  probe: {
+    probedAt: string;
+    catalogReachable: boolean;
+    quicklookPublic: boolean;
+    downloadsRequireAuth: boolean;
+  };
+  enablement: string[];
 }
 
 /** Copernicus Data Space: free account required, none configured. */
@@ -142,5 +151,17 @@ export function copernicusState(): CopernicusState {
     status: 'NOT_CONFIGURED',
     detail: `Free account required (${def?.envVar ?? 'COPERNICUS_USER'}); credentials stay server-side.`,
     products: [],
+    probe: {
+      probedAt: '2026-09-26',
+      catalogReachable: true,
+      quicklookPublic: false,
+      downloadsRequireAuth: true,
+    },
+    enablement: [
+      'Create a free account at dataspace.copernicus.eu.',
+      'Set COPERNICUS_USER (and companion secret) on the backend host only.',
+      'Add a server-side proxy; the browser must never see credentials.',
+      'Flip the nasa-eonet-style registry entry to enabled only after verifying imagery retrieval.',
+    ],
   };
 }
