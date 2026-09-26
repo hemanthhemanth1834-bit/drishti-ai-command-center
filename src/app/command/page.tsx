@@ -337,7 +337,7 @@ export default function MasterCommandCenter() {
                 )}
                 {/* Overlay telemetry watermark */}
                 <div className="absolute bottom-3 left-3 bg-[#030d17]/80 backdrop-blur border border-[#1b314b] p-2 rounded text-[11px] text-[#00d2ff] pointer-events-none">
-                  <span>STREAM: 2.0 Hz WS</span> •{' '}
+                  <span>STREAM: {wsConnected ? (measHz != null ? `${measHz.toFixed(1)} Hz WS MEASURED` : 'WS CONNECTING…') : 'SIM LINK · RATE N/A'}</span> •{' '}
                   <span>ALT: {alt.toFixed(1)}m</span>
                   {notice ? <span> • {notice}</span> : null}
                 </div>
@@ -436,10 +436,10 @@ export default function MasterCommandCenter() {
               <div className="flex items-center justify-between pb-2 border-b border-[#1b314b]">
                 <span className="text-xs font-bold text-white flex items-center gap-1.5">
                   <Radio className="w-4 h-4 text-emerald-400" />
-                  LIVE 868MHz LORA PACKET STREAM
+                  {wsConnected ? 'LIVE 868MHz LORA PACKET STREAM' : '868MHz PACKET STREAM · SIM LINK'}
                 </span>
                 <span className="text-[10px] text-slate-400">
-                  {live ? `${live.drone_id} • ${live.scenario}` : '2.0 Hz CYCLE'}
+                  {live ? `${live.drone_id} • ${live.scenario}` : 'CYCLE: NO LIVE DATA'}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-[10px] text-slate-500 pt-1">
