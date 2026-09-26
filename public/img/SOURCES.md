@@ -17,6 +17,20 @@ presented as live data.
 
 Remaining `public/img/*.svg` files are original in-repo illustrations.
 
+## Model-flow visuals (`src/components/ml/ModelFlowVisual.tsx`, /ml + /prediction)
+
+No new files downloaded — the flow reuses the verified photos above:
+
+| Card | Asset | Source | License |
+|---|---|---|---|
+| RAIN (precipitation context) | hero-nilam.jpg | NASA Terra/MODIS ([file page](https://commons.wikimedia.org/wiki/File:Cyclonic_Storm_Nilam_Oct_31_2012.jpg)) | Public domain (NASA) |
+| SOIL (land-surface context) | kerala-before.jpg | NASA EO 92669 ([record](https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/)) | Public domain (NASA/USGS) |
+| SLOPE/TERRAIN (elevation context) | mission-himalaya.jpg | NASA JSC ISS064-E-037041 ([file page](https://commons.wikimedia.org/wiki/File:ISS-64_India,_the_Himalayas_and_China.jpg)) | Public domain (NASA) |
+| HISTORY/REPORTS (before→after) | kerala-before.jpg + kerala-after.jpg | NASA EO 92669 (2018-02-06 / 2018-08-22) | Public domain (NASA/USGS; Sentinel via ESA) |
+| WARN/GIS (map preview) | live OSM tile for shared location | © OpenStreetMap ([copyright](https://www.openstreetmap.org/copyright)) | ODbL (attributed in UI) |
+
+Machine-readable registry: `src/data/images/imageRegistry.ts` (validated in tests — missing source/license is rejected). The old static `ml-pipeline.svg` "87/100" score is not used in this view; risk output shows model-registry state only.
+
 ## Supplied asset package (`public-exact-format/`, NOT integrated)
 
 A 41-file user-supplied package (30 JPG + 10 SVG + reference PNG) was

@@ -1,7 +1,7 @@
 'use client';
 import PredictorCard from '@/platform/PredictorCard';
-import VizFigure from '@/platform/VizFigure';
 import DataFlowStrip from '@/components/home/DataFlowStrip';
+import ModelFlowVisual from '@/components/ml/ModelFlowVisual';
 import { ModuleShell } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
 
@@ -11,7 +11,7 @@ export default function PredictionPage() {
       <LocationContextBar />
     <ModuleShell title="Landslide Prediction" sub="AI decision support for citizens & officers — always verify on the ground" status="LIVE" source="ML API + local DEMO fallback">
       <DataFlowStrip />
-      <VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from weather and terrain data to warning" caption="How the prediction is made — transparent pipeline" status="MODEL" />
+      <ModelFlowVisual predictHref="#dx-predictor" />
       <PredictorCard />
     </ModuleShell>
     </>

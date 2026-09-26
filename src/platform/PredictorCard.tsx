@@ -44,7 +44,7 @@ export default function PredictorCard({ compact }: { compact?: boolean }) {
   };
 
   return (
-    <div className="dx-hud">
+    <div className="dx-hud" id="dx-predictor">
       <div className="dx-hud-edge" />
       <div className="dx-hud-head">
         <div>

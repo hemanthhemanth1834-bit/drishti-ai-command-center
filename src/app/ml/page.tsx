@@ -1,9 +1,9 @@
 'use client';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
+import ModelFlowVisual from '@/components/ml/ModelFlowVisual';
 import { useRegion } from '@/platform/regionStore';
 import { usePlatform } from '@/platform/usePlatform';
-import VizFigure from '@/platform/VizFigure';
 
 export default function MlPage() {
   const region = useRegion();
@@ -16,7 +16,7 @@ export default function MlPage() {
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PIPELINE: WEATHER + RAINFALL + SOIL + SLOPE + TERRAIN + HISTORY → FEATURES → RANDOM FOREST → PROBABILITY → GIS CELL → WARNING</div>
-        <div className="mt-2"><VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from data to warning" caption="Training/inference flow — synthetic demo unless retrained on verified CSV" status="DEMO" /></div>
+        <div className="mt-2"><ModelFlowVisual predictHref="/prediction" /></div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

@@ -30,6 +30,10 @@ Never fabricated. `PredictorCard` shows backend confidence when present, DEMO he
 
 Model trained on synthetic data with 87% positive skew (per README audit). Metrics describe the demo artifact, never field accuracy. UI banner is immutable when `data_kind` indicates synthetic/demo.
 
+## Model-flow visualization
+
+`src/components/ml/ModelFlowVisual.tsx` (used on /ml and /prediction; homepage keeps its frozen diagram) renders inputs → RandomForest → output → GIS with real source-backed imagery from `src/data/images/imageRegistry.ts` (NASA/FEMA public-domain photos, real OSM tile preview). Photographs are labeled CONTEXT, never measurements; the old static `ml-pipeline.svg` "87/100" score is not used — output shows registry state (NOT AVAILABLE when OFFLINE) and links to the predictor for per-run scores. Feature count, version, and training kind come from `/api/v1/ml/model`, never hardcoded.
+
 ## Current backend availability / deployment state
 
 Backend OFFLINE (Railway trial expired 2026-09-26) → MODEL OFFLINE UI, all values NOT AVAILABLE, no simulated health. Artifacts ship in-repo (`backend/ml/artifacts/`); retraining via `python -m ml.train`.

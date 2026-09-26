@@ -19,7 +19,7 @@ imagery is labeled EXAMPLE/REFERENCE/DEMO in the UI and is never evidence.
 | `sat-before.svg` / `sat-after.svg` / `sat-change.svg` | before/after/change-detection concept renders | /intelligence, /risk-map, /satellite |
 | `terrain.svg` | contour/slope schematic (not a DEM render) | /intelligence, /risk-map, /terrain |
 | `sensor-net.svg` | soil/rain/tilt → gateway topology | /sensors |
-| `ml-pipeline.svg` | data → RF → probability → GIS → warning | /prediction, /ml |
+| `ml-pipeline.svg` | data → RF → probability → GIS → warning | homepage diagram only (frozen); /prediction + /ml now use `ModelFlowVisual` (real source-backed cards, registry `src/data/images/imageRegistry.ts`) |
 | `offline-sync.svg` | device → IndexedDB → receipt flow | /offline |
 | `regions.svg` | hierarchy schematic (not to survey scale) | /regions |
 | `response.svg` / `shelter.svg` | units + shelter capacity reference | /response |
