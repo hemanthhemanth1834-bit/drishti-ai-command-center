@@ -4,6 +4,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import { API_BASE } from '@/platform/api';
+import { connectionErrorMessage } from './authErrors';
 
 export interface Identity { sub: string; role: string; permissions: string[] }
 interface AuthState { token: string | null; identity: Identity | null; rememberedId: string }
@@ -46,7 +47,7 @@ export async function signIn(username: string, secret: string, remember: boolean
     emit();
     return { ok: true, identity };
   } catch {
-    return { ok: false, error: 'Unable to connect to the authentication service. Please check your connection and try again.' };
+    return { ok: false, error: connectionErrorMessage() };
   }
 }
 
