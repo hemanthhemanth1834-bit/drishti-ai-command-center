@@ -76,6 +76,12 @@ canvas, .leaflet-container { border-radius: 10px; }
   50% { stroke-opacity: 0.25; }
 }
 .hz-pulse { animation: hz-ping 2.2s ease-in-out infinite; }
+/* Selected epicenter ring (Step 25; only applied when motion is allowed) */
+@keyframes dx-quake-ping {
+  0%, 100% { stroke-opacity: 0.95; }
+  50% { stroke-opacity: 0.3; }
+}
+.dx-quake-pulse { animation: dx-quake-ping 1.8s ease-in-out infinite; }
 
 /* Visible keyboard focus everywhere */
 :focus-visible {
