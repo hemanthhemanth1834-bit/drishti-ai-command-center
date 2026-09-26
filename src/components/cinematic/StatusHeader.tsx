@@ -5,9 +5,12 @@ import AnimatedCounter from "./AnimatedCounter";
 type Props = {
   system?: string;
   network?: string;
-  aiConfidence?: number;
-  dronesActive?: number;
-  dataHz?: number;
+  /** Null = no verified runtime confidence (renders NOT AVAILABLE). */
+  aiConfidence?: number | null;
+  /** Null = no live unit count source (renders SIM FLEET). */
+  dronesActive?: number | null;
+  /** Null = unmeasured (renders N/A). Measured from real packet arrivals only. */
+  dataHz?: number | null;
   wsConnected?: boolean;
   /** V3 shared state: citizen risk-check score (null = no check this session). */
   riskScore?: number | null;
@@ -19,11 +22,11 @@ type Props = {
 
 /** Command-center status header: SYSTEM / NETWORK / SAT / DRONE / AI / DATA / CLOCK */
 export default function StatusHeader({
-  system = "ONLINE",
-  network = "STABLE",
-  aiConfidence = 98.4,
-  dronesActive = 32,
-  dataHz = 2.0,
+  system = "OFFLINE",
+  network = "SIM LINK",
+  aiConfidence = null,
+  dronesActive = null,
+  dataHz = null,
   wsConnected = false,
   riskScore = null,
   alertCount = null,
@@ -33,21 +36,25 @@ export default function StatusHeader({
     <section aria-label="System status" className="dx-status">
       <StatusCell label="SYSTEM" value={system} tone={system === "ONLINE" ? "ok" : "bad"} pulse />
       <StatusCell label="NETWORK" value={network} tone={network === "STABLE" ? "ok" : "warn"} />
-      <StatusCell label="SATELLITE" value="CONNECTED" tone="ok" sub="LEO LOCK · 4 SATS" />
+      <StatusCell label="SATELLITE" value="GIBS NRT" tone="info" sub="DAILY COMPOSITE" />
       <StatusCell
         label="DRONE LINK"
-        value={`${dronesActive} ACTIVE`}
+        value={dronesActive != null ? `${dronesActive} ACTIVE` : "SIM FLEET"}
         tone="info"
         sub={wsConnected ? "LIVE 868MHz" : "SIM LINK"}
       />
       <div className="dx-status-cell">
         <div className="dx-micro">AI INFERENCE</div>
         <div className="dx-status-val text-cyan-200">
-          <AnimatedCounter value={aiConfidence} decimals={1} suffix="%" duration={1200} />
+          {aiConfidence != null ? (
+            <AnimatedCounter value={aiConfidence} decimals={1} suffix="%" duration={1200} />
+          ) : (
+            "NOT AVAILABLE"
+          )}
         </div>
-        <div className="dx-status-sub">HYDRA-NET · LOCAL</div>
+        <div className="dx-status-sub">RULE OUTPUT · LOCAL</div>
       </div>
-      <StatusCell label="DATA STREAM" value={`${dataHz.toFixed(1)} Hz`} tone="info" />
+      <StatusCell label="DATA STREAM" value={dataHz != null ? `${dataHz.toFixed(1)} Hz` : "N/A"} tone="info" />
       <ClockCell />
       <StatusTicker
         wsConnected={wsConnected}
@@ -70,8 +77,8 @@ function StatusTicker({
   sosActive,
 }: {
   wsConnected: boolean;
-  dronesActive: number;
-  aiConfidence: number;
+  dronesActive: number | null;
+  aiConfidence: number | null;
   riskScore: number | null;
   alertCount: number | null;
   sosActive: boolean;
@@ -92,16 +99,19 @@ function StatusTicker({
     const t = window.setInterval(tick, 1000);
     return () => window.clearInterval(t);
   }, []);
-  // deterministic load estimate from live fleet size (labeled EST — not a backend metric)
-  const aiLoad = Math.min(96, 34 + (dronesActive % 40) + Math.round((100 - aiConfidence) * 2));
+  // Load estimate only when real inputs exist; otherwise no estimate is shown.
+  const aiLoad =
+    dronesActive != null && aiConfidence != null
+      ? Math.min(96, 34 + (dronesActive % 40) + Math.round((100 - aiConfidence) * 2))
+      : null;
   return (
     <div className="dx-status-ticker" aria-label="Command telemetry details">
       <span><i className={`dx-dot ${wsConnected ? "dx-dot-ok" : "dx-dot-warn"}`} aria-hidden="true" />LINK {wsConnected ? "LIVE" : "SIM"}</span>
       <span>UPTIME {uptime}</span>
       <span>UTC {utc}</span>
-      <span className="dx-ticker-load">AI LOAD {aiLoad}% EST<span className="dx-ticker-bar" aria-hidden="true"><i style={{ width: `${aiLoad}%` }} /></span></span>
+      <span className="dx-ticker-load">AI LOAD {aiLoad != null ? `${aiLoad}% EST` : "N/A"}<span className="dx-ticker-bar" aria-hidden="true"><i style={{ width: `${aiLoad ?? 0}%` }} /></span></span>
       <span>SENSORS {wsConnected ? "STREAMING" : "STANDBY"}</span>
-      <span>NODES {dronesActive}</span>
+      <span>NODES {dronesActive ?? "SIM"}</span>
       <span>ALERTS {alertCount ?? "—"}</span>
       <span>RISK {riskScore ?? "—"}</span>
       <span className={sosActive ? "dx-ticker-sos" : undefined}>

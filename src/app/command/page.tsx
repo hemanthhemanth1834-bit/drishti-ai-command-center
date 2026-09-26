@@ -1,6 +1,6 @@
 // src/app/command/page.tsx — DRISHTI-X Master Command Center (cinematic upgrade)
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
@@ -121,10 +121,29 @@ export default function MasterCommandCenter() {
   });
 
   // Scenario drill numbers feed the simulation panels below (AI recommendation
-  // POP + unit staging). Operational KPIs above read real backend APIs.
+  // POP). Operational KPIs above read real backend APIs.
   const tickerPeople =
     ({ storm: 24860, 'swarm-surge': 5200, 'gps-denied': 800, nominal: 120 } as Record<string, number>)[scenario] ?? 120;
-  const units = 26 + alerts.length * 3;
+
+  // Measured stream rate from real packet arrivals only (null = unmeasured).
+  const arrivalRef = useRef<number[]>([]);
+  const [measHz, setMeasHz] = useState<number | null>(null);
+  useEffect(() => {
+    if (!wsConnected || telemetryLogs.length === 0) {
+      arrivalRef.current = [];
+      setMeasHz(null);
+      return;
+    }
+    const now = Date.now();
+    arrivalRef.current = [...arrivalRef.current, now].slice(-10);
+    const a = arrivalRef.current;
+    if (a.length >= 3) {
+      const spanS = (a[a.length - 1] - a[0]) / 1000;
+      setMeasHz(spanS > 0 ? Math.round(((a.length - 1) / spanS) * 10) / 10 : null);
+    } else {
+      setMeasHz(null);
+    }
+  }, [telemetryLogs, wsConnected]);
 
   async function changeScenario(s: string) {
     setOps({ scenario: s, acked: [] });
@@ -158,11 +177,11 @@ export default function MasterCommandCenter() {
 
         {/* Command status strip — live values flow into shared ticker */}
         <StatusHeader
-          system={wsConnected || true ? 'ONLINE' : 'OFFLINE'}
+          system={wsConnected ? 'ONLINE' : 'OFFLINE'}
           network={wsConnected ? 'STABLE' : 'SIM LINK'}
-          aiConfidence={98.4}
-          dronesActive={units}
-          dataHz={2.0}
+          aiConfidence={null}
+          dronesActive={null}
+          dataHz={measHz}
           wsConnected={wsConnected}
           riskScore={intel.riskCheckScore}
           alertCount={alerts.length}
@@ -337,7 +356,7 @@ export default function MasterCommandCenter() {
                 <div className="dx-timeline text-[11px]">
                   {[
                     ['10:42:18', 'Flood alert generated', 'AUTO · RULE ENGINE', 'DONE'],
-                    ['10:43:04', 'AI prediction completed · 98.4%', 'HYDRA-NET · LOCAL', 'DONE'],
+                    ['10:43:04', 'AI rule evaluation completed (no live score)', 'HYDRA-NET · LOCAL', 'DONE'],
                     ['10:44:17', 'Drone DRX-07 dispatched', 'OPS · SIM', 'DONE'],
                     ['10:47:31', 'Civilian thermal signature · Ward 14', 'FLIR · SIM', 'ACTIVE'],
                     ['10:48:02', 'Rescue approval pending', 'COMMANDER', 'QUEUED'],
@@ -360,7 +379,7 @@ export default function MasterCommandCenter() {
               micro="HYDRA-NET · PREDICTIVE INFERENCE · LOCAL"
               title="AI INTELLIGENCE PANEL"
               tone={aiTone}
-              right={<span className="text-[10px] bg-[#00d2ff]/20 text-[#00d2ff] px-2 py-0.5 rounded border border-[#00d2ff]/40">98.4% CONFIDENCE</span>}
+              right={<span className="text-[10px] bg-[#00d2ff]/20 text-[#00d2ff] px-2 py-0.5 rounded border border-[#00d2ff]/40">RULE OUTPUT · NO LIVE SCORE</span>}
             >
               <AiInferenceStatus cycleKey={`${scenario}-${ops.spillwayK}`} />
               <AiCoreScene
@@ -369,7 +388,7 @@ export default function MasterCommandCenter() {
               />
               <div className="dx-aicore-meta" aria-label="AI core status">
                 <span><i className="dx-dot dx-dot-ok dx-pulse" aria-hidden="true" />AI ONLINE</span>
-                <span>HEALTH 99.2%</span>
+                <span>HEALTH N/A (SIM)</span>
                 <span>THREAT: {aiTone === 'critical' ? 'CRITICAL' : aiTone === 'warn' ? 'ELEVATED' : 'NOMINAL'}</span>
                 <span>NET: {wsConnected ? 'LIVE' : 'SIM'}</span>
                 {intel.risk && <span>RISK CHECK: {intel.risk.level.toUpperCase()} {intel.risk.score}</span>}

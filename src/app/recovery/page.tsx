@@ -66,7 +66,7 @@ export default function RecoveryPage() {
           <div className="dx-timeline text-[11px] grid grid-cols-1 md:grid-cols-2 gap-x-6">
             {[
               ['10:42:18', 'Flood alert generated', 'RULE ENGINE', 'RISK 72/100', 'DONE'],
-              ['10:43:04', 'AI prediction completed', 'HYDRA-NET', 'CONF 98.4%', 'DONE'],
+              ['10:43:04', 'AI rule evaluation completed (no live score)', 'HYDRA-NET', 'RULE OUTPUT', 'DONE'],
               ['10:44:17', 'Drone DRX-07 dispatched', 'OPS', 'AIRBORNE', 'DONE'],
               ['10:47:31', 'Civilian detected · Ward 14', 'FLIR SIM', '3 CONTACTS', 'ACTIVE'],
               ['10:48:02', 'Rescue approved · RB-07', 'COMMANDER', 'ETA 04:48', 'QUEUED'],

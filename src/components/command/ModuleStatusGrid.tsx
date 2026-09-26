@@ -1,11 +1,17 @@
 'use client';
 /**
- * STEP 31 — ModuleStatusGrid: the 14 command-module links, each with an
- * honestly derived status pill. Backend-backed modules probe ONE shared
- * backend health endpoint; weather uses the keyless Open-Meteo feed;
- * satellite is definitionally LATEST_AVAILABLE (daily NRT); simulation
- * pages are definitionally SIMULATION; location reflects browser online
- * state against the keyless OSM ecosystem. Nothing is assumed live.
+ * POST-LAUNCH TRUTHFULNESS PATCH — ModuleStatusGrid.
+ * Each backend-backed module probes its OWN endpoint; a healthy
+ * model-health response no longer marks unrelated modules LIVE.
+ * Modules with no backend are labeled SIMULATION / DEMO / AVAILABLE
+ * according to what their pages actually do:
+ *  - reunion, recovery: no API calls anywhere -> SIMULATION
+ *  - shelter: page states DEMO DATA -> DEMO
+ *  - drones, twin, simulation: simulated links -> SIMULATION
+ *  - location: works from keyless OSM + browser GPS, no permission
+ *    required for search/map -> AVAILABLE (never a live-data claim)
+ *  - satellite: GIBS daily NRT -> LATEST_AVAILABLE (definitionally true)
+ *  - weather: measured getWeather() feed state (unchanged behavior)
  */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -16,28 +22,31 @@ import { getWeather } from '@/lib/liveServices';
 interface Module {
   href: string;
   label: string;
-  kind: 'backend' | 'weather' | 'satellite' | 'sim' | 'location';
+  kind: 'probe' | 'weather' | 'satellite' | 'sim' | 'demo' | 'available';
+  probe?: string;
 }
 
 const MODULES: Module[] = [
   { href: '/drones', label: 'DRONE SWARM & SAR', kind: 'sim' },
   { href: '/twin', label: '3D DIGITAL TWIN', kind: 'sim' },
-  { href: '/location', label: 'LOCATION INTEL', kind: 'location' },
+  { href: '/location', label: 'LOCATION INTEL', kind: 'available' },
   { href: '/simulation', label: 'WHAT-IF COPILOT', kind: 'sim' },
-  { href: '/resources', label: 'HOSPITAL ICU', kind: 'backend' },
-  { href: '/shelter', label: 'SHELTER SCANNER', kind: 'backend' },
-  { href: '/reunion', label: 'OP-MILAN REUNION', kind: 'backend' },
-  { href: '/recovery', label: 'RECOVERY & AUDIT', kind: 'backend' },
+  { href: '/resources', label: 'HOSPITAL ICU', kind: 'probe', probe: '/api/v1/resources' },
+  { href: '/shelter', label: 'SHELTER SCANNER', kind: 'demo' },
+  { href: '/reunion', label: 'OP-MILAN REUNION', kind: 'sim' },
+  { href: '/recovery', label: 'RECOVERY & AUDIT', kind: 'sim' },
   { href: '/weather', label: 'WEATHER INTEL', kind: 'weather' },
   { href: '/satellite', label: 'SATELLITE INTEL', kind: 'satellite' },
-  { href: '/sensors', label: 'SENSOR NETWORK', kind: 'backend' },
-  { href: '/roads', label: 'ROAD INTEL', kind: 'backend' },
-  { href: '/response', label: 'RESPONSE BOARD', kind: 'backend' },
-  { href: '/alerts', label: 'ALERT CENTER', kind: 'backend' },
+  { href: '/sensors', label: 'SENSOR NETWORK', kind: 'probe', probe: '/api/v1/sensors/network' },
+  { href: '/roads', label: 'ROAD INTEL', kind: 'probe', probe: '/api/v1/roads' },
+  { href: '/response', label: 'RESPONSE BOARD', kind: 'probe', probe: '/api/v1/response/queue' },
+  { href: '/alerts', label: 'ALERT CENTER', kind: 'probe', probe: '/api/v1/alerts?limit=1' },
 ];
 
 const STATIC_STATE: Record<string, string> = {
   sim: 'SIMULATION',
+  demo: 'DEMO',
+  available: 'AVAILABLE',
   satellite: 'LATEST_AVAILABLE',
 };
 
@@ -49,18 +58,23 @@ export default function ModuleStatusGrid() {
     const ctrl = new AbortController();
     (async () => {
       const next: Record<string, string> = {};
-      const [be, wx] = await Promise.all([
-        get<{ status?: string }>('/api/v1/model-health').catch(() => ({ data: null as never, status: 'OFFLINE' as const })),
-        getWeather(21.5, 79.0, ctrl.signal).catch(() => ({ data: null as never, state: 'OFFLINE' as const, source: '', updatedAt: null })),
-      ]);
+      const probed = MODULES.filter((m) => m.kind === 'probe');
+      const results = await Promise.all(
+        probed.map((m) =>
+          get<unknown>(m.probe as string)
+            .then((r) => ({ href: m.href, live: Boolean(r.data) }))
+            .catch(() => ({ href: m.href, live: false })),
+        ),
+      );
+      const liveByHref: Record<string, boolean> = {};
+      for (const r of results) liveByHref[r.href] = r.live;
+      const wx = await getWeather(21.5, 79.0, ctrl.signal).catch(
+        () => ({ data: null as never, state: 'OFFLINE' as const, source: '', updatedAt: null }),
+      );
       if (dead) return;
-      const backendUp = Boolean(be.data);
       for (const m of MODULES) {
-        if (m.kind === 'backend') next[m.href] = backendUp ? 'LIVE' : 'OFFLINE';
+        if (m.kind === 'probe') next[m.href] = liveByHref[m.href] ? 'LIVE' : 'OFFLINE';
         else if (m.kind === 'weather') next[m.href] = (wx as { state?: string }).state ?? 'OFFLINE';
-        else if (m.kind === 'location') {
-          next[m.href] = typeof navigator !== 'undefined' && !navigator.onLine ? 'OFFLINE' : 'EXTERNAL';
-        }
         else next[m.href] = STATIC_STATE[m.kind];
       }
       setStates(next);

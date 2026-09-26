@@ -34,7 +34,7 @@ const INTEL_EXAMPLES: IntelExample[] = [
     metrics: [
       { label: "Submerged Area", value: "142.8 km²" },
       { label: "Runoff Coefficient", value: "0.84" },
-      { label: "Confidence", value: "99.2%" },
+        { label: "Confidence", value: "N/A · example" },
     ],
   },
   {
