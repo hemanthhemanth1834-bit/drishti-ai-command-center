@@ -34,6 +34,14 @@ type Props = {
   mapLat?: number;
   mapLon?: number;
   onSelect?: (e: TwinEntity | null) => void;
+  /** STEP 30 — hazard marker visibility (scene ids HZ-FL / HZ-FR). */
+  hazards?: { flood: boolean; fire: boolean };
+  /** STEP 30 — emergency corridor + vehicles visibility. */
+  corridor?: boolean;
+  /** STEP 30 — camera preset: distance + focus target. Null = free orbit. */
+  camPreset?: { dist: number; focus: [number, number, number] } | null;
+  /** STEP 30 — false freezes decorative motion + snaps camera (reduced motion). */
+  motionOK?: boolean;
 };
 
 /** Slippy-map tile for a lat/lon at zoom z (Esri World Imagery). */
@@ -60,10 +68,14 @@ export default function TwinViewport({
   mapLat = 17.385,
   mapLon = 78.4867,
   onSelect,
+  hazards = { flood: true, fire: true },
+  corridor = true,
+  camPreset = null,
+  motionOK = true,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
-  const live = useRef({ alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain });
-  live.current = { alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain };
+  const live = useRef({ alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain, hazards, corridor, camPreset, motionOK });
+  live.current = { alt, surgeM, spotlight, dropFlash, batteryPct, signalPct, terrain, hazards, corridor, camPreset, motionOK };
   const selectRef = useRef(onSelect);
   selectRef.current = onSelect;
 
@@ -376,14 +388,15 @@ export default function TwinViewport({
     droneShadow.position.y = 0.02;
     scene.add(droneShadow);
 
-    // Pickable entity markers
-    const pickables: THREE.Mesh[] = ENTITIES.filter((e) => e.kind !== "air").map((e) => {
-      const m = new THREE.Mesh(
+    // Pickable entity markers (STEP 30: hazard refs captured for layer toggles)
+    const hzMeshes: Record<string, THREE.Mesh> = {};
+    const pickables: THREE.Mesh[] = ENTITIES.filter((e) => e.kind !== "air").map((e) => {      const m = new THREE.Mesh(
         new THREE.SphereGeometry(0.22, 16, 16),
         new THREE.MeshStandardMaterial({ color: e.color, emissive: e.color, emissiveIntensity: 0.5 })
       );
       m.position.set(...e.pos);
       m.userData.entity = { id: e.id, label: e.label, kind: e.kind, risk: e.risk };
+      if (e.kind === "hazard") hzMeshes[e.id] = m;
       scene.add(m);
       return m;
     });
@@ -411,6 +424,10 @@ export default function TwinViewport({
     const ray = new THREE.Raycaster();
     const ptr = new THREE.Vector2();
     const FOCUS = new THREE.Vector3(0, 0.5, 0);
+    // STEP 30 — camera preset focus (lerped unless reduced motion) + applied-preset tracking
+    const focusCur = new THREE.Vector3(0, 0.5, 0);
+    const focusTgt = new THREE.Vector3(0, 0.5, 0);
+    let appliedPreset = '';
     const tmpDir = new THREE.Vector3();
     const onPick = (ev: PointerEvent) => {
       const r = renderer.domElement.getBoundingClientRect();
@@ -466,8 +483,29 @@ export default function TwinViewport({
     let satOn = false;
     const animate = () => {
       raf = requestAnimationFrame(animate);
-      t += 0.016;
       const s = live.current;
+      const still = s.motionOK === false;
+      if (!still) t += 0.016;
+      // STEP 30 — camera preset: snap on change, then free orbit continues
+      const presetKey = s.camPreset ? `${s.camPreset.dist}|${s.camPreset.focus.join(',')}` : '';
+      if (presetKey !== appliedPreset) {
+        appliedPreset = presetKey;
+        if (s.camPreset) {
+          distRef.current = Math.max(4, Math.min(20, s.camPreset.dist));
+          focusTgt.set(...s.camPreset.focus);
+          if (still) focusCur.copy(focusTgt);
+        } else {
+          focusTgt.set(0, 0.5, 0);
+          if (still) focusCur.copy(focusTgt);
+        }
+      }
+      if (!still) focusCur.lerp(focusTgt, 0.08);
+      else focusCur.copy(focusTgt);
+      // STEP 30 — layer visibility from props (additive toggles)
+      if (hzMeshes['HZ-FL']) hzMeshes['HZ-FL'].visible = s.hazards.flood;
+      if (hzMeshes['HZ-FR']) hzMeshes['HZ-FR'].visible = s.hazards.fire;
+      corridor.visible = s.corridor;
+      for (const v of vehicles) v.visible = s.corridor;
       // Satellite drape on/off (texture arrives async)
       const wantSat = s.terrain === 'satellite' && satTex.current !== null;
       if (wantSat !== satOn) {
@@ -482,7 +520,7 @@ export default function TwinViewport({
         satMat.needsUpdate = true;
       }
       // Drone bobs with live telemetry altitude
-      drone.position.y = 1.2 + ((s.alt % 50) / 25) * 0.8 + Math.sin(t * 1.4) * 0.08;
+      drone.position.y = 1.2 + ((s.alt % 50) / 25) * 0.8 + (still ? 0 : Math.sin(t * 1.4) * 0.08);
       drone.rotation.y += 0.004;
       cone.visible = s.spotlight;
       // Spotlight brightness follows live link margin
@@ -508,22 +546,25 @@ export default function TwinViewport({
         ring.scale.set(sc, sc, 1);
       }
       // Smooth dolly toward the requested zoom distance
-      tmpDir.copy(cam.position).sub(FOCUS);
+      tmpDir.copy(cam.position).sub(focusCur);
       const curD = tmpDir.length() || HOME_DIST;
       tmpDir.normalize();
-      const nextD = curD + (Math.max(4, Math.min(20, distRef.current)) - curD) * 0.18;
-      cam.position.copy(FOCUS).addScaledVector(tmpDir, nextD);
-      cam.lookAt(FOCUS);
+      const nextD = still
+        ? Math.max(4, Math.min(20, distRef.current))
+        : curD + (Math.max(4, Math.min(20, distRef.current)) - curD) * 0.18;
+      cam.position.copy(focusCur).addScaledVector(tmpDir, nextD);
+      cam.lookAt(focusCur);
       // Procedural city life: river shimmer, corridor vehicles, zone pulse
-      riverMat.opacity = 0.45 + Math.sin(t * 1.8) * 0.1 + (Math.min(3.8, Math.max(0, s.surgeM)) / 3.8) * 0.25;
+      riverMat.opacity = 0.45 + (still ? 0 : Math.sin(t * 1.8) * 0.1) + (Math.min(3.8, Math.max(0, s.surgeM)) / 3.8) * 0.25;
       // travelling shimmer stripe along the river
-      shimmer.position.z = Math.sin(t * 0.7) * 5.5;
-      (shimmer.material as THREE.MeshBasicMaterial).opacity = 0.12 + Math.sin(t * 2.2) * 0.05;
+      if (!still) shimmer.position.z = Math.sin(t * 0.7) * 5.5;
+      (shimmer.material as THREE.MeshBasicMaterial).opacity = 0.12 + (still ? 0 : Math.sin(t * 2.2) * 0.05);
       // animated emergency corridor (breathing amber path)
-      (corridor.material as THREE.MeshBasicMaterial).opacity = 0.42 + Math.sin(t * 2.4) * 0.16;
-      zoneWall.rotation.y += 0.003;
-      (zoneWall.material as THREE.MeshBasicMaterial).opacity = 0.08 + Math.sin(t * 2) * 0.03;
+      (corridor.material as THREE.MeshBasicMaterial).opacity = 0.42 + (still ? 0 : Math.sin(t * 2.4) * 0.16);
+      if (!still) zoneWall.rotation.y += 0.003;
+      (zoneWall.material as THREE.MeshBasicMaterial).opacity = 0.08 + (still ? 0 : Math.sin(t * 2) * 0.03);
       vehicles.forEach((v, i) => {
+        if (still) return;
         const p = (t * 0.35 + i / vehicles.length) % 1;
         v.position.x = -2.2 + p * 5.6;
         v.position.z = 0.4 + (v.position.x - 0.6) * 0.18;
@@ -535,17 +576,17 @@ export default function TwinViewport({
       droneShadow.position.z = drone.position.z;
       (droneShadow.material as THREE.MeshBasicMaterial).opacity =
         Math.max(0.08, 0.42 - drone.position.y * 0.09);
-      // Pulsing incident markers (hazards breathe)
+      // Pulsing incident markers (hazards breathe; frozen under reduced motion)
       pickables.forEach((m) => {
         const kind = (m.userData.entity as { kind?: string })?.kind;
-        if (kind === "hazard") {
+        if (kind === "hazard" && !still) {
           const s = 1 + Math.sin(t * 2.6 + m.position.x) * 0.22;
           m.scale.set(s, s, s);
         }
       });
-      // Synthwave VFX rig (grid mode only)
+      // Synthwave VFX rig (grid mode only; frozen under reduced motion)
       vfx.visible = s.terrain !== "satellite";
-      if (vfx.visible) {
+      if (vfx.visible && !still) {
         sweep.position.z -= 0.045;
         if (sweep.position.z < -7) sweep.position.z = 7;
         const pp = points.geometry.attributes.position as THREE.BufferAttribute;

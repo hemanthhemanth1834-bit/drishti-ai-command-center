@@ -1,12 +1,14 @@
 // src/app/twin/page.tsx — 3D Digital Twin & Topography
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Navbar from '@/components/layout/Navbar';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import FloodTimeline from '@/components/three/FloodTimeline';
 import SceneShell from '@/components/3d/SceneShell';
+import TwinControls from '@/components/twin/TwinControls';
+import { activeLayers, getCamPreset, prefersReducedMotion, DEFAULT_HAZARDS, type HazardState } from '@/components/twin/twinLayers';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import type { TwinEntity, TerrainMode } from '@/components/3d/TwinViewport';
 import { Box, Waves, Flashlight, MousePointerClick, Package } from 'lucide-react';
@@ -23,6 +25,15 @@ export default function TwinPage() {
   const [drops, setDrops] = useState(0);
   const [events, setEvents] = useState<string[]>([]);
   const [terrain, setTerrain] = useState<TerrainMode>('satellite');
+  // STEP 30 — command-center layer/camera state (presentation only, SIMULATION)
+  const [hazards, setHazards] = useState<HazardState>(DEFAULT_HAZARDS);
+  const [corridor, setCorridor] = useState(true);
+  const [presetId, setPresetId] = useState<string | null>(null);
+  const [motionOK, setMotionOK] = useState(true);
+
+  useEffect(() => {
+    setMotionOK(!prefersReducedMotion());
+  }, []);
 
   const alt = live?.alt_m ?? 120;
   const tLat = live?.lat ?? 17.385;
@@ -82,6 +93,10 @@ export default function TwinPage() {
               mapLat={tLat}
               mapLon={tLon}
               onSelect={setSelected}
+              hazards={hazards}
+              corridor={corridor}
+              camPreset={presetId ? { dist: getCamPreset(presetId).dist, focus: getCamPreset(presetId).focus } : null}
+              motionOK={motionOK}
             />
             {/* Live telemetry HUD pinned inside the 3D viewport */}
             <div className="absolute top-3 right-3 w-52 bg-[#030d17]/85 backdrop-blur border border-[#00d2ff]/40 rounded-lg p-2.5 text-[10px] font-mono pointer-events-none">
@@ -144,9 +159,12 @@ export default function TwinPage() {
             </div>
           </div>
           </SceneShell>
-          <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2">
+          <div className="px-4 py-2 border-t border-[#1b314b] text-[11px] text-slate-400 flex items-center gap-2 flex-wrap" role="status" aria-label="Active command layers">
             <MousePointerClick className="w-3.5 h-3.5 text-[#00d2ff]" />
             Click a marker to pick an entity • drag-free orbit cam • fog depth 12–30u
+            <span className="ml-auto text-slate-500">
+              LAYERS: {activeLayers(hazards, corridor).join(' + ') || 'NONE'} · VIEW: {presetId ? getCamPreset(presetId).label : 'FREE'} · {motionOK ? 'MOTION ON' : 'REDUCED MOTION'}
+            </span>
           </div>
           <div className="px-4 py-2 border-t border-[#1b314b] text-[10px] text-slate-400 flex flex-wrap gap-x-3 gap-y-1">
             <span className="font-bold text-slate-300">LEGEND:</span>
@@ -170,6 +188,14 @@ export default function TwinPage() {
         </section>
 
         <section className="lg:col-span-4 flex flex-col gap-4">
+          <TwinControls
+            hazards={hazards}
+            onHazards={setHazards}
+            corridor={corridor}
+            onCorridor={setCorridor}
+            presetId={presetId}
+            onPreset={setPresetId}
+          />
           <div className="bg-[#051424] border border-[#1b314b] rounded-xl p-4">
             <div className="text-xs font-bold text-white flex items-center gap-1.5 pb-3 border-b border-[#1b314b]">
               <Waves className="w-4 h-4 text-[#00d2ff]" /> HYDRAULIC SURGE PLANE
