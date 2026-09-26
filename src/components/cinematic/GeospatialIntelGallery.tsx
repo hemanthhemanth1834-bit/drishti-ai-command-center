@@ -15,116 +15,124 @@ export type IntelExample = {
   description: string;
   imageUrl: string;
   fallbackGradient: string;
+  /** Truth verdict shown in the detail modal — never claims live. */
+  verdict: string;
   metrics: { label: string; value: string }[];
 };
 
-const INTEL_EXAMPLES: IntelExample[] = [
+export const INTEL_EXAMPLES: IntelExample[] = [
   {
     id: "sat-flood-01",
     category: "satellite",
-    title: "Multispectral Delta Inundation Analysis",
-    badge: "EARTH OBSERVATION",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "30m GSD / 185km Swath",
-    description: "False-color infrared imagery differentiating submerged lowlands from standing structures. Water absorbs shortwave infrared (black/dark blue), while unaffected vegetation appears bright cyan/green.",
-    imageUrl: "https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?auto=format&fit=crop&w=1200&q=80",
+    title: "Kerala Inundation — Sentinel-2 After Image",
+    badge: "HISTORICAL · FLOOD",
+    source: "NASA Earth Observatory record 92669 — archived observation, not live",
+    license: "Public domain (NASA/USGS; Sentinel data via ESA)",
+    sensor: "Sentinel-2 MSI (archival capture — not a live tasking)",
+    resolution: "Bands 11-8-3 · 2018-08-22",
+    description: "False-color inundation over Kerala: flood water appears dark blue, vegetation bright green. Swollen rivers altered the landscape during the August 2018 floods.",
+    imageUrl: "/img/photos/kerala-after.jpg",
     fallbackGradient: "radial-gradient(ellipse at center, #004d7a, #001f3f, #020b14)",
+    verdict: "VERIFIED SOURCE-BACKED — ARCHIVED 2018-08-22, NOT LIVE",
     metrics: [
-      { label: "Submerged Area", value: "142.8 km²" },
-      { label: "Runoff Coefficient", value: "0.84" },
-        { label: "Confidence", value: "N/A · example" },
+      { label: "Acquired", value: "2018-08-22" },
+      { label: "Sensor", value: "Sentinel-2 MSI" },
+      { label: "Status", value: "HISTORICAL" },
     ],
   },
   {
     id: "drone-sar-02",
     category: "drone",
-    title: "Autonomous Thermal FLIR Search & Rescue",
-    badge: "DRONE SAR",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "3.2cm/px @ 80m AGL",
-    description: "Forward-Looking Infrared (FLIR) aerial stream highlighting human body heat signatures amidst debris and cold flood currents. DRISHTI computer vision isolates clusters of interest.",
-    imageUrl: "https://images.unsplash.com/photo-1508614589041-895b88991e3e?auto=format&fit=crop&w=1200&q=80",
+    title: "Helicopter Flood Rescue — SAR Reference",
+    badge: "ARCHIVAL · SAR",
+    source: "U.S. Navy via Wikimedia Commons — archival photo, not a DRISHTI-X feed",
+    license: "Public domain (U.S. Navy)",
+    sensor: "Archival photograph — not a drone feed",
+    resolution: "Harvey relief · Texas",
+    description: "U.S. Navy helicopter flood rescue during Hurricane Harvey relief. Operational search-and-rescue context only — DRISHTI-X claims no live drone feed here.",
+    imageUrl: "/img/photos/emergency-rescue.jpg",
     fallbackGradient: "radial-gradient(ellipse at center, #780206, #061161, #020b14)",
+    verdict: "VERIFIED SOURCE-BACKED — ARCHIVAL PHOTO, NOT A DRONE FEED",
     metrics: [
-      { label: "Heat Signatures", value: "14 Detected" },
-      { label: "Drone Altitude", value: "85m AGL" },
-      { label: "Search Grid Speed", value: "12 m/s" },
+      { label: "Source", value: "U.S. Navy" },
+      { label: "Event", value: "Hurricane Harvey" },
+      { label: "Status", value: "ARCHIVAL" },
     ],
   },
   {
     id: "vision-detect-03",
     category: "vision",
-    title: "Real-time Edge Computer Vision & Segment Bounding",
-    badge: "COMPUTER VISION",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "3840x2160 @ 60 FPS (Sub-20ms Latency)",
-    description: "Onboard drone YOLO/TensorRT segmentation model detecting breached embankments, stranded livestock, submerged vehicles, and active distress waving in real-time.",
-    imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
+    title: "Debris Flow — Landslide Detection Reference",
+    badge: "HISTORICAL · LANDSLIDE",
+    source: "NASA Earth Observatory record 147973 — archived observation, not live",
+    license: "Public domain (NASA)",
+    sensor: "Archival satellite observation",
+    resolution: "India · debris flow",
+    description: "Documented deadly debris flow in India. Real slope-failure context for what detection models look for — not a current event.",
+    imageUrl: "/assets/drishti-x/real-world/05_landslide_india/debris-flow.jpg",
     fallbackGradient: "radial-gradient(ellipse at center, #0052d4, #4364f7, #020b14)",
+    verdict: "VERIFIED SOURCE-BACKED — ARCHIVED, NOT A CURRENT EVENT",
     metrics: [
-      { label: "Latency", value: "18.4 ms" },
-      { label: "Inference Rate", value: "54.2 FPS" },
-      { label: "Precision (mAP)", value: "0.932" },
+      { label: "Record", value: "NASA EO 147973" },
+      { label: "Category", value: "Landslide" },
+      { label: "Status", value: "HISTORICAL" },
     ],
   },
   {
     id: "dem-elevation-04",
     category: "terrain",
-    title: "3D Digital Elevation Contour & Runoff Vectors",
-    badge: "GEOSPATIAL DEM",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "12.5m Spatial Elevation",
-    description: "High-resolution digital terrain model computing hydraulic flow velocity and flood wall overtopping probabilities for low-elevation arterial evacuation channels.",
-    imageUrl: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+    title: "Himalayan Terrain — Orbital Context",
+    badge: "EARTH OBSERVATION · TERRAIN",
+    source: "NASA JSC ISS064-E-037041 via Wikimedia Commons — 23 Feb 2021",
+    license: "Public domain (NASA)",
+    sensor: "Nikon D5 aboard the ISS (archival photograph)",
+    resolution: "2021-02-23 · 264 mi altitude",
+    description: "Oblique orbital photograph across India and the Himalayas. Real mountain-slope terrain context — not elevation measurements.",
+    imageUrl: "/img/photos/mission-himalaya.jpg",
     fallbackGradient: "radial-gradient(ellipse at center, #134e5e, #71b280, #020b14)",
+    verdict: "VERIFIED SOURCE-BACKED — ARCHIVED PHOTO, NOT A DEM",
     metrics: [
-      { label: "Peak Elevation", value: "542m MSL" },
-      { label: "Drainage Slope", value: "4.8%" },
-      { label: "Contour Interval", value: "2.0m" },
+      { label: "Platform", value: "ISS" },
+      { label: "Photo ID", value: "ISS064-E-037041" },
+      { label: "Acquired", value: "2021-02-23" },
     ],
   },
   {
     id: "sat-cyclone-05",
     category: "satellite",
-    title: "Orbital Geostationary Cyclone Doppler Tracking",
-    badge: "METEOROLOGY",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "0.5km Visible / 2.0km Thermal",
-    description: "Deep convection cloud-top cooling analysis and spiral wind vector computation predicting landfall trajectory and extreme precipitation intensity belts.",
-    imageUrl: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=1200&q=80",
+    title: "Cyclone Ilsa — Satellite Observation",
+    badge: "HISTORICAL · CYCLONE",
+    source: "NASA Earth Observatory record 37599 — archived observation, not live",
+    license: "Public domain (NASA)",
+    sensor: "Archival satellite observation",
+    resolution: "Cyclone Ilsa",
+    description: "Documented cyclone observation from NASA's Earth Observatory archive. Historical storm context — not a current cyclone.",
+    imageUrl: "/assets/drishti-x/real-world/02_cyclone/cyclone-ilsa.jpg",
     fallbackGradient: "radial-gradient(ellipse at center, #2c3e50, #000000, #020b14)",
+    verdict: "VERIFIED SOURCE-BACKED — ARCHIVED, NOT A CURRENT STORM",
     metrics: [
-      { label: "Wind Velocity", value: "145 km/h" },
-      { label: "Central Pressure", value: "968 hPa" },
-      { label: "Track Variance", value: "±8.4 km" },
+      { label: "Record", value: "NASA EO 37599" },
+      { label: "Category", value: "Cyclone" },
+      { label: "Status", value: "HISTORICAL" },
     ],
   },
   {
     id: "drone-mesh-06",
     category: "drone",
-    title: "Sovereign Drone Swarm Relay & Mesh Telemetry",
-    badge: "SWARM MESH",
-    source: "Illustrative image (Unsplash) — not a live observation",
-    license: "Unsplash License (illustrative placeholder)",
-    sensor: "Illustrative spec — not a real sensor",
-    resolution: "15km Line-of-Sight P2P Link",
-    description: "Decentralized ad-hoc airborne communications mesh restoring civilian connectivity and GPS-denied inertial positioning across severed cellular towers.",
-    imageUrl: "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?auto=format&fit=crop&w=1200&q=80",
+    title: "Sovereign Drone Swarm — Simulation Concept",
+    badge: "SIMULATION · FLEET",
+    source: "DRISHTI-X project-original diagram — concept only, no live feed",
+    license: "Project-original (no license needed)",
+    sensor: "No live feed — simulated fleet concept",
+    resolution: "SIM FLEET · concept",
+    description: "Concept render of a relay/mesh drone fleet for severed-connectivity scenarios. The fleet is simulated — no live drone feed exists.",
+    imageUrl: "/img/drone.svg",
     fallbackGradient: "radial-gradient(ellipse at center, #0f2027, #203a43, #020b14)",
+    verdict: "SIMULATION CONCEPT — NOT A LIVE FEED",
     metrics: [
-      { label: "Swarm Nodes", value: "8 Active" },
-      { label: "Packet Loss", value: "0.04%" },
-      { label: "Throughput", value: "4.2 Mbps" },
+      { label: "Feed", value: "NO LIVE FEED" },
+      { label: "Fleet", value: "SIMULATION" },
+      { label: "Status", value: "CONCEPT" },
     ],
   },
 ];
@@ -145,10 +153,10 @@ export default function GeospatialIntelGallery() {
       <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 text-xs font-mono">
         <span className="text-slate-400 text-[11px] uppercase tracking-wider flex items-center gap-1.5 mr-2">
           <Eye className="w-3.5 h-3.5 text-[#00d2ff]" />
-          INTEL FEEDS:
+          INTEL REFERENCE:
         </span>
         {[
-          { key: "all", label: "ALL FEEDS", icon: Eye },
+          { key: "all", label: "ALL", icon: Eye },
           { key: "satellite", label: "SATELLITE EO", icon: Satellite },
           { key: "drone", label: "DRONE SAR", icon: Plane },
           { key: "vision", label: "AI VISION", icon: Crosshair },
@@ -214,7 +222,7 @@ export default function GeospatialIntelGallery() {
               {/* Status Badge */}
               <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/75 backdrop-blur border border-[#00d2ff]/50 text-[10px] text-[#00d2ff] font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#fbbf24] animate-ping" />
-                EXAMPLE · {item.badge}
+                {item.badge}
               </div>
 
               {/* Sensor Spec Tag */}
@@ -250,7 +258,7 @@ export default function GeospatialIntelGallery() {
               </div>
 
               <div className="mt-2 text-[9px] text-slate-500 flex items-center justify-between">
-                <span className="truncate max-w-[200px]">{item.source} · EXAMPLE</span>
+                <span className="truncate max-w-[200px]">{item.source}</span>
                 <span className="text-[#00d2ff] group-hover:underline">EXPAND →</span>
               </div>
             </div>
@@ -329,7 +337,7 @@ export default function GeospatialIntelGallery() {
                   <span className="text-emerald-400">{activeModal.license}</span>
                 </div>
                 <div className="text-[10px] text-[#fbbf24] flex items-center gap-1 font-bold">
-                  ILLUSTRATIVE EXAMPLE — NOT A LIVE OBSERVATION
+                  {activeModal.verdict}
                 </div>
               </div>
             </div>

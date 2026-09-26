@@ -15,7 +15,8 @@ const STATIC = [
   { provider: 'Web Push (VAPID)', purpose: 'Free push notifications', license: 'Open web standard', live: 'NOT_CONFIGURED', free: 'Yes', fallback: 'In-app queue' },
   { provider: 'SMTP / Mailpit', purpose: 'Email alerts', license: 'Open', live: 'NOT_CONFIGURED', free: 'Yes (self-host)', fallback: 'In-app queue' },
   { provider: 'Project SVG diagrams', purpose: 'Contextual visuals (public/img/)', license: 'Original, in-repo', live: 'STATIC', free: 'Yes', fallback: '—' },
-  { provider: 'Unsplash placeholders', purpose: 'Gallery examples (labeled EXAMPLE)', license: 'Unsplash License', live: 'EXTERNAL hotlink', free: 'Yes', fallback: 'gradient blocks' },
+  { provider: 'NASA EO archive (vendored)', purpose: 'Historical cyclone/flood/landslide photos + Kerala before/after', license: 'Public domain (NASA)', live: 'STATIC, verified', free: 'Yes', fallback: '—' },
+  { provider: 'FEMA / U.S. Navy (vendored)', purpose: 'EOC + rescue archival photos', license: 'Public domain (U.S. federal)', live: 'STATIC, verified', free: 'Yes', fallback: '—' },
 ];
 
 export default function DataSourcesPage() {
