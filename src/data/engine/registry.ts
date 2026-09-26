@@ -50,8 +50,8 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     rateLimitNotes: 'Public event API; cache responses, avoid polling loops.',
     attribution: 'Events: NASA EONET',
     freshnessThresholdsMs: [6 * 3600 * 1000, 24 * 3600 * 1000],
-    adapter: 'EventAdapter (Step 27)',
-    enabled: false,
+    adapter: 'EventAdapter',
+    enabled: true,
   },
   {
     id: 'usgs', name: 'USGS Earthquake Hazards', category: 'earthquake',

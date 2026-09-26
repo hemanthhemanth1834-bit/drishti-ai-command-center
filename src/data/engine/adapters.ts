@@ -63,6 +63,19 @@ export interface FireProperties {
   version: string | null;
 }
 
+export interface EventProperties {
+  eventId: string;
+  title: string;
+  description: string | null;
+  categoryId: string | null;
+  categoryTitle: string | null;
+  open: boolean | null;
+  closedDate: string | null;
+  sourceIds: string[];
+  sourceUrl: string | null;
+  geometryCount: number;
+}
+
 function num(v: unknown): number | null {
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
@@ -307,6 +320,69 @@ export function adaptOpenMeteoForecast(
         rawSourceReference: `open-meteo daily ${lat},${lon}`,
       });
     }
+  }
+  return { records, skipped };
+}
+
+/** Normalize NASA EONET v3 natural events. Latest geometry entry wins;
+ * non-Point geometries yield list-only records (no fabricated points). */
+export function adaptEonetEvents(
+  payload: unknown,
+  retrievedAt: string = nowIso(),
+): { records: DataRecord<EventProperties>[]; skipped: number } {
+  const { source, sourceUrl, attribution } = provenanceFor('nasa-eonet', 'LATEST_AVAILABLE');
+  const records: DataRecord<EventProperties>[] = [];
+  let skipped = 0;
+  const events = (payload as { events?: unknown })?.events;
+  if (!Array.isArray(events)) return { records, skipped: 0 };
+  for (const e of events) {
+    const o = (e ?? {}) as Record<string, unknown>;
+    if (typeof o.id !== 'string' || !o.id) {
+      skipped += 1;
+      continue;
+    }
+    const cats = Array.isArray(o.categories) ? (o.categories as Record<string, unknown>[]) : [];
+    const cat = cats[0] ?? {};
+    const geoms = Array.isArray(o.geometry) ? (o.geometry as Record<string, unknown>[]) : [];
+    const last = geoms[geoms.length - 1] as Record<string, unknown> | undefined;
+    const coords = Array.isArray(last?.coordinates) ? (last!.coordinates as unknown[]) : null;
+    const isPoint = last?.type === 'Point' && coords && coords.length >= 2;
+    const lon = isPoint ? num(coords![0]) : null;
+    const lat = isPoint ? num(coords![1]) : null;
+    const hasCoords = isValidCoordinates(lat, lon);
+    const ts = toUtcIso((last?.date as string | undefined) ?? null);
+    const closedRaw = typeof o.closed === 'string' ? o.closed : null;
+    const srcs = Array.isArray(o.sources)
+      ? (o.sources as Record<string, unknown>[]).map((s) => (typeof s.id === 'string' ? s.id : '')).filter(Boolean)
+      : [];
+    const link = typeof o.link === 'string' ? o.link : null;
+    records.push({
+      id: `eonet-${o.id}`,
+      source, sourceUrl,
+      dataType: 'natural-event',
+      timestamp: ts,
+      retrievedAt,
+      status: 'LATEST_AVAILABLE',
+      freshness: 'UNKNOWN',
+      coverage: typeof cat.title === 'string' ? cat.title : null,
+      coordinates: hasCoords ? { lat: lat as number, lon: lon as number } : null,
+      geometry: null,
+      properties: {
+        eventId: o.id,
+        title: typeof o.title === 'string' ? o.title : o.id,
+        description: typeof o.description === 'string' && o.description ? o.description : null,
+        categoryId: typeof cat.id === 'string' ? cat.id : null,
+        categoryTitle: typeof cat.title === 'string' ? cat.title : null,
+        open: closedRaw == null ? (geoms.length > 0 ? true : null) : false,
+        closedDate: closedRaw ? toUtcIso(closedRaw) ?? closedRaw : null,
+        sourceIds: srcs,
+        sourceUrl: link,
+        geometryCount: geoms.length,
+      },
+      attribution,
+      limitations: 'EONET curation latency varies; geometry may be approximate; not a warning feed.',
+      rawSourceReference: link ?? (o.id as string),
+    });
   }
   return { records, skipped };
 }
