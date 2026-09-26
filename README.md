@@ -842,3 +842,151 @@ ML Backend → Model Endpoint → Model Health / Prediction UI. **CURRENT BACKEN
 - **08:00** — [Model Health](https://drishti-ai-command-center.vercel.app/model-health): OFFLINE honesty + SYNTHETIC-DEMO semantics
 - **09:00** — [GitHub architecture](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/src/data/engine) + [docs](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs)
 - **10:00** — [Documentation and provenance](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-DELIVERY-SUMMARY.md): done.
+
+---
+
+# 🗂️ Professional Source Cards
+
+### Data Source — NASA GIBS
+
+| Field | Value |
+|---|---|
+| Provider | NASA Worldview / GIBS |
+| Data | Daily True-Color + 7-2-1 composites (4 curated layers) |
+| Access | Free, keyless WMTS |
+| Update | Daily NRT (~1-day latency) |
+| Authentication | None |
+| DRISHTI-X status | LATEST_AVAILABLE (per-tile measured) |
+| Provenance | Tile attributions + acquisition-vs-retrieved panel |
+| Alternative | [NASA Worldview](https://worldview.earthdata.nasa.gov/) (verified HTTP 200; external explorer, not an in-app source) |
+
+### Data Source — USGS Earthquakes
+
+| Field | Value |
+|---|---|
+| Provider | USGS Earthquake Hazards Program |
+| Data | M2.5+/7d GeoJSON (magnitude, depth, place, time, URLs) |
+| Access | Free, keyless |
+| Update | Minutes (feed latency) |
+| Authentication | None |
+| DRISHTI-X status | LIVE (5-min engine cache) |
+| Provenance | Per-event USGS links + retrieval timestamps |
+| Alternative | FDSN-compatible services (unverified, not integrated) |
+
+### Data Source — Open-Meteo
+
+| Field | Value |
+|---|---|
+| Provider | Open-Meteo (CC-BY 4.0, attribution shown in-app) |
+| Data | Current + hourly + daily (temp, humidity, precip, wind, code) |
+| Access | Free non-commercial, no key |
+| Update | Model runs, tens of minutes |
+| Authentication | None |
+| DRISHTI-X status | LIVE (10-min engine cache) |
+| Provenance | Retrieved time + cache state + CC-BY line |
+| Alternative | None needed; Open-Meteo satisfies project needs |
+
+### Data Source — NASA EONET
+
+| Field | Value |
+|---|---|
+| Provider | NASA EONET (open event API) |
+| Data | Natural events: id/title/category/geometry/dates/sources |
+| Access | Free, keyless |
+| Update | Curated, variable latency |
+| Authentication | None |
+| DRISHTI-X status | LIVE (30-min engine cache) |
+| Provenance | Source links per event + retrieval timestamps |
+| Alternative | USGS feeds where overlapping (already used for quakes) |
+
+### Data Source — NASA FIRMS
+
+| Field | Value |
+|---|---|
+| Provider | NASA FIRMS (MODIS/VIIRS/Landsat active fire) |
+| Data | Hotspot detections (lat/lon/time/confidence) |
+| Access | Free MAP_KEY signup, server-side only |
+| Update | NRT ~1–3h (when keyed) |
+| Authentication | MAP_KEY required — none configured |
+| DRISHTI-X status | NOT_CONFIGURED (0 detections, reason shown) |
+| Provenance | Empty panel + enablement docs, never synthetic fills |
+| Alternative | MODIS 7-2-1 burn-scar context via GIBS (integrated) |
+
+### Data Source — OpenStreetMap ecosystem
+
+| Field | Value |
+|---|---|
+| Provider | OSM tiles / Nominatim / Overpass / OSRM demo server |
+| Data | Basemaps, geocoding, POIs, routing |
+| Access | Free with strict usage policies (Nominatim 1 req/s, throttled + cached in-app) |
+| Update | Continuously (community) |
+| Authentication | None |
+| DRISHTI-X status | AVAILABLE/LIVE |
+| Provenance | Tile attributions throughout |
+| Alternative | Esri/CARTO/OpenTopoMap basemaps (integrated as alternates) |
+
+### Data Source — Copernicus / Sentinel
+
+| Field | Value |
+|---|---|
+| Provider | Copernicus Data Space |
+| Data | Sentinel-1/-2 products (would-be: acquisition, cloud %, footprint) |
+| Access | Free account; credentials server-side only |
+| Update | N/A (not connected) |
+| Authentication | Required — none configured |
+| DRISHTI-X status | NOT_CONFIGURED (live-probed 2026-09-26: catalog visible, no public imagery path) |
+| Provenance | Honest unavailable state + enablement docs |
+| Alternative | NASA GIBS daily composites (integrated, operational) |
+
+---
+
+# 🔄 Free Data Source Alternatives
+
+| Capability | Primary | Free Alternative | DRISHTI-X State | Notes |
+|---|---|---|---|---|
+| Satellite imagery | NASA GIBS | [NASA Worldview](https://worldview.earthdata.nasa.gov/) | LIVE/AVAILABLE | Worldview verified reachable; external explorer, complementary not equivalent |
+| Earthquakes | USGS | FDSN-compatible (e.g. IRIS) | LIVE | IRMS probe inconclusive; not integrated; USGS suffices |
+| Weather | Open-Meteo | NOAA public services | LIVE | Documented only; no second provider needed |
+| Natural Events | NASA EONET | USGS/NOAA feeds | LIVE | Overlapping coverage already used |
+| Fire | NASA FIRMS | NOAA thermal sources | NOT_CONFIGURED | Unverified alternatives not wired; burn-scar context instead |
+| Maps | OSM | USGS/NASA layers, Esri/CARTO | AVAILABLE | Alternates integrated; policies respected |
+| Sentinel imagery | Copernicus | NASA/NOAA alternatives | NOT_CONFIGURED | GIBS covers the operational need; datasets differ, no equivalence claimed |
+
+---
+
+# 🏷️ Visual Provenance
+
+Every documentation image follows one rule: **real pixels, named source, or it doesn't ship.**
+
+- `public/poster.jpg` — Source: original DRISHTI-X artwork. Used as README hero.
+- `public/img/photos/*.jpg` (6) — Source: NASA/FEMA/U.S. Navy, public domain (verified file pages). Used in-app with ILLUSTRATIVE badges + captions; never presented as live observations.
+- `public/img/*.svg` (26) — Source: original in-repo illustrations.
+- No AI-generated disaster photos. No stock photos as evidence. No screenshots presented as live output. Full table: [`public/img/SOURCES.md`](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/public/img/SOURCES.md).
+
+---
+
+# 🧑‍💼 Professional Operator Walkthrough
+
+Role-based paths (all links production-verified):
+
+- **Evaluator (5 min):** [Command Center](https://drishti-ai-command-center.vercel.app/command) → module pills → [Earthquakes](https://drishti-ai-command-center.vercel.app/earthquakes) newest event → [Model Health](https://drishti-ai-command-center.vercel.app/model-health) OFFLINE honesty → done. Proves: truthful aggregation.
+- **Developer (10 min):** [Engine code](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/src/data/engine) → registry → one adapter → `npm test` (25 engine cases) → [Events](https://drishti-ai-command-center.vercel.app/events) to see it live. Proves: testable honest pipeline.
+- **Researcher:** [EONET docs](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/EONET-EVENT-INTELLIGENCE.md) → polygon-handling code → live polygon event. Proves: geometry integrity.
+- **Designer:** [Twin](https://drishti-ai-command-center.vercel.app/twin) layers/cameras → [Command Center](https://drishti-ai-command-center.vercel.app/command) status language. Proves: simulation containment.
+
+---
+
+# ⚖️ Live vs Simulation vs External Example
+
+| Example | Classification | Source | Current State |
+|---|---|---|---|
+| USGS event list | LIVE data | USGS | Measured feed |
+| Open-Meteo current | LIVE data | Open-Meteo | Keyless feed |
+| EONET records | LIVE data | EONET | Open feed |
+| GIBS tiles | LIVE imagery | GIBS | Daily NRT, measured |
+| FirePanel emptiness | NOT_CONFIGURED | FIRMS | No key — honest gap |
+| Model metrics | SYNTHETIC-DEMO | Artifacts | Demo artifact |
+| Twin hazards | SIMULATION | Scene data | Scenario |
+| Reunion flow | SIMULATION | Local flow | Demo aid |
+| Worldview link | EXTERNAL EXAMPLE | NASA tool | Complementary, not integrated |
+| IRIS/FDSN mention | EXTERNAL UNVERIFIED | — | Not integrated, no claims |
