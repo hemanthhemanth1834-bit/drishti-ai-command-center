@@ -5,23 +5,23 @@
 
 **See Early · Understand Better · Act Faster · Save Lives**
 
-A free-first, GIS-driven disaster intelligence platform combining Earth observation, weather, terrain, AI/ML risk analysis, incident intelligence, early warning, emergency response, and resilience workflows — with honest LIVE / DEMO / SIMULATION / OFFLINE provenance on every value.
+DRISHTI-X is a disaster-intelligence platform combining real-time public data, GIS, satellite Earth observation, AI/ML architecture, and a 3D digital twin into an operator-oriented command center — with honest LIVE / DEMO / SIMULATION / OFFLINE provenance on every value.
 
 [![Live Demo](https://img.shields.io/badge/LIVE_DEMO-production-00d2ff?style=for-the-badge)](https://drishti-ai-command-center.vercel.app/)
 [![GitHub](https://img.shields.io/badge/GitHub-repository-181717?style=for-the-badge&logo=github)](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center)
-[![Docs](https://img.shields.io/badge/DOCS-28_files-7de9ff?style=for-the-badge)](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs)
+[![Docs](https://img.shields.io/badge/DOCS-29_files-7de9ff?style=for-the-badge)](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs)
 
 ![Production](https://img.shields.io/badge/Production-Ready-34d399)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2.5-black?logo=nextdotjs)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript)
-![Python FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?logo=fastapi)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.116.1-009688?logo=fastapi)
 ![Tests 131/131](https://img.shields.io/badge/Vitest-131/131-34d399)
 ![Pytest 51/51](https://img.shields.io/badge/Pytest-51/51-34d399)
 ![License](https://img.shields.io/badge/License-Not_specified-lightgrey)
 
 [🌐 Live Demo](https://drishti-ai-command-center.vercel.app/) · [💻 GitHub](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center) · [📚 Documentation](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs) · [🏗 Architecture](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-ARCHITECTURE.md) · [🚀 Deployment](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DEPLOYMENT.md)
 
-> **Working prototype — not a certified emergency-warning system.** It does not replace official government warnings. Live, demo, and unavailable integrations are labeled as such throughout. No `LICENSE` file is currently included in the repository.
+> **Working prototype — not a certified emergency-warning system.** It does not replace official government warnings. **No `LICENSE` file is currently included in the repository.**
 
 ![DRISHTI-X command-center artwork — for a safer, stronger, resilient India](https://raw.githubusercontent.com/hemanthhemanth1834-bit/drishti-ai-command-center/main/public/poster.jpg)
 > **Command artwork:** the cinematic poster rendered on the Command Center hero. Original project asset.
@@ -32,961 +32,349 @@ A free-first, GIS-driven disaster intelligence platform combining Earth observat
 
 ## What is DRISHTI-X?
 
-DRISHTI-X is an AI Disaster Intelligence Command Center: a Next.js + FastAPI platform where **GIS + AI/ML + weather + terrain + sensors + citizen reports** read and write the same intelligence loop. It exists because disaster response fails fastest at the seams — rainfall data lives apart from terrain maps, terrain apart from road status, roads apart from field reports, and all of it apart from the citizens at risk. DRISHTI-X connects them.
+### In one sentence
+DRISHTI-X is a free-first, GIS-driven disaster intelligence platform where Earth observation, weather, terrain, AI/ML risk analysis, incident reports, and emergency response read and write one shared intelligence loop.
 
-Designed for citizens, field responders, operators, emergency-management teams, authorities, and researchers. What makes it different: **provenance honesty as architecture** — every value carries LIVE / DEMO / SIMULATION / OFFLINE / NOT_CONFIGURED status, demo can never silently become live (asserted in tests), and a post-launch truthfulness patch removed every fabricated operational number from the Command Center.
+### In simple terms
+Disaster information is scattered: rainfall lives apart from terrain maps, terrain apart from roads, roads apart from field reports, and all of it apart from the citizens at risk. DRISHTI-X puts them on one screen with honest labels, so anyone — citizen, responder, operator, researcher — can see what is known, what is simulated, and what is unavailable.
 
-An operator can move from the [Command Center](https://drishti-ai-command-center.vercel.app/command) to the [Risk Map](https://drishti-ai-command-center.vercel.app/risk-map), inspect a geographic area, cross-reference [USGS earthquake events](https://drishti-ai-command-center.vercel.app/earthquakes), check [Open-Meteo weather](https://drishti-ai-command-center.vercel.app/weather), inspect [NASA GIBS imagery](https://drishti-ai-command-center.vercel.app/satellite), review [model health](https://drishti-ai-command-center.vercel.app/model-health), and open the [3D Digital Twin](https://drishti-ai-command-center.vercel.app/twin) — all routes verified live below.
+### Technical definition
+Next.js 14 + FastAPI platform: 51 routes, 28 backend routers, 29 database tables, a typed TypeScript data engine (client/cache/freshness/provenance), scikit-learn RandomForest pipeline, Leaflet/MapLibre GIS, Three.js/R3F 3D, keyless public feeds (Open-Meteo, USGS, GIBS, OSM, EONET), credential-gated adapters kept honestly NOT_CONFIGURED.
 
-## Quick Project Overview
+### What problem it addresses
+Fragmented disaster data across weather, earthquakes, events, satellite, GIS, AI/ML, and operations tooling — each with different formats, freshness, and reliability — combined into one interface without fabricating certainty.
 
-| Area | DRISHTI-X Implementation |
-|---|---|
-| Frontend | Next.js 14.2.5 · React 18 · TypeScript 5.5 · Tailwind 3.4 |
-| Backend | FastAPI 0.116.1 · 28 routers · SQLite dev / Postgres-ready (29 tables) |
-| Database | SQLite file fallback; `DATABASE_URL` switch; seeds guarantee registry data |
-| AI/ML | scikit-learn RandomForest `Landslide-RF-v1` (**SYNTHETIC-DEMO**, never field accuracy) |
-| GIS | Leaflet 1.9.4 + MapLibre 6.10 + OSM/Nominatim/Overpass/OSRM |
-| Satellite | NASA GIBS WMTS (4 layers, 14-day NRT, measured liveness) |
-| Weather | Open-Meteo keyless (current/hourly/daily via data engine) |
-| Earthquakes | USGS M2.5+/7d via data engine |
-| Disaster Events | NASA EONET (100 records, polygons list-only) |
-| 3D | Three.js 0.169 + R3F 8.18 (twin, globe, command views) |
-| Deployment | GitHub `main` → Vercel Git integration (never `vercel --prod`) |
-| Testing | Vitest 131/131 · Pytest 51/51 · typecheck/lint/build clean |
+### What makes the architecture different
+Provenance honesty as architecture: an 11-state model (LIVE → OFFLINE) rides every value into badge UI and is asserted in tests; a post-launch patch deleted every fabricated operational number (98.4% confidence, 2.0 Hz, 26+3n drone count, LEO-lock) — verified zero repo-wide.
 
-## System Architecture
+## The Problem
+
+Weather, earthquake, event, satellite, GIS, AI/ML, and operations data each live in separate systems with separate formats and freshness. Operators cross-reference them by hand; citizens get none of it. DRISHTI-X merges them into one command surface while preserving each source's identity — it does not replace government emergency systems and never presents itself as an official warning channel.
+
+## Project Objectives
+
+- Multi-source intelligence (7-source registry: GIBS, FIRMS, EONET, USGS, Open-Meteo, Copernicus, OSM)
+- Geographic visualization (Leaflet + MapLibre, 51-route GIS app)
+- Event awareness (USGS + EONET, real feeds)
+- Satellite observation (GIBS daily NRT viewer + reference pairs)
+- Operational dashboards (command center + 14-module status grid)
+- Model integration (RF pipeline + honest health surface)
+- 3D visualization (twin, globe, command views with SIMULATION containment)
+- Source provenance (every value labeled)
+- Resilient data handling (cache-first, offline-labeled, deduped, throttled)
+
+## Who Can Explore DRISHTI-X?
+
+Students (live APIs + readable engine code), researchers (EONET/USGS/event geometry handling), GIS learners (Leaflet layers, OSM policies in practice), AI/ML learners (RF pipeline + SYNTHETIC-DEMO ethics), disaster-management technology evaluators (honest-state audit trail), software engineering evaluators (131 + 51 tests, gated deploys). No official operational deployment is claimed.
+
+## Complete System Overview
 
 ```mermaid
 flowchart TB
     USER[Citizen / Responder / Operator]
-    UI[Next.js 51 routes + R3F + Leaflet]
-    GIS[GIS Intelligence: grid + EO layers]
-    ENGINE[Data Engine: client/cache/freshness/provenance]
-    API[FastAPI 28 routers]
-    EXT[Open-Meteo · USGS · GIBS · OSM · EONET]
-    ML[AI/ML: RF pipeline + explain]
-    DB[(SQLite / Postgres-ready: 29 tables)]
-    USER --> UI
-    UI --> GIS
-    UI --> ENGINE
-    UI --> API
-    ENGINE --> EXT
-    API --> EXT
-    API --> ML
-    API --> DB
+    CC[DRISHTI-X Command Center]
+    MODS[Operational Modules]
+    RISK[Risk Map]
+    SAT[Satellite / EO]
+    FIRE[Fire Intelligence]
+    QUAKE[Earthquake Intelligence]
+    WX[Weather Intelligence]
+    EV[Disaster Events]
+    AIML[AI / ML]
+    TWIN[3D Digital Twin]
+    CC --> MODS
+    MODS --> RISK
+    MODS --> SAT
+    MODS --> FIRE
+    MODS --> QUAKE
+    MODS --> WX
+    MODS --> EV
+    MODS --> AIML
+    MODS --> TWIN
+    RISK --> ENGINE[DATA ENGINE]
+    SAT --> ENGINE
+    FIRE --> ENGINE
+    QUAKE --> ENGINE
+    WX --> ENGINE
+    EV --> ENGINE
+    AIML --> API[FastAPI Backend]
+    ENGINE --> EXT[EXTERNAL DATA SOURCES]
+    ENGINE --> NORM[NORMALIZATION / CACHE / HEALTH]
+    NORM --> UI[USER INTERFACE]
 ```
 
-Full version: [docs/FINAL-ARCHITECTURE.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-ARCHITECTURE.md).
+Backend-backed modules currently read OFFLINE (Railway trial expired); keyless direct feeds remain LIVE. Not every module depends on the same backend — the module grid proves it per-endpoint.
 
-## How the Project Works
+## Complete Architecture
+
+Frontend (Next.js 14.2.5, React 18, TS 5.5, Tailwind) → Data layer (`src/data/engine/`: typed client with 12s timeout, ≤2 transient-only retries, in-flight dedup) → Adapters (USGS/Open-Meteo/FIRMS-gated/EONET/GIBS) → External providers (keyless first) → Cache (source TTLs) → UI (routes/components/maps/3D). Backend where present: FastAPI 0.116.1 + Python ML (scikit-learn 1.9.1, pandas) + SQLite file (Postgres-ready via dormant `psycopg2-binary`). Auth: gateway key + PyJWT + OPERATOR_KEYS, 16-role RBAC. Full version: [docs/FINAL-ARCHITECTURE.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-ARCHITECTURE.md).
+
+## Complete Data Flow
 
 ```mermaid
 flowchart TD
-    A[USER] --> B[COMMAND CENTER]
-    B --> C[SELECT INTELLIGENCE MODULE]
-    C --> D[DATA SOURCE / API]
-    D --> E[ADAPTER / NORMALIZER]
-    E --> F[DATA ENGINE]
-    F --> G[CACHE / HEALTH / PROVENANCE]
-    G --> H[UI / MAP / AI / 3D]
-    H --> I[OPERATOR DECISION SUPPORT]
+    S[SOURCE] --> H[HTTP CLIENT]
+    H --> T[TIMEOUT / RETRY]
+    T --> A[ADAPTER]
+    A --> N[NORMALIZATION]
+    N --> C[CACHE]
+    C --> R[REGISTRY / HEALTH]
+    R --> U[UI]
+    U --> O[OPERATOR]
 ```
 
-1. **User** opens the Command Center and picks a module (risk, satellite, quakes, weather…).
-2. **Module** requests through the **Data Engine** (`fetchDataset`), never raw `fetch()` in components.
-3. **Adapter** normalizes the source payload (USGS GeoJSON, Open-Meteo, EONET, FIRMS-gated) into validated records; malformed rows are skipped and counted.
-4. **Cache + freshness + health** decide HIT/STALE, FRESH/AGING/STALE, AVAILABLE/DEGRADED.
-5. **UI** renders records with provenance badges; offline serves labeled stale cache or honest empty states.
-
-## 🧭 How to Explore DRISHTI-X
-
-```mermaid
-flowchart TD
-    A[Open DRISHTI-X] --> B[Command Center]
-    B --> C[Risk Map]
-    B --> D[Satellite / EO]
-    B --> E[Earthquake Intelligence]
-    B --> F[Weather Intelligence]
-    B --> G[Disaster Events]
-    B --> H[AI / ML]
-    B --> I[Model Health]
-    B --> J[3D Digital Twin]
-    C --> K[Compare Spatial Risk]
-    D --> K
-    E --> K
-    F --> K
-    G --> K
-    H --> K
-    K --> L[Return to Command Center]
-    L --> J
-```
-
-1. Start at [`/command`](https://drishti-ai-command-center.vercel.app/command) — status header, KPI row, module grid.
-2. Open [`/risk-map`](https://drishti-ai-command-center.vercel.app/risk-map) — layers, legend, inspect any point.
-3. Open [`/satellite`](https://drishti-ai-command-center.vercel.app/satellite) — GIBS viewer, date/layer controls, fire panel.
-4. Open [`/earthquakes`](https://drishti-ai-command-center.vercel.app/earthquakes) — USGS list, map, detail, timeline.
-5. Open [`/weather`](https://drishti-ai-command-center.vercel.app/weather) — current vs forecast, hourly, 7-day.
-6. Open [`/events`](https://drishti-ai-command-center.vercel.app/events) — EONET records, filters, map.
-7. Open [`/model-health`](https://drishti-ai-command-center.vercel.app/model-health) — metrics, SYNTHETIC-DEMO banner.
-8. Open [`/twin`](https://drishti-ai-command-center.vercel.app/twin) — 3D layers, cameras, timeline.
-
-## 🚨 Intelligence Modules
-
-| Module | Purpose · Data · State · Link |
-|---|---|
-| Command Center | Operational overview + per-module live status · backend + direct feeds · [open](https://drishti-ai-command-center.vercel.app/command) |
-| Risk Map | GIS grid + 8-layer overlay, scale/coords/fullscreen · GIBS/OSM/grid API · [open](https://drishti-ai-command-center.vercel.app/risk-map) |
-| Satellite / EO | GIBS viewer (4 layers, 14-day NRT), before/after slider · NASA · LATEST_AVAILABLE · [open](https://drishti-ai-command-center.vercel.app/satellite) |
-| Fire Intelligence | FIRMS adapter, zero synthetic fires · NOT_CONFIGURED (no key) · on `/satellite` |
-| Earthquake Intelligence | USGS list/map/detail/timeline · LIVE · [open](https://drishti-ai-command-center.vercel.app/earthquakes) |
-| Weather Intelligence | OM current/hourly/daily, observed vs forecast · LIVE · [open](https://drishti-ai-command-center.vercel.app/weather) |
-| Disaster Events | EONET records, filters, map · LIVE · [open](https://drishti-ai-command-center.vercel.app/events) |
-| AI/ML | RF pipeline, playground, explanations · SYNTHETIC-DEMO · [open](https://drishti-ai-command-center.vercel.app/ml) |
-| Model Health | Metrics, identity, drift honesty, timeline · OFFLINE-aware · [open](https://drishti-ai-command-center.vercel.app/model-health) |
-| 3D Digital Twin | Layers, cameras, timeline, SIMULATION-labeled · [open](https://drishti-ai-command-center.vercel.app/twin) |
-
-## 🔎 Real DRISHTI-X Examples
-
-### Earthquake investigation
-Open Command Center → Earthquake Intelligence → inspect USGS-derived events → select one → review magnitude/depth/time/location → follow provenance → [open the event on USGS](https://earthquake.usgs.gov/) via VIEW SOURCE.
-
-### Weather intelligence
-Open [`/weather`](https://drishti-ai-command-center.vercel.app/weather) → pick a verified showcase city → read OBSERVED current vs FORECAST hourly/7-day → check provenance (retrieved time, CC-BY attribution).
-
-### Disaster event investigation
-Open [`/events`](https://drishti-ai-command-center.vercel.app/events) → filter by EONET category → open detail → verify source link → view on map (point events only).
-
-### Satellite imagery inspection
-Open [`/satellite`](https://drishti-ai-command-center.vercel.app/satellite) → pick GIBS layer + nominal date → read acquisition vs retrieved times → try the Kerala before/after slider.
-
-### Risk-map exploration
-Open [`/risk-map`](https://drishti-ai-command-center.vercel.app/risk-map) → toggle layers → click any point for satellite intelligence → read per-tile measured status.
-
-### 3D simulation exploration
-Open [`/twin`](https://drishti-ai-command-center.vercel.app/twin) → toggle flood/fire/corridor layers → try camera presets → scrub the surge timeline (all SIMULATION).
-
-### AI/model-health inspection
-Open [`/model-health`](https://drishti-ai-command-center.vercel.app/model-health) → read the SYNTHETIC-DEMO banner → inspect artifact metrics → confirm calibration NOT AVAILABLE.
-
-## Live Data vs Simulation
-
-| Capability | State | Meaning |
-|---|---|---|
-| USGS earthquakes | LIVE | Measured feed, 5-min cache |
-| NASA GIBS | LATEST_AVAILABLE | Daily NRT, per-tile measurement |
-| Open-Meteo | LIVE | Keyless current + forecast |
-| NASA EONET | LIVE | 100-record open feed |
-| Backend APIs | OFFLINE | Railway trial expired; labeled fallbacks active |
-| AI backend/model | OFFLINE / SYNTHETIC-DEMO | No simulated health; demo artifact labeled |
-| NASA FIRMS | NOT_CONFIGURED | No key; zero synthetic fires |
-| Copernicus/Sentinel | NOT_CONFIGURED | Live-probed: no public imagery path |
-| 3D hazards/corridors | SIMULATION | Fixed scenario content |
-
-## AI/ML
-
-`Landslide-RF-v1` (scikit-learn RandomForest, 22 features) trained 2026-09-16 on synthetic data:
-
-| Metric | Value |
-|---|---:|
-| Accuracy | 0.8867 |
-| Precision | 0.9766 |
-| Recall | 0.8895 |
-| F1 | 0.931 |
-| ROC-AUC | 0.9408 |
-| Train / test | 2400 / 600 |
-| Confusion matrix | [[73, 11], [57, 459]] |
-
-Metrics describe the **demo artifact only**. Inference (`POST /api/v1/ml/predict`) returns probability + contributions; confidence shown only when returned. No LLM APIs. Details: [docs/AI-ML.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/AI-ML.md).
+SOURCE (e.g. USGS GeoJSON) → typed client (timeout, retry, dedupe) → adapter (validate, skip malformed, count) → normalized records → TTL cache → freshness/health evaluation → UI with provenance badges → operator decision support. Offline serves labeled stale cache or honest empty states — never synthetic fills.
 
 ## Data Engine
 
-Typed client (12s timeout, bounded retry, in-flight dedup) → adapters (USGS/Open-Meteo/FIRMS-gated/EONET/GIBS) → validation → TTL cache → per-source freshness → provenance → health. Example: USGS GeoJSON → `adaptUsgsEarthquakes` → normalized event → 5-min cache → earthquake UI. Details: [docs/DATA-ENGINE.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DATA-ENGINE.md).
+Registry of 7 sources (GIBS, FIRMS-gated, EONET, USGS, Open-Meteo, Copernicus-gated, OSM) with access type, env vars, rate notes, attribution, freshness thresholds, adapter names, enabled flags. Client: GET, 12s timeout, AbortController, bounded exponential backoff (transient only), in-flight dedup, 11 normalized error kinds, secret-free diagnostics. Cache: memory TTL (USGS 5m, Open-Meteo 10m, EONET 30m, FIRMS 1h). Freshness FRESH/AGING/STALE/UNKNOWN per-source. Offline → OFFLINE + labeled STALE or honest empty. Example: USGS response → `adaptUsgsEarthquakes` → normalized event → cache/health → Earthquake UI. Details: [docs/DATA-ENGINE.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DATA-ENGINE.md).
 
-## GIS
+## Live / Simulation / Not_configured / Offline
 
-Leaflet risk grid + 8-layer operational overlay (incidents/risk/weather/rainfall/satellite/terrain/responders/resources/drones/infra/citizen/evacuation/regions), scale control, cursor coordinates, fullscreen, click-to-inspect satellite panel, region presets; MapLibre 3D GIS on `/nesafe`; Nominatim search (1 req/s, cached), Overpass POIs, OSRM routing.
+| State | Meaning | Example |
+|---|---|---|
+| LIVE | Real source currently available | USGS / Open-Meteo / EONET (verified 2026-09-26) |
+| AVAILABLE | Function available, not necessarily live | OSM pages, local flows |
+| SIMULATION | Deliberately simulated | 3D hazard/corridor, drones, reunion |
+| NOT_CONFIGURED | Integration exists but unavailable | FIRMS (no key), Sentinel (no public path) |
+| OFFLINE | Backend/service unreachable | ML backend (Railway trial expired) |
+| SYNTHETIC-DEMO | Artifact/model data is synthetic | Landslide-RF-v1 metrics |
+
+## Command Center — Detailed
+
+Route: [`/command`](https://drishti-ai-command-center.vercel.app/command) — status header (WebSocket-derived ONLINE/OFFLINE, NOT AVAILABLE confidence, SIM FLEET, measured-or-N/A Hz, GIBS NRT satellite), feed strip (per-feed pills), SOS/risk banners, hero, real-data KPI row, flood timeline, twin viewport, rule-output AI panel, telemetry log, **module status grid** (14 modules, per-endpoint probing — one healthy endpoint never marks others LIVE), live map, imagery wall, globe, gallery.
+
+### LIVE EXAMPLE
+1. Open `/command` — SYSTEM reads OFFLINE while backend is down (never forced ONLINE)
+2. Inspect module grid — backend modules OFFLINE, sim pages SIMULATION, satellite LATEST_AVAILABLE
+3. Select Earthquakes / Weather / Events / Satellite — each opens live
+4. Return to Command Center — same pills, same states
+5. Open Twin, then Model Health — SIMULATION, then OFFLINE honesty
+6. WHAT YOU SEE: status + evidence per module. DATA: mixed probes. SOURCE: per-pill provenance. STATE: mixed honest.
+
+## Risk Map
+
+Route: [`/risk-map`](https://drishti-ai-command-center.vercel.app/risk-map) — Leaflet grid + 8-layer overlay, legend, inspect dialog, region presets, **scale control, cursor coordinates, fullscreen** (Step 21). Grid/incidents OFFLINE while backend down; GIBS measured per-tile.
+
+### LIVE EXAMPLE
+Open risk-map → hover for live coordinates → toggle EARTHQUAKE (USGS markers link to event pages) → click any point for the satellite panel → try fullscreen. Visualization shows measured layer health; empty overlays mean no data.
 
 ## Satellite / Earth Observation
 
-GIBS WMTS viewer (VIIRS True Color, MODIS Terra True Color, MODIS 7-2-1, MODIS Aqua; 14-day window ending yesterday UTC); Kerala 2018 before/after reference pair; FirePanel (NOT_CONFIGURED, zero fires); honest adapters (Sentinel/FIRMS/Earthdata/ISRO gated). Sentinel stays NOT_CONFIGURED per live probe — never implied operational.
+Route: [`/satellite`](https://drishti-ai-command-center.vercel.app/satellite) — GIBS viewer (4 layers, date/location/opacity, 14-day NRT window, measured tile liveness), Kerala before/after slider, FirePanel, honest adapters, reference renders, registry sources, stored observations.
+
+### LIVE EXAMPLE
+Open satellite → select MODIS 7-2-1 → change nominal date (acquisition vs retrieved stay separate) → read the 8-field provenance → note Copernicus NOT_CONFIGURED (live-probed, no public imagery path — never implied live).
+
+## Fire Intelligence
+
+No standalone `/fire` route by design — FirePanel on `/satellite` + map FIRE layer. `adaptFirmsFires` + `firms-fires` kind gated on server key: currently NOT_CONFIGURED, 0 detections, reason shown, burn-scar fallback pointer. Never synthetic hotspots.
+
+## Earthquake Intelligence
+
+Route: [`/earthquakes`](https://drishti-ai-command-center.vercel.app/earthquakes) — USGS list (newest first), magnitude-sized + depth-colored markers (numeric values everywhere, never color alone), 11-field detail + VIEW ON USGS, timeline, provenance, refresh. Zero records → "0 EVENTS", no placeholders.
+
+### LIVE EXAMPLE
+Open earthquakes → newest event → magnitude/depth/time/place → detail → follow VIEW ON USGS. Example of the type shown: M3.11 near Laupahoehoe, Hawaii (verified live during development; feed content varies).
+
+## Weather Intelligence
+
+Route: [`/weather`](https://drishti-ai-command-center.vercel.app/weather) — backend chain (OFFLINE → labeled) + Open-Meteo direct: OBSERVED current grid, 24h timeline, 7-day cards, wind panel, telemetry, provenance, refresh, forecast disclaimer, no-alerts note. Never disaster prediction.
+
+### LIVE EXAMPLE
+Open weather → Hyderabad preset → current vs hourly vs 7-day → read retrieved time + CC-BY line → try REFRESH offline for STALE labeling.
+
+## NASA EONET Events
+
+Route: [`/events`](https://drishti-ai-command-center.vercel.app/events) — 100-record open feed, category + open/closed filters, list/map/timeline/detail, VIEW SOURCE. Polygon geometries stay list-only (no fabricated points).
+
+### LIVE EXAMPLE
+Open events → Wildfires filter → open/closed → event detail → source link → polygon honesty check.
+
+## AI / ML
+
+Routes [`/ml`](https://drishti-ai-command-center.vercel.app/ml) · [`/prediction`](https://drishti-ai-command-center.vercel.app/prediction) · [`/model-health`](https://drishti-ai-command-center.vercel.app/model-health). Landslide RandomForest (scikit-learn, 22 features), artifact metrics, `POST /api/v1/ml/predict` contract, contributions + explain endpoint. **Backend OFFLINE → MODEL OFFLINE UI; SYNTHETIC-DEMO banner when reachable. MODEL IMPLEMENTATION EXISTS ≠ LIVE INFERENCE AVAILABLE.**
+
+## Model Health
+
+Artifact metrics table (accuracy 0.8867, precision 0.9766, recall 0.8895, F1 0.931, ROC-AUC 0.9408, 2400/600, confusion [[73,11],[57,459]] — pass-through, never derived), identity panel (contract fields), calibration NOT AVAILABLE (no source exists), drift from payload or NOT AVAILABLE, inference availability + playground links, source-timestamp timeline.
 
 ## 3D Digital Twin
 
-Vanilla Three.js `TwinViewport` (procedural city, surge plane, pickable entities, amber corridor — all SIMULATION) + R3F globe + MapLibre command view. Operator flow: pick hazard layer → pick camera (Overview/Incident/Ground) → inspect scenario → scrub surge timeline → return to Command Center. Reduced-motion freezes decoration; WebGL failures fall back to 2D. Details: [docs/3D-DIGITAL-TWIN.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/3D-DIGITAL-TWIN.md).
+Route: [`/twin`](https://drishti-ai-command-center.vercel.app/twin) — Three.js terrain/city/surge/entities/corridor/vehicles, flood/fire toggles, OVERVIEW/INCIDENT/GROUND cameras, surge timeline, actuator log, HUD. **All SIMULATION**; corridor is not an official route.
 
-## Command Center
+### LIVE EXAMPLE
+Open Twin → Overview → toggle FLOOD → toggle FIRE → INCIDENT camera → inspect corridor (simulated) → scrub surge → GROUND → free orbit. Each action demonstrates scenario state, never live geography.
 
-Status header (WebSocket-derived ONLINE/OFFLINE, measured-or-N/A stream rate, SIM FLEET without live count, no fabricated confidence) · feed strip · real-data KPI row · module grid with per-endpoint probing · twin viewport · rule-output AI panel · telemetry log · live map · imagery wall · globe · gallery. Full spec: [docs/COMMAND-CENTER.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/COMMAND-CENTER.md).
+## GIS / Regional Intelligence
 
-## Route Map
+Country → State → District → City → Locality (`/regions`, 20 states incl. AP 26/26 + Telangana 33/33 verified districts), Nominatim (throttled+cached), Overpass POIs, OSRM routing. Example: `/regions` → Andhra Pradesh → Krishna → Vijayawada (verified coordinates). Backend OFFLINE → labeled demo view.
 
-51 route directories — complete inventory: [docs/ROUTE-INVENTORY.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/ROUTE-INVENTORY.md). Key links in Quick Links below; fire intelligence lives in `/satellite` + the map layer (no duplicate `/fire` route by design).
+## Emergency Response
 
-## Tech Stack
+SOS beacon, evacuation routes (OSRM/straight-line DEMO estimate, never approved), shelter scanner (DEMO rows, "call ahead"), offline reporting with receipts, DETECT→ASSESS→RESPOND strip. No dispatch backend — triage aid only.
 
-| Area | Stack |
-|---|---|
-| Frontend | Next.js 14.2.5, React 18, TS 5.5, Tailwind 3.4, framer-motion, lucide-react |
-| Backend | FastAPI 0.116.1, Uvicorn, Pydantic, SQLAlchemy, PyJWT |
-| AI/ML | scikit-learn 1.9.1, pandas, joblib |
-| GIS | Leaflet 1.9.4, MapLibre 6.10, OSM ecosystem |
-| 3D | three 0.169, R3F 8.18, drei 9.122 |
-| Data | SQLite fallback; Postgres-ready (`psycopg2-binary` pinned, dormant) |
-| Testing | Vitest 1.6, pytest 8.3 |
-| Deployment | Vercel Git integration; Docker; Railway-compatible |
+## Multi-Source Intelligence
+
+Quake + weather + events + satellite + GIS + AI/ML + 3D are separate capabilities sharing one provenance language — demonstrated live by the command module grid's per-endpoint states.
+
+## Real Project Example
+
+Command Center → Earthquakes (real USGS event) → Weather (Hyderabad current) → Events (EONET filter) → Satellite (GIBS layer + FirePanel emptiness) → Risk Map (click-to-inspect) → Twin (FLOOD toggle, SIMULATION) → Model Health (OFFLINE honesty) → Source Verification (badges + docs). Each step: route, action, observation, source, state, interpretation, limitation — all above.
+
+## Free Data Sources
+
+| Capability | Source | DRISHTI-X Use | Current State | Alternative |
+|---|---|---|---|---|
+| Satellite imagery | NASA GIBS | 4-layer viewer | LATEST_AVAILABLE | [Worldview](https://worldview.earthdata.nasa.gov/) (external, complementary) |
+| Earthquakes | USGS | List/map/detail | LIVE | FDSN-compatible (unverified, not integrated) |
+| Weather | Open-Meteo | Current/hourly/daily | LIVE | NOAA (documented only) |
+| Natural Events | NASA EONET | Browser + map | LIVE | USGS overlap reused |
+| Fire | NASA FIRMS | Gated adapter | NOT_CONFIGURED | MODIS 7-2-1 context |
+| Maps | OSM | Tiles/search/POIs | AVAILABLE | Esri/CARTO/OpenTopoMap |
+| Sentinel | Copernicus | None yet | NOT_CONFIGURED | GIBS (different data, no equivalence claimed) |
+
+INTEGRATED INTO DRISHTI-X vs EXTERNAL ALTERNATIVE/REFERENCE is labeled per row — Worldview/FDSN/NOAA are references, not integrations.
+
+## Visual Examples
+
+`public/poster.jpg` (hero artwork, original) · `public/img/photos/*.jpg` (6 verified NASA/FEMA/USN, public domain, ILLUSTRATIVE-badged in-app) · `public/img/*.svg` (26 original illustrations). Full table: [`public/img/SOURCES.md`](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/public/img/SOURCES.md). No screenshots presented as live output exist; use production links instead.
+
+## Source Provenance
+
+| Visual/Data | Source | Integrated? | State |
+|---|---|---|---|
+| Quake markers | USGS | Yes | LIVE |
+| Weather cards | Open-Meteo | Yes | LIVE |
+| EONET cards | EONET | Yes | LIVE |
+| GIBS tiles | NASA GIBS | Yes | LATEST_AVAILABLE |
+| Hero/model photos | NASA/FEMA/USN | Yes (vendored) | HISTORICAL/ILLUSTRATIVE |
+| Fire detections | FIRMS | No (no key) | NOT_CONFIGURED |
+| Sentinel products | Copernicus | No (no public path) | NOT_CONFIGURED |
+| ML metrics | Artifacts | Yes | SYNTHETIC-DEMO/OFFLINE |
+| Twin scene | Scene data | Yes | SIMULATION |
+
+## Complete Route Guide
+
+51 route directories — full table: [docs/ROUTE-INVENTORY.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/ROUTE-INVENTORY.md). Key links in Quick Links below. Fire lives in `/satellite` + map layer (no `/fire` by design).
 
 ## Repository Structure
 
 ```text
-src/
-├── app/          # 51 routes (page.tsx per route)
-├── components/   # home/ command/ map/ 3d/ fire/ earthquake/ weather/ events/ satellite/ model/ twin/ ...
-├── data/         # engine/ (client/cache/registry/adapters) + operational/regions/providers
-├── platform/     # api client, provenance, maps, stores helpers
-├── hooks/        # telemetry socket, dialog a11y, platform hooks
-├── store/        # ops/intel/auth/app stores
-├── utils/        # geocode, alerts, audio
-├── config/       # navigation, regions, disasters, image sources
-├── i18n/         # 9 languages
-├── lib/          # liveServices (keyless feeds)
-└── nesafe/       # NE-India center data/scenes
-public/           # img/ (SVG set + verified NASA/FEMA/USN photos), poster.jpg
-docs/             # 28 topic docs (see Documentation)
-backend/          # FastAPI app (28 routers) + ml/ (schemas/train/inference) + tests/
+src/app/         # 51 routes (page.tsx per route)
+src/components/  # home/ command/ map/ 3d/ fire/ earthquake/ weather/ events/ satellite/ model/ twin/ ...
+src/data/        # engine/ (client/cache/registry/adapters) + operational/regions/providers
+src/platform/    # api client, provenance, maps, RiskGridMap, stores helpers
+src/hooks/       # telemetry socket, dialog a11y, platform hooks
+src/store/       # ops/intel/auth/app stores
+src/utils/       # geocode, alerts, audio
+src/config/      # navigation, regions, disasters, image sources
+src/i18n/        # 9 languages
+src/lib/         # liveServices (keyless feeds)
+src/nesafe/      # NE-India center data/scenes
+public/          # img/ verified photos + SVGs, poster.jpg
+docs/            # 29 topic docs
+backend/         # FastAPI (28 routers) + ml/ + tests/
 ```
 
-## Installation
+## Technology Stack
 
-```bash
-git clone https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center.git
-cd drishti-ai-command-center
-npm install
-cp .env.example .env.local   # all keys optional
-npm run dev                  # http://localhost:3000
-npm run lint && npm run typecheck && npm test && npm run build
-```
+| Area | Stack |
+|---|---|
+| Frontend | Next.js 14.2.5, React 18, TS 5.5, Tailwind 3.4, framer-motion, lucide-react |
+| Maps/GIS | Leaflet 1.9.4, MapLibre 6.10, OSM/Nominatim/Overpass/OSRM |
+| 3D | three 0.169, R3F 8.18, drei 9.122 |
+| Data | Engine (dependency-free TS) + SQLite/Postgres-ready backend |
+| Backend | FastAPI 0.116.1, SQLAlchemy, PyJWT, scikit-learn 1.9.1, pandas |
+| AI/ML | RandomForest pipeline + deterministic fallback + explain endpoint |
+| Testing | Vitest 1.6 (131), pytest 8.3 (51) |
+| Deployment | Vercel Git integration; Docker; Railway-compatible |
+| Documentation | 29 docs files, all source-verified |
 
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn app.main:app --port 8000
-python -m pytest -q
-```
+## Security
 
-## Environment
-
-All optional; frontend reads only `NEXT_PUBLIC_*`. Details: [docs/ENVIRONMENT.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/ENVIRONMENT.md). Never commit secrets.
+Env-only secrets; frontend reads only `NEXT_PUBLIC_*`; gateway + JWT + 16-role RBAC; rate limits; upload guards; security headers; audit logging; scans clean; prototype-grade caveats documented. Details: [docs/SECURITY.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/SECURITY.md). Never expose secrets.
 
 ## Testing
 
-Vitest **131/131** · Pytest **51/51** · Lint clean · Typecheck clean · Build 50/50 static · production route QA + secret/fake-data scans. Details: [docs/TESTING.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/TESTING.md).
+Vitest **131/131** · Pytest **51/51** · Lint clean · Typecheck clean · Build 50/50 static · route QA + secret/fake-data scans. Details: [docs/TESTING.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/TESTING.md).
 
 ## Deployment
 
 Developer → commit → GitHub `main` → Vercel Git integration → production. Never `vercel --prod`. Live: https://drishti-ai-command-center.vercel.app/ · Details: [docs/DEPLOYMENT.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DEPLOYMENT.md).
 
-## 📚 Documentation
-
-[FINAL-ARCHITECTURE](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-ARCHITECTURE.md) · [DATA-SOURCES](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DATA-SOURCES.md) · [AI-ML](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/AI-ML.md) · [GIS-SATELLITE](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/GIS-SATELLITE.md) · [3D-DIGITAL-TWIN](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/3D-DIGITAL-TWIN.md) · [COMMAND-CENTER](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/COMMAND-CENTER.md) · [SECURITY](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/SECURITY.md) · [TESTING](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/TESTING.md) · [DEPLOYMENT](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DEPLOYMENT.md) · [LIMITATIONS](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/LIMITATIONS.md) · [PROJECT-STATUS](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/PROJECT-STATUS.md) · [ROUTE-INVENTORY](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/ROUTE-INVENTORY.md) · [ENVIRONMENT](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/ENVIRONMENT.md) · [FINAL-DELIVERY-SUMMARY](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-DELIVERY-SUMMARY.md)
-
 ## Limitations
 
-Backend OFFLINE (Railway trial expired); FIRMS/Earthdata/Copernicus/ISRO/IMD/SMS unconfigured; synthetic ML data; simulated twin/drones; sparse demo geography; no Background Sync; prototype JWT. Full honesty list: [docs/LIMITATIONS.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/LIMITATIONS.md).
+Backend OFFLINE (Railway trial expired); FIRMS/Earthdata/Copernicus/ISRO/IMD/SMS unconfigured; synthetic ML data; simulated twin/drones; sparse demo geography; no Background Sync; prototype JWT. Full list: [docs/LIMITATIONS.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/LIMITATIONS.md).
 
-## Future Scope
-
-Backend restoration · verified provider credentials · retrain + calibration/drift baselines · SRTM DEM · PostGIS deploy · live sensors · notification providers · Background Sync · E2E tests · observability. Labeled FUTURE — not implemented.
-
-## Project Status
-
-DRISHTI-X · Production READY · Roadmap Steps 1–31 COMPLETE · Post-launch status correction COMPLETE · Homepage FROZEN · Documentation COMPLETE · No Step 32.
-
-## Quick Links
-
-| Resource | Link |
-|---|---|
-| Live Demo | https://drishti-ai-command-center.vercel.app/ |
-| GitHub | https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center |
-| Command Center | https://drishti-ai-command-center.vercel.app/command |
-| Risk Map | https://drishti-ai-command-center.vercel.app/risk-map |
-| Satellite | https://drishti-ai-command-center.vercel.app/satellite |
-| Earthquakes | https://drishti-ai-command-center.vercel.app/earthquakes |
-| Weather | https://drishti-ai-command-center.vercel.app/weather |
-| Events | https://drishti-ai-command-center.vercel.app/events |
-| Model Health | https://drishti-ai-command-center.vercel.app/model-health |
-| Digital Twin | https://drishti-ai-command-center.vercel.app/twin |
-
-## 🗺️ Recommended Exploration Path
+## How to Explore DRISHTI-X
 
 ```mermaid
 flowchart TD
-    A[Open DRISHTI-X] --> B[Command Center]
-    B --> C[Risk Map]
-    B --> D[Satellite / EO]
-    B --> E[Earthquake Intelligence]
-    B --> F[Weather Intelligence]
-    B --> G[Disaster Events]
-    B --> H[AI / ML]
-    B --> I[Model Health]
-    B --> J[3D Digital Twin]
-    C --> K[Compare Spatial Risk]
-    D --> K
-    E --> K
-    F --> K
-    G --> K
-    H --> K
-    K --> L[Return to Command Center]
-    L --> J
+    S[START] --> C1[1. COMMAND CENTER]
+    C1 --> E2[2. EARTHQUAKES]
+    E2 --> W3[3. WEATHER]
+    W3 --> EV4[4. EVENTS]
+    EV4 --> SA5[5. SATELLITE]
+    SA5 --> R6[6. RISK MAP]
+    R6 --> T7[7. 3D DIGITAL TWIN]
+    T7 --> M8[8. MODEL HEALTH]
+    M8 --> G9[9. GITHUB ARCHITECTURE]
+    G9 --> D10[10. DOCUMENTATION]
+    D10 --> END[END]
 ```
 
-1. Open the [live demo](https://drishti-ai-command-center.vercel.app/) and launch the [Command Center](https://drishti-ai-command-center.vercel.app/command).
-2. Check module statuses, then open [Risk Map](https://drishti-ai-command-center.vercel.app/risk-map) and click any point.
-3. Inspect [NASA imagery](https://drishti-ai-command-center.vercel.app/satellite) and the Kerala before/after slider.
-4. Investigate a real [USGS earthquake](https://drishti-ai-command-center.vercel.app/earthquakes) end-to-end.
-5. Compare [forecast vs observed weather](https://drishti-ai-command-center.vercel.app/weather).
-6. Filter [EONET events](https://drishti-ai-command-center.vercel.app/events) and open source links.
-7. Read [model health](https://drishti-ai-command-center.vercel.app/model-health) with its SYNTHETIC-DEMO banner.
-8. Finish in the [3D twin](https://drishti-ai-command-center.vercel.app/twin) (SIMULATION-labeled).
-
-## Real Project Imagery
-
-| Image | What it shows |
-|---|---|
-| `public/poster.jpg` | Command-center hero artwork (above) — original project asset |
-| `public/img/photos/hero-nilam.jpg` | Cyclone over the Bay of Bengal (NASA MODIS, public domain) |
-| `public/img/photos/mission-himalaya.jpg` | India + Himalayas from ISS (NASA, public domain) |
-| `public/img/photos/kerala-before.jpg` + `kerala-after.jpg` | Kerala floods Feb→Aug 2018 (NASA EO, public domain) |
-| `public/img/photos/command-eoc.jpg` | Real emergency operations center (FEMA, public domain, illustrative) |
-| `public/img/photos/emergency-rescue.jpg` | Helicopter flood rescue (U.S. Navy, public domain, illustrative) |
-| `public/img/*.svg` | Original in-repo illustration set (26 files) |
-
-Full provenance: [`public/img/SOURCES.md`](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/public/img/SOURCES.md).
-
----
-
-# 🔬 Detailed Live Examples
-
-These examples demonstrate how a real operator, student, or evaluator explores the **actually deployed** DRISHTI-X system. Every route, control, label, and data behavior below was verified against repository source. States shown are current production states (backend OFFLINE since the Railway trial expired; keyless direct feeds LIVE).
-
-## 1. COMMAND CENTER — LIVE EXAMPLE
-
-### What this module does
-Operational overview connecting all intelligence modules: system status, feed strip, KPI row, flood timeline, 3D twin viewport, AI panels, telemetry log, module status grid, live map, imagery wall, globe, gallery.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/command
-GitHub implementation: `src/app/command/page.tsx`, `src/components/command/`
-
-### Real data / source
-Backend APIs (currently OFFLINE → labeled fallbacks) + direct keyless feeds (Open-Meteo, USGS) + browser WebSocket telemetry (sim link when backend down).
-
-### What you see
-Status header (SYSTEM from WS state; AI inference NOT AVAILABLE; SIM FLEET; measured-or-N/A stream rate), `LiveStatusStrip` feed pills, `CommandKpiRow` (incidents/critical/rainfall/states/queue/model), `ModuleStatusGrid` (14 modules, per-endpoint probing), twin viewport, rule-output AI panel, telemetry log, 8-layer live map, imagery wall, globe, gallery.
-
-### Detailed real example
-1. Open `/command`
-2. Observe the status header — SYSTEM reads OFFLINE while the backend is down (never forced ONLINE)
-3. Inspect `ModuleStatusGrid` — backend modules read OFFLINE, sim pages SIMULATION, satellite LATEST_AVAILABLE
-4. DRISHTI-X probed each module endpoint independently (one healthy endpoint never marks others LIVE)
-5. Click WEATHER INTEL — the `/weather` module opens
-6. Return and compare its pill against the Open-Meteo source on that page
-7. The source/provenance is per-module pills + `LiveStatusStrip` timestamps
-
-### Example interpretation
-The operator learns at a glance which capabilities are live vs degraded without opening each module.
-
-### Data flow
-Module endpoints → `platform/api` probes → per-module state → `StatusBadge` pills → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-Mixed honest states; backend-backed pills currently OFFLINE.
-
-### Try it yourself
-1. Open `/command`. 2. Read the status header. 3. Scroll to JUMP TO OPERATIONS. 4. Open any module. 5. Return and compare.
-
-### What this proves
-Truthful aggregation: the post-launch patch removed every fabricated number (98.4% confidence, 2.0 Hz, 26+3n units, LEO-lock) — verified zero repo-wide.
-
-## 2. RISK MAP — LIVE EXAMPLE
-
-### What this module does
-Leaflet GIS: risk grid + 8-layer operational overlay (incidents/risk/weather/rainfall/satellite/terrain/responders/resources/drones/infra/citizen/evacuation/regions) with legend, inspect dialog, region presets.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/risk-map
-GitHub: `src/app/risk-map/page.tsx`, `src/platform/RiskGridMap.tsx`, `src/components/map/DisasterMap.tsx`
-
-### Real data / source
-NASA GIBS tiles (measured per-tile liveness), OSM/CARTO/Esri/OpenTopoMap bases, USGS quake markers, backend grid/incidents (OFFLINE → labeled).
-
-### What you see
-Layer control with measured LIVE/UNAVAILABLE per layer, base selector, 7-2-1 compare slider, legend, metric scale control, cursor coordinate + zoom readout, fullscreen button, click-to-inspect satellite panel (location/source/acquired/status).
-
-### Detailed real example
-1. Open `/risk-map`
-2. Observe the scale bar and hover the map — coordinates + zoom read out live
-3. Toggle the EARTHQUAKE layer — USGS markers render with links to event pages
-4. Click any point — the inspect dialog shows location, source, acquisition, measured status
-5. Toggle fullscreen — the map refills the viewport
-6. The source/provenance is per-layer badges + tile attributions + inspect dialog
-
-### Example interpretation
-Spatial risk context withkār measured—not assumed—layer health; empty overlays mean no data, not hidden data.
-
-### Data flow
-GIBS/OSM tiles → Leaflet tile events → per-layer status → legend + dialog → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-GIBS LATEST_AVAILABLE (measured); grid/incidents OFFLINE while backend down; FIRMS layer renders nothing (NOT_CONFIGURED, never synthesized).
-
-### Try it yourself
-1. Open `/risk-map`. 2. Read coordinates while moving the mouse. 3. Toggle two layers. 4. Click a point. 5. Try fullscreen.
-
-### What this proves
-Measured—not-claimed GIS honesty: Step 21 controls on a real tile pipeline.
-
-## 3. SATELLITE / EARTH OBSERVATION — LIVE EXAMPLE
-
-### What this module does
-Live GIBS viewer (layer/date/location/opacity/fullscreen/provenance) + Kerala before/after slider + FirePanel + honest provider adapters + reference renders + registry sources + stored observations.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/satellite
-GitHub: `src/app/satellite/page.tsx`, `src/components/satellite/SatelliteViewer.tsx`, `src/data/engine/satellite.ts`
-
-### Real data / source
-NASA GIBS WMTS (4 curated layers, 14-day NRT window ending yesterday UTC); Copernicus NOT_CONFIGURED (live-probed: catalog visible, no public imagery path); FIRMS NOT_CONFIGURED (no key).
-
-### What you see
-Layer/date/location/opacity controls, 440px Leaflet canvas, no-imagery states, 8-field provenance panel (SOURCE/PRODUCT/ACQUISITION nominal/RETRIEVED/STATUS/COVERAGE/COPERNICUS/ATTRIBUTION), Kerala slider, FirePanel (0 detections, reason stated).
-
-### Detailed real example
-1. Open `/satellite`
-2. Select MODIS 7-2-1 — flood/burn false color renders where tiles exist
-3. Change the nominal date — acquisition vs retrieved times stay separate
-4. Pick a date outside the 14-day window — NO IMAGERY state, nothing substituted
-5. Scroll to FirePanel — NOT_CONFIGURED with zero detections and the enablement reason
-6. The source/provenance is the 8-field panel + adapter table
-
-### Example interpretation
-Daily-NRT Earth observation with acquisition honesty; unavailable providers stay unavailable instead of faked.
-
-### Data flow
-GIBS WMTS → Leaflet tile events → measured status → viewer + provenance → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-LATEST_AVAILABLE (GIBS); NOT_CONFIGURED (Copernicus, FIRMS, Earthdata, ISRO).
-
-### Try it yourself
-1. Open `/satellite`. 2. Switch layers. 3. Move the date. 4. Read provenance. 5. Inspect FirePanel.
-
-### What this proves
-Real tile-based EO without a single fabricated acquisition timestamp.
-
-## 4. FIRE INTELLIGENCE — LIVE EXAMPLE
-
-### What this module does
-There is intentionally NO standalone `/fire` route. Fire intelligence lives in the `/satellite` FirePanel + the DisasterMap FIRE layer, backed by `adaptFirmsFires` + the `firms-fires` engine kind.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/satellite (FirePanel section)
-GitHub: `src/components/fire/FirePanel.tsx`, `src/data/engine/adapters.ts` (`adaptFirmsFires`)
-
-### Real data / source
-NASA FIRMS (MODIS/VIIRS/Landsat) — requires free MAP_KEY, none configured → NOT_CONFIGURED.
-
-### What you see
-Detections: 0, skipped: 0, retrieved timestamp, cache state, reason text, provenance line, links to risk map + satellite intel. The map FIRE layer renders no markers.
-
-### Detailed real example
-1. Open `/satellite`, scroll to FirePanel
-2. Observe NOT_CONFIGURED + 0 detections + the MAP_KEY reason
-3. Confirm no fire markers appear anywhere (map layer intentionally empty)
-4. Read `docs/FIRE-INTELLIGENCE.md` for the server-side enablement path
-5. The source/provenance is the panel provenance line
-
-### Example interpretation
-A missing credential produces an empty, explained panel — never synthetic hotspots.
-
-### Data flow
-FIRMS (gated) → engine NOT_CONFIGURED → empty panel → operator. When keyed later: FIRMS → adapter → validated records → cache → panel.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-NOT_CONFIGURED (current and correct).
-
-### Try it yourself
-1. Open `/satellite`. 2. Find FirePanel. 3. Verify 0 detections + reason. 4. Check the map FIRE layer is empty.
-
-### What this proves
-Credential-gated honesty: the hardest state to fake (an empty scary panel) is kept empty.
-
-## 5. EARTHQUAKE INTELLIGENCE — LIVE EXAMPLE
-
-### What this module does
-Dedicated USGS experience: event list (newest first), Leaflet epicenter map, detail dialog, timeline strip, filters, provenance, refresh.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/earthquakes
-GitHub: `src/app/earthquakes/page.tsx`, `src/components/earthquake/`
-
-### Real data / source
-USGS M2.5+/7d GeoJSON via engine `usgs-earthquakes-7d` (5-min TTL). Example of the type shown: M3.11 near Laupahoehoe, Hawaii (verified live during development — current feed content varies).
-
-### What you see
-EVENTS/STRONGEST/LATEST/COVERAGE summary, magnitude-sized + depth-colored markers (numeric values in every popup — never color alone), 11-field detail dialog with VIEW ON USGS link, timeline, provenance panel.
-
-### Detailed real example
-1. Open `/earthquakes`
-2. Pick the newest list entry — magnitude, depth, relative time shown
-3. Open it — all 11 fields render, gaps read NOT AVAILABLE
-4. Follow VIEW ON USGS to the official event page
-5. The source/provenance is the provenance panel + USGS links
-
-### Example interpretation
-Observed seismicity with zero prediction claims; DRISHTI-X explicitly does not predict earthquakes.
-
-### Data flow
-USGS → engine client → `EarthquakeAdapter` → validated records → cache → list/map/detail → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-LIVE when reachable; STALE cache labeled; honest empty/error states.
-
-### Try it yourself
-1. Open `/earthquakes`. 2. Open the newest event. 3. Check depth + time. 4. Follow VIEW ON USGS. 5. Try REFRESH.
-
-### What this proves
-End-to-end engine reuse: same USGS feed also drives map markers with no second pipeline.
-
-## 6. WEATHER INTELLIGENCE — LIVE EXAMPLE
-
-### What this module does
-Backend rainfall chain (thresholds, providers, cache) + Open-Meteo direct intelligence (current/hourly/daily) on `/weather`.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/weather
-GitHub: `src/app/weather/page.tsx`, `src/components/weather/`
-
-### Real data / source
-Backend `/api/v1/rainfall|weather` (OFFLINE → labeled) + Open-Meteo keyless (current + hourly + daily, 10-min TTL, CC-BY 4.0).
-
-### What you see
-Lat/lon inputs, rain 1/6/24/72h cards, thresholds, current-conditions grid, location presets (12 verified cities), OBSERVED current grid, 24h CSS timeline, 7-day cards, wind panel, telemetry, provenance, refresh, forecast disclaimer, no-alerts note.
-
-### Detailed real example
-1. Open `/weather`, pick Hyderabad preset
-2. Read OBSERVED temperature/feels/condition/humidity/precip/wind/gusts/pressure/cloud
-3. Scroll the hourly timeline — each hour shows temp/condition/precip/probability
-4. Read the 7-day cards — min/max, precip, probability, all FORECAST-labeled
-5. Read provenance — retrieved time, cache state, CC-BY attribution
-6. The source/provenance is per-panel badges + provenance grid
-
-### Example interpretation
-Point-model weather with observed/forecast firewalling; probabilities shown only when the source provides them.
-
-### Data flow
-Open-Meteo → `WeatherAdapter` (UTC-offset timestamp fix) → current+hourly+daily records → cache → UI → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-LIVE (direct); backend chain OFFLINE with cache fallback; IMD NOT_CONFIGURED.
-
-### Try it yourself
-1. Open `/weather`. 2. Change cities. 3. Compare current vs hourly. 4. Read the disclaimer. 5. Try REFRESH offline (STALE).
-
-### What this proves
-A subtle real bug class (wall-clock timezone) caught by tests, plus honest missing-field handling (NOT AVAILABLE, never zero).
-
-## 7. DISASTER EVENTS — LIVE EXAMPLE
-
-### What this module does
-NASA EONET browser: category + open/closed filters, newest-first list, Leaflet map, timeline, detail dialog, provenance.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/events
-GitHub: `src/app/events/page.tsx`, `src/components/events/`
-
-### Real data / source
-EONET v3 open feed, 100 records (floods/severeStorms/wildfires observed), 30-min TTL, no key.
-
-### What you see
-Counts, category chips from live data, cards with category/time/status (+no-coordinates note where applicable), map with EONET points only, timeline, 11-row detail with VIEW SOURCE, provenance.
-
-### Detailed real example
-1. Open `/events`, filter Wildfires
-2. Open an event — read EONET id, source time, open/closed, source ids
-4. Note polygon events: list-only, no fabricated map point
-5. Follow VIEW SOURCE to the EONET record
-6. The source/provenance is the provenance panel + source links
-
-### Example interpretation
-Curated natural-event records with geometry honesty: points map, polygons don't.
-
-### Data flow
-EONET → engine client → `adaptEonetEvents` (latest-geometry-wins) → validated records → cache → list/map/detail → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-LIVE; STALE cache labeled; honest empty state (zero placeholders).
-
-### Try it yourself
-1. Open `/events`. 2. Filter a category. 3. Open oldest + newest. 4. Compare a polygon event's list-only treatment.
-
-### What this proves
-Geometry integrity: the adapter refuses to invent points, and tests assert it.
-
-## 8. AI / ML INTELLIGENCE — LIVE EXAMPLE
-
-### What this module does
-`/ml` (model lab), `/prediction` (RF playground with contributions + explain link), `/model-health` (operations view). Backend: `backend/ml/` RF pipeline + 5 ML endpoints.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/model-health · [/ml](https://drishti-ai-command-center.vercel.app/ml) · [/prediction](https://drishti-ai-command-center.vercel.app/prediction)
-GitHub: `src/app/model-health/page.tsx`, `src/components/model/`, `backend/ml/`
-
-### Real data / source
-`Landslide-RF-v1` artifact (SYNTHETIC-DEMO, metrics table above); inference contract `POST /api/v1/ml/predict`. Backend currently OFFLINE.
-
-### What you see
-MODEL OFFLINE banner (current), SYNTHETIC-DEMO banner (when reachable), artifact metrics table, identity panel (contract fields only), calibration NOT AVAILABLE (no source exists), drift from payload or NOT AVAILABLE, inference availability + playground links, source-timestamp timeline.
-
-### Detailed real example
-1. Open `/model-health` — read MODEL OFFLINE (backend down, nothing simulated healthy)
-2. Note what WOULD appear live: artifact metrics + SYNTHETIC-DEMO banner
-3. Open `/prediction` — see the DEMO-heuristic fallback with labeled inputs
-4. The source/provenance is artifact fields + endpoint responses, never derived values
-
-### Example interpretation
-MODEL IMPLEMENTATION EXISTS ≠ LIVE INFERENCE AVAILABLE — the page proves the distinction instead of blurring it.
-
-### Data flow
-Artifacts/endpoints → `usePlatform` → passthrough rendering (no rounding, no derivation) → operator.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-OFFLINE (current); SYNTHETIC-DEMO (when reachable); calibration NOT AVAILABLE (no source).
-
-### Try it yourself
-1. Open `/model-health`. 2. Verify OFFLINE honesty. 3. Open `/prediction`. 4. Confirm DEMO labels.
-
-### What this proves
-Anti-hype ML: 18 tests assert metrics pass through untouched and synthetic can never read as operational.
-
-## 9. MODEL HEALTH — LIVE EXAMPLE
-
-Covered in Module 8 above (same route); evaluator walkthrough: status → identity → metrics → confusion matrix → drift → calibration NOT AVAILABLE → inference links → timeline. Every cell reads an artifact field or NOT AVAILABLE.
-
-## 10. 3D DIGITAL TWIN — LIVE EXAMPLE
-
-### What this module does
-`/twin`: Three.js viewport (procedural city, surge plane, pickables, amber corridor, vehicles), FloodTimeline surge control, layer toggles, camera presets, actuator log, legend, HUD.
-
-### Open it
-Production: https://drishti-ai-command-center.vercel.app/twin
-GitHub: `src/app/twin/page.tsx`, `src/components/3d/TwinViewport.tsx`, `src/components/twin/`
-
-### Real data / source
-Fixed scene data + live WS telemetry tint (drone alt/battery/signal when connected). Terrain procedural (DEMO).
-
-### What you see
-Flood/fire hazard toggles, corridor toggle, OVERVIEW/INCIDENT/GROUND cameras, surge slider + timeline, picked-entity panel (SIMULATION-labeled), actuator log, legend, LAYERS/VIEW/MOTION HUD line.
-
-### Detailed real example
-1. Open `/twin` → select OVERVIEW → toggle FLOOD → toggle FIRE
-2. Switch INCIDENT camera → watch it frame the flood cell
-3. Inspect the evacuation corridor → read that it is simulated, not official
-4. Scrub the surge timeline → water plane rises (scenario state, deterministic)
-5. Switch to GROUND → return to free orbit
-6. The source/provenance is SIM labels on every control + HUD
-
-### Example interpretation
-Cinematic scenario exploration with simulation containment: nothing here claims live geography.
-
-### Data flow
-Fixed scene ids + page state → Three.js scene → toggles/camera → operator. No external data.
-
-### LIVE / SIMULATION / NOT_CONFIGURED / OFFLINE state
-SIMULATION throughout (telemetry tint follows WS when connected).
-
-### Try it yourself
-1. Open `/twin`. 2. Toggle all three layers. 3. Try all cameras. 4. Move the surge slider.
-
-### What this proves
-Presence without pretense: a full 3D command view that never once claims reality.
-
-## 11. DATA ENGINE — LIVE EXAMPLE
-
-### What this module does
-Canonical normalized layer (`src/data/engine/`): typed client (12s timeout, ≤2 retries on transient only, in-flight dedup), TTL cache, per-source freshness, 7-source registry, adapters (USGS/Open-Meteo/FIRMS/EONET/GIBS), validation, health, provenance.
-
-### Open it
-GitHub: `src/data/engine/` · Docs: [DATA-ENGINE.md](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/DATA-ENGINE.md)
-
-### Real data / source
-USGS → `EarthquakeAdapter` → normalized quake → 5-min cache → earthquake page → operator. Open-Meteo → weather adapter → current+hourly+daily → 10-min cache → weather UI.
-
-### What you see (as a developer)
-`fetchDataset(kind, params)` returning `{records, skipped, provenance, freshness, cache}`; 11 error kinds; OFFLINE+STALE semantics; health per source.
-
-### Detailed real example
-1. Read `engine.ts` `fetchDataset` — registry → NOT_CONFIGURED guard → cache-first → request → adapt → validate → provenance
-2. Read `adapters.ts` USGS branch — malformed rows skipped, counts kept
-3. Run `npm test` — 18 engine cases green, mocked, no live dependency
-4. The source/provenance is the `Provenance` object on every result
-
-### Example interpretation
-One honest pipeline for all sources: adding Sentinel later means client+adapter+registry, not a new architecture.
-
-### Try it yourself
-1. Open `src/data/engine/registry.ts`. 2. Read the 7 sources. 3. Run the engine tests. 4. Trace one adapter.
-
-### What this proves
-Infrastructure honesty is testable: 25 engine tests assert skips, nulls, STALE labeling, and no-synthetic-records.
-
-## 12. GIS / REGIONAL INTELLIGENCE — LIVE EXAMPLE
-
-Country → State → District → City → Locality hierarchy (`/regions`, backend registry of 20 states incl. AP 26/26 + Telangana 33/33 districts), Nominatim search (throttled+cached), Overpass POIs, OSRM routing. Example: open `/regions` → pick Andhra Pradesh → Krishna → Vijayawada (verified coordinates) → watch map/weather/risk context follow. Backend OFFLINE → labeled demo view.
-
-## 13. EMERGENCY RESPONSE — LIVE EXAMPLE
-
-SOS beacon, evacuation routes (OSRM/straight-line DEMO estimate, never an approved route), shelter scanner (DEMO rows, "call ahead"), offline reporting with server receipts, DETECT→ASSESS→RESPOND strip on the homepage. No dispatch backend exists — triage aid only, stated everywhere.
-
-## 14. MULTI-SOURCE INTELLIGENCE — LIVE EXAMPLE
-
-Earthquake + Weather + Events + Satellite + GIS + AI/ML + 3D are separate capabilities sharing one provenance language — never one magical prediction engine. Flow: `/command` → per-module pills → open each module → compare states → return. The module grid proves the composition is honest per-endpoint, not per-dashboard.
-
----
-
-# 🧭 One Complete DRISHTI-X Operator Walkthrough
-
-| # | Route | Click | Observe | Source | State | Meaning |
-|---|---|---|---|---|---|---|
-| 1 | `/command` | — | Status header, module grid | Mixed | Mixed honest | System posture |
-| 2 | `/command` | Module pills | Per-endpoint states | Probes | Mixed | Nothing assumed live |
-| 3 | `/earthquakes` | Newest event | M/depth/time/place | USGS | LIVE | Observed seismicity |
-| 4 | `/weather` | Hyderabad preset | Current vs hourly | Open-Meteo | LIVE | Point model weather |
-| 5 | `/events` | Wildfires filter | EONET records | EONET | LIVE | Curated natural events |
-| 6 | `/satellite` | MODIS 7-2-1 | Burn-scar context | GIBS | LATEST_AVAILABLE | Daily NRT imagery |
-| 7 | `/satellite` | FirePanel | 0 detections + reason | FIRMS | NOT_CONFIGURED | Missing credential, empty panel |
-| 8 | `/risk-map` | Click a point | Inspect dialog | GIBS/grid | Mixed measured | Spatial context |
-| 9 | `/twin` | Toggle FLOOD | Hazard overlay | Scene data | SIMULATION | Scenario, not reality |
-| 10 | `/model-health` | Read banner | OFFLINE + NOT AVAILABLE | Backend | OFFLINE | No simulated health |
-| 11 | `/command` | Return | Same pills, same states | — | Consistent | One coherent system |
-
----
-
-# 🧪 Live Example Matrix
-
-| Module | Route | Example | Source | Current State | What You Can Verify |
+| Step | Live link | Do | Look for | Source | State |
 |---|---|---|---|---|---|
-| Command Center | `/command` | Status + module grid | Mixed probes | Mixed honest | No forced ONLINE |
-| Risk Map | `/risk-map` | Layers + inspect | GIBS/OSM/grid | LATEST_AVAILABLE/OFFLINE | Per-tile measured status |
-| Satellite | `/satellite` | Layer + date viewer | GIBS | LATEST_AVAILABLE | Acquisition vs retrieved |
-| Fire | `/satellite` | Empty honest panel | FIRMS | NOT_CONFIGURED | 0 detections + reason |
-| Earthquakes | `/earthquakes` | Event detail + USGS link | USGS | LIVE | Real M/depth/time |
-| Weather | `/weather` | Current vs forecast | Open-Meteo | LIVE | CC-BY + retrieved time |
-| Events | `/events` | Category filter + detail | EONET | LIVE | Source links, polygon honesty |
-| AI/ML | `/ml`, `/prediction` | Playground + lab | Backend/DEMO | OFFLINE→DEMO | Labeled fallback |
-| Model Health | `/model-health` | Metrics + banner | Artifacts | OFFLINE/SYNTHETIC-DEMO | No simulated health |
-| Twin | `/twin` | Layers + cameras | Scene data | SIMULATION | SIM labels everywhere |
-| Data Engine | `src/data/engine` | Registry + tests | Code | AVAILABLE | 25 green tests |
-| GIS/Regions | `/regions` | AP→Krishna→Vijayawada | Registry | OFFLINE→DEMO | Verified coordinates |
-| Emergency | `/emergency` | SOS + shelters | Local | AVAILABLE/DEMO | No dispatch claims |
+| 1 | [/command](https://drishti-ai-command-center.vercel.app/command) | Read status + module grid | Honest pills, no forced ONLINE | Probes | Mixed |
+| 2 | [/earthquakes](https://drishti-ai-command-center.vercel.app/earthquakes) | Newest event → detail → USGS link | M/depth/time | USGS | LIVE |
+| 3 | [/weather](https://drishti-ai-command-center.vercel.app/weather) | Current vs hourly vs 7-day | Retrieved time, CC-BY | Open-Meteo | LIVE |
+| 4 | [/events](https://drishti-ai-command-center.vercel.app/events) | Filter → polygon check | Source links | EONET | LIVE |
+| 5 | [/satellite](https://drishti-ai-command-center.vercel.app/satellite) | Layer + date + FirePanel | Acquisition vs retrieved | GIBS | LATEST_AVAILABLE |
+| 6 | [/risk-map](https://drishti-ai-command-center.vercel.app/risk-map) | Layers + click point | Measured statuses | GIBS/grid | Mixed |
+| 7 | [/twin](https://drishti-ai-command-center.vercel.app/twin) | Layers + cameras + surge | SIM labels | Scene | SIMULATION |
+| 8 | [/model-health](https://drishti-ai-command-center.vercel.app/model-health) | Banner + metrics | OFFLINE honesty | Artifacts | OFFLINE |
+| 9 | [engine code](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/src/data/engine) | Registry + one adapter | 25 green tests | Code | AVAILABLE |
+| 10 | [docs](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs) | Provenance + limits | 29 files | Docs | STATIC |
 
----
+## 10-Minute Evaluator Tour
 
-# ✅ How to Verify the Examples
+- **00:00** Command Center — system + module honesty
+- **01:00** Module grid — per-endpoint states
+- **02:00** Earthquakes — newest event → detail → USGS link
+- **03:00** Weather — current vs hourly vs 7-day
+- **04:00** Events — filter → polygon honesty
+- **05:00** Satellite — layer + date + FirePanel emptiness
+- **06:00** Risk Map — layers + click-to-inspect
+- **07:00** 3D Twin — layers + cameras + surge
+- **08:00** Model Health — OFFLINE + SYNTHETIC-DEMO semantics
+- **09:00** GitHub architecture + docs
+- **10:00** Done — review TESTING + LIMITATIONS
 
-For each example: **1. Production URL** (table above) → **2. GitHub source path** (`src/app/<route>/page.tsx`, `src/components/<area>/`, `src/data/engine/`) → **3. Data source** (named) → **4. Visible UI evidence** (badges, timestamps, counts) → **5. Documentation reference** (`docs/*-INTELLIGENCE.md`, `docs/DATA-ENGINE.md`, `docs/TESTING.md`).
+## FAQ
 
----
+**What is DRISHTI-X?** Free-first disaster-intelligence command center (above).
+**Is the data real?** Keyless feeds (USGS/Open-Meteo/EONET/GIBS/OSM) are live; backend-dependent panels are OFFLINE-labeled; sim content is SIMULATION-labeled.
+**Which modules are live?** Earthquakes, weather, events, satellite imagery, maps/geocoding.
+**Which are simulated?** 3D twin/hazards/corridors, drones, reunion/recovery flows, shelter rows.
+**Does it use AI/ML?** Yes — scikit-learn RF pipeline + explainability; artifact is SYNTHETIC-DEMO.
+**Is the ML model currently live?** No — backend OFFLINE; UI shows MODEL OFFLINE, never simulated health.
+**What satellite source?** NASA GIBS daily NRT (measured per-tile).
+**Does it use NASA data?** Yes — GIBS, EONET, Earth Observatory reference imagery (public domain).
+**Does it use USGS?** Yes — M2.5+/7d feed via data engine.
+**Does it require API keys?** No — runs fully keyless in labeled DEMO/OFFLINE modes.
+**What happens when a source is unavailable?** Labeled STALE cache or honest empty/OFFLINE/NOT_CONFIGURED states — never synthetic fills.
+**Is the 3D Twin real or simulated?** Simulated scenario content, always labeled.
+**Where is the source code?** GitHub link above. **Production?** Vercel link above. **How do I test?** `npm run lint && npm run typecheck && npm test`, `cd backend && python -m pytest -q`.
 
-# 🛰️ Real vs Simulation Reference
+## Final Project Status
 
-| Example | Real / Simulation | Source | Current State |
-|---|---|---|---|
-| USGS earthquakes | REAL external data | USGS | LIVE |
-| Open-Meteo weather | REAL external data | Open-Meteo | LIVE |
-| NASA EONET events | REAL external data | EONET | LIVE |
-| NASA GIBS imagery | REAL external imagery | GIBS | LATEST_AVAILABLE |
-| FIRMS fire intelligence | NOT_CONFIGURED | FIRMS | No key — empty panel |
-| Copernicus Sentinel | NOT_CONFIGURED | Copernicus | Probed — no public path |
-| AI backend inference | OFFLINE | Railway backend | Trial expired |
-| 3D flood overlay | SIMULATION | Scene data | Scenario |
-| 3D evacuation corridor | SIMULATION | Scene data | Not official |
-| 3D fire overlay | SIMULATION | Scene data | Scenario |
+DRISHTI-X · Production READY · Steps 1–31 COMPLETE · Post-launch correction COMPLETE · Homepage FROZEN · Documentation COMPLETE · Tests 131 + 51 green · No Step 32.
 
----
+## Final Links
 
-# 🔀 Example Data Flows
+Production: https://drishti-ai-command-center.vercel.app/ · GitHub: https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center · Routes: `/command` `/risk-map` `/satellite` `/earthquakes` `/weather` `/events` `/model-health` `/ml` `/prediction` `/twin` (all verified 200) · Docs: 29 files in [`docs/`](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs).
 
-USGS → Data Engine Client → USGS Adapter → Normalized Earthquake Event → Cache → QuakeMap → Operator.
+## What This Project Demonstrates
 
-Open-Meteo → Weather Adapter → Current + Hourly + Daily → Cache → Weather UI → Operator.
-
-NASA EONET → EONET Adapter → Event Normalization → Geometry Handling → Event Map → Operator.
-
-NASA GIBS → Imagery Layer → Satellite Viewer → Operator.
-
-ML Backend → Model Endpoint → Model Health / Prediction UI. **CURRENT BACKEND STATE = OFFLINE** — live inference cannot be represented as available.
-
----
-
-# 🎓 10-Minute DRISHTI-X Evaluation Tour
-
-- **00:00** — Open [Command Center](https://drishti-ai-command-center.vercel.app/command), read system + module status
-- **01:00** — Inspect module grid honesty (nothing forced ONLINE)
-- **02:00** — [Earthquakes](https://drishti-ai-command-center.vercel.app/earthquakes): newest event → detail → USGS link
-- **03:00** — [Weather](https://drishti-ai-command-center.vercel.app/weather): current vs hourly vs 7-day
-- **04:00** — [Events](https://drishti-ai-command-center.vercel.app/events): filter → polygon honesty check
-- **05:00** — [Satellite](https://drishti-ai-command-center.vercel.app/satellite): layer + date + FirePanel emptiness
-- **06:00** — [Risk Map](https://drishti-ai-command-center.vercel.app/risk-map): layers + click-to-inspect
-- **07:00** — [3D Twin](https://drishti-ai-command-center.vercel.app/twin): layers + cameras + surge
-- **08:00** — [Model Health](https://drishti-ai-command-center.vercel.app/model-health): OFFLINE honesty + SYNTHETIC-DEMO semantics
-- **09:00** — [GitHub architecture](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/src/data/engine) + [docs](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/docs)
-- **10:00** — [Documentation and provenance](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/FINAL-DELIVERY-SUMMARY.md): done.
-
----
-
-# 🗂️ Professional Source Cards
-
-### Data Source — NASA GIBS
-
-| Field | Value |
-|---|---|
-| Provider | NASA Worldview / GIBS |
-| Data | Daily True-Color + 7-2-1 composites (4 curated layers) |
-| Access | Free, keyless WMTS |
-| Update | Daily NRT (~1-day latency) |
-| Authentication | None |
-| DRISHTI-X status | LATEST_AVAILABLE (per-tile measured) |
-| Provenance | Tile attributions + acquisition-vs-retrieved panel |
-| Alternative | [NASA Worldview](https://worldview.earthdata.nasa.gov/) (verified HTTP 200; external explorer, not an in-app source) |
-
-### Data Source — USGS Earthquakes
-
-| Field | Value |
-|---|---|
-| Provider | USGS Earthquake Hazards Program |
-| Data | M2.5+/7d GeoJSON (magnitude, depth, place, time, URLs) |
-| Access | Free, keyless |
-| Update | Minutes (feed latency) |
-| Authentication | None |
-| DRISHTI-X status | LIVE (5-min engine cache) |
-| Provenance | Per-event USGS links + retrieval timestamps |
-| Alternative | FDSN-compatible services (unverified, not integrated) |
-
-### Data Source — Open-Meteo
-
-| Field | Value |
-|---|---|
-| Provider | Open-Meteo (CC-BY 4.0, attribution shown in-app) |
-| Data | Current + hourly + daily (temp, humidity, precip, wind, code) |
-| Access | Free non-commercial, no key |
-| Update | Model runs, tens of minutes |
-| Authentication | None |
-| DRISHTI-X status | LIVE (10-min engine cache) |
-| Provenance | Retrieved time + cache state + CC-BY line |
-| Alternative | None needed; Open-Meteo satisfies project needs |
-
-### Data Source — NASA EONET
-
-| Field | Value |
-|---|---|
-| Provider | NASA EONET (open event API) |
-| Data | Natural events: id/title/category/geometry/dates/sources |
-| Access | Free, keyless |
-| Update | Curated, variable latency |
-| Authentication | None |
-| DRISHTI-X status | LIVE (30-min engine cache) |
-| Provenance | Source links per event + retrieval timestamps |
-| Alternative | USGS feeds where overlapping (already used for quakes) |
-
-### Data Source — NASA FIRMS
-
-| Field | Value |
-|---|---|
-| Provider | NASA FIRMS (MODIS/VIIRS/Landsat active fire) |
-| Data | Hotspot detections (lat/lon/time/confidence) |
-| Access | Free MAP_KEY signup, server-side only |
-| Update | NRT ~1–3h (when keyed) |
-| Authentication | MAP_KEY required — none configured |
-| DRISHTI-X status | NOT_CONFIGURED (0 detections, reason shown) |
-| Provenance | Empty panel + enablement docs, never synthetic fills |
-| Alternative | MODIS 7-2-1 burn-scar context via GIBS (integrated) |
-
-### Data Source — OpenStreetMap ecosystem
-
-| Field | Value |
-|---|---|
-| Provider | OSM tiles / Nominatim / Overpass / OSRM demo server |
-| Data | Basemaps, geocoding, POIs, routing |
-| Access | Free with strict usage policies (Nominatim 1 req/s, throttled + cached in-app) |
-| Update | Continuously (community) |
-| Authentication | None |
-| DRISHTI-X status | AVAILABLE/LIVE |
-| Provenance | Tile attributions throughout |
-| Alternative | Esri/CARTO/OpenTopoMap basemaps (integrated as alternates) |
-
-### Data Source — Copernicus / Sentinel
-
-| Field | Value |
-|---|---|
-| Provider | Copernicus Data Space |
-| Data | Sentinel-1/-2 products (would-be: acquisition, cloud %, footprint) |
-| Access | Free account; credentials server-side only |
-| Update | N/A (not connected) |
-| Authentication | Required — none configured |
-| DRISHTI-X status | NOT_CONFIGURED (live-probed 2026-09-26: catalog visible, no public imagery path) |
-| Provenance | Honest unavailable state + enablement docs |
-| Alternative | NASA GIBS daily composites (integrated, operational) |
-
----
-
-# 🔄 Free Data Source Alternatives
-
-| Capability | Primary | Free Alternative | DRISHTI-X State | Notes |
-|---|---|---|---|---|
-| Satellite imagery | NASA GIBS | [NASA Worldview](https://worldview.earthdata.nasa.gov/) | LIVE/AVAILABLE | Worldview verified reachable; external explorer, complementary not equivalent |
-| Earthquakes | USGS | FDSN-compatible (e.g. IRIS) | LIVE | IRMS probe inconclusive; not integrated; USGS suffices |
-| Weather | Open-Meteo | NOAA public services | LIVE | Documented only; no second provider needed |
-| Natural Events | NASA EONET | USGS/NOAA feeds | LIVE | Overlapping coverage already used |
-| Fire | NASA FIRMS | NOAA thermal sources | NOT_CONFIGURED | Unverified alternatives not wired; burn-scar context instead |
-| Maps | OSM | USGS/NASA layers, Esri/CARTO | AVAILABLE | Alternates integrated; policies respected |
-| Sentinel imagery | Copernicus | NASA/NOAA alternatives | NOT_CONFIGURED | GIBS covers the operational need; datasets differ, no equivalence claimed |
-
----
-
-# 🏷️ Visual Provenance
-
-Every documentation image follows one rule: **real pixels, named source, or it doesn't ship.**
-
-- `public/poster.jpg` — Source: original DRISHTI-X artwork. Used as README hero.
-- `public/img/photos/*.jpg` (6) — Source: NASA/FEMA/U.S. Navy, public domain (verified file pages). Used in-app with ILLUSTRATIVE badges + captions; never presented as live observations.
-- `public/img/*.svg` (26) — Source: original in-repo illustrations.
-- No AI-generated disaster photos. No stock photos as evidence. No screenshots presented as live output. Full table: [`public/img/SOURCES.md`](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/public/img/SOURCES.md).
-
----
-
-# 🧑‍💼 Professional Operator Walkthrough
-
-Role-based paths (all links production-verified):
-
-- **Evaluator (5 min):** [Command Center](https://drishti-ai-command-center.vercel.app/command) → module pills → [Earthquakes](https://drishti-ai-command-center.vercel.app/earthquakes) newest event → [Model Health](https://drishti-ai-command-center.vercel.app/model-health) OFFLINE honesty → done. Proves: truthful aggregation.
-- **Developer (10 min):** [Engine code](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/tree/main/src/data/engine) → registry → one adapter → `npm test` (25 engine cases) → [Events](https://drishti-ai-command-center.vercel.app/events) to see it live. Proves: testable honest pipeline.
-- **Researcher:** [EONET docs](https://github.com/hemanthhemanth1834-bit/drishti-ai-command-center/blob/main/docs/EONET-EVENT-INTELLIGENCE.md) → polygon-handling code → live polygon event. Proves: geometry integrity.
-- **Designer:** [Twin](https://drishti-ai-command-center.vercel.app/twin) layers/cameras → [Command Center](https://drishti-ai-command-center.vercel.app/command) status language. Proves: simulation containment.
-
----
-
-# ⚖️ Live vs Simulation vs External Example
-
-| Example | Classification | Source | Current State |
-|---|---|---|---|
-| USGS event list | LIVE data | USGS | Measured feed |
-| Open-Meteo current | LIVE data | Open-Meteo | Keyless feed |
-| EONET records | LIVE data | EONET | Open feed |
-| GIBS tiles | LIVE imagery | GIBS | Daily NRT, measured |
-| FirePanel emptiness | NOT_CONFIGURED | FIRMS | No key — honest gap |
-| Model metrics | SYNTHETIC-DEMO | Artifacts | Demo artifact |
-| Twin hazards | SIMULATION | Scene data | Scenario |
-| Reunion flow | SIMULATION | Local flow | Demo aid |
-| Worldview link | EXTERNAL EXAMPLE | NASA tool | Complementary, not integrated |
-| IRIS/FDSN mention | EXTERNAL UNVERIFIED | — | Not integrated, no claims |
+Full-stack engineering (Next.js + FastAPI + SQLite/Postgres) · data integration (7-source engine, adapters, validation) · GIS (Leaflet layers, OSM policies, measured liveness) · Earth observation (GIBS viewer, reference pairs) · AI/ML integration (RF pipeline, explainability, honest demo labeling) · 3D visualization (twin, globe, fallbacks) · API architecture (28 routers, typed client, offline queue) · caching (TTL, dedupe, throttling) · testing (182 green tests, honesty assertions) · deployment (gated GitHub→Vercel) · technical documentation (29 verified docs) — all with provenance honesty as the load-bearing feature.
