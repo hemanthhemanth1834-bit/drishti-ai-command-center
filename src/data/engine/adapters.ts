@@ -19,11 +19,38 @@ export interface QuakeProperties {
 
 export interface WeatherProperties {
   temperatureC: number | null;
+  feelsLikeC: number | null;
   humidityPct: number | null;
   precipitationMm: number | null;
   windKph: number | null;
+  windDirDeg: number | null;
+  windGustKph: number | null;
+  pressureHpa: number | null;
+  cloudPct: number | null;
   weatherCode: number | null;
   kind: 'observation' | 'forecast';
+}
+
+export interface HourlyProperties {
+  hourIso: string;
+  temperatureC: number | null;
+  feelsLikeC: number | null;
+  precipitationMm: number | null;
+  precipitationProbPct: number | null;
+  windKph: number | null;
+  weatherCode: number | null;
+  kind: 'forecast';
+}
+
+export interface DailyProperties {
+  date: string;
+  tempMinC: number | null;
+  tempMaxC: number | null;
+  precipitationMm: number | null;
+  precipitationProbPct: number | null;
+  windMaxKph: number | null;
+  weatherCode: number | null;
+  kind: 'forecast';
 }
 
 export interface FireProperties {
@@ -37,6 +64,29 @@ export interface FireProperties {
 }
 
 function num(v: unknown): number | null {
+  return typeof v === 'number' && Number.isFinite(v) ? v : null;
+}
+
+/**
+ * Open-Meteo returns wall-clock ISO without offset (location timezone).
+ * Interpret naive stamps with utc_offset_seconds; aware stamps parse directly.
+ */
+export function omTimeToIso(value: unknown, offsetSec: number | null): string | null {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const t = value.trim();
+  if (/[zZ]$|[+-]\d{2}:?\d{2}$/.test(t)) {
+    const ms = Date.parse(t);
+    return Number.isNaN(ms) ? null : new Date(ms).toISOString();
+  }
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?/.exec(t);
+  if (!m) return toUtcIso(t);
+  const off = offsetSec != null && Number.isFinite(offsetSec) ? offsetSec : 0;
+  const ms = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +(m[6] ?? 0)) - off * 1000;
+  return new Date(ms).toISOString();
+}
+
+function omOffset(payload: unknown): number | null {
+  const v = (payload as { utc_offset_seconds?: unknown } | null)?.utc_offset_seconds;
   return typeof v === 'number' && Number.isFinite(v) ? v : null;
 }
 
@@ -155,6 +205,112 @@ export function adaptFirmsFires(
   return { records, skipped };
 }
 
+/** Normalize Open-Meteo hourly + daily forecast blocks (optional; absent = skipped silently). */
+export function adaptOpenMeteoForecast(
+  payload: unknown,
+  lat: number,
+  lon: number,
+  retrievedAt: string = nowIso(),
+): { records: DataRecord<HourlyProperties | DailyProperties>[]; skipped: number } {
+  const base = provenanceFor('open-meteo', 'FORECAST');
+  const records: DataRecord<HourlyProperties | DailyProperties>[] = [];
+  let skipped = 0;
+  if (!isValidCoordinates(lat, lon)) return { records, skipped: 1 };
+  const root = (payload ?? {}) as { hourly?: Record<string, unknown>; daily?: Record<string, unknown> };
+
+  const hourly = root.hourly;
+  if (hourly && typeof hourly === 'object') {
+    const times = Array.isArray(hourly.time) ? (hourly.time as unknown[]) : [];
+    const n = times.length;
+    const col = (k: string): unknown[] => (Array.isArray(hourly[k]) ? (hourly[k] as unknown[]) : []);
+    const temps = col('temperature_2m');
+    const feels = col('apparent_temperature');
+    const precs = col('precipitation');
+    const probs = col('precipitation_probability');
+    const winds = col('windspeed_10m');
+    const codes = col('weathercode');
+    for (let i = 0; i < n; i += 1) {
+      const ts = omTimeToIso(times[i], omOffset(payload));
+      if (!ts) {
+        skipped += 1;
+        continue;
+      }
+      const wms = num(winds[i]);
+      records.push({
+        id: `openmeteo-h-${lat.toFixed(2)}-${lon.toFixed(2)}-${ts}`,
+        source: base.source, sourceUrl: base.sourceUrl,
+        dataType: 'weather-hourly',
+        timestamp: ts,
+        retrievedAt,
+        status: 'FORECAST',
+        freshness: 'UNKNOWN',
+        coverage: `${lat.toFixed(2)},${lon.toFixed(2)}`,
+        coordinates: { lat, lon },
+        geometry: { type: 'Point', coordinates: [lon, lat] },
+        properties: {
+          hourIso: ts,
+          temperatureC: num(temps[i]),
+          feelsLikeC: num(feels[i]),
+          precipitationMm: num(precs[i]),
+          precipitationProbPct: num(probs[i]),
+          windKph: wms == null ? null : Math.round(wms * 3.6 * 10) / 10,
+          weatherCode: num(codes[i]),
+          kind: 'forecast',
+        },
+        attribution: base.attribution,
+        limitations: 'Model forecast, may differ from actual conditions.',
+        rawSourceReference: `open-meteo hourly ${lat},${lon}`,
+      });
+    }
+  }
+
+  const daily = root.daily;
+  if (daily && typeof daily === 'object') {
+    const times = Array.isArray(daily.time) ? (daily.time as unknown[]) : [];
+    const col = (k: string): unknown[] => (Array.isArray(daily[k]) ? (daily[k] as unknown[]) : []);
+    const tmax = col('temperature_2m_max');
+    const tmin = col('temperature_2m_min');
+    const precs = col('precipitation_sum');
+    const probs = col('precipitation_probability_max');
+    const winds = col('windspeed_10m_max');
+    const codes = col('weathercode');
+    for (let i = 0; i < times.length; i += 1) {
+      const day = typeof times[i] === 'string' ? (times[i] as string) : null;
+      if (!day) {
+        skipped += 1;
+        continue;
+      }
+      const wms = num(winds[i]);
+      records.push({
+        id: `openmeteo-d-${lat.toFixed(2)}-${lon.toFixed(2)}-${day}`,
+        source: base.source, sourceUrl: base.sourceUrl,
+        dataType: 'weather-daily',
+        timestamp: toUtcIso(`${day}T00:00:00Z`),
+        retrievedAt,
+        status: 'FORECAST',
+        freshness: 'UNKNOWN',
+        coverage: `${lat.toFixed(2)},${lon.toFixed(2)}`,
+        coordinates: { lat, lon },
+        geometry: { type: 'Point', coordinates: [lon, lat] },
+        properties: {
+          date: day,
+          tempMinC: num(tmin[i]),
+          tempMaxC: num(tmax[i]),
+          precipitationMm: num(precs[i]),
+          precipitationProbPct: num(probs[i]),
+          windMaxKph: wms == null ? null : Math.round(wms * 3.6 * 10) / 10,
+          weatherCode: num(codes[i]),
+          kind: 'forecast',
+        },
+        attribution: base.attribution,
+        limitations: 'Model forecast, may differ from actual conditions.',
+        rawSourceReference: `open-meteo daily ${lat},${lon}`,
+      });
+    }
+  }
+  return { records, skipped };
+}
+
 /** Normalize an Open-Meteo current-weather response. */
 export function adaptOpenMeteoCurrent(
   payload: unknown,
@@ -166,8 +322,9 @@ export function adaptOpenMeteoCurrent(
   if (!isValidCoordinates(lat, lon)) return { records: [], skipped: 1 };
   const current = (payload as { current?: Record<string, unknown> } | null)?.current;
   if (typeof current !== 'object' || current === null) return { records: [], skipped: 1 };
-  const ts = toUtcIso(current.time);
+  const ts = omTimeToIso(current.time, omOffset(payload));
   const windMs = num(current.wind_speed_10m);
+  const gustMs = num(current.windgusts_10m ?? current.wind_gusts_10m);
   return {
     records: [
       {
@@ -183,9 +340,14 @@ export function adaptOpenMeteoCurrent(
         geometry: { type: 'Point', coordinates: [lon, lat] },
         properties: {
           temperatureC: num(current.temperature_2m),
+          feelsLikeC: num(current.apparent_temperature),
           humidityPct: num(current.relative_humidity_2m),
           precipitationMm: num(current.precipitation),
           windKph: windMs == null ? null : Math.round(windMs * 3.6 * 10) / 10,
+          windDirDeg: num(current.winddirection_10m ?? current.wind_direction_10m),
+          windGustKph: gustMs == null ? null : Math.round(gustMs * 3.6 * 10) / 10,
+          pressureHpa: num(current.pressure_msl ?? current.surface_pressure),
+          cloudPct: num(current.cloudcover ?? current.cloud_cover),
           weatherCode: num(current.weather_code),
           kind: 'observation',
         },

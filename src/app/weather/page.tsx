@@ -1,10 +1,16 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { get } from '@/platform/api';
 import { cacheGet, cachePut } from '@/platform/offlineDb';
 import VizFigure from '@/platform/VizFigure';
+
+const WeatherIntel = dynamic(() => import('@/components/weather/WeatherIntel'), {
+  ssr: false,
+  loading: () => <p className="text-xs text-slate-400">Loading Open-Meteo intelligence…</p>,
+});
 
 export default function WeatherPage() {
   const [lat, setLat] = useState(25.57);
@@ -72,6 +78,7 @@ export default function WeatherPage() {
         ))}
         <p className="text-[11px] text-slate-400 mt-2">Attribution: © Open-Meteo (CC-BY 4.0). IMD integration is an opt-in stub — never synthesized.</p>
       </div>
+      <WeatherIntel />
     </ModuleShell>
   );
 }
