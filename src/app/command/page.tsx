@@ -19,6 +19,7 @@ import AiDecisionTimeline from '@/components/cinematic/AiDecisionTimeline';
 import DemoMode from '@/components/cinematic/DemoMode';
 import { Waveform } from '@/components/cinematic/AnimatedCounter';
 import CommandKpiRow from '@/components/command/CommandKpiRow';
+import ModuleStatusGrid from '@/components/command/ModuleStatusGrid';
 import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
 import FloodTimeline from '@/components/three/FloodTimeline';
@@ -446,30 +447,9 @@ export default function MasterCommandCenter() {
               </div>
             </div>
 
-            {/* Module navigation */}
+            {/* Module navigation with live per-module status */}
             <HudPanel micro="COMMAND MODULES" title="JUMP TO OPERATIONS">
-              <div className="grid grid-cols-2 gap-2 text-[11px]">
-                {[
-                  ['/drones', 'DRONE SWARM & SAR'],
-                  ['/twin', '3D DIGITAL TWIN'],
-                  ['/location', 'LOCATION INTEL'],
-                  ['/simulation', 'WHAT-IF COPILOT'],
-                  ['/resources', 'HOSPITAL ICU'],
-                  ['/shelter', 'SHELTER SCANNER'],
-                  ['/reunion', 'OP-MILAN REUNION'],
-                  ['/recovery', 'RECOVERY & AUDIT'],
-                  ['/weather', 'WEATHER INTEL'],
-                  ['/satellite', 'SATELLITE INTEL'],
-                  ['/sensors', 'SENSOR NETWORK'],
-                  ['/roads', 'ROAD INTEL'],
-                  ['/response', 'RESPONSE BOARD'],
-                  ['/alerts', 'ALERT CENTER'],
-                ].map(([href, label]) => (
-                  <Link key={href} href={href} className="px-3 py-2 rounded-lg bg-[#091a2e] border border-[#1b314b] hover:border-[#00d2ff]/60 text-slate-200 font-bold text-center">
-                    {label}
-                  </Link>
-                ))}
-              </div>
+              <ModuleStatusGrid />
             </HudPanel>
           </section>
         </div>
