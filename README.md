@@ -232,9 +232,12 @@ Command Center → Earthquakes (real USGS event) → Weather (Hyderabad current)
 | Natural Events | NASA EONET | Browser + map | LIVE | USGS overlap reused |
 | Fire | NASA FIRMS | Gated adapter | NOT_CONFIGURED | MODIS 7-2-1 context |
 | Maps | OSM | Tiles/search/POIs | AVAILABLE | Esri/CARTO/OpenTopoMap |
+| Location embed | OSM radar | Google Maps Embed (optional toggle) | OSM default; Google NOT_CONFIGURED | Key + billing required; official iframe only, never scraped |
 | Sentinel | Copernicus | None yet | NOT_CONFIGURED | GIBS (different data, no equivalence claimed) |
 
 INTEGRATED INTO DRISHTI-X vs EXTERNAL ALTERNATIVE/REFERENCE is labeled per row — Worldview/FDSN/NOAA are references, not integrations.
+
+**Google Maps integration (optional, env-gated):** `/location` offers an official Maps Embed toggle that renders only when `NEXT_PUBLIC_GOOGLE_MAPS_KEY` is configured (key + billing-enabled Cloud project, referrer-restricted). Without a key the toggle is disabled, Google reports NOT_CONFIGURED, and the OSM radar remains the full experience. No scraping, no undocumented endpoints, no vendored Google imagery; Places/Street View are not integrated.
 
 ## Visual Examples
 

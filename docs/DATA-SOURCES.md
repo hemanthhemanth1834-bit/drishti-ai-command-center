@@ -14,6 +14,7 @@
 | ISRO/Bhuvan/Bhoonidhi | soil/satellite | NOT CONFIGURED | varies | SoilGrids/demo |
 | IMD | official weather | NOT_CONFIGURED | key | Open-Meteo |
 | SMS/push/email | notifications | NOT_CONFIGURED | provider keys | in-app queue |
+| Google Maps Embed | optional location view (`/location` toggle) | NOT_CONFIGURED (no key) | key + billing-enabled project, referrer-restricted | OSM radar (default) |
 | DEM/SRTM | elevation | PLANNED | — | procedural DEM (demo) |
 | History | training/trends | SIMULATED + CSV import | — | — |
 
