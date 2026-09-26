@@ -20,6 +20,7 @@ import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import { DEMO_FACILITIES, DEMO_HAZARDS } from '@/data/providers';
 import type { MapCircle } from '@/components/RadarMap';
+import { googleEmbedStatus, googleEmbedUrl } from '@/platform/mapProvider';
 
 const DroneLeafletTracker = dynamic(
   () => import('@/components/maps/DroneLeafletTracker'),
@@ -53,6 +54,11 @@ export default function LocationPage() {
     at: number;
   } | null>(null);
   const [copied, setCopied] = useState(false);
+  // Map source: OSM default; official Google Embed only when keyed.
+  const [mapSrc, setMapSrc] = useState<'osm' | 'google'>('osm');
+  const google = googleEmbedStatus();
+  const gEmbed = place ? googleEmbedUrl(place.lat, place.lon, 15) : null;
+  const showGoogle = mapSrc === 'google' && gEmbed != null;
   const [layersOff, setLayersOff] = useState<Record<string, boolean>>({});
   const toggleLayer = (k: string) => setLayersOff((o) => ({ ...o, [k]: !o[k] }));
 
@@ -417,18 +423,48 @@ export default function LocationPage() {
                 {place ? shortName(place.name).toUpperCase() : 'NO FIX — SEARCH A PLACE'}{' '}
                 {place ? `${place.lat.toFixed(4)}°N, ${place.lon.toFixed(4)}°E` : '—.————°N, —.————°E'}
               </span>
-              <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">
-                <span className="px-2.5 py-0.5 text-[10px] rounded bg-[#00d2ff] text-black font-bold">
+              <span className="ml-auto flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]" role="group" aria-label="Map source">
+                <button
+                  type="button"
+                  onClick={() => setMapSrc('osm')}
+                  aria-pressed={mapSrc === 'osm'}
+                  className={`dx-touch px-2.5 py-0.5 text-[10px] rounded font-bold ${mapSrc === 'osm' ? 'bg-[#00d2ff] text-black' : 'text-slate-400'}`}
+                >
                   OSM RADAR
-                </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { if (google.status === 'READY') setMapSrc('google'); }}
+                  disabled={google.status !== 'READY'}
+                  title={google.status === 'READY' ? 'Official Google Maps Embed' : `Google Maps: ${google.detail}`}
+                  aria-pressed={mapSrc === 'google'}
+                  className={`dx-touch px-2.5 py-0.5 text-[10px] rounded font-bold ${mapSrc === 'google' ? 'bg-[#00d2ff] text-black' : 'text-slate-400 disabled:opacity-50'}`}
+                >
+                  GOOGLE{google.status !== 'READY' ? ' (N/A)' : ''}
+                </button>
               </span>
             </div>
             <div className="h-[380px] bg-black">
-              <DroneLeafletTracker
-                lat={place?.lat ?? 17.385}
-                lon={place?.lon ?? 78.4867}
-                circles={layerCircles}
-              />
+              {showGoogle && gEmbed ? (
+                <iframe
+                  title={`Google Maps embed — ${shortName(place?.name ?? 'location')}`}
+                  src={gEmbed}
+                  className="w-full border-0"
+                  style={{ height: 380 }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              ) : (
+                <DroneLeafletTracker
+                  lat={place?.lat ?? 17.385}
+                  lon={place?.lon ?? 78.4867}
+                  circles={layerCircles}
+                />
+              )}
+              {mapSrc === 'google' && !gEmbed && (
+                <p className="text-[11px] text-slate-400 p-2">Google Maps NOT_CONFIGURED — showing OSM fallback. Set NEXT_PUBLIC_GOOGLE_MAPS_KEY (billing-enabled project required by Google).</p>
+              )}
             </div>
           </div>
 
