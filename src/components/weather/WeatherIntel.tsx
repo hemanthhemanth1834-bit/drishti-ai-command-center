@@ -11,6 +11,7 @@ import { fetchDataset, type DatasetResult } from '@/data/engine/engine';
 import type { DataRecord } from '@/data/engine/types';
 import type { DailyProperties, HourlyProperties, WeatherProperties } from '@/data/engine/adapters';
 import { SHOWCASE_CITIES } from '@/config/regions';
+import { useRegion } from '@/platform/regionStore';
 import {
   fmt,
   fmtDay,
@@ -27,8 +28,18 @@ type WxRecord =
   | DataRecord<HourlyProperties>
   | DataRecord<DailyProperties>;
 
+/** Index of the showcase city matching shared-location coords (within ~1km), else -1. */
+function matchSharedCity(lat: number | null, lon: number | null): number {
+  if (lat == null || lon == null) return -1;
+  return SHOWCASE_CITIES.findIndex(
+    (c) => c.lat != null && c.lon != null && Math.abs(c.lat - lat) < 0.011 && Math.abs(c.lon - lon) < 0.011,
+  );
+}
+
 export default function WeatherIntel() {
-  const [cityIdx, setCityIdx] = useState(7);
+  const region = useRegion();
+  const sharedIdx = matchSharedCity(region.lat, region.lon);
+  const [cityIdx, setCityIdx] = useState(() => (sharedIdx >= 0 ? sharedIdx : 7));
   const [refreshKey, setRefreshKey] = useState(0);
   const [result, setResult] = useState<DatasetResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +92,17 @@ export default function WeatherIntel() {
           <button type="button" onClick={() => setRefreshKey((k) => k + 1)} className="dx-touch px-3 py-1.5 rounded border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60 font-bold" aria-label="Refresh weather data">
             REFRESH
           </button>
+          {sharedIdx >= 0 && cityIdx !== sharedIdx && (
+            <button type="button" onClick={() => setCityIdx(sharedIdx)} className="dx-touch px-3 py-1.5 rounded border border-[#00d2ff]/60 text-[#7de9ff] font-bold" aria-label={`Use shared location ${region.label}`}>
+              USE SHARED LOCATION
+            </button>
+          )}
+          {sharedIdx >= 0 && cityIdx === sharedIdx && (
+            <span className="text-[#7de9ff] text-[11px]">USING SHARED LOCATION: {region.label}</span>
+          )}
+          {region.lat != null && sharedIdx < 0 && (
+            <span className="text-slate-500 text-[11px]">Shared location ({region.label}) has no showcase-city match — nearest city selected manually.</span>
+          )}
           {prov && (
             <span className="text-slate-500 text-[11px]">
               Retrieved {prov.retrievedAt.slice(0, 16).replace('T', ' ')} UTC · cache {result?.cache} · {result?.freshness}

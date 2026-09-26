@@ -1,7 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
+import { useRegion } from '@/platform/regionStore';
 import VizFigure from '@/platform/VizFigure';
 import { get } from '@/platform/api';
 import { BASE_LAYERS, EO_LAYERS, HISTORICAL_PRESETS, type Preset } from '@/platform/eoLayers';
@@ -32,6 +34,20 @@ export default function RiskMapPage() {
   const [cells, setCells] = useState<Cell[]>([]);
   const [gridStatus, setGridStatus] = useState('DEMO');
   const [online, setOnline] = useState(true);
+  const region = useRegion();
+  // Shared location drives the map unless the user explicitly picks a historical preset.
+  const sharedPreset = useMemo<Preset | null>(() => {
+    if (region.lat == null || region.lon == null) return null;
+    return {
+      id: 'shared-location',
+      name: `Shared location — ${region.label}`,
+      lat: region.lat,
+      lon: region.lon,
+      zoom: 10,
+      note: `Map centred on the shared location (${region.lat.toFixed(2)}, ${region.lon.toFixed(2)}). Change via CHANGE LOCATION in the bar above.`,
+    };
+  }, [region]);
+  const effectivePreset = preset ?? sharedPreset;
 
   useEffect(() => {
     setOnline(typeof navigator === 'undefined' ? true : navigator.onLine);
@@ -45,6 +61,8 @@ export default function RiskMapPage() {
   const statusOf = (id: string) => liveLayers[id] ?? EO_LAYERS.find((e) => e.id === id)?.status ?? 'DEMO';
 
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell title="Disaster Intelligence Map" sub="Live satellite + risk grid + incidents + infrastructure. Every layer shows measured status." status={online ? 'LIVE' : 'OFFLINE'} source="NASA GIBS · OpenStreetMap · DRISHTI-X grid API">
       <div className="dx-hud">
         <div className="dx-hud-edge" />
@@ -80,16 +98,24 @@ export default function RiskMapPage() {
             )}
             <div className="mt-2">
               <div className="dx-micro">REGION PRESETS</div>
+              {!preset && sharedPreset && (
+                <p className="text-[10px] text-[#7de9ff] mt-1">MAP CENTRE: {sharedPreset.name} — pick a preset below to override, or CHANGE LOCATION above.</p>
+              )}
               {HISTORICAL_PRESETS.map((p) => (
                 <button key={p.id} onClick={() => setPreset(p)} className="block text-left w-full text-[11px] text-[#7de9ff] hover:underline py-0.5">
                   {p.name}
                 </button>
               ))}
               {preset && <p className="text-[10px] text-slate-500 mt-1">{preset.note}</p>}
+              {preset && sharedPreset && (
+                <button onClick={() => setPreset(null)} className="block text-left w-full text-[11px] text-[#7de9ff] hover:underline py-0.5">
+                  ← Back to shared location ({sharedPreset.name})
+                </button>
+              )}
             </div>
           </details>
           <div className="lg:col-span-3">
-            <RiskGridMap base={base} eoOn={eoOn} compare={compare} preset={preset} cells={cells} gridStatus={gridStatus} onInspect={setInspect} onLayerStatus={onLayerStatus} />
+            <RiskGridMap base={base} eoOn={eoOn} compare={compare} preset={effectivePreset} cells={cells} gridStatus={gridStatus} onInspect={setInspect} onLayerStatus={onLayerStatus} />
             <div className="flex gap-4 flex-wrap text-xs text-slate-300 mt-2" aria-label="Legend">
               <span><i style={{ background: '#34d399' }} className="inline-block w-2.5 h-2.5" /> LOW</span>
               <span><i style={{ background: '#fbbf24' }} className="inline-block w-2.5 h-2.5" /> MODERATE</span>
@@ -139,5 +165,6 @@ export default function RiskMapPage() {
         <p className="text-[11px] text-slate-400 mt-2">Tiles © OpenStreetMap contributors · CARTO · Esri/Maxar · OpenTopoMap · Imagery © NASA Worldview/GIBS. Colors track live grid state ({gridStatus}-driven).</p>
       </div>
     </ModuleShell>
+    </>
   );
 }

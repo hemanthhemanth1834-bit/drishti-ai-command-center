@@ -7,8 +7,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import { fetchDataset, type DatasetResult } from '@/data/engine/engine';
 import type { EventProperties } from '@/data/engine/adapters';
+import { useRegion } from '@/platform/regionStore';
+import { haversineKm } from '@/utils/geocode';
 import { useDialogA11y } from '@/hooks/useDialogA11y';
 import { categoryColor } from '@/components/events/EventMap';
 import {
@@ -38,6 +41,9 @@ export default function EventsPage() {
   const [category, setCategory] = useState('all');
   const [openness, setOpenness] = useState<'all' | 'open' | 'closed'>('all');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [nearbyOnly, setNearbyOnly] = useState(false);
+  const region = useRegion();
+  const NEARBY_KM = 500;
 
   useEffect(() => {
     let dead = false;
@@ -48,10 +54,14 @@ export default function EventsPage() {
     return () => { dead = true; };
   }, [refreshKey]);
 
-  const events: NatEvent[] = useMemo(
-    () => (state.phase === 'ready' ? sortByEventTime(filterEvents(state.result.records as NatEvent[], category, openness)) : []),
-    [state, category, openness],
-  );
+  const events: NatEvent[] = useMemo(() => {
+    const base = state.phase === 'ready' ? sortByEventTime(filterEvents(state.result.records as NatEvent[], category, openness)) : [];
+    if (!nearbyOnly || region.lat == null || region.lon == null) return base;
+    return base.filter(
+      (e) => e.coordinates != null && haversineKm(region.lat as number, region.lon as number, e.coordinates.lat, e.coordinates.lon) <= NEARBY_KM,
+    );
+  }, [state, category, openness, nearbyOnly, region]);
+  const totalEvents = state.phase === 'ready' ? (state.result.records as NatEvent[]).length : 0;
   const allCats = useMemo(
     () => (state.phase === 'ready' ? categoriesOf(state.result.records as NatEvent[]) : []),
     [state],
@@ -68,6 +78,8 @@ export default function EventsPage() {
   useDialogA11y(selected !== null, 'dx-event-dialog', closeDetail);
 
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell
       title="Disaster Event Intelligence"
       sub="Natural events reported through NASA EONET. Source records only — never predictions, never severity scores."
@@ -109,6 +121,19 @@ export default function EventsPage() {
           <button type="button" onClick={() => setRefreshKey((k) => k + 1)} className="dx-touch px-3 py-1.5 rounded border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60 font-bold" aria-label="Refresh event data">
             REFRESH
           </button>
+          <button
+            type="button"
+            onClick={() => setNearbyOnly((v) => !v)}
+            aria-pressed={nearbyOnly}
+            disabled={region.lat == null || region.lon == null}
+            title={region.lat == null ? 'Pick a shared location first (CHANGE LOCATION above)' : `Show only events within ${NEARBY_KM} km of ${region.label}`}
+            className="dx-touch px-3 py-1.5 rounded border border-[#00d2ff]/60 text-[#7de9ff] font-bold disabled:opacity-40"
+          >
+            {nearbyOnly ? 'NEARBY ✓' : 'NEAR SHARED LOCATION'}
+          </button>
+          {nearbyOnly && region.lat != null && (
+            <span className="text-[#7de9ff] text-[11px]">SHOWING {events.length} OF {totalEvents} WITHIN {NEARBY_KM} KM OF {region.label} (events without coordinates hidden)</span>
+          )}
           {prov && (
             <span className="text-slate-500 text-[11px]">
               Retrieved {prov.retrievedAt.slice(0, 16).replace('T', ' ')} UTC · cache {state.phase === 'ready' ? state.result.cache : '—'}
@@ -123,7 +148,7 @@ export default function EventsPage() {
         <p className="text-xs text-rose-400 mt-2" role="alert">ERROR — {state.message}. No cached data available offline.</p>
       )}
       {state.phase === 'ready' && events.length === 0 && (
-        <p className="text-xs text-slate-300 mt-2" role="status">DISASTER EVENT DATA UNAVAILABLE — no records in this response. No demo events created.</p>
+        <p className="text-xs text-slate-300 mt-2" role="status">{nearbyOnly ? `0 EVENTS within ${NEARBY_KM} km of ${region.label} — turn off NEARBY to see the full feed. No demo events created.` : 'DISASTER EVENT DATA UNAVAILABLE — no records in this response. No demo events created.'}</p>
       )}
 
       {events.length > 0 && (
@@ -231,5 +256,6 @@ export default function EventsPage() {
         </div>
       )}
     </ModuleShell>
+    </>
   );
 }

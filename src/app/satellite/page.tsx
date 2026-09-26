@@ -1,6 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 import DisasterImage from '@/components/visuals/DisasterImage';
@@ -28,6 +29,8 @@ const ADAPTERS = [
 export default function SatellitePage() {
   const obs = usePlatform<{ count: number; observations: { id: number; lat: number; lon: number; change_pct: number; source: string; captured_at: string }[] }>('/api/v1/satellite/observations?limit=10');
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell title="Satellite Intelligence" sub="Imagery → preprocessing → change detection → risk engine. Gallery images are NEVER live observations." status="DEMO" source="SIMULATED + open tiles">
       <LiveImagery />
       <SatelliteViewer />
@@ -72,5 +75,6 @@ export default function SatellitePage() {
         <p className="text-[11px] text-slate-400 mt-2">Change detection: GET /api/v1/satellite/change?lat=&lon= (needs ≥2 obs). Before/after visual compare lives in the NE-SAFE satellite tab.</p>
       </div>
     </ModuleShell>
+    </>
   );
 }

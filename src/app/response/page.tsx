@@ -1,11 +1,14 @@
 'use client';
 import { ModuleShell, StatusBadge, WhyList } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 
 export default function ResponsePage() {
   const q = usePlatform<{ count: number; queue: { alert_id: string; level: string; title: string; score: number; band: string; why: string[] }[] }>('/api/v1/response/queue');
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell title="Response Prioritisation" sub="Transparent P1..P4 triage — every score shows WHY. Commander decides." status="DEMO" source="Priority engine over alerts">
       <div className="dx-hud">
         <div className="dx-hud-edge" />
@@ -26,5 +29,6 @@ export default function ResponsePage() {
         {!(q.data?.queue?.length) && <p className="text-xs">No active alerts — queue fills from /api/v1/warnings/evaluate.</p>}
       </div>
     </ModuleShell>
+    </>
   );
 }

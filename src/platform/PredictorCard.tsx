@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { demo, post } from './api';
 import { StatusBadge } from './provenance';
+import { useRegion } from './regionStore';
 
 interface Pred {
   prediction_id: string; landslide_probability: number; risk_level: string;
@@ -12,8 +13,9 @@ interface Pred {
 }
 
 export default function PredictorCard({ compact }: { compact?: boolean }) {
-  const [lat, setLat] = useState(27.33);
-  const [lon, setLon] = useState(88.61);
+  const region = useRegion();
+  const [lat, setLat] = useState(region.lat ?? 27.33);
+  const [lon, setLon] = useState(region.lon ?? 88.61);
   const [rain, setRain] = useState(120);
   const [soil, setSoil] = useState(78);
   const [slope, setSlope] = useState(36);
@@ -59,6 +61,14 @@ export default function PredictorCard({ compact }: { compact?: boolean }) {
         <label>Slope° <input type="number" value={slope} onChange={(e) => setSlope(Number(e.target.value))} className="w-full bg-[#051424] border border-[#1b314b] rounded px-2 py-1" /></label>
         <button onClick={run} disabled={busy} className="bg-[#00d2ff] text-black font-bold rounded px-3 py-1 self-end">{busy ? '…' : 'PREDICT'}</button>
       </div>
+      {region.lat != null && region.lon != null && (lat !== region.lat || lon !== region.lon) && (
+        <button onClick={() => { setLat(region.lat as number); setLon(region.lon as number); }} className="mt-2 text-[11px] text-[#7de9ff] hover:underline" aria-label={`Use shared location ${region.label}`}>
+          USE SHARED LOCATION ({region.label})
+        </button>
+      )}
+      {region.lat != null && lat === region.lat && lon === region.lon && (
+        <p className="mt-2 text-[11px] text-[#7de9ff]">USING SHARED LOCATION: {region.label}</p>
+      )}
       {pred && (
         <div className="mt-3 text-sm">
           <div className="text-3xl font-extrabold text-white">{(pred.landslide_probability * 100).toFixed(1)}% <span className="text-sm">{pred.risk_level}</span></div>

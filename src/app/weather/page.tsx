@@ -2,6 +2,8 @@
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
+import { useRegion } from '@/platform/regionStore';
 import { usePlatform } from '@/platform/usePlatform';
 import { get } from '@/platform/api';
 import { cacheGet, cachePut } from '@/platform/offlineDb';
@@ -13,9 +15,10 @@ const WeatherIntel = dynamic(() => import('@/components/weather/WeatherIntel'), 
 });
 
 export default function WeatherPage() {
-  const [lat, setLat] = useState(25.57);
-  const [lon, setLon] = useState(91.89);
-  const [q, setQ] = useState(`${lat},${lon}`);
+  const region = useRegion();
+  const [lat, setLat] = useState(region.lat ?? 25.57);
+  const [lon, setLon] = useState(region.lon ?? 91.89);
+  const [q, setQ] = useState(`${region.lat ?? 25.57},${region.lon ?? 91.89}`);
   const cur = usePlatform<Record<string, unknown>>(`/api/v1/rainfall/current?lat=${q.split(',')[0]}&lon=${q.split(',')[1]}`);
   const now = usePlatform<Record<string, unknown>>(`/api/v1/weather/current?lat=${q.split(',')[0]}&lon=${q.split(',')[1]}`);
   const th = usePlatform<{ warn_24h_mm: number; crit_24h_mm: number }>('/api/v1/weather/thresholds');
@@ -36,6 +39,8 @@ export default function WeatherPage() {
   const wxImg = rain24 >= 200 ? '/img/wx-storm.svg' : rain24 >= 60 ? '/img/wx-rain.svg' : '/img/wx-clear.svg';
   const wxAlt = rain24 >= 200 ? 'Extreme storm warning illustration' : rain24 >= 60 ? 'Heavy rainfall illustration' : 'Clear weather illustration';
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell title="Weather Intelligence" sub="Rainfall 1/6/24/72h · accumulation · anomaly · forecast · thresholds" status={badge} source={String(d?.source ?? 'provider chain')}>
       {cached && !live && <p className="text-[11px] text-sky-300">CACHED DATA from {new Date(cached.ts).toLocaleString()} — backend unreachable.</p>}
       <div className="dx-hud">
@@ -44,6 +49,12 @@ export default function WeatherPage() {
           <label>Lat <input type="number" step="0.01" value={lat} onChange={(e) => setLat(Number(e.target.value))} className="w-24 bg-[#051424] border border-[#1b314b] rounded px-2 py-1" /></label>
           <label>Lon <input type="number" step="0.01" value={lon} onChange={(e) => setLon(Number(e.target.value))} className="w-24 bg-[#051424] border border-[#1b314b] rounded px-2 py-1" /></label>
           <button onClick={go} className="bg-[#00d2ff] text-black font-bold rounded px-3">LOAD</button>
+          {region.lat != null && region.lon != null && (lat !== region.lat || lon !== region.lon) && (
+            <button onClick={() => { setLat(region.lat as number); setLon(region.lon as number); setQ(`${region.lat},${region.lon}`); }} className="border border-[#00d2ff]/60 text-[#7de9ff] font-bold rounded px-3" aria-label={`Use shared location ${region.label}`}>USE SHARED LOCATION</button>
+          )}
+          {region.lat != null && lat === region.lat && lon === region.lon && (
+            <span className="text-[#7de9ff] text-[11px] self-center">USING SHARED LOCATION: {region.label}</span>
+          )}
         </div>
         {cur.loading ? <p className="text-xs mt-2">Loading…</p> : d ? (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2">
@@ -80,5 +91,6 @@ export default function WeatherPage() {
       </div>
       <WeatherIntel />
     </ModuleShell>
+    </>
   );
 }

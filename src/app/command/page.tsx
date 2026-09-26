@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
 import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
@@ -173,6 +174,7 @@ export default function MasterCommandCenter() {
       )}
       <main className="min-h-screen text-slate-200 flex flex-col font-mono">
         <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
+        <LocationContextBar />
         <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
 
         {/* Command status strip — live values flow into shared ticker */}

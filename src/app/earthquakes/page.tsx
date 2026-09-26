@@ -8,8 +8,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import { fetchDataset, type DatasetResult } from '@/data/engine/engine';
 import type { QuakeProperties } from '@/data/engine/adapters';
+import { useRegion } from '@/platform/regionStore';
+import { haversineKm } from '@/utils/geocode';
 import { useDialogA11y } from '@/hooks/useDialogA11y';
 import {
   depthColor,
@@ -38,6 +41,9 @@ export default function EarthquakesPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [animated, setAnimated] = useState(false);
+  const [nearbyOnly, setNearbyOnly] = useState(false);
+  const region = useRegion();
+  const NEARBY_KM = 500;
 
   useEffect(() => {
     setAnimated(!prefersReducedMotion());
@@ -52,11 +58,15 @@ export default function EarthquakesPage() {
     return () => { dead = true; };
   }, [refreshKey]);
 
-  const quakes: Quake[] = useMemo(
-    () => (state.phase === 'ready' ? sortByEventTime(state.result.records as Quake[]) : []),
-    [state],
-  );
+  const quakes: Quake[] = useMemo(() => {
+    const all = state.phase === 'ready' ? sortByEventTime(state.result.records as Quake[]) : [];
+    if (!nearbyOnly || region.lat == null || region.lon == null) return all;
+    return all.filter(
+      (q) => q.coordinates != null && haversineKm(region.lat as number, region.lon as number, q.coordinates.lat, q.coordinates.lon) <= NEARBY_KM,
+    );
+  }, [state, nearbyOnly, region]);
   const summary = useMemo(() => summarize(quakes), [quakes]);
+  const totalQuakes = state.phase === 'ready' ? (state.result.records as Quake[]).length : 0;
   const selected = quakes.find((q) => q.id === selectedId) ?? null;
   const prov = state.phase === 'ready' ? state.result.provenance : null;
 
@@ -66,6 +76,8 @@ export default function EarthquakesPage() {
   const headStatus = state.phase === 'ready' ? state.result.provenance.status : state.phase === 'loading' ? 'OFFLINE' : 'ERROR';
 
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell
       title="Earthquake Intelligence"
       sub="USGS — last 7 days, M2.5+. Observed events only; DRISHTI-X does not predict earthquakes."
@@ -91,6 +103,19 @@ export default function EarthquakesPage() {
           <button type="button" onClick={() => setRefreshKey((k) => k + 1)} className="dx-touch px-3 py-1.5 rounded border border-[#1b314b] text-slate-200 hover:border-[#00d2ff]/60 font-bold" aria-label="Refresh earthquake data">
             REFRESH
           </button>
+          <button
+            type="button"
+            onClick={() => setNearbyOnly((v) => !v)}
+            aria-pressed={nearbyOnly}
+            disabled={region.lat == null || region.lon == null}
+            title={region.lat == null ? 'Pick a shared location first (CHANGE LOCATION above)' : `Show only events within ${NEARBY_KM} km of ${region.label}`}
+            className="dx-touch px-3 py-1.5 rounded border border-[#00d2ff]/60 text-[#7de9ff] font-bold disabled:opacity-40"
+          >
+            {nearbyOnly ? 'NEARBY ✓' : 'NEAR SHARED LOCATION'}
+          </button>
+          {nearbyOnly && region.lat != null && (
+            <span className="text-[#7de9ff]">SHOWING {quakes.length} OF {totalQuakes} WITHIN {NEARBY_KM} KM OF {region.label} (events without coordinates hidden)</span>
+          )}
           {prov && <span className="text-slate-500">Retrieved {prov.retrievedAt.slice(0, 16).replace('T', ' ')} UTC · cache {state.phase === 'ready' ? state.result.cache : '—'}</span>}
           {state.phase === 'ready' && <StatusBadge status={state.result.freshness === 'UNKNOWN' ? state.result.provenance.status : state.result.freshness} small />}
         </div>
@@ -101,7 +126,7 @@ export default function EarthquakesPage() {
         <p className="text-xs text-rose-400 mt-2" role="alert">ERROR — {state.message}. No cached data available offline.</p>
       )}
       {state.phase === 'ready' && quakes.length === 0 && (
-        <p className="text-xs text-slate-300 mt-2" role="status">0 EVENTS — no earthquakes in this feed window. No placeholder events created.</p>
+        <p className="text-xs text-slate-300 mt-2" role="status">{nearbyOnly ? `0 EVENTS within ${NEARBY_KM} km of ${region.label} — turn off NEARBY to see the full feed. No placeholder events created.` : '0 EVENTS — no earthquakes in this feed window. No placeholder events created.'}</p>
       )}
 
       {quakes.length > 0 && (
@@ -209,5 +234,6 @@ export default function EarthquakesPage() {
         </div>
       )}
     </ModuleShell>
+    </>
   );
 }

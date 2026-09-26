@@ -2,6 +2,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
@@ -35,6 +36,7 @@ export default function ResourcesPage() {
     <CinematicShell intensity={0.6} label="Hospital ICU command">
     <main className="min-h-screen text-slate-200 font-mono">
       <Navbar wsConnected={connected} />
+      <LocationContextBar />
       <StatusHeader wsConnected={connected} />
       <div className="p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
         <section className="lg:col-span-8 flex flex-col gap-4">

@@ -8,8 +8,9 @@
  * stays NOT_CONFIGURED. No fake acquisition timestamps: the panel shows
  * the SELECTED nominal date separately from the RETRIEVED time.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StatusBadge } from '@/platform/provenance';
+import { useRegion } from '@/platform/regionStore';
 import {
   GIBS_LAYERS,
   copernicusState,
@@ -37,10 +38,21 @@ export default function SatelliteViewer() {
   const mapRef = useRef<HTMLDivElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const mapObj = useRef<{ map: unknown; overlay: unknown; L: typeof import('leaflet') } | null>(null);
+  const region = useRegion();
+  // Shared location becomes the first preset when set; otherwise the viewer keeps its defaults.
+  const sharedPreset: Preset | null = useMemo(
+    () =>
+      region.lat != null && region.lon != null
+        ? { id: 'shared-location', label: `Shared — ${region.label}`, lat: region.lat, lon: region.lon, zoom: 9 }
+        : null,
+    [region.lat, region.lon, region.label],
+  );
+  const presetList = useMemo(() => (sharedPreset ? [sharedPreset, ...PRESETS] : PRESETS), [sharedPreset]);
+  const activePreset = presetList.find((p) => p.id === presetId) ?? PRESETS[0];
   const [layerId, setLayerId] = useState(GIBS_LAYERS[0].id);
   const [date, setDate] = useState(() => latestNominalDate());
   const [opacity, setOpacity] = useState(1);
-  const [presetId, setPresetId] = useState('india');
+  const [presetId, setPresetId] = useState(sharedPreset ? 'shared-location' : 'india');
   const [tileState, setTileState] = useState<TileState>('PROBING');
   const [retrievedAt, setRetrievedAt] = useState<string | null>(null);
   const [isFull, setIsFull] = useState(false);
@@ -49,7 +61,7 @@ export default function SatelliteViewer() {
   const minDate = earliestNominalDate();
   const maxDate = latestNominalDate();
   const dateValid = isSelectableDate(date);
-  const product = dateValid ? gibsProduct(layerId, date, PRESETS.find((p) => p.id === presetId)?.label ?? 'India') : null;
+  const product = dateValid ? gibsProduct(layerId, date, presetList.find((p) => p.id === presetId)?.label ?? 'India') : null;
   const copernicus = copernicusState();
 
   useEffect(() => {
@@ -87,7 +99,7 @@ export default function SatelliteViewer() {
     if (!mapReady) return;
     const holder = mapObj.current as { map: import('leaflet').Map; overlay: { setOpacity?: (n: number) => void } | null; L: typeof import('leaflet') } | null;
     if (!holder?.map) return;
-    const preset = PRESETS.find((p) => p.id === presetId) ?? PRESETS[0];
+    const preset = activePreset;
     holder.map.setView([preset.lat, preset.lon], preset.zoom);
     const url = gibsTileUrl(layerId, date);
     // Rebuild overlay only (cheap, preserves view + base tiles).
@@ -124,7 +136,7 @@ export default function SatelliteViewer() {
         setTileState('NO_TILES');
       }
     } catch { /* map tearing down */ }
-  }, [mapReady, layerId, date, opacity, presetId]);
+  }, [mapReady, layerId, date, opacity, activePreset]);
 
   const statusBadge = tileState === 'LIVE_TILES' ? 'LATEST_AVAILABLE' : tileState === 'NO_TILES' ? 'NOT_AVAILABLE' : tileState === 'OFFLINE' ? 'OFFLINE' : 'STALE';
 
@@ -132,7 +144,7 @@ export default function SatelliteViewer() {
     setLayerId(GIBS_LAYERS[0].id);
     setDate(latestNominalDate());
     setOpacity(1);
-    setPresetId('india');
+    setPresetId(sharedPreset ? 'shared-location' : 'india');
   }
 
   function toggleFull() {
@@ -166,11 +178,16 @@ export default function SatelliteViewer() {
         </label>
         <label className="flex flex-col gap-1 text-slate-400">LOCATION
           <select value={presetId} onChange={(e) => setPresetId(e.target.value)} className="bg-[#020b14] border border-[#1b314b] rounded px-2 py-1.5 text-slate-200 min-h-[44px]" aria-label="Location preset">
-            {PRESETS.map((p) => (
+            {presetList.map((p) => (
               <option key={p.id} value={p.id}>{p.label}</option>
             ))}
           </select>
         </label>
+        {sharedPreset && presetId !== 'shared-location' && (
+          <button type="button" onClick={() => setPresetId('shared-location')} className="dx-touch px-3 py-1.5 rounded border border-[#00d2ff]/60 text-[#7de9ff] font-bold self-end" aria-label={`Centre on shared location ${region.label}`}>
+            USE SHARED LOCATION
+          </button>
+        )}
         <label className="flex flex-col gap-1 text-slate-400 min-w-[120px]">OPACITY {Math.round(opacity * 100)}%
           <input type="range" min={0.1} max={1} step={0.05} value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="min-h-[44px]" aria-label="Imagery opacity" />
         </label>

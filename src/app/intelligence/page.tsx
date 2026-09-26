@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
+import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
 import SituationBrief from '@/components/intelligence/SituationBrief';
@@ -40,6 +41,8 @@ export default function IntelligencePage() {
   const ch = usePlatform<{ channels: { channel: string; status: string }[] }>('/api/v1/notifications/channels');
   const sy = usePlatform<{ pending_verification: number }>('/api/v1/sync/status');
   return (
+    <>
+      <LocationContextBar />
     <ModuleShell title="Intelligence Hub" sub="REAL/OPEN DATA → AI/ML → RISK → GIS → EARLY WARNING → RESPONSE → VERIFY → LEARN" status="LIVE" source="Platform APIs + open providers">
       <SituationBrief />
       <DisasterGlobe height={320} />
@@ -80,5 +83,6 @@ export default function IntelligencePage() {
       </div>
       <StatusBadge status="DEMO" />
     </ModuleShell>
+    </>
   );
 }
