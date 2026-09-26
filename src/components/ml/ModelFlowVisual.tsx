@@ -90,7 +90,7 @@ export default function ModelFlowVisual({ predictHref = '/prediction' }: { predi
   }, [wxLat, wxLon]);
 
   const curProps = (wx?.records ?? []).find(isCurrentRecord)?.properties as WeatherProperties | undefined;
-  const wxStatus = wx ? wx.provenance.status : wxLoading ? 'OFFLINE' : 'ERROR';
+  const wxBadge = wx ? (<StatusBadge status={wx.provenance.status} small />) : wxLoading ? null : (<StatusBadge status="ERROR" small />);
 
   const rain = getAsset('rain-nilam-modis')!;
   const soil = getAsset('soil-kerala-landsat')!;
@@ -119,7 +119,7 @@ export default function ModelFlowVisual({ predictHref = '/prediction' }: { predi
           <div className="p-2">
             <div className="flex items-center justify-between gap-2">
               <b className="text-white text-sm">RAIN</b>
-              <StatusBadge status={wxStatus} small />
+              {wxBadge ?? <span className="text-[11px] text-slate-500">CHECKING…</span>}
             </div>
             <div className="text-[11px] text-slate-400">PRECIPITATION CONTEXT · {wxLabel}</div>
             <div className="text-base font-bold text-white tnum mt-1">
@@ -189,7 +189,13 @@ export default function ModelFlowVisual({ predictHref = '/prediction' }: { predi
             <div className="dx-micro">MODEL · ALGORITHM (NO PHOTO — ALGORITHMS ARE NOT PLACES)</div>
             <div className="text-lg font-extrabold text-white">RANDOM FOREST</div>
           </div>
-          {m ? <StatusBadge status={m.status} /> : <StatusBadge status={model.loading ? 'OFFLINE' : 'OFFLINE'} />}
+          {model.loading ? (
+            <span className="text-[11px] text-slate-500">CHECKING REGISTRY…</span>
+          ) : m ? (
+            <StatusBadge status={m.status} />
+          ) : (
+            <StatusBadge status="OFFLINE" />
+          )}
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2">
           <div className="bg-[#091a2e] rounded-lg border border-[#1b314b] p-2">
