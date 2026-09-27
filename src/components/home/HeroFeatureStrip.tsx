@@ -57,10 +57,10 @@ export const FEATURES = [
   {
     href: '/response',
     icon: Zap,
-    photoId: 'response-harvey-rescue',
+    photoId: 'command-eoc',
     title: 'Faster Response',
     desc: 'Transparent P1–P4 triage with a WHY behind every score.',
-    explainer: 'Prioritized incident information can help responders organize assessment and response workflows.',
+    explainer: 'Emergency response teams assess incidents, coordinate resources, and prioritize actions during disaster operations.',
     accent: '#fbbf24',
   },
   {
