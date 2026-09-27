@@ -7,6 +7,8 @@
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import RealPhoto from '@/components/home/RealPhoto';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import BeforeAfter from '@/components/home/BeforeAfter';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
@@ -210,7 +212,7 @@ export function TerrainSection() {
   return (
     <Section id="home-terrain" kicker="TERRAIN" title="Geography shapes every disaster">
       <div className="home-split">
-        <VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Procedural elevation model (demo) · SRTM path documented" status="DEMO" />
+        <DisasterPhoto photo={getDisasterImage('terrain-himalaya')!} caption="Procedural elevation model (demo) · mountain terrain context (orbital photo, archival)" status="DEMO" />
         <div>
           <p className="home-side-small">Mountains funnel rain, rivers carry floods, roads decide who can be reached. DRISHTI-X reads terrain alongside weather and incidents so exposure and access stay in the same picture.</p>
           <div className="home-grid home-grid-secondary" style={{ marginTop: 10 }}>
@@ -234,15 +236,7 @@ export function CommandSection() {
     <Section id="home-command" kicker="COMMAND CENTER" title="Operators see everything at once">
       <div className="home-split">
         <div className="min-w-0">
-          <VizFigure src="/img/hero-command.svg" alt="Command center situation wall illustration" caption="14 modules · role-gated actions · audited" status="DEMO" />
-          <RealPhoto
-            src="/img/photos/command-eoc.jpg"
-            alt="Emergency operations center coordinating a hurricane response"
-            caption="Illustrative Command Center — a real emergency operations center at work (not DRISHTI-X itself)."
-            source="FEMA (public domain)"
-            sourceHref="https://commons.wikimedia.org/wiki/File:FEMA_-_38184_-_Emergency_Operations_Center_in_Texas.jpg"
-            ratio="16 / 9"
-          />
+          <DisasterPhoto photo={getDisasterImage('command-eoc')!} caption="14 modules · role-gated actions · audited (operations center, archival)" status="DEMO" />
         </div>
         <div>
           <p className="home-side-small">Situation, incidents, risk, weather, satellite, sensors, roads, shelters, resources, drones, alerts, evacuation, response, recovery — each a dedicated workflow behind role-aware sign-in.</p>
@@ -269,15 +263,7 @@ export function EmergencySection() {
     <Section id="home-emergency" kicker="EMERGENCY RESPONSE" title="Help in one tap, no account needed">
       <div className="home-split">
         <div className="min-w-0">
-          <VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="P1–P4 triage aid — commander decides, no auto-dispatch" status="DEMO" />
-          <RealPhoto
-            src="/img/photos/emergency-rescue.jpg"
-            alt="Helicopter flood rescue during Hurricane Harvey relief operations"
-            caption="Illustrative Response — helicopter flood rescue (archive photo; the pictured crew is not affiliated with DRISHTI-X)."
-            source="U.S. Navy (public domain)"
-            sourceHref="https://commons.wikimedia.org/wiki/File:Hurricane_Harvey_rescue_(37833567051).jpg"
-            ratio="16 / 9"
-          />
+          <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="P1–P4 triage aid — commander decides, no auto-dispatch (rescue operations, archival)" status="DEMO" />
         </div>
         <div>
           <p className="home-side-small">SOS, evacuation routes, shelters with live capacity math, offline reporting with server receipts — emergency info never sits behind a login.</p>

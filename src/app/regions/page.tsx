@@ -112,9 +112,9 @@ export default function RegionsPage() {
           <DisasterPhoto photo={getDisasterImage('flood-ganges')!} caption="Urban (observed inundation, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('cyclone-nilam')!} caption="Coastal (observed cyclone, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('wildfire-ferguson')!} caption="Industrial (observed wildfire, archival)" status="DEMO" />
-          <VizFigure src="/img/response.svg" alt="Emergency medical response reference" caption="Health" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Health (rescue operations, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('drought-lake-mead')!} caption="Agriculture (drought context, archival)" status="DEMO" />
-          <VizFigure src="/img/dis-road.svg" alt="Road incident reference" caption="Transport" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('road-hebgen-highway')!} caption="Transport (road damage, archival)" status="DEMO" />
         </div>
       </div>
 

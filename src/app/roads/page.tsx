@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { post } from '@/platform/api';
-import VizFigure from '@/platform/VizFigure';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 
 export default function RoadsPage() {
   const li = usePlatform<{ roads: { id: string; name: string; status: string; cause: string; alternate_route: string; bridge_status: string; eta_clearance_min: number }[] }>('/api/v1/roads');
@@ -26,7 +27,7 @@ export default function RoadsPage() {
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">SEGMENTS</div>
-        <div className="mt-2"><VizFigure src="/img/dis-road.svg" alt="Landslide debris blocking a highway" caption="Blocked-road reference — geography comes from the registry below" status="DEMO" /></div>
+        <div className="mt-2"><DisasterPhoto photo={getDisasterImage('road-hebgen-highway')!} caption="Blocked-road reference — geography comes from the registry below (archival photo)" status="DEMO" /></div>
         {(li.data?.roads ?? []).map((r) => (
           <div key={r.id} className="text-xs py-1 border-b border-[#1b314b]">
             <div className="flex justify-between"><b className="text-white">{r.name}</b><StatusBadge status={r.status === 'OPEN' ? 'LIVE' : r.status === 'UNKNOWN' ? 'NOT_AVAILABLE' : 'SIMULATION'} small /></div>

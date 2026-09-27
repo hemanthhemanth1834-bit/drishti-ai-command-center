@@ -19,7 +19,7 @@ export default function ResponsePage() {
         <div className="dx-micro">PRIORITY QUEUE ({q.data?.count ?? '…'})</div>
         <div className="nesafe-vizgrid mt-2">
           <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Response units (rescue operations, archival)" status="DEMO" />
-          <VizFigure src="/img/shelter.svg" alt="Relief shelter illustration" caption="Shelter capacity (reference)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('shelter-fema-cots')!} caption="Shelter capacity (Red Cross shelter, archival)" status="DEMO" />
         </div>
         {(q.data?.queue ?? []).map((i) => (
           <div key={i.alert_id} className="border-b border-[#1b314b] py-2">

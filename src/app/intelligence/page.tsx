@@ -4,7 +4,6 @@ import dynamic from 'next/dynamic';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
-import VizFigure from '@/platform/VizFigure';
 import DisasterPhoto from '@/components/visuals/DisasterPhoto';
 import { getDisasterImage } from '@/data/disasterImages';
 import SituationBrief from '@/components/intelligence/SituationBrief';
@@ -71,7 +70,7 @@ export default function IntelligencePage() {
           <Link href="/weather" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('flood-ganges')!} caption="Flood watch (observed inundation, archival)" status="DEMO" bare /></Link>
           <Link href="/satellite" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('satellite-kerala-after')!} caption="Change watch (observed inundation, archival)" status="DEMO" bare /></Link>
           <Link href="/terrain" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('terrain-himalaya')!} caption="Terrain (orbital context, not a DEM render)" status="DEMO" bare /></Link>
-          <Link href="/incidents" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-road.svg" alt="Landslide debris blocking a highway" caption="Field reports" status="DEMO" /></Link>
+          <Link href="/incidents" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('road-hebgen-highway')!} caption="Field reports (road damage, archival)" status="DEMO" bare /></Link>
           <Link href="/response" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Response (rescue operations, archival)" status="DEMO" bare /></Link>
         </div>
       </div>
