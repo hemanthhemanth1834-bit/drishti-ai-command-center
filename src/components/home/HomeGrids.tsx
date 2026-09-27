@@ -1,20 +1,44 @@
 'use client';
 /** Homepage card grids — every card navigates to a real route or flips real store state. */
 import Link from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { setApp, useApp, type Lang } from '@/store/appStore';
+import { getDisasterImage } from '@/data/disasterImages';
 import {
   PRIMARY_ACTIONS, SECONDARY_FEATURES, OPERATIONAL_FEATURES,
   type ActionCard, type NavigationItem,
 } from '@/config/navigation';
 
+function CardPhoto({ photoId }: { photoId?: string }) {
+  const [stage, setStage] = useState<0 | 1 | 2>(0);
+  const photo = photoId ? getDisasterImage(photoId) : null;
+  if (!photo || stage >= 2) return <span className="home-card-photo" aria-hidden="true" />;
+  // remote primary → verified local fallback → empty box (never broken icon)
+  const src = stage === 0 ? photo.remoteUrl ?? photo.fallbackUrl : photo.fallbackUrl;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src} alt={photo.alt}
+      loading="lazy" decoding="async"
+      onError={() => setStage((s) => (s >= 1 ? 2 : 1) as 0 | 1 | 2)}
+      className="home-card-photo"
+    />
+  );
+}
+
 function Card({ item }: { item: NavigationItem }) {
   const Icon = item.icon;
   return (
     <Link href={item.href} className="home-card" aria-label={`${item.label}${item.description ? ` — ${item.description}` : ''}`}>
-      <span className="home-card-icon" aria-hidden="true"><Icon className="w-5 h-5" /></span>
-      <span className="home-card-title">{item.label}</span>
+      {item.photoId ? (
+        <CardPhoto photoId={item.photoId} />
+      ) : (
+        <span className="home-card-icon" aria-hidden="true"><Icon className="w-5 h-5" /></span>
+      )}
+      <span className="home-card-title"><Icon className="w-4 h-4" aria-hidden="true" style={{ display: 'inline', verticalAlign: '-2px', marginRight: 6 }} />{item.label}</span>
       {item.description && <span className="home-card-desc">{item.description}</span>}
+      {item.explainer && <span className="home-card-desc" style={{ color: '#7d93a8' }}>{item.explainer}</span>}
     </Link>
   );
 }

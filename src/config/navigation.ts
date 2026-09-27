@@ -20,6 +20,10 @@ export interface NavigationItem {
   href: string;
   description?: string;
   icon: LucideIcon;
+  /** Registry photo id (disasterImages.ts) for photo-primary cards. */
+  photoId?: string;
+  /** Short factual topic explanation shown under the description. */
+  explainer?: string;
 }
 
 export interface ActionCard extends NavigationItem {
@@ -52,12 +56,24 @@ export const HEADER_NAV: NavigationItem[] = [
 
 /** Primary citizen action cards. */
 export const PRIMARY_ACTIONS: NavigationItem[] = [
-  { label: 'My Safety', href: '/safety', description: 'Check your risk. Stay informed.', icon: HeartPulse },
-  { label: 'Live Location', href: '/location', description: 'Explore hazards. View risk layers.', icon: MapPin },
-  { label: 'Hazard Maps', href: '/risk-map', description: 'Flood, Cyclone, Earthquake, Fire, Landslide & more.', icon: Layers },
-  { label: 'Alert Center', href: '/alerts', description: 'Real-time alerts. Know what to do.', icon: Bell },
-  { label: 'Emergency Mode', href: '/emergency', description: 'One tap for help. Contacts & navigation.', icon: Siren },
-  { label: 'Safe Evacuation', href: '/evacuate', description: 'Find the safest route. Reach shelter.', icon: RouteIcon },
+  { label: 'My Safety', href: '/safety', description: 'Check your risk. Stay informed.', icon: HeartPulse,
+    photoId: 'safety-sandbags-missouri',
+    explainer: 'Community preparedness — volunteers preparing flood defenses before waters rise.' },
+  { label: 'Live Location', href: '/location', description: 'Explore hazards. View risk layers.', icon: MapPin,
+    photoId: 'storm-lightning-india',
+    explainer: 'Location-aware hazard layers built from satellite and field observations.' },
+  { label: 'Hazard Maps', href: '/risk-map', description: 'Flood, Cyclone, Earthquake, Fire, Landslide & more.', icon: Layers,
+    photoId: 'cyclone-ilsa',
+    explainer: 'Satellite-observed hazards rendered as map layers for regional awareness.' },
+  { label: 'Alert Center', href: '/alerts', description: 'Real-time alerts. Know what to do.', icon: Bell,
+    photoId: 'command-eoc',
+    explainer: 'Operations centers monitor feeds and issue alerts to exposed communities.' },
+  { label: 'Emergency Mode', href: '/emergency', description: 'One tap for help. Contacts & navigation.', icon: Siren,
+    photoId: 'response-nebraska-taskforce',
+    explainer: 'Search-and-rescue teams operate in affected areas during flood response.' },
+  { label: 'Safe Evacuation', href: '/evacuate', description: 'Find the safest route. Reach shelter.', icon: RouteIcon,
+    photoId: 'response-katrina-staging',
+    explainer: 'Coordinated evacuation moves residents by bus out of flooded districts.' },
 ];
 
 /** Secondary capability cards. */
