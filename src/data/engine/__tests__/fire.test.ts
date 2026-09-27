@@ -48,18 +48,36 @@ describe('adaptFirmsFires', () => {
     const { records } = adaptFirmsFires({ fires: [FIRMS_ROWS[0]] });
     expect(records).toHaveLength(1);
   });
+
+  it('accepts backend-proxy { detections: [] } payloads', () => {
+    const { records, skipped } = adaptFirmsFires({ detections: [FIRMS_ROWS[0], FIRMS_ROWS[1]] });
+    expect(records).toHaveLength(1);
+    expect(skipped).toBe(1);
+    expect(records[0].properties.confidence).toBe('h');
+  });
 });
 
-describe('firms-fires dataset gating', () => {
-  it('returns NOT_CONFIGURED with zero records and no fetch', async () => {
+describe('firms-fires dataset via server proxy', () => {
+  it('fetches the same-origin proxy and normalizes detections', async () => {
     const calls = { n: 0 };
-    vi.stubGlobal('fetch', async () => {
+    let seenUrl = '';
+    vi.stubGlobal('fetch', async (url: unknown) => {
       calls.n += 1;
-      return { ok: true, status: 200, json: async () => [] } as Response;
+      seenUrl = String(url);
+      return { ok: true, status: 200, json: async () => ({ detections: [FIRMS_ROWS[0]] }) } as Response;
     });
     const r = await fetchDataset('firms-fires', {}, { backoffBaseMs: 1 });
+    expect(calls.n).toBe(1);
+    expect(seenUrl).toContain('/api/v1/fire/active');
+    expect(seenUrl).not.toContain('VERSION');
+    expect(r.records).toHaveLength(1);
+    expect(r.records[0].status).toBe('NEAR_REAL_TIME');
+  });
+
+  it('proxy 503 degrades to ERROR, never fake detections', async () => {
+    vi.stubGlobal('fetch', async () => ({ ok: false, status: 503, json: async () => ({}) }) as Response);
+    const r = await fetchDataset('firms-fires', {}, { backoffBaseMs: 1 });
     expect(r.records).toHaveLength(0);
-    expect(r.provenance.status).toBe('NOT_CONFIGURED');
-    expect(calls.n).toBe(0);
+    expect(r.provenance.status).toBe('ERROR');
   });
 });

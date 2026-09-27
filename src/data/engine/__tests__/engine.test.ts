@@ -216,12 +216,12 @@ describe('freshness + provenance + registry + status', () => {
     expect(r.records[0].properties).toMatchObject({ temperatureC: 27.3, kind: 'observation' });
   });
 
-  it('17. registry lists 8 sources with contracts', () => {
-    expect(SOURCE_REGISTRY).toHaveLength(8);
+  it('17. registry lists 9 sources with contracts', () => {
+    expect(SOURCE_REGISTRY).toHaveLength(9);
     const usgs = getSource('usgs');
     expect(usgs?.adapter).toBe('EarthquakeAdapter');
     expect(usgs?.enabled).toBe(true);
-    expect(getSource('nasa-firms')?.enabled).toBe(false);
+    expect(getSource('nasa-firms')?.enabled).toBe(true);
     expect(getSource('nasa-firms')?.envVar).toBe('FIRMS_MAP_KEY');
     expect(getSource('open-meteo-flood')?.enabled).toBe(true);
     expect(getSource('open-meteo-flood')?.envVar).toBeNull();

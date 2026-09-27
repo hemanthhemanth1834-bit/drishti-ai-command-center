@@ -9,7 +9,8 @@
 | NASA GIBS | satellite context (4-layer viewer, 14d NRT) | LATEST_AVAILABLE tiles | none | demo obs |
 | USGS | earthquakes (M2.5+/7d via engine) | LIVE | none | none (empty state) |
 | NASA EONET | natural events (100 rec, engine) | LIVE | none | none (empty state) |
-| NASA FIRMS | active fire | NOT_CONFIGURED | free MAP_KEY (server-side) | MODIS 7-2-1 burn-scar |
+| GDACS Alerts (UN OCHA / EU JRC) | disaster alerts w/ official levels (engine `gdacs-alerts`, 30d window) | LATEST_AVAILABLE (keyless) — levels are assessments, not local warnings | none | EONET |
+| NASA FIRMS | active fire (engine `firms-fires` via server proxy `/api/v1/fire/active`) | NOT_CONFIGURED until FIRMS_MAP_KEY set (free signup; key server-only) | free MAP_KEY (server-side) | MODIS 7-2-1 burn-scar |
 | NASA GPM bulk | precipitation | NOT CONFIGURED | Earthdata login | Open-Meteo |
 | Copernicus | Sentinel-1/-2 | NOT_CONFIGURED (live-probed: no public imagery path) | free account | demo obs |
 | ISRO/Bhuvan/Bhoonidhi | soil/satellite | NOT CONFIGURED | varies | SoilGrids/demo |

@@ -174,7 +174,9 @@ export function adaptFirmsFires(
     ? payload
     : Array.isArray((payload as { fires?: unknown })?.fires)
       ? (payload as { fires: unknown[] }).fires
-      : null;
+      : Array.isArray((payload as { detections?: unknown })?.detections)
+        ? (payload as { detections: unknown[] }).detections
+        : null;
   if (!rows) return { records, skipped: 0 };
   for (const r of rows) {
     const o = (r ?? {}) as Record<string, unknown>;
@@ -442,6 +444,87 @@ export function adaptEonetEvents(
       attribution,
       limitations: 'EONET curation latency varies; geometry may be approximate; not a warning feed.',
       rawSourceReference: link ?? (o.id as string),
+    });
+  }
+  return { records, skipped };
+}
+
+/** Normalize GDACS alert events (UN OCHA / EU JRC, keyless GeoJSON).
+ * Alert levels are GDACS assessments, never local official warnings.
+ * Non-Point geometries yield list-only records — no fabricated points. */
+export interface GdacsProperties {
+  eventType: string | null;
+  eventId: string | null;
+  episodeId: string | null;
+  name: string | null;
+  description: string | null;
+  country: string | null;
+  iso3: string | null;
+  glide: string | null;
+  alertLevel: string | null;
+  alertScore: number | null;
+  isCurrent: boolean | null;
+  url: string | null;
+}
+
+const GDACS_ALERTS = new Set(['Green', 'Orange', 'Red']);
+
+export function adaptGdacsAlerts(
+  payload: unknown,
+  retrievedAt: string = nowIso(),
+): { records: DataRecord<GdacsProperties>[]; skipped: number } {
+  const { source, sourceUrl, attribution } = provenanceFor('gdacs', 'LATEST_AVAILABLE');
+  const records: DataRecord<GdacsProperties>[] = [];
+  let skipped = 0;
+  const features = (payload as { features?: unknown })?.features;
+  if (!Array.isArray(features)) return { records, skipped: 0 };
+  for (const f of features) {
+    const o = ((f ?? {}) as Record<string, unknown>).properties as Record<string, unknown> | undefined;
+    const geom = ((f ?? {}) as Record<string, unknown>).geometry as Record<string, unknown> | undefined;
+    if (!o || typeof o !== 'object') {
+      skipped += 1;
+      continue;
+    }
+    const eventId = o.eventid;
+    if (typeof eventId !== 'string' && typeof eventId !== 'number') {
+      skipped += 1;
+      continue;
+    }
+    const coords = Array.isArray(geom?.coordinates) ? (geom!.coordinates as unknown[]) : null;
+    const isPoint = geom?.type === 'Point' && coords && coords.length >= 2;
+    const lon = isPoint ? num(coords![0]) : null;
+    const lat = isPoint ? num(coords![1]) : null;
+    const hasCoords = isValidCoordinates(lat, lon);
+    const alertRaw = typeof o.alertlevel === 'string' ? o.alertlevel : null;
+    const ts = toUtcIso(typeof o.todate === 'string' ? o.todate : typeof o.fromdate === 'string' ? o.fromdate : null);
+    records.push({
+      id: `gdacs-${String(o.eventtype ?? 'EV')}-${eventId}-${String(o.episodeid ?? '0')}`,
+      source, sourceUrl,
+      dataType: 'disaster-alert',
+      timestamp: ts,
+      retrievedAt,
+      status: 'LATEST_AVAILABLE',
+      freshness: 'UNKNOWN',
+      coverage: typeof o.country === 'string' ? o.country : null,
+      coordinates: hasCoords ? { lat: lat as number, lon: lon as number } : null,
+      geometry: null,
+      properties: {
+        eventType: typeof o.eventtype === 'string' ? o.eventtype : null,
+        eventId: String(eventId),
+        episodeId: o.episodeid != null ? String(o.episodeid) : null,
+        name: typeof o.name === 'string' ? o.name : null,
+        description: typeof o.description === 'string' && o.description ? o.description : null,
+        country: typeof o.country === 'string' ? o.country : null,
+        iso3: typeof o.iso3 === 'string' ? o.iso3 : null,
+        glide: typeof o.glide === 'string' ? o.glide : null,
+        alertLevel: alertRaw && GDACS_ALERTS.has(alertRaw) ? alertRaw : null,
+        alertScore: num(o.alertscore),
+        isCurrent: typeof o.iscurrent === 'boolean' ? o.iscurrent : null,
+        url: typeof o.url === 'string' ? o.url : null,
+      },
+      attribution,
+      limitations: 'GDACS alert levels are assessments, not official local warnings; verify with national authorities.',
+      rawSourceReference: typeof o.url === 'string' ? o.url : String(eventId),
     });
   }
   return { records, skipped };

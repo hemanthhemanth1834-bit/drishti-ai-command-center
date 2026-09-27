@@ -10,7 +10,8 @@ import { cacheFresh, cacheGet, cacheSet, makeEntry } from './cache';
 import { request, type RequestOptions } from './client';
 import { dataError } from './errors';
 import { computeFreshness, getSource, recordHealth } from './registry';
-import { adaptEonetEvents, adaptFirmsFires, adaptOpenMeteoCurrent, adaptOpenMeteoFlood, adaptOpenMeteoForecast, adaptUsgsEarthquakes } from './adapters';
+import { getApiBase } from '@/utils/apiClient';
+import { adaptEonetEvents, adaptFirmsFires, adaptGdacsAlerts, adaptOpenMeteoCurrent, adaptOpenMeteoFlood, adaptOpenMeteoForecast, adaptUsgsEarthquakes } from './adapters';
 import type { DataRecord, DataStatus, Freshness, Provenance } from './types';
 import { nowIso } from './errors';
 
@@ -30,12 +31,13 @@ export interface FetchDatasetOptions extends RequestOptions {
   forceRefresh?: boolean;
 }
 
-export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current' | 'openmeteo-flood' | 'firms-fires' | 'eonet-events';
+export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current' | 'openmeteo-flood' | 'gdacs-alerts' | 'firms-fires' | 'eonet-events';
 
 const KIND_SOURCE: Record<DatasetKind, string> = {
   'usgs-earthquakes-7d': 'usgs',
   'openmeteo-current': 'open-meteo',
   'openmeteo-flood': 'open-meteo-flood',
+  'gdacs-alerts': 'gdacs',
   'firms-fires': 'nasa-firms',
   'eonet-events': 'nasa-eonet',
 };
@@ -44,6 +46,7 @@ const KIND_TTL_MS: Record<DatasetKind, number> = {
   'usgs-earthquakes-7d': 5 * 60 * 1000,
   'openmeteo-current': 10 * 60 * 1000,
   'openmeteo-flood': 60 * 60 * 1000,
+  'gdacs-alerts': 60 * 60 * 1000,
   'firms-fires': 60 * 60 * 1000,
   'eonet-events': 30 * 60 * 1000,
 };
@@ -141,16 +144,24 @@ function buildUrl(kind: DatasetKind, params: Record<string, string | number>): {
     };
   }
   if (kind === 'firms-fires') {
-    // Reached only if the registry enables FIRMS (server key configured).
-    // Never appends credentials — a server proxy holds the MAP_KEY.
+    // Server-side FIRMS proxy holds the MAP_KEY — the browser never sees it.
+    // The proxy 503s honestly when unconfigured; FirePanel gates on /status.
     return {
-      url: 'https://firms.modaps.eosdis.nasa.gov/api/area/csv/VERSION/VIIRS_SNPP_NRT/world/1',
+      url: `${getApiBase()}/api/v1/fire/active?source=VIIRS_SNPP_NRT&bbox=68,6,98,38&days=1`,
       lat, lon,
     };
   }
   if (kind === 'eonet-events') {
     return {
       url: 'https://eonet.gsfc.nasa.gov/api/v3/events?limit=100&status=all',
+      lat, lon,
+    };
+  }
+  if (kind === 'gdacs-alerts') {
+    const to = new Date().toISOString().slice(0, 10);
+    const from = new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().slice(0, 10);
+    return {
+      url: `https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventtypes=EQ,TC,FL,DR,WF,VO&fromDate=${from}&toDate=${to}`,
       lat, lon,
     };
   }
@@ -170,6 +181,7 @@ function adapt(kind: DatasetKind, payload: unknown, params: Record<string, strin
   if (kind === 'usgs-earthquakes-7d') return adaptUsgsEarthquakes(payload, retrievedAt);
   if (kind === 'firms-fires') return adaptFirmsFires(payload, retrievedAt);
   if (kind === 'eonet-events') return adaptEonetEvents(payload, retrievedAt);
+  if (kind === 'gdacs-alerts') return adaptGdacsAlerts(payload, retrievedAt);
   if (kind === 'openmeteo-flood') {
     const lat = Number(params.lat ?? 21.5);
     const lon = Number(params.lon ?? 79.0);

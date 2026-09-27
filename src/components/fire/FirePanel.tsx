@@ -2,27 +2,41 @@
 /**
  * STEP 24 — FirePanel: NASA FIRMS active-fire intelligence.
  *
- * Data flows through the Step 22 engine (`fetchDataset('firms-fires')`).
- * This deployment configures no FIRMS MAP_KEY, so the engine honestly
- * returns NOT_CONFIGURED with zero detections. No synthetic fires, ever.
+ * Data flows through the Step 22 engine (`fetchDataset('firms-fires')`), which
+ * calls the server-side FIRMS proxy (the MAP_KEY never reaches the browser).
+ * The panel first checks `/api/v1/fire/status`: without a key it stays honestly
+ * NOT_CONFIGURED with zero detections. No synthetic fires, ever.
  * Burn-scar context remains available via MODIS 7-2-1 on the risk map.
  */
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/platform/provenance';
+import { get } from '@/platform/api';
 import { fetchDataset, type DatasetResult } from '@/data/engine/engine';
 import type { FireProperties } from '@/data/engine/adapters';
 
 export default function FirePanel() {
   const [result, setResult] = useState<DatasetResult<FireProperties> | null>(null);
+  const [configured, setConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
+    let dead = false;
+    // Gate on the server-side key status: without FIRMS_MAP_KEY the proxy
+    // 503s, so stay honestly NOT_CONFIGURED instead of showing an error.
+    get<{ configured: boolean }>('/api/v1/fire/status').then((r) => {
+      if (!dead) setConfigured(r.data?.configured ?? false);
+    });
+    return () => { dead = true; };
+  }, []);
+
+  useEffect(() => {
+    if (configured !== true) return;
     let dead = false;
     fetchDataset<FireProperties>('firms-fires', {}, { timeoutMs: 10000, maxRetries: 0 })
       .then((r) => { if (!dead) setResult(r); })
       .catch(() => { if (!dead) setResult(null); });
     return () => { dead = true; };
-  }, []);
+  }, [configured]);
 
   return (
     <div className="dx-hud" aria-label="Fire intelligence">
@@ -32,10 +46,13 @@ export default function FirePanel() {
           <div className="dx-micro">FIRE INTELLIGENCE · NASA FIRMS (MODIS / VIIRS / LANDSAT)</div>
           <div className="dx-hud-title">Active Fire Detections</div>
         </div>
-        <StatusBadge status={result ? result.provenance.status : 'OFFLINE'} />
+        <StatusBadge status={result ? result.provenance.status : configured === false ? 'NOT_CONFIGURED' : 'OFFLINE'} />
       </div>
 
-      {!result && <p className="text-xs text-slate-400 mt-2">Probing fire source…</p>}
+      {!result && configured === false && (
+        <p className="text-xs text-slate-400 mt-2" role="status">FIRMS MAP_KEY is not configured (free signup; key stays server-side). No synthetic fire data displayed — fire context falls back to the MODIS 7-2-1 burn-scar layer on the risk map.</p>
+      )}
+      {!result && configured !== false && <p className="text-xs text-slate-400 mt-2">Probing fire source…</p>}
 
       {result && (
         <>

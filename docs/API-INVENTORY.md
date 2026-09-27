@@ -13,9 +13,14 @@ OFFICIAL provider docs — ApiVault was never treated as proof of freeness.
 | River discharge (flood context) | — | Open-Meteo Flood API (GloFAS v4) | none | yes (same Open-Meteo terms) | no | https://open-meteo.com/en/docs/flood-api | INTEGRATED 2026-09-27 (`openmeteo-flood`, MODEL/FORECAST) | demo |
 | Earthquakes | USGS FDSN/GeoJSON | — (incumbent verified) | none | yes | no | https://earthquake.usgs.gov/fdsnws/event/1/ | LIVE | empty state |
 | Natural events | NASA EONET v3 | — (incumbent verified) | none | yes | no | https://eonet.gsfc.nasa.gov/docs/v3 | LIVE | empty state |
+| Disaster alerts w/ levels | — | GDACS API (UN OCHA / EU JRC) | none | yes | no | https://www.gdacs.org/gdacsapi/swagger/index.html | INTEGRATED (engine `gdacs-alerts`, LATEST_AVAILABLE; levels are assessments) | EONET |
 | Satellite imagery | NASA GIBS WMTS | — (incumbent verified) | none | yes | no | https://nasa-gibs.github.io/gibs-api-reference/ | LATEST_AVAILABLE | demo obs |
 | Maps/geocode/POIs | OSM/Nominatim/Overpass | — (incumbent verified) | none | yes (strict usage policies) | no | https://wiki.openstreetmap.org/wiki/Tile_usage_policy | LIVE | demo |
-| Active fire | — (registry ready) | NASA FIRMS | free MAP_KEY (server-side) | yes (free signup) | YES — not obtained (requires human signup) | https://firms.modaps.eosdis.nasa.gov/api/ | NOT_CONFIGURED | MODIS 7-2-1 burn-scar |
+| Active fire | — (registry ready) | NASA FIRMS area CSV (server proxy `/api/v1/fire/active`) | free MAP_KEY, server-side | yes (free signup) | YES — human signup required, none performed | https://firms.modaps.eosdis.nasa.gov/api/ | NOT_CONFIGURED (proxy 503s honestly; FirePanel gates on `/status`) | MODIS 7-2-1 burn-scar |
+| IMD warnings/rainfall | — | api.imd.gov.in (official platform) | key (401 without) | unknown | YES — not obtained | https://api.imd.gov.in/public/api_reference.html | NOT_CONFIGURED (probed 401) | Open-Meteo |
+| NDMA SACHET CAP/RSS alerts | — | sachet.ndma.gov.in CAP-XML (+RSS) | none per integration guide | yes (official) | no | https://sachet.ndma.gov.in/docs/Integration_Guide_For_Agencies.pdf | NOT INTEGRATED (exact anonymous feed URL unverified; ETag protocol documented for future work) | GDACS/EONET |
+| India catalog | — | data.gov.in CKAN | key (free signup) | yes | YES — not obtained | https://data.gov.in/ | CATALOG_ONLY (catalog, not live feeds) | — |
+| Bhuvan/ISRO | — | NRSC Bhuvan | login-walled | varies | YES — not obtained | https://bhuvan.nrsc.gov.in/ | NOT_CONFIGURED | GIBS |
 | Soil texture | SoilGrids/ISRIC | — (incumbent) | none | yes | no | (existing) | LIVE | Open-Meteo→demo |
 | Precipitation bulk | — | NASA GPM/Earthdata | Earthdata login | yes (login) | YES — not obtained | https://www.earthdata.nasa.gov/ | NOT_CONFIGURED | Open-Meteo |
 | Sentinel imagery | — | Copernicus Data Space | free account | yes | YES — not obtained | https://dataspace.copernicus.eu/documentation | NOT_CONFIGURED | demo obs |
