@@ -171,7 +171,7 @@ export function AiMlSection() {
   return (
     <Section id="home-ai" kicker="AI / ML" title="Explainable risk, never a black box">
       <div className="home-split">
-        <VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from weather and terrain data to warning" caption="RandomForest · 22 features · SYNTHETIC-DEMO training" status="DEMO" />
+        <DisasterPhoto photo={getDisasterImage('landslide-debris-flow')!} caption="Real terrain, rainfall, soil and historical observations can provide features used by risk models such as Random Forest. Observed debris flow, archival — not a prediction." status="DEMO" />
         <div>
           <p className="home-side-small">Every prediction ships its contributing factors, model version, and confidence. The demo model trains on synthetic data — metrics are labeled, never sold as field accuracy.</p>
           <p className="home-side-small" style={{ marginTop: 8 }}>Random Forest combines rainfall, soil, slope, terrain and historical evidence to estimate risk. In DRISHTI-X this demonstration model is trained on synthetic data and must not be interpreted as field-validated prediction.</p>
