@@ -1,5 +1,5 @@
 /* DRISHTI-X offline shell: cache-first same-origin GETs, network-first navigations. */
-const CACHE = 'drishti-v2';
+const CACHE = 'drishti-v3';
 const CORE = ['/safety', '/emergency', '/learn', '/manifest.json', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
@@ -22,6 +22,9 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+  // NEVER intercept API traffic: cached auth/data responses would resurrect
+  // logged-out sessions (stale /me 200) or mask fresh state. API goes direct.
+  if (url.pathname.startsWith('/api/')) return;
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
