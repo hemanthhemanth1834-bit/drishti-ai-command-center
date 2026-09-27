@@ -14,6 +14,7 @@ export default function SatellitePanel() {
         <b>🛰 SATELLITE MONITORING</b><ModeBadge />
       </div>
       <p className="nesafe-note">SIMULATED SATELLITE OBSERVATION · pass DEMO-PASS-042 · deformation {def.toFixed(1)}mm feeds the AI risk engine.</p>
+      <p className="nesafe-note">Satellite interferometry and repeated Earth-observation imagery can reveal surface changes over time. This visualization represents deformation measurements rather than a conventional photograph.</p>
       <div className="nesafe-row">
         {(['BEFORE', 'AFTER', 'DEFORMATION'] as const).map((t) => (
           <button key={t} onClick={() => setTab(t)} className={`dx-touch ${tab === t ? 'nesafe-btn-on' : ''}`}>{t}</button>

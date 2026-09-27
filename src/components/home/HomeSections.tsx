@@ -118,6 +118,7 @@ export function AiMlSection() {
         <VizFigure src="/img/ml-pipeline.svg" alt="AI risk pipeline diagram from weather and terrain data to warning" caption="RandomForest · 22 features · SYNTHETIC-DEMO training" status="DEMO" />
         <div>
           <p className="home-side-small">Every prediction ships its contributing factors, model version, and confidence. The demo model trains on synthetic data — metrics are labeled, never sold as field accuracy.</p>
+          <p className="home-side-small" style={{ marginTop: 8 }}>Random Forest combines rainfall, soil, slope, terrain and historical evidence to estimate risk. In DRISHTI-X this demonstration model is trained on synthetic data and must not be interpreted as field-validated prediction.</p>
           <p className="home-side-small" role="status" style={{ marginTop: 8 }}>
             <StatusBadge status={health.data ? 'MODEL' : health.status} small />{' '}
             {health.data
@@ -194,7 +195,7 @@ export function TwinSection() {  return (
       <div className="home-split">
         <VizFigure src="/img/hero-scene.svg" alt="Command-center situation render" caption="R3F terrain · sensor masts · rain · WebGL fallback included" status="SIMULATION" />
         <div>
-          <p className="home-side-small">Procedural Himalayan-scale terrain with live-style sensor nodes, disaster scenario presets, and a global→slope drill-down globe. Simulation is always labeled — never live reality.</p>
+          <p className="home-side-small">Procedural Himalayan-scale terrain with live-style sensor nodes, disaster scenario presets, and a global→slope drill-down globe. Simulation is always labeled — never live reality. Real terrain imagery provides geographic context, while the interactive 3D twin is a procedural simulation used for scenario exploration.</p>
           <CtaRow items={[{ href: '/twin', label: 'Open digital twin', primary: true }, { href: '/nesafe', label: 'NE-SAFE 3D center' }]} />
         </div>
       </div>
