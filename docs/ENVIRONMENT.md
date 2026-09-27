@@ -2,8 +2,8 @@
 
 | Name | Purpose | Required | Used by | Safe example |
 |---|---|---|---|---|
-| `NEXT_PUBLIC_API_BASE` | Backend origin for API calls | No (defaults localhost:8000) | Browser bundles | `https://api.example.com` |
-| `NEXT_PUBLIC_WS_URL` | Telemetry WebSocket URL | No | Browser | `wss://api.example.com/ws/telemetry` |
+| `NEXT_PUBLIC_API_BASE` | Backend origin for API calls | No (localhost:8000 on localhost; same-origin `/api/backend` rewrite in production) | Browser bundles | `/api/backend` (prod default) or `https://api.example.com` |
+| `NEXT_PUBLIC_WS_URL` | Telemetry WebSocket URL | No (local default; same-origin `wss://<host>/api/backend/ws/telemetry` in production) | Browser | `wss://api.example.com/ws/telemetry` |
 | `NEXT_PUBLIC_GATEWAY_KEY` | Publishable gateway key (mutations only) | No | Browser | *(generate, never commit real)* |
 | `NEXT_PUBLIC_MAP_STYLE` | MapLibre style URL | No | Browser | OpenFreeMap default in code |
 | `NEXT_PUBLIC_FORCE_DEMO` | Force demo mode | No | Browser | `true`/`false` |

@@ -1,6 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import TrustBadge from '@/components/TrustBadge';
+import { getApiBase } from '@/utils/apiClient';
 import { Activity } from 'lucide-react';
 
 type Status = 'ONLINE' | 'CONNECTED' | 'READY' | 'DEGRADED' | 'OFFLINE' | 'ERROR' | 'UNKNOWN' | 'IDLE' | 'ACTIVE' | 'LOCAL';
@@ -18,7 +19,7 @@ export default function SystemHealth({ wsConnected, demoActive }: { wsConnected:
   const probe = useCallback(async () => {
     setChecking(true);
     const out: Row[] = [];
-    const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000';
+    const base = getApiBase();
 
     // Frontend: this panel rendered, so the client bundle is alive.
     out.push({ name: 'Frontend', status: 'ONLINE', detail: 'this client rendered', badge: 'LOCAL' });

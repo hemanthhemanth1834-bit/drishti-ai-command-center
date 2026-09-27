@@ -7,6 +7,7 @@
  */
 import { useEffect, useState } from 'react';
 import { get } from '@/platform/api';
+import { getApiBase } from '@/utils/apiClient';
 import { getWeather, getEarthquakes, gibsStatus, fireStatus } from '@/lib/liveServices';
 
 interface Pill { label: string; state: string; detail: string; title: string }
@@ -37,7 +38,7 @@ export default function LiveStatusStrip() {
         {
           label: 'BACKEND', state: be.data ? 'LIVE' : 'DEMO',
           detail: be.data ? (be.data.status ?? 'reachable') : 'unreachable — demo fallback',
-          title: `SOURCE: FastAPI ${process.env.NEXT_PUBLIC_API_BASE ?? 'http://localhost:8000'}`,
+          title: `SOURCE: FastAPI ${getApiBase()}`,
         },
         {
           label: 'WEATHER', state: wx.state,

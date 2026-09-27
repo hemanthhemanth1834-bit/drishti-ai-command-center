@@ -58,7 +58,7 @@ export default function TelemetryFeed() {
             <span>{p.signal_pct.toFixed(0)}%</span>
           </div>
         ))}
-        {!packets.length && <p>Waiting for ws://localhost:8000/ws/telemetry …</p>}
+        {!packets.length && <p>Waiting for {getWsUrl()} …</p>}
       </div>
     </div>
   );

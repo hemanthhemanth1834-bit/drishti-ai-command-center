@@ -6,10 +6,9 @@ Never throws for UI flows — backend-down degrades to labeled demo.
 Browser only sends the publishable gateway key (NEXT_PUBLIC_*).
 */
 
-const BASE =
-  (typeof process !== 'undefined' &&
-    (process.env.NEXT_PUBLIC_API_BASE as string | undefined)) ||
-  'http://localhost:8000';
+import { getApiBase } from '@/utils/apiClient';
+
+const BASE = getApiBase();
 const KEY =
   (typeof process !== 'undefined' &&
     (process.env.NEXT_PUBLIC_GATEWAY_KEY as string | undefined)) ||
