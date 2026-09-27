@@ -5,6 +5,8 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import SituationBrief from '@/components/intelligence/SituationBrief';
 
 const DisasterGlobe = dynamic(
@@ -65,12 +67,12 @@ export default function IntelligencePage() {
         <div className="dx-hud-edge" />
         <div className="dx-micro">CURRENT SITUATION — CONTEXT, NOT LIVE EVENTS</div>
         <div className="nesafe-vizgrid mt-2">
-          <Link href="/risk-map" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-landslide.svg" alt="Landslide affecting a mountain road" caption="Landslide risk" status="DEMO" /></Link>
-          <Link href="/weather" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-flood.svg" alt="River flood over roads and houses" caption="Flood watch" status="DEMO" /></Link>
-          <Link href="/satellite" style={{ textDecoration: 'none' }}><VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="Change watch" status="DEMO" /></Link>
-          <Link href="/terrain" style={{ textDecoration: 'none' }}><VizFigure src="/img/terrain.svg" alt="Terrain contour and slope diagram" caption="Terrain" status="DEMO" /></Link>
+          <Link href="/risk-map" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('landslide-debris-flow')!} caption="Landslide risk (observed debris flow, archival)" status="DEMO" bare /></Link>
+          <Link href="/weather" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('flood-ganges')!} caption="Flood watch (observed inundation, archival)" status="DEMO" bare /></Link>
+          <Link href="/satellite" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('satellite-kerala-after')!} caption="Change watch (observed inundation, archival)" status="DEMO" bare /></Link>
+          <Link href="/terrain" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('terrain-himalaya')!} caption="Terrain (orbital context, not a DEM render)" status="DEMO" bare /></Link>
           <Link href="/incidents" style={{ textDecoration: 'none' }}><VizFigure src="/img/dis-road.svg" alt="Landslide debris blocking a highway" caption="Field reports" status="DEMO" /></Link>
-          <Link href="/response" style={{ textDecoration: 'none' }}><VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="Response" status="DEMO" /></Link>
+          <Link href="/response" style={{ textDecoration: 'none' }}><DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Response (rescue operations, archival)" status="DEMO" bare /></Link>
         </div>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">

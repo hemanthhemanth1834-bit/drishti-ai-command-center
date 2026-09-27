@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
 import { API_BASE, hasKey } from '@/platform/api';
-import VizFigure from '@/platform/VizFigure';
 import DisasterImage from '@/components/visuals/DisasterImage';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import { imagesByStatus } from '@/config/imageSources';
 
 export default function HistoryPage() {
@@ -42,11 +43,11 @@ export default function HistoryPage() {
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
-        <div className="dx-micro">EVENT CONTEXT (ILLUSTRATIVE — NOT HISTORICAL EVIDENCE)</div>
+        <div className="dx-micro">EVENT CONTEXT (DOCUMENTED CASES — NOT CURRENT EVENTS)</div>
         <div className="nesafe-vizgrid mt-2">
-          <VizFigure src="/img/dis-flood.svg" alt="River flood over roads and houses" caption="Flood events" status="DEMO" />
-          <VizFigure src="/img/dis-cyclone.svg" alt="Cyclone spiral over coastline" caption="Cyclone events" status="DEMO" />
-          <VizFigure src="/img/dis-landslide.svg" alt="Landslide affecting a mountain road" caption="Landslide events" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('flood-ganges')!} caption="Flood events (observed case, archival)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('cyclone-nilam')!} caption="Cyclone events (observed case, archival)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('landslide-debris-flow')!} caption="Landslide events (observed case, archival)" status="DEMO" />
         </div>
       </div>
       <div className="dx-hud">

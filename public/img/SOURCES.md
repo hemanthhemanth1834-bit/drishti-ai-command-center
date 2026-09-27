@@ -36,6 +36,29 @@ presented as live data.
 | Cyclone Ilsa | cyclone-ilsa.jpg | HISTORICAL (EO 37599) |
 | Drone Swarm concept | drone.svg (project-original) | SIMULATION (no live feed) |
 
+## Disaster-category photographs (registry `src/data/disasterImages.ts`, component `DisasterPhoto`)
+
+Remote-first via official Wikimedia Commons FilePath URLs (license-verified per file page);
+verified local file fallback; safe text state last. All ARCHIVAL/HISTORICAL/REFERENCE — never LIVE.
+
+| Asset | Category | Source | Original URL | License | Attribution | Status |
+|---|---|---|---|---|---|---|
+| Ferguson Fire near Mariposa Pines (2018-07-17) | wildfire | U.S. Forest Service via Commons | https://commons.wikimedia.org/wiki/File:Ferguson_Fire_near_Mariposa_Pines.jpg | Public domain (U.S. federal) | U.S. Forest Service | ARCHIVAL |
+| 2011 Oklahoma earthquake damage (2011-11-06) | earthquake | USGS via Commons | https://commons.wikimedia.org/wiki/File:2011_Oklahoma_earthquake_damage.jpg | Public domain (USGS) | Brian Sherrod, USGS | ARCHIVAL |
+| Dry Cracked Mud, Lake Mead (2017-01-31) | drought | NPS via Commons | https://commons.wikimedia.org/wiki/File:Dry_Cracked_Mud_(4957b8b2-f52c-43b0-acc2-ead42cf6f03b).jpg | Public domain (U.S. federal) | NPS / Andrew Cattoir | ARCHIVAL |
+| Cyclone Nilam (2012-10-31) | cyclone | NASA Terra/MODIS via Commons | (photos/ table above) | Public domain (NASA) | NASA | HISTORICAL |
+| Ganges flood | flood | NASA EO 45933 | (real-world table above) | Public domain (NASA) | NASA EO | HISTORICAL |
+| Debris flow, India | landslide | NASA EO 147973 | (real-world table above) | Public domain (NASA) | NASA EO | HISTORICAL |
+| Himalayas ISS | terrain | NASA JSC via Commons | (photos/ table above) | Public domain (NASA) | NASA (ISS064-E-037041) | REFERENCE |
+| Harvey helicopter rescue | response | U.S. Navy via Commons | (photos/ table above) | Public domain (U.S. Navy) | U.S. Navy | ARCHIVAL |
+| FEMA emergency operations center | command | FEMA via Commons | (photos/ table above) | Public domain (FEMA) | FEMA | ARCHIVAL |
+| Kerala before/after (2018-02-06 / 2018-08-22) | satellite | NASA EO 92669 | (photos/ table above) | Public domain (NASA/USGS) | NASA EO | HISTORICAL |
+
+Kept as honestly-labeled illustrations (no verified photo available, not forced):
+shelter.svg, dis-road.svg (incidents/roads/transport), sat-change.svg (change-detection concept),
+terrain schematics where still diagram-labeled, hero-scene/hero-command SIMULATION renders,
+drone.svg SIMULATION concept, sensor-net/regions/offline-sync topology diagrams, wx-* state icons.
+
 Remaining `public/img/*.svg` files are original in-repo illustrations.
 
 ## Model-flow visuals (`src/components/ml/ModelFlowVisual.tsx`, /ml + /prediction)

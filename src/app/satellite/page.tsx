@@ -4,6 +4,8 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import DisasterImage from '@/components/visuals/DisasterImage';
 import LiveImagery from '@/components/live/LiveImagery';
 import { imagesByCategory } from '@/config/imageSources';
@@ -47,10 +49,10 @@ export default function SatellitePage() {
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
-        <div className="dx-micro">BEFORE → AFTER → CHANGE DETECTION (REFERENCE RENDERS, NOT LIVE TASKING)</div>
+        <div className="dx-micro">BEFORE → AFTER → CHANGE DETECTION (OBSERVED 2018 KERALA FLOODS, NOT LIVE TASKING)</div>
         <div className="nesafe-vizgrid mt-2">
-          <VizFigure src="/img/sat-before.svg" alt="Reference satellite view before event, green terrain" caption="Before (reference)" status="DEMO" />
-          <VizFigure src="/img/sat-after.svg" alt="Reference satellite view after event, disturbed terrain" caption="After (reference)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('satellite-kerala-before')!} caption="Before (Landsat 8, 2018-02-06)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('satellite-kerala-after')!} caption="After (Sentinel-2, 2018-08-22)" status="DEMO" />
           <VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="Change Δ (reference)" status="DEMO" />
         </div>
       </div>

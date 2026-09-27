@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import { useApp } from '@/store/appStore';
-import VizFigure from '@/platform/VizFigure';
 
 export default function AdminPage() {
   const { mode } = useApp();
@@ -35,7 +36,7 @@ export default function AdminPage() {
         <div className="dx-hud-edge" />
         <div className="dx-micro">WARNING THRESHOLDS (ENV-CONFIGURABLE)</div>
         <pre className="text-[11px] mt-1">{JSON.stringify(th.data ?? th.status, null, 1)}</pre>
-        <div className="mt-2"><VizFigure src="/img/hero-command.svg" alt="Command center situation wall illustration" caption="Authority view (reference render)" status="DEMO" /></div>
+        <div className="mt-2"><DisasterPhoto photo={getDisasterImage('command-eoc')!} caption="Authority view (operations center, archival)" status="DEMO" /></div>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />

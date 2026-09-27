@@ -5,6 +5,8 @@ import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import { useRegion } from '@/platform/regionStore';
 import VizFigure from '@/platform/VizFigure';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import { get } from '@/platform/api';
 import { BASE_LAYERS, EO_LAYERS, HISTORICAL_PRESETS, type Preset } from '@/platform/eoLayers';
 import type { InspectPoint } from '@/platform/RiskGridMap';
@@ -156,10 +158,10 @@ export default function RiskMapPage() {
 
       <div className="dx-hud">
         <div className="dx-hud-edge" />
-        <div className="dx-micro">RECENT EARTH OBSERVATION (LIVE COMPOSITES, NOT ARCHIVE STILLS)</div>
+        <div className="dx-micro">EARTH OBSERVATION (OBSERVED 2018 KERALA FLOODS + LIVE COMPOSITES BELOW)</div>
         <div className="nesafe-vizgrid mt-2">
-          <VizFigure src="/img/sat-before.svg" alt="Reference landscape before event, green terrain" caption="Landscape reference (render)" status="DEMO" />
-          <VizFigure src="/img/sat-after.svg" alt="Reference landscape after event, disturbed terrain" caption="Change concept (render)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('satellite-kerala-before')!} caption="Landscape (Landsat 8, 2018-02-06)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('satellite-kerala-after')!} caption="Change observed (Sentinel-2, 2018-08-22)" status="DEMO" />
           <VizFigure src="/img/sat-change.svg" alt="Reference change detection with highlighted disturbed area" caption="Detection concept (render)" status="DEMO" />
         </div>
         <p className="text-[11px] text-slate-400 mt-2">Tiles © OpenStreetMap contributors · CARTO · Esri/Maxar · OpenTopoMap · Imagery © NASA Worldview/GIBS. Colors track live grid state ({gridStatus}-driven).</p>

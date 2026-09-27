@@ -1,0 +1,202 @@
+/**
+ * Central disaster-photography registry: REAL, source-verified photographs
+ * for disaster/emergency visual content.
+ *
+ * Each entry carries full provenance. Remote entries use official
+ * Wikimedia Commons Special:FilePath URLs (stable, license-verified) with a
+ * locally vendored fallback; the component tries remote → local → safe text
+ * state, never a broken icon. Every photo is CONTEXT/ARCHIVAL — never LIVE.
+ */
+export type DisasterPhotoStatus = 'HISTORICAL' | 'ARCHIVAL' | 'REFERENCE';
+
+export interface DisasterPhotoAsset {
+  id: string;
+  category: string;
+  /** Primary: official remote URL. Null when only a local asset is used. */
+  remoteUrl: string | null;
+  /** Always set: verified local file (primary for local entries). */
+  fallbackUrl: string;
+  source: string;
+  sourceUrl: string;
+  license: string;
+  attribution: string;
+  date?: string;
+  location?: string;
+  alt: string;
+  description: string;
+  status: DisasterPhotoStatus;
+}
+
+const W = 'https://commons.wikimedia.org/wiki/Special:FilePath';
+
+export const DISASTER_PHOTOS: DisasterPhotoAsset[] = [
+  {
+    id: 'cyclone-nilam',
+    category: 'cyclone',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/hero-nilam.jpg',
+    source: 'NASA Terra/MODIS via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Cyclonic_Storm_Nilam_Oct_31_2012.jpg',
+    license: 'Public domain (NASA)',
+    attribution: 'NASA',
+    date: '2012-10-31',
+    location: 'Bay of Bengal',
+    alt: 'NASA satellite view of Cyclonic Storm Nilam spiral cloud bands over the Bay of Bengal',
+    description: 'Documented cyclone observation; not a current storm.',
+    status: 'HISTORICAL',
+  },
+  {
+    id: 'flood-ganges',
+    category: 'flood',
+    remoteUrl: null,
+    fallbackUrl: '/assets/drishti-x/real-world/03_flood_india/ganges-flood.jpg',
+    source: 'NASA Earth Observatory record 45933',
+    sourceUrl: 'https://science.nasa.gov/earth/earth-observatory/flooding-in-northern-india-45933/',
+    license: 'Public domain (NASA)',
+    attribution: 'NASA Earth Observatory',
+    location: 'Northern India',
+    alt: 'NASA satellite observation of flooding across northern India',
+    description: 'Documented flood case; not a current event.',
+    status: 'HISTORICAL',
+  },
+  {
+    id: 'landslide-debris-flow',
+    category: 'landslide',
+    remoteUrl: null,
+    fallbackUrl: '/assets/drishti-x/real-world/05_landslide_india/debris-flow.jpg',
+    source: 'NASA Earth Observatory record 147973',
+    sourceUrl: 'https://science.nasa.gov/earth/earth-observatory/a-deadly-debris-flow-in-india-147973/',
+    license: 'Public domain (NASA)',
+    attribution: 'NASA Earth Observatory',
+    location: 'India',
+    alt: 'NASA satellite observation of a deadly debris flow scar in India',
+    description: 'Documented slope-failure case; not a current event.',
+    status: 'HISTORICAL',
+  },
+  {
+    id: 'wildfire-ferguson',
+    category: 'wildfire',
+    remoteUrl: `${W}/Ferguson_Fire_near_Mariposa_Pines.jpg?width=1280`,
+    fallbackUrl: '/img/dis-fire.svg',
+    source: 'U.S. Forest Service via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Ferguson_Fire_near_Mariposa_Pines.jpg',
+    license: 'Public domain (U.S. federal)',
+    attribution: 'U.S. Forest Service',
+    date: '2018-07-17',
+    location: 'Mariposa County, California, USA',
+    alt: 'U.S. Forest Service photograph of active wildfire with smoke near Mariposa Pines in 2018',
+    description: 'Documented wildfire; archival reference, never a live detection.',
+    status: 'ARCHIVAL',
+  },
+  {
+    id: 'earthquake-oklahoma-2011',
+    category: 'earthquake',
+    remoteUrl: `${W}/2011_Oklahoma_earthquake_damage.jpg?width=1280`,
+    fallbackUrl: '/img/dis-earthquake.svg',
+    source: 'USGS via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:2011_Oklahoma_earthquake_damage.jpg',
+    license: 'Public domain (USGS)',
+    attribution: 'Brian Sherrod, U.S. Geological Survey',
+    date: '2011-11-06',
+    location: 'Central Oklahoma, USA',
+    alt: 'USGS photograph of house damage from the magnitude 5.6 Oklahoma earthquake of 2011',
+    description: 'Documented earthquake damage; archival reference, never a current event.',
+    status: 'ARCHIVAL',
+  },
+  {
+    id: 'drought-lake-mead',
+    category: 'drought',
+    remoteUrl: `${W}/Dry_Cracked_Mud_(4957b8b2-f52c-43b0-acc2-ead42cf6f03b).jpg?width=1280`,
+    fallbackUrl: '/img/dis-drought.svg',
+    source: 'U.S. National Park Service via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Dry_Cracked_Mud_(4957b8b2-f52c-43b0-acc2-ead42cf6f03b).jpg',
+    license: 'Public domain (U.S. federal)',
+    attribution: 'NPS / Andrew Cattoir',
+    date: '2017-01-31',
+    location: 'Lake Mead National Recreation Area, USA',
+    alt: 'National Park Service photograph of dry cracked mud during drought conditions at Lake Mead',
+    description: 'Drought-context reference; not a measurement of any selected location.',
+    status: 'ARCHIVAL',
+  },
+  {
+    id: 'terrain-himalaya',
+    category: 'terrain',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/mission-himalaya.jpg',
+    source: 'NASA Johnson Space Center via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:ISS-64_India,_the_Himalayas_and_China.jpg',
+    license: 'Public domain (NASA)',
+    attribution: 'NASA (ISS064-E-037041)',
+    date: '2021-02-23',
+    location: 'India / Himalayas',
+    alt: 'Oblique orbital photograph of India and the Himalayan mountain slopes from the space station',
+    description: 'Terrain context only; not elevation data.',
+    status: 'REFERENCE',
+  },
+  {
+    id: 'response-harvey-rescue',
+    category: 'response',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/emergency-rescue.jpg',
+    source: 'U.S. Navy via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Hurricane_Harvey_rescue_(37833567051).jpg',
+    license: 'Public domain (U.S. Navy)',
+    attribution: 'U.S. Navy',
+    location: 'Texas, USA (Hurricane Harvey relief)',
+    alt: 'U.S. Navy helicopter performing a flood rescue during Hurricane Harvey relief operations',
+    description: 'Response-operations context; not a DRISHTI-X dispatch.',
+    status: 'ARCHIVAL',
+  },
+  {
+    id: 'command-eoc',
+    category: 'command',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/command-eoc.jpg',
+    source: 'FEMA via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:FEMA_-_38184_-_Emergency_Operations_Center_in_Texas.jpg',
+    license: 'Public domain (FEMA / U.S. federal)',
+    attribution: 'FEMA',
+    location: 'Texas, USA',
+    alt: 'FEMA photograph of an emergency operations center coordinating hurricane response',
+    description: 'Command-operations context; not a live DRISHTI-X facility.',
+    status: 'ARCHIVAL',
+  },
+  {
+    id: 'satellite-kerala-before',
+    category: 'satellite-before-after',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/kerala-before.jpg',
+    source: 'NASA Earth Observatory record 92669 (USGS Landsat 8 OLI)',
+    sourceUrl: 'https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/',
+    license: 'Public domain (NASA/USGS)',
+    attribution: 'NASA Earth Observatory',
+    date: '2018-02-06',
+    location: 'Kerala, India',
+    alt: 'Landsat 8 false-color view of Kerala before the August 2018 floods',
+    description: 'Verified before-image of the 2018 Kerala floods pair.',
+    status: 'HISTORICAL',
+  },
+  {
+    id: 'satellite-kerala-after',
+    category: 'satellite-before-after',
+    remoteUrl: null,
+    fallbackUrl: '/img/photos/kerala-after.jpg',
+    source: 'NASA Earth Observatory record 92669 (Sentinel-2 MSI via ESA)',
+    sourceUrl: 'https://science.nasa.gov/earth/earth-observatory/before-and-after-the-kerala-floods-92669/',
+    license: 'Public domain (NASA/USGS; Sentinel data via ESA)',
+    attribution: 'NASA Earth Observatory',
+    date: '2018-08-22',
+    location: 'Kerala, India',
+    alt: 'Sentinel-2 false-color view of Kerala after inundation in August 2018, flood water dark blue',
+    description: 'Verified after-image; observed inundation, not a render.',
+    status: 'HISTORICAL',
+  },
+];
+
+export function getDisasterImage(id: string): DisasterPhotoAsset | null {
+  return DISASTER_PHOTOS.find((a) => a.id === id) ?? null;
+}
+
+export function disasterImageByCategory(category: string): DisasterPhotoAsset | null {
+  return DISASTER_PHOTOS.find((a) => a.category === category) ?? null;
+}

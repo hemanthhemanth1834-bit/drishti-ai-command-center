@@ -4,6 +4,8 @@ import LocationContextBar from '@/components/location/LocationContextBar';
 import RealPhotoCard from '@/components/visuals/RealPhotoCard';
 import { usePlatform } from '@/platform/usePlatform';
 import VizFigure from '@/platform/VizFigure';
+import DisasterPhoto from '@/components/visuals/DisasterPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 
 export default function ResponsePage() {
   const q = usePlatform<{ count: number; queue: { alert_id: string; level: string; title: string; score: number; band: string; why: string[] }[] }>('/api/v1/response/queue');
@@ -16,7 +18,7 @@ export default function ResponsePage() {
         <div className="dx-hud-edge" />
         <div className="dx-micro">PRIORITY QUEUE ({q.data?.count ?? '…'})</div>
         <div className="nesafe-vizgrid mt-2">
-          <VizFigure src="/img/response.svg" alt="Emergency response vehicles staged" caption="Response units (reference)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Response units (rescue operations, archival)" status="DEMO" />
           <VizFigure src="/img/shelter.svg" alt="Relief shelter illustration" caption="Shelter capacity (reference)" status="DEMO" />
         </div>
         {(q.data?.queue ?? []).map((i) => (
