@@ -88,13 +88,15 @@ def token(body: TokenRequest,
         pass
     resp = JSONResponse({"access_token": tok, "token_type": "Bearer",
                          "role": identity["role"], "sub": identity["sub"],
-                         "expires_min": 720, "method": method})
+                         "expires_min": 720, "method": method},
+                        headers={"Cache-Control": "no-store"})
     resp.set_cookie(value=tok, **sec.session_cookie_kwargs(body.remember))
     return resp
 
 
 @router.get("/me")
-def me(ident=Depends(sec.current_identity)):
+def me(response: Response, ident=Depends(sec.current_identity)):
+    response.headers["Cache-Control"] = "no-store"
     return {"sub": ident.get("sub"), "role": ident.get("role"),
             "permissions": sec.ROLE_PERMS.get(ident.get("role", ""), []),
             "ts": datetime.now(timezone.utc).isoformat()}
@@ -149,7 +151,8 @@ def public_token(body: PublicTokenRequest,
     except Exception:
         pass
     resp = JSONResponse({"access_token": tok, "token_type": "Bearer", "role": "public_user",
-                         "sub": sub, "expires_min": 720, "method": "public-session"})
+                         "sub": sub, "expires_min": 720, "method": "public-session"},
+                        headers={"Cache-Control": "no-store"})
     resp.set_cookie(value=tok, **sec.session_cookie_kwargs(True))
     return resp
 
@@ -165,6 +168,7 @@ def logout(response: Response,
     except Exception:
         pass
     response.delete_cookie(sec.SESSION_COOKIE, path="/")
+    response.headers["Cache-Control"] = "no-store"
     return {"ok": True,
             "note": "Token is stateless JWT — client must discard it. "
                     "Short expiry (12h) bounds misuse."}

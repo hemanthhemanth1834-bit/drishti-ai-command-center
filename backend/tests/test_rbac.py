@@ -235,3 +235,25 @@ def test_public_token_rate_limited():
         assert 429 in codes
     finally:
         sec._rate.clear()
+
+
+def test_auth_and_admin_never_edge_cached(monkeypatch):
+    """Auth-gated responses must carry no-store: a cached /me 200 after
+    logout would resurrect the session in front of AuthGate (seen live)."""
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv("OPERATOR_KEYS", "op1:district_admin:s3cret")
+    monkeypatch.setenv("COOKIE_SECURE", "false")
+    _clear_cookies()
+    try:
+        r = client.post("/api/v1/auth/token",
+                        json={"username": "op1", "secret": "s3cret"})
+        assert r.headers.get("cache-control") == "no-store"
+        me = client.get("/api/v1/auth/me")
+        assert me.headers.get("cache-control") == "no-store"
+        lo = client.post("/api/v1/auth/logout")
+        assert lo.headers.get("cache-control") == "no-store"
+        assert client.get("/api/v1/admin/roles",
+                          headers={"Authorization": f"Bearer {r.json()['access_token']}"}).status_code == 403
+    finally:
+        _clear_cookies()
