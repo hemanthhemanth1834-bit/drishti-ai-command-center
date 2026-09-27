@@ -5,11 +5,14 @@
  * - Image + title + category come from `src/data/images/imageRegistry.ts`.
  * - `contextNote` states what the photo is (and is NOT) for this page.
  * - `badge` is a truthful text status (HISTORICAL / ARCHIVAL / REFERENCE).
- * - next/image with lazy loading + graceful IMAGE UNAVAILABLE fallback.
+ * - Plain <img> with lazy loading + graceful IMAGE UNAVAILABLE fallback.
+ *   Deliberately NOT next/image: the production image-optimization endpoint
+ *   (/_next/image) returns 404 on this deployment, which rendered every
+ *   RealPhotoCard (weather/resources/response/regions) as IMAGE UNAVAILABLE
+ *   in real browsers (verified via headless-Chromium screenshot 2026-09-27).
  * - Never presented as live data, a measurement, or a location report.
  */
 import { useState } from 'react';
-import Image from 'next/image';
 import { StatusBadge } from '@/platform/provenance';
 import { getAsset } from '@/data/images/imageRegistry';
 
@@ -32,13 +35,13 @@ export default function RealPhotoCard({ assetId, badge = 'ARCHIVAL', contextNote
             <span className="text-[10px]">SOURCE: {asset.source}</span>
           </div>
         ) : (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={asset.localPath}
             alt={asset.description}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 640px"
             loading="lazy"
-            style={{ objectFit: 'cover' }}
+            decoding="async"
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             onError={() => setFailed(true)}
           />
         )}

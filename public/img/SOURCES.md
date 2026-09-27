@@ -103,3 +103,10 @@ Reason: the production image-optimization endpoint (`/_next/image`) returns
 optimized photos as IMAGE UNAVAILABLE. Raw files serve 200 with correct
 bytes, so no optimizer is needed. If the optimizer ever works here, this can
 be revisited — until then, do not route local photos through it.
+
+## Leaflet marker icons (`public/marker-*.png`)
+
+Vendored from `node_modules/leaflet/dist/images/` (Leaflet, BSD-2-Clause;
+© OpenStreetMap contributors context). Leaflet resolves its default icon
+URLs against the site root, which 404'd in production and left map markers
+imageless. Local copies fix all Leaflet maps with no code change.
