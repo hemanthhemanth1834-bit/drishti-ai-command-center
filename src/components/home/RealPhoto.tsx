@@ -2,12 +2,14 @@
 /**
  * RealPhoto — real-world example imagery with honest labeling.
  *
- * - next/image (lazy below the fold, responsive sizes, local files)
+ * - plain <img> (lazy below the fold, async decoding, object-fit cover).
+ *   Deliberately NOT next/image: the production image-optimization endpoint
+ *   (/_next/image) returns 404 on this deployment, which rendered every
+ *   optimized photo as IMAGE UNAVAILABLE. Local files need no optimizer.
  * - onError fallback panel: IMAGE UNAVAILABLE + SOURCE (never broken icons)
  * - visible attribution caption + ILLUSTRATIVE badge (never presented as live)
  */
 import { useState } from 'react';
-import Image from 'next/image';
 
 interface Props {
   src: string;
@@ -32,13 +34,13 @@ export default function RealPhoto({
             <span className="home-photo-fallback-src">SOURCE: {source}</span>
           </div>
         ) : (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={src}
             alt={alt}
-            fill
             sizes="(max-width: 768px) 100vw, (max-width: 1400px) 50vw, 700px"
             loading={eager ? 'eager' : 'lazy'}
-            priority={eager}
+            decoding="async"
             className="home-photo-img"
             onError={() => setFailed(true)}
           />

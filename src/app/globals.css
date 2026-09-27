@@ -1154,7 +1154,7 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
    attribution — never presented as live data. */
 .home-photo-frame { margin: 12px 0 0; min-width: 0; }
 .home-photo-view { position: relative; overflow: hidden; border-radius: 12px; border: 1px solid rgba(0,210,255,.25); background: #04101d; }
-.home-photo-img { object-fit: cover; }
+.home-photo-img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .home-photo-badge { position: absolute; top: 8px; left: 8px; font-size: 9px; font-weight: 800; letter-spacing: .14em; color: #9be9ff; background: rgba(2,11,20,.78); border: 1px solid rgba(0,210,255,.4); border-radius: 6px; padding: 3px 8px; }
 .home-photo-cap { font-size: 10px; color: #8fa6bd; margin-top: 6px; line-height: 1.5; }
 .home-photo-src { color: #5f7888; }
