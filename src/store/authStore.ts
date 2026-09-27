@@ -4,6 +4,7 @@
  */
 import { useSyncExternalStore } from 'react';
 import { API_BASE } from '@/platform/api';
+import { setApp } from '@/store/appStore';
 import { connectionErrorMessage } from './authErrors';
 
 export interface Identity { sub: string; role: string; permissions: string[] }
@@ -46,6 +47,34 @@ export async function signIn(username: string, secret: string, remember: boolean
     } catch { /* noop */ }
     emit();
     return { ok: true, identity };
+  } catch {
+    return { ok: false, error: connectionErrorMessage() };
+  }
+}
+
+/** Public session: mints a real backend-enforced public_user JWT (in memory only).
+ * Powers CONTINUE AS PUBLIC USER as an authenticated limited session, not a flag. */
+export async function signInPublic(): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 15000);
+    const r = await fetch(`${API_BASE}/api/v1/auth/public-token`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ device_id: 'web' }), signal: ctrl.signal,
+    });
+    clearTimeout(t);
+    if (r.status === 503) return { ok: false, error: 'Public access is not configured on this server.' };
+    if (r.status === 429) return { ok: false, error: 'Too many attempts. Please wait and try again later.' };
+    if (!r.ok) return { ok: false, error: 'Could not start a public session.' };
+    const j = await r.json();
+    state = {
+      token: j.access_token as string,
+      identity: { sub: String(j.sub ?? 'public'), role: 'public_user', permissions: [] },
+      rememberedId: state.rememberedId,
+    };
+    try { setApp({ mode: 'public' }); } catch { /* store unavailable (ssr) */ }
+    emit();
+    return { ok: true };
   } catch {
     return { ok: false, error: connectionErrorMessage() };
   }

@@ -4,16 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Siren, Users, X } from 'lucide-react';
-import { signIn, useAuth } from '@/store/authStore';
+import { signIn, signInPublic, useAuth } from '@/store/authStore';
 import { API_BASE } from '@/platform/api';
-import { setApp } from '@/store/appStore';
 import { useDialogA11y } from '@/hooks/useDialogA11y';
 
 function isEmailLike(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || /^[a-zA-Z0-9._-]{2,60}$/.test(v);
 }
 
-export default function LoginCard({ onClose }: { onClose: () => void }) {
+export default function LoginCard({ onClose, redirectTo = '/command' }: { onClose: () => void; redirectTo?: string | null }) {
   const router = useRouter();
   const { rememberedId } = useAuth();
   const [username, setUsername] = useState(rememberedId);
@@ -40,6 +39,18 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
     setError('');
     setForgotDone(false);
     setMode('login');
+  };
+
+  const goPublic = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError('');
+    const r = await signInPublic();
+    setBusy(false);
+    if (!r.ok) { setError(r.error ?? 'Could not start a public session.'); return; }
+    onClose();
+    if (redirectTo) router.push(redirectTo);
   };
 
   const submitForgot = async (e: React.FormEvent) => {
@@ -76,7 +87,7 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
     setBusy(false);
     if (!r.ok) { setError(r.error ?? 'Authentication failed. Please check your credentials and try again.'); return; }
     onClose();
-    router.push('/command');
+    if (redirectTo) router.push(redirectTo);
   };
 
   return (
@@ -155,9 +166,9 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
         )}
 
         <div className="login-alt">
-          <Link href="/safety" onClick={() => { setApp({ mode: 'public' }); onClose(); }} className="login-public">
+          <button type="button" onClick={goPublic} disabled={busy} className="login-public" aria-label="Continue as public user">
             <Users className="w-3.5 h-3.5" aria-hidden="true" /> CONTINUE AS PUBLIC USER
-          </Link>
+          </button>
           <Link href="/emergency" onClick={onClose} className="login-emergency">
             <Siren className="w-3.5 h-3.5" aria-hidden="true" /> EMERGENCY ACCESS
           </Link>

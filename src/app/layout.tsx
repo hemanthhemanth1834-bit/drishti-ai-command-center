@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import EmergencyFab from "@/components/EmergencyFab";
+import AuthGate from "@/components/auth/AuthGate";
 import MobileQuickBar from "@/components/MobileQuickBar";
 import A11yBar from "@/components/A11yBar";
 import DemoBar from "@/components/DemoBar";
@@ -91,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <OfflineBanner />
         <BootSequence />
         <div id="main" className="pb-14 md:pb-0">
-          {children}
+          <AuthGate>{children}</AuthGate>
         </div>
         <EmergencyFab />
         <MobileQuickBar />

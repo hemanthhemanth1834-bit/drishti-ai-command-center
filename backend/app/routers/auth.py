@@ -9,6 +9,7 @@ Real flows only:
 from __future__ import annotations
 
 import os
+import uuid
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -43,6 +44,10 @@ class TokenRequest(BaseModel):
 
 class ForgotRequest(BaseModel):
     username: str = ""
+
+
+class PublicTokenRequest(BaseModel):
+    device_id: str = "unknown"
 
 
 @router.post("/token")
@@ -116,6 +121,31 @@ def forgot_password(body: ForgotRequest,
                        "has been notified. Operator credentials are administrator-provisioned; "
                        "password-recovery email is not configured on this server.",
             "email_configured": bool(os.getenv("SMTP_HOST"))}
+
+
+@router.post("/public-token")
+def public_token(body: PublicTokenRequest,
+                 db: Session = Depends(get_db),
+                 _rl=Depends(rate_limit(10, 60))):
+    """Anonymous public session: mints a short-lived public_user JWT.
+
+    Powers CONTINUE AS PUBLIC USER as a REAL authenticated limited session
+    (backend-enforced report+read) instead of a client-side flag. Rate-limited
+    per IP; returns 503 when JWT_SECRET is not configured — never a fake token.
+    """
+    if not sec.JWT_SECRET:
+        raise HTTPException(status_code=503,
+                            detail="Public access not configured (JWT_SECRET missing)")
+    sub = "public-" + uuid.uuid4().hex[:8]
+    tok = sec.mint_token(sub, "public_user")
+    try:
+        db.add(m.AuditLog(actor=sub, action="auth-public-token",
+                          detail=f"device={body.device_id[:40]}"))
+        db.commit()
+    except Exception:
+        pass
+    return {"access_token": tok, "token_type": "Bearer", "role": "public_user",
+            "sub": sub, "expires_min": 720, "method": "public-session"}
 
 
 @router.post("/logout")

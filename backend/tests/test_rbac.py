@@ -124,3 +124,36 @@ def test_safe_public_compute_open():
                        json={"location": {"latitude": 1, "longitude": 1}}).status_code == 200
     assert client.post("/api/v1/risk/assess",
                        json={"lat": 1, "lon": 1}).status_code == 200
+
+
+def test_public_token_session(_jwt):
+    r = client.post("/api/v1/auth/public-token", json={"device_id": "t"})
+    assert r.status_code == 200
+    j = r.json()
+    assert j["role"] == "public_user" and j["method"] == "public-session"
+    assert j["access_token"]
+    me = client.get("/api/v1/auth/me",
+                    headers={"Authorization": f"Bearer {j['access_token']}"})
+    assert me.status_code == 200 and me.json()["role"] == "public_user"
+    # public token obeys the same matrix: admin denied, intake allowed
+    assert client.get("/api/v1/admin/roles",
+                      headers={"Authorization": f"Bearer {j['access_token']}"}).status_code == 403
+
+
+def test_public_token_unconfigured(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "")
+    r = client.post("/api/v1/auth/public-token", json={})
+    assert r.status_code == 503
+    assert "access_token" not in r.json()
+
+
+def test_public_token_rate_limited():
+    import app.services.security as sec
+    sec._rate.clear()
+    try:
+        codes = [client.post("/api/v1/auth/public-token",
+                             json={}).status_code for _ in range(12)]
+        assert 429 in codes
+    finally:
+        sec._rate.clear()
