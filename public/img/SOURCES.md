@@ -66,3 +66,12 @@ existing license-verified images above were retained.
 
 For every supplied file: user-supplied asset — provenance/license not
 independently verified. Do not publish without verifying rights.
+
+## Delivery note (2026-09-27): plain `<img>` for local photos
+
+`RealPhoto` renders local photos with a plain lazy `<img>`, not `next/image`.
+Reason: the production image-optimization endpoint (`/_next/image`) returns
+404 for every source on this deployment (verified live), which rendered all
+optimized photos as IMAGE UNAVAILABLE. Raw files serve 200 with correct
+bytes, so no optimizer is needed. If the optimizer ever works here, this can
+be revisited — until then, do not route local photos through it.
