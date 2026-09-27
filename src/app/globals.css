@@ -868,6 +868,7 @@ a[class*="bg-[#00d2ff]"]:active, button[class*="bg-[#00d2ff]"]:active { transfor
 /* Overview / feed */
 .home-mini { display: flex; flex-direction: column; gap: 4px; background: rgba(5,20,36,.72); border: 1px solid #1b314b; border-radius: 12px; padding: 12px; text-decoration: none; transition: border-color .15s, transform .15s; }
 .home-mini:hover { border-color: rgba(0,210,255,.5); transform: translateY(-2px); }
+.home-mini-photo { width: 100%; height: 92px; object-fit: cover; display: block; border-radius: 8px; border: 1px solid rgba(0,210,255,.14); }
 .home-mini-title { color: #fff; font-size: 13px; font-weight: 900; }
 .home-mini-status { color: #7de9ff; font-size: 11px; font-weight: 800; }
 .home-mini-meta { color: #64748b; font-size: 10px; }

@@ -78,12 +78,12 @@ export function MissionSection() {
 }
 
 export function DataSourcesSection() {
-  const rows: [string, string, string][] = [
-    ['Open-Meteo', 'Weather + rainfall', 'LIVE'],
-    ['SoilGrids', 'Soil texture', 'LIVE'],
-    ['OpenStreetMap', 'Tiles + geocoding', 'LIVE'],
-    ['NASA GIBS', 'Satellite composites', 'LIVE'],
-    ['IMD / Copernicus / SMS', 'Credential-gated feeds', 'NOT_CONFIGURED'],
+  const rows: [string, string, string, string][] = [
+    ['Open-Meteo', 'Weather + rainfall', 'LIVE', 'cyclone-nilam'],
+    ['SoilGrids', 'Soil texture', 'LIVE', 'soil-kerala-land'],
+    ['OpenStreetMap', 'Tiles + geocoding', 'LIVE', 'terrain-himalaya'],
+    ['NASA GIBS', 'Satellite composites', 'LIVE', 'cyclone-ilsa'],
+    ['IMD / Copernicus / SMS', 'Credential-gated feeds', 'NOT_CONFIGURED', 'storm-lightning-india'],
   ];
   return (
     <Section id="home-data" kicker="MULTI-SOURCE DATA" title="Free-first data, honest provenance">
@@ -91,13 +91,25 @@ export function DataSourcesSection() {
         Keyless public feeds where possible; credential-gated sources stay NOT_CONFIGURED until configured — never synthesized.
       </p>
       <div className="home-grid home-grid-secondary">
-        {rows.map(([name, use, status]) => (
-          <div key={name} className="home-mini">
-            <span className="home-mini-title">{name}</span>
-            <span className="home-mini-meta">{use}</span>
-            <span><StatusBadge status={status} small /></span>
-          </div>
-        ))}
+        {rows.map(([name, use, status, photoId]) => {
+          const photo = getDisasterImage(photoId);
+          return (
+            <div key={name} className="home-mini">
+              {photo && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={photo.remoteUrl ?? photo.fallbackUrl} alt={photo.alt}
+                  loading="lazy" decoding="async"
+                  className="home-mini-photo"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                />
+              )}
+              <span className="home-mini-title">{name}</span>
+              <span className="home-mini-meta">{use}</span>
+              <span><StatusBadge status={status} small /></span>
+            </div>
+          );
+        })}
       </div>
       <CtaRow items={[{ href: '/data-sources', label: 'Full source catalog', primary: true }]} />
     </Section>
