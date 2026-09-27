@@ -26,7 +26,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
 
   if (!open) {
     return (
-      <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4">
+      <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4" data-testid="auth-gate">
         <div className="dx-hud max-w-md w-full text-center" role="alertdialog" aria-label="Sign in required">
           <div className="dx-hud-edge" />
           <div className="dx-micro">DRISHTI-X · RESTRICTED</div>
@@ -44,7 +44,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4">
+    <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4" data-testid="auth-gate">
       <LoginCard onClose={() => setOpen(false)} redirectTo={null} />
     </main>
   );
