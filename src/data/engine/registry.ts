@@ -90,6 +90,18 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     enabled: false,
   },
   {
+    id: 'open-meteo-flood', name: 'Open-Meteo Flood (GloFAS)', category: 'flood',
+    baseUrl: 'https://flood-api.open-meteo.com/',
+    docsUrl: 'https://open-meteo.com/en/docs/flood-api',
+    dataTypes: ['river-discharge-model'],
+    access: 'keyless', envVar: null,
+    rateLimitNotes: 'Same free non-commercial terms as Open-Meteo weather; CC-BY 4.0 attribution; daily model data — 60min cache.',
+    attribution: 'River discharge: Open-Meteo / GloFAS (CC-BY 4.0)',
+    freshnessThresholdsMs: [36 * 3600 * 1000, 72 * 3600 * 1000],
+    adapter: 'FloodAdapter',
+    enabled: true,
+  },
+  {
     id: 'osm', name: 'OpenStreetMap ecosystem', category: 'maps',
     baseUrl: 'https://www.openstreetmap.org/',
     docsUrl: 'https://wiki.openstreetmap.org/wiki/Tile_usage_policy',

@@ -3,6 +3,7 @@
 | Source | Use | Status | Auth | Fallback |
 |---|---|---|---|---|
 | Open-Meteo | weather/rainfall/soil proxy (+direct current/hourly/daily via data engine) | LIVE (keyless; backend chain OFFLINE while backend down) | none | demo |
+| Open-Meteo Flood (GloFAS v4) | river discharge MODEL (hindcast + 7d forecast via data engine `openmeteo-flood`) | MODEL/FORECAST (keyless) — simulated, never observed flooding | none | demo |
 | SoilGrids/ISRIC | soil texture | LIVE | none | Open-Meteo → demo |
 | OSM tiles / Nominatim / Overpass | maps/search/POIs | LIVE | none (throttled) | demo |
 | NASA GIBS | satellite context (4-layer viewer, 14d NRT) | LATEST_AVAILABLE tiles | none | demo obs |

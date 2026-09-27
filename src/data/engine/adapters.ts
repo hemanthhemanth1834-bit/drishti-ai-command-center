@@ -324,6 +324,66 @@ export function adaptOpenMeteoForecast(
   return { records, skipped };
 }
 
+/** Normalize Open-Meteo Flood API river discharge (GloFAS v4, SIMULATED).
+ * Past values are model reanalysis (MODEL), future values are FORECAST —
+ * never observed gauge readings. Missing/invalid entries are skipped. */
+export interface FloodProperties {
+  date: string | null;
+  dischargeM3s: number | null;
+  kind: 'model-hindcast' | 'model-forecast';
+  model: string;
+}
+
+export function adaptOpenMeteoFlood(
+  payload: unknown,
+  lat: number,
+  lon: number,
+  retrievedAt: string = nowIso(),
+): { records: DataRecord<FloodProperties>[]; skipped: number } {
+  const base = provenanceFor('open-meteo-flood', 'MODEL');
+  const records: DataRecord<FloodProperties>[] = [];
+  let skipped = 0;
+  if (!isValidCoordinates(lat, lon)) return { records, skipped: 1 };
+  const root = (payload ?? {}) as { daily?: Record<string, unknown> };
+  const daily = root.daily;
+  if (!daily || typeof daily !== 'object') return { records, skipped: 0 };
+  const times = Array.isArray(daily.time) ? (daily.time as unknown[]) : [];
+  const vals = Array.isArray(daily.river_discharge) ? (daily.river_discharge as unknown[]) : [];
+  const today = retrievedAt.slice(0, 10);
+  for (let i = 0; i < times.length; i += 1) {
+    const day = typeof times[i] === 'string' ? (times[i] as string) : null;
+    const q = num(vals[i]);
+    if (!day || q == null) {
+      skipped += 1;
+      continue;
+    }
+    const forecast = day > today;
+    const status = forecast ? 'FORECAST' : 'MODEL';
+    records.push({
+      id: `openmeteo-flood-${lat.toFixed(2)}-${lon.toFixed(2)}-${day}`,
+      source: base.source, sourceUrl: base.sourceUrl,
+      dataType: 'river-discharge',
+      timestamp: toUtcIso(`${day}T00:00:00Z`),
+      retrievedAt,
+      status,
+      freshness: 'UNKNOWN',
+      coverage: `${lat.toFixed(2)},${lon.toFixed(2)}`,
+      coordinates: { lat, lon },
+      geometry: { type: 'Point', coordinates: [lon, lat] },
+      properties: {
+        date: day,
+        dischargeM3s: q,
+        kind: forecast ? 'model-forecast' : 'model-hindcast',
+        model: 'GloFAS v4',
+      },
+      attribution: base.attribution,
+      limitations: 'GloFAS v4 SIMULATED discharge at ~5km; nearest river may mismatch; never an observed gauge reading.',
+      rawSourceReference: `open-meteo flood ${lat},${lon}`,
+    });
+  }
+  return { records, skipped };
+}
+
 /** Normalize NASA EONET v3 natural events. Latest geometry entry wins;
  * non-Point geometries yield list-only records (no fabricated points). */
 export function adaptEonetEvents(

@@ -12,6 +12,7 @@ export type DataStatus =
   | 'LATEST_AVAILABLE'
   | 'FORECAST'
   | 'HISTORICAL'
+  | 'MODEL'
   | 'DEMO'
   | 'OFFLINE'
   | 'NOT_CONFIGURED'
@@ -80,7 +81,7 @@ export type AccessType = 'keyless' | 'free-account' | 'server-key' | 'unavailabl
 export interface SourceDefinition {
   id: string;
   name: string;
-  category: 'satellite' | 'fire' | 'events' | 'earthquake' | 'weather' | 'maps' | 'geocoding' | 'terrain' | 'backend';
+  category: 'satellite' | 'fire' | 'events' | 'earthquake' | 'weather' | 'maps' | 'geocoding' | 'terrain' | 'backend' | 'flood';
   baseUrl: string;
   docsUrl: string;
   dataTypes: string[];

@@ -10,7 +10,7 @@ import { cacheFresh, cacheGet, cacheSet, makeEntry } from './cache';
 import { request, type RequestOptions } from './client';
 import { dataError } from './errors';
 import { computeFreshness, getSource, recordHealth } from './registry';
-import { adaptEonetEvents, adaptFirmsFires, adaptOpenMeteoCurrent, adaptOpenMeteoForecast, adaptUsgsEarthquakes } from './adapters';
+import { adaptEonetEvents, adaptFirmsFires, adaptOpenMeteoCurrent, adaptOpenMeteoFlood, adaptOpenMeteoForecast, adaptUsgsEarthquakes } from './adapters';
 import type { DataRecord, DataStatus, Freshness, Provenance } from './types';
 import { nowIso } from './errors';
 
@@ -30,11 +30,12 @@ export interface FetchDatasetOptions extends RequestOptions {
   forceRefresh?: boolean;
 }
 
-export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current' | 'firms-fires' | 'eonet-events';
+export type DatasetKind = 'usgs-earthquakes-7d' | 'openmeteo-current' | 'openmeteo-flood' | 'firms-fires' | 'eonet-events';
 
 const KIND_SOURCE: Record<DatasetKind, string> = {
   'usgs-earthquakes-7d': 'usgs',
   'openmeteo-current': 'open-meteo',
+  'openmeteo-flood': 'open-meteo-flood',
   'firms-fires': 'nasa-firms',
   'eonet-events': 'nasa-eonet',
 };
@@ -42,6 +43,7 @@ const KIND_SOURCE: Record<DatasetKind, string> = {
 const KIND_TTL_MS: Record<DatasetKind, number> = {
   'usgs-earthquakes-7d': 5 * 60 * 1000,
   'openmeteo-current': 10 * 60 * 1000,
+  'openmeteo-flood': 60 * 60 * 1000,
   'firms-fires': 60 * 60 * 1000,
   'eonet-events': 30 * 60 * 1000,
 };
@@ -152,6 +154,12 @@ function buildUrl(kind: DatasetKind, params: Record<string, string | number>): {
       lat, lon,
     };
   }
+  if (kind === 'openmeteo-flood') {
+    return {
+      url: `https://flood-api.open-meteo.com/v1/flood?latitude=${lat}&longitude=${lon}&daily=river_discharge&past_days=7&forecast_days=7`,
+      lat, lon,
+    };
+  }
   return {
     url: `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,cloud_cover,pressure_msl,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=temperature_2m,apparent_temperature,precipitation,precipitation_probability,weathercode,windspeed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,precipitation_probability_max,weathercode,windspeed_10m_max&forecast_days=7&timezone=auto`,
     lat, lon,
@@ -162,6 +170,11 @@ function adapt(kind: DatasetKind, payload: unknown, params: Record<string, strin
   if (kind === 'usgs-earthquakes-7d') return adaptUsgsEarthquakes(payload, retrievedAt);
   if (kind === 'firms-fires') return adaptFirmsFires(payload, retrievedAt);
   if (kind === 'eonet-events') return adaptEonetEvents(payload, retrievedAt);
+  if (kind === 'openmeteo-flood') {
+    const lat = Number(params.lat ?? 21.5);
+    const lon = Number(params.lon ?? 79.0);
+    return adaptOpenMeteoFlood(payload, lat, lon, retrievedAt);
+  }
   const lat = Number(params.lat ?? 21.5);
   const lon = Number(params.lon ?? 79.0);
   const cur = adaptOpenMeteoCurrent(payload, lat, lon, retrievedAt);
@@ -178,7 +191,7 @@ function newestTimestamp(records: DataRecord<unknown>[]): string | null {
 }
 
 function buildProvenance(kind: DatasetKind, def: NonNullable<ReturnType<typeof getSource>>, retrievedAt: string, newest: string | null): Provenance {
-  const status: DataStatus = kind === 'openmeteo-current' ? 'LIVE' : 'NEAR_REAL_TIME';
+  const status: DataStatus = kind === 'openmeteo-current' ? 'LIVE' : kind === 'openmeteo-flood' ? 'MODEL' : 'NEAR_REAL_TIME';
   return {
     source: def.name,
     sourceUrl: def.baseUrl,
@@ -190,7 +203,9 @@ function buildProvenance(kind: DatasetKind, def: NonNullable<ReturnType<typeof g
     limitations:
       kind === 'usgs-earthquakes-7d'
         ? 'USGS feed latency ~minutes; magnitudes revise; not a prediction.'
-        : 'Point model output, not a ground station; CC-BY 4.0 attribution required.',
+        : kind === 'openmeteo-flood'
+          ? 'GloFAS v4 simulated discharge; not observed flooding; CC-BY 4.0 attribution required.'
+          : 'Point model output, not a ground station; CC-BY 4.0 attribution required.',
   };
 }
 
