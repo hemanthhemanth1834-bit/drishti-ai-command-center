@@ -18,9 +18,10 @@ export default function DisasterPhoto({ photo, caption, status, ratio, bare }: {
   /** Omit the inner source anchor when nested inside a link card. */
   bare?: boolean;
 }) {
-  const [stage, setStage] = useState<0 | 1 | 2>(0);
-  const src = stage === 0 ? photo.remoteUrl ?? photo.fallbackUrl : photo.fallbackUrl;
-  const failed = stage >= 2;
+  const [stage, setStage] = useState<0 | 1 | 2 | 3>(0);
+  const base = stage <= 1 ? photo.remoteUrl ?? photo.fallbackUrl : photo.fallbackUrl;
+  const src = stage === 1 && photo.remoteUrl ? `${photo.remoteUrl}&retry=1` : base;
+  const failed = stage >= 3;
   return (
     <figure className="nesafe-fig" style={{ margin: 0 }}>
       {!failed ? (
@@ -29,7 +30,10 @@ export default function DisasterPhoto({ photo, caption, status, ratio, bare }: {
           <img
             src={src} alt={photo.alt}
             loading="lazy" decoding="async"
-            onError={() => setStage((s) => (s >= 1 ? 2 : 1) as 0 | 1 | 2)}
+            onError={() => setStage((s) => {
+              if (s === 0 && !photo.remoteUrl) return 2; // local-only: no remote to retry
+              return s >= 2 ? 3 : ((s + 1) as 0 | 1 | 2 | 3);
+            })}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
           />
         </div>
