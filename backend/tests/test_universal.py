@@ -170,3 +170,38 @@ def test_auth_bootstrap_and_me(monkeypatch):
     lo = client.post("/api/v1/auth/logout",
                      headers={"Authorization": f"Bearer {r.json()['access_token']}"})
     assert lo.json()["ok"] is True
+
+
+def test_forgot_password_generic_no_enumeration():
+    import app.services.security as sec
+    sec._rate.clear()
+    try:
+        r1 = client.post("/api/v1/auth/forgot-password", json={"username": "nobody-here"})
+        r2 = client.post("/api/v1/auth/forgot-password", json={"username": "op1"})
+        r3 = client.post("/api/v1/auth/forgot-password", json={})
+        for r in (r1, r2, r3):
+            assert r.status_code == 200
+            j = r.json()
+            assert j["ok"] is True
+            assert isinstance(j["message"], str) and j["message"]
+            assert isinstance(j["email_configured"], bool)
+            # never a token, secret, or account-existence signal
+            for forbidden in ("access_token", "token", "secret", "exists", "found"):
+                assert forbidden not in j
+        # identical shape regardless of account existence
+        assert set(r1.json()) == set(r2.json()) == set(r3.json())
+        assert r1.json()["message"] == r2.json()["message"]
+    finally:
+        sec._rate.clear()
+
+
+def test_forgot_password_rate_limited():
+    import app.services.security as sec
+    sec._rate.clear()
+    try:
+        codes = [client.post("/api/v1/auth/forgot-password",
+                             json={"username": "spam"}).status_code for _ in range(7)]
+        assert codes[:5] == [200] * 5
+        assert 429 in codes[5:]
+    finally:
+        sec._rate.clear()

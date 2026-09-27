@@ -41,6 +41,10 @@ class TokenRequest(BaseModel):
     secret: str = ""
 
 
+class ForgotRequest(BaseModel):
+    username: str = ""
+
+
 @router.post("/token")
 def token(body: TokenRequest,
           credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
@@ -85,6 +89,33 @@ def me(ident=Depends(sec.current_identity)):
     return {"sub": ident.get("sub"), "role": ident.get("role"),
             "permissions": sec.ROLE_PERMS.get(ident.get("role", ""), []),
             "ts": datetime.now(timezone.utc).isoformat()}
+
+
+@router.post("/forgot-password")
+def forgot_password(body: ForgotRequest,
+                    db: Session = Depends(get_db),
+                    _rl=Depends(rate_limit(5, 300))):
+    """Operator credential-reset request (no password store exists to update).
+
+    Operator secrets live in server-side OPERATOR_KEYS and are provisioned by
+    the administrator — there is no email provider that could deliver a reset
+    link (see /api/v1/notifications/channels). This endpoint therefore records
+    an audit-logged reset request for the administrator and always returns the
+    same generic response, so it never reveals whether an account exists.
+    No token is issued, no secret is returned, nothing is emailed.
+    """
+    actor = (body.username or "anonymous").strip()[:80] or "anonymous"
+    try:
+        db.add(m.AuditLog(actor=actor, action="auth-password-reset-requested",
+                          detail="operator requested credential reset via administrator path"))
+        db.commit()
+    except Exception:
+        pass
+    return {"ok": True,
+            "message": "If an operator account exists for that username, the administrator "
+                       "has been notified. Operator credentials are administrator-provisioned; "
+                       "password-recovery email is not configured on this server.",
+            "email_configured": bool(os.getenv("SMTP_HOST"))}
 
 
 @router.post("/logout")

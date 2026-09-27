@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Siren, Users, X } from 'lucide-react';
 import { signIn, useAuth } from '@/store/authStore';
+import { API_BASE } from '@/platform/api';
 import { setApp } from '@/store/appStore';
 import { useDialogA11y } from '@/hooks/useDialogA11y';
 
@@ -21,9 +22,47 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
   const [remember, setRemember] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [mode, setMode] = useState<'login' | 'forgot'>('login');
+  const [forgotDone, setForgotDone] = useState(false);
 
   // UI polish: focus moves into the sign-in dialog on open, Escape closes it.
   useDialogA11y(true, 'dx-login-dialog', onClose);
+
+  const openForgot = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError('');
+    setForgotDone(false);
+    setMode('forgot');
+  };
+
+  const backToLogin = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setError('');
+    setForgotDone(false);
+    setMode('login');
+  };
+
+  const submitForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (busy) return;
+    if (!username.trim()) { setError('Enter your operator email or username.'); return; }
+    setBusy(true);
+    setError('');
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 15000);
+      // Generic request: the server never reveals whether the account exists.
+      await fetch(`${API_BASE}/api/v1/auth/forgot-password`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim() }), signal: ctrl.signal,
+      });
+      clearTimeout(t);
+      setForgotDone(true);
+    } catch {
+      setError('Could not reach the server. Your administrator can reset operator credentials directly.');
+    }
+    setBusy(false);
+  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,6 +93,7 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
           </button>
         </div>
 
+        {mode === 'login' && (
         <form onSubmit={submit} noValidate>
           <label className="login-label" htmlFor="login-user">Email / Username</label>
           <input
@@ -79,9 +119,9 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
               <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
               Remember me
             </label>
-            <span className="login-forgot" title="Password recovery is not configured in this build — contact your administrator">
+            <button type="button" className="login-forgot" onClick={openForgot} aria-label="Open password reset request">
               Forgot password?
-            </span>
+            </button>
           </div>
 
           {error && <p className="login-error" role="alert">{error}</p>}
@@ -90,6 +130,29 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
             {busy ? 'SIGNING IN…' : 'SIGN IN'}
           </button>
         </form>
+        )}
+        {mode === 'forgot' && (
+          <form onSubmit={submitForgot} aria-label="Password reset request">
+            <p className="login-sub">Operator credentials are administrator-provisioned. Enter your username to notify your administrator.</p>
+            <label className="login-label" htmlFor="forgot-user">Email / Username</label>
+            <input
+              id="forgot-user" name="username" autoComplete="username" placeholder="Enter your email"
+              value={username} onChange={(e) => setUsername(e.target.value)}
+              className="login-input" aria-invalid={!!error} disabled={busy}
+            />
+            {forgotDone && (
+              <p className="login-note" role="status">If an operator account exists for that username, the administrator has been notified. Password-recovery email is not configured on this server.</p>
+            )}
+            <div className="login-row">
+              <button type="button" className="login-forgot" onClick={backToLogin} aria-label="Back to sign in">
+                ← Back to sign in
+              </button>
+              <button type="submit" className="login-submit" disabled={busy}>
+                {busy ? 'SENDING…' : 'NOTIFY ADMINISTRATOR'}
+              </button>
+            </div>
+          </form>
+        )}
 
         <div className="login-alt">
           <Link href="/safety" onClick={() => { setApp({ mode: 'public' }); onClose(); }} className="login-public">
@@ -99,7 +162,7 @@ export default function LoginCard({ onClose }: { onClose: () => void }) {
             <Siren className="w-3.5 h-3.5" aria-hidden="true" /> EMERGENCY ACCESS
           </Link>
         </div>
-        <p className="login-note">Sessions last 12h. Password recovery is not configured — contact your administrator. No emergency info requires sign-in.</p>
+        <p className="login-note">Sessions last 12h. Credential resets are administrator-provisioned — use Forgot password to notify yours. No emergency info requires sign-in.</p>
       </div>
     </div>
   );
