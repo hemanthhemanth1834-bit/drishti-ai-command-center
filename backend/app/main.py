@@ -42,6 +42,31 @@ from .routers.auth import router as auth_router
 
 security = HTTPBearer(auto_error=False)
 
+class BackendPrefixStripMiddleware:
+    """Strip the public mount prefix (/api/backend) before routing.
+
+    Vercel routes the public path /api/backend/* into this service while the
+    app observes the ORIGINAL path, so /api/backend/api/health would 404.
+    A vercel.json request.path transform is configured for the same purpose;
+    this middleware is the deterministic fallback (and also covers websocket
+    scopes, which HTTP-only transforms cannot rewrite). Local/dev paths
+    without the prefix pass through untouched.
+    """
+
+    PREFIX = "/api/backend"
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope.get("type") in ("http", "websocket"):
+            path = scope.get("path", "")
+            if path == self.PREFIX:
+                scope["path"] = "/"
+            elif path.startswith(self.PREFIX + "/"):
+                scope["path"] = path[len(self.PREFIX):]
+        await self.app(scope, receive, send)
+
 def verify_gateway_key(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
 ):
@@ -110,6 +135,7 @@ app.include_router(sectors_router)
 app.include_router(ops_router)
 app.include_router(auth_router)
 app.add_middleware(OpsMiddleware)
+app.add_middleware(BackendPrefixStripMiddleware)
 
 
 @app.on_event("startup")
