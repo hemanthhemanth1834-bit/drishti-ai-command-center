@@ -30,17 +30,18 @@ describe('HeroFeatureStrip photo cards', () => {
   it('renderers use the remote primary, never fallback-only', () => {
     // Regression guard: FeaturePhoto once rendered photo.fallbackUrl directly,
     // silently demoting every remote primary to a fallback (shelter.svg shipped).
+    // root already resolves to <repo>/src here.
     const root = path.resolve(__dirname, '..', '..', '..');
     for (const f of [
       'components/home/HeroFeatureStrip.tsx',
       'components/visuals/DisasterPhoto.tsx',
       'components/visuals/DisasterCardPhoto.tsx',
     ]) {
-      const src = fs.readFileSync(path.join(root, 'src', f), 'utf-8');
+      const src = fs.readFileSync(path.join(root, f), 'utf-8');
       expect(src.includes('remoteUrl'), f).toBe(true);
     }
     const strip = fs.readFileSync(
-      path.join(root, 'src', 'components', 'home', 'HeroFeatureStrip.tsx'), 'utf-8');
+      path.join(root, 'components', 'home', 'HeroFeatureStrip.tsx'), 'utf-8');
     expect(strip.includes('src={photo.fallbackUrl}')).toBe(false);
   });
 });
