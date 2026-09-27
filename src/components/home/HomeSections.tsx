@@ -264,7 +264,7 @@ export function EmergencySection() {
     <Section id="home-emergency" kicker="EMERGENCY RESPONSE" title="Help in one tap, no account needed">
       <div className="home-split">
         <div className="min-w-0">
-          <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="P1–P4 triage aid — commander decides, no auto-dispatch (rescue operations, archival)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('response-katrina-staging')!} caption="P1–P4 triage aid — commander decides, no auto-dispatch (night rescue staging, archival)" status="DEMO" />
         </div>
         <div>
           <p className="home-side-small">SOS, evacuation routes, shelters with live capacity math, offline reporting with server receipts — emergency info never sits behind a login.</p>
