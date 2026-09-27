@@ -205,3 +205,19 @@ def test_forgot_password_rate_limited():
         assert 429 in codes[5:]
     finally:
         sec._rate.clear()
+
+
+def test_auth_username_and_email_alias_share_credential(monkeypatch):
+    """Two identifiers (username + email alias) may map to the same role/secret."""
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv(
+        "OPERATOR_KEYS",
+        "op1:district_admin:s3cret,op1@example.com:district_admin:s3cret",
+    )
+    for identifier in ("op1", "op1@example.com"):
+        r = client.post("/api/v1/auth/token",
+                        json={"username": identifier, "secret": "s3cret"})
+        assert r.status_code == 200, identifier
+        assert r.json()["role"] == "district_admin"
+        assert r.json()["sub"] == identifier
