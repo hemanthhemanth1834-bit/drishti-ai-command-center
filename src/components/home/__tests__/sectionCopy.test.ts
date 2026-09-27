@@ -13,7 +13,7 @@ describe('section explanations', () => {
   it('AI/ML section explains the synthetic RandomForest honestly', () => {
     expect(HOME).toContain('Random Forest combines rainfall, soil, slope, terrain');
     expect(HOME).toContain('must not be interpreted as field-validated prediction');
-    expect(HOME).toContain('SYNTHETIC-DEMO');
+    expect(HOME).toContain('landslide-debris-flow');
   });
 
   it('twin section pairs simulation label with real-terrain context note', () => {
@@ -26,8 +26,8 @@ describe('section explanations', () => {
     expect(SATPANEL).toContain('represents deformation measurements rather than a conventional photograph');
   });
 
-  it('technical diagrams stay diagrams (ml-pipeline kept, labeled DEMO)', () => {
-    expect(HOME).toContain('/img/ml-pipeline.svg');
-    expect(HOME).toContain('SYNTHETIC-DEMO training');
+  it('AI/ML visual is a real terrain photo, not the old pipeline illustration', () => {
+    expect(HOME).toContain("getDisasterImage('landslide-debris-flow')");
+    expect(HOME).not.toContain('/img/ml-pipeline.svg');
   });
 });

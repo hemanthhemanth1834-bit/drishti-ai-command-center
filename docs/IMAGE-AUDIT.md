@@ -18,7 +18,7 @@ Full-repository inspection: 54 routes (`src/app`), 85 components, `public/img/`
 |---|---|---|---|
 | 1 | `public/img/photos/*.jpg` (6) | VERIFIED REAL (NASA/FEMA/USN PD) | KEPT; catalogued in `src/data/images/imageRegistry.ts` |
 | 2 | `public/assets/.../real-world/*.jpg|png` (5) | VERIFIED REAL (NASA EO PD) | KEPT; added to registry; wired into gallery |
-| 3 | `public/img/*.svg` (26) | PROJECT ORIGINAL / DIAGRAM | KEPT; `ml-pipeline.svg` retired from /ml + /prediction (homepage frozen use remains) |
+| 3 | `public/img/*.svg` (26) | PROJECT ORIGINAL / DIAGRAM | KEPT as labeled diagrams; `ml-pipeline.svg` retired from all rendered UI (legacy file retained) |
 | 4 | `GeospatialIntelGallery` 6× Unsplash hotlinks + fabricated metrics (142.8 km², 968 hPa, 0.932 mAP…) | PLACEHOLDER | REPLACED with registry-backed local images + real metadata (commit f3ad467); zero `images.unsplash.com` refs remain in `src/` |
 | 5 | `reference-home.png`, `public-exact-format/` package | PLACEHOLDER (unused) | NOT INTEGRATED; untouched on disk |
 | 6 | GIBS tiles, OSM/Esri/Carto/OpenTopo tiles, Leaflet/MapLibre maps | VERIFIED REAL (live) | KEPT; extended via `osmTileUrl` previews |
