@@ -75,16 +75,23 @@ export const FEATURES = [
 ];
 
 function FeaturePhoto({ photoId, alt }: { photoId: string; alt: string }) {
-  const [failed, setFailed] = useState(false);
+  const [stage, setStage] = useState<0 | 1 | 2 | 3>(0);
   const photo = getDisasterImage(photoId);
-  if (!photo || failed) return <span className="home-card-photo" aria-hidden="true" />;
-  // Local verified file primary (no remote dependency for these cards).
+  if (!photo || stage >= 3) return <span className="home-card-photo" aria-hidden="true" />;
+  // remote primary → remote retry → verified local fallback → empty box
+  const remote = photo.remoteUrl;
+  const src = stage === 0 ? remote ?? photo.fallbackUrl
+    : stage === 1 && remote ? `${remote}&retry=1`
+    : photo.fallbackUrl;
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={photo.fallbackUrl} alt={alt}
+      src={src} alt={alt}
       loading="lazy" decoding="async"
-      onError={() => setFailed(true)}
+      onError={() => setStage((s) => {
+        if (s === 0 && !remote) return 2;
+        return s >= 2 ? 3 : ((s + 1) as 0 | 1 | 2 | 3);
+      })}
       className="home-card-photo"
     />
   );
