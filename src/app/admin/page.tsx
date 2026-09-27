@@ -1,9 +1,12 @@
 'use client';
+import Link from 'next/link';
 import { ModuleShell, StatusBadge } from '@/platform/provenance';
 import { usePlatform } from '@/platform/usePlatform';
+import { useApp } from '@/store/appStore';
 import VizFigure from '@/platform/VizFigure';
 
 export default function AdminPage() {
+  const { mode } = useApp();
   const roles = usePlatform<{ roles: { role: string; permissions: string[] }[] }>('/api/v1/admin/roles');
   const audit = usePlatform<{ count: number; logs: { id: number; actor: string; action: string; detail: string; ts: string }[] }>('/api/v1/admin/audit?limit=20');
   const th = usePlatform<Record<string, unknown>>('/api/v1/warnings/config');
@@ -11,6 +14,16 @@ export default function AdminPage() {
   const ops = usePlatform<{ uptime_s: number; requests: number; errors: { '4xx': number; '5xx': number }; latency_ms: { p50: number | null; p95: number | null }; inference_ms: { p50: number | null }; provider_failures: Record<string, number>; sync: { accepted: number; rejected: number }; database: string }>('/api/v1/ops/health');
   return (
     <ModuleShell title="Administration" sub="Roles · audit · thresholds · model registry. Mutations need operator key." status="LIVE" source="Admin API (Bearer)">
+      {mode === 'public' && (
+        <div className="dx-hud" role="status">
+          <div className="dx-hud-edge" />
+          <div className="dx-micro">OPERATOR ONLY</div>
+          <p className="text-xs text-slate-300 mt-1">Administration is restricted to operators. Public users get read-only disaster information.</p>
+          <Link href="/welcome" className="inline-block mt-2 min-h-[44px] leading-[44px] px-4 rounded border border-[#00d2ff]/60 text-[#7de9ff] text-xs font-bold">BACK TO PUBLIC EXPERIENCE →</Link>
+        </div>
+      )}
+      {mode !== 'public' && (
+      <>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">ROLES (RBAC)</div>
@@ -55,6 +68,8 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+      </>
+      )}
     </ModuleShell>
   );
 }

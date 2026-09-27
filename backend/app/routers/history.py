@@ -11,6 +11,8 @@ import io
 import uuid
 
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+
+from ..services.security import require_perm
 from sqlalchemy.orm import Session
 
 from ..db import get_db
@@ -31,7 +33,9 @@ def schema():
 
 @router.post("/import")
 async def import_csv(file: UploadFile = File(...),
-                     db: Session = Depends(get_db)):
+                     db: Session = Depends(get_db),
+                     ident=Depends(require_perm("verify"))):
+    _ = ident
     name = file.filename or "upload.csv"
     if not name.lower().endswith(".csv"):
         raise HTTPException(status_code=400, detail="Only .csv accepted")

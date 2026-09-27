@@ -111,6 +111,8 @@ def subscribe(sub: Subscription):
 
 @router.get("/subscriptions")
 def list_subs():
+    # Data minimization: push endpoint URLs and encryption keys are NEVER
+    # exposed — subscribers learn only the count, never each other's data.
     return {"count": len(SUBSCRIPTIONS),
-            "subscriptions": [{**s, "endpoint": s.get("endpoint", "")[:60] + "…"}
+            "subscriptions": [{"audience": s.get("audience", "citizen")}
                               for s in SUBSCRIPTIONS]}

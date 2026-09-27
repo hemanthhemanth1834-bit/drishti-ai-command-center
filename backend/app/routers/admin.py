@@ -22,7 +22,8 @@ def audit(limit: int = 50, db: Session = Depends(get_db),
 
 
 @router.get("/roles")
-def roles():
+def roles(ident=Depends(require_perm("admin"))):
+    _ = ident
     return {"roles": [{"role": k, "permissions": v} for k, v in ROLE_PERMS.items()],
             "note": "JWT {sub, role} trusted only when JWT_SECRET is set; "
                     "otherwise gateway key maps to district_admin."}

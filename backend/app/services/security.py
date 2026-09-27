@@ -6,6 +6,12 @@
   when JWT_SECRET is set; otherwise the gateway key maps to role "operator".
 - Rate limiting is an in-memory token bucket (use Redis in production).
 - Uploads: extension + size validation; malware-scan hook point.
+- Public-user policy: anonymous GETs serve public data; every state-changing or
+  operational endpoint requires require_perm (public_user holds report+read only).
+  Explicitly safe public POSTs (anonymous compute/intake, all rate-limited where
+  costly): ml/predict, risk/assess, sync/subscriptions, sync/push (perm:report),
+  sensors/ingest (perm:report), vision/classify (perm:report), incidents intake.
+  Everything else non-GET returns 401 anonymous / 403 under-privileged.
 """
 from __future__ import annotations
 

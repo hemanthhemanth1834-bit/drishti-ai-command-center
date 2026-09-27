@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from ..db import get_db
 from ..models import platform as m
+from ..services.security import require_perm
 
 router = APIRouter(prefix="/api/v1/satellite", tags=["satellite"])
 
@@ -70,7 +71,9 @@ def latest(lat: float, lon: float, provider: str = "demo"):
 
 
 @router.post("/observations")
-def add_obs(obs: ObsIn, db: Session = Depends(get_db)):
+def add_obs(obs: ObsIn, db: Session = Depends(get_db),
+            ident=Depends(require_perm("report"))):
+    _ = ident
     row = m.SatelliteObs(lat=obs.lat, lon=obs.lon, change_pct=obs.change_pct,
                          vegetation_delta=obs.vegetation_delta,
                          resolution_m=obs.resolution_m,

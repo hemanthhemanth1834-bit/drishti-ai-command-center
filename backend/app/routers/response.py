@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from ..db import get_db
 from ..models import platform as m
 from ..services import spatial
+from ..services.security import require_perm
 
 router = APIRouter(prefix="/api/v1/response", tags=["response"])
 
@@ -47,7 +48,8 @@ def score(req: PriorityRequest) -> dict:
 
 
 @router.post("/prioritize")
-def prioritize(req: PriorityRequest):
+def prioritize(req: PriorityRequest, ident=Depends(require_perm("read"))):
+    _ = ident
     return {"inputs": req.model_dump(), **score(req),
             "note": "Transparent triage aid — commander decides."}
 

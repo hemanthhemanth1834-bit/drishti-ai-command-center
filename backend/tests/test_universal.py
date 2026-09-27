@@ -51,9 +51,9 @@ def test_ai_status_and_classify():
     st = client.get("/api/v1/ai/status").json()
     assert st["active"]["status"] in ("READY", "NOT_CONFIGURED", "UNAVAILABLE")
     assert "LLM" in st["rule"] or "risk" in st["rule"]
-    c = client.post("/api/v1/ai/classify", json={"text": "cyclone landfall near coast"}).json()
+    c = client.post("/api/v1/ai/classify", headers=AUTH, json={"text": "cyclone landfall near coast"}).json()
     assert c["output_class"] == "ESTIMATED" and c["label"] == "cyclone"
-    s = client.post("/api/v1/ai/summarize", json={"text": "Flood reported. Roads blocked. Shelters open."}).json()
+    s = client.post("/api/v1/ai/summarize", headers=AUTH, json={"text": "Flood reported. Roads blocked. Shelters open."}).json()
     assert s["data_status"] == "ANALYZED" and s["summary"]
 
 

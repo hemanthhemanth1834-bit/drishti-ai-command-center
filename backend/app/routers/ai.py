@@ -9,7 +9,7 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from ..services.ai_providers import OUTPUT_CLASSES, ai
-from ..services.security import rate_limit
+from ..services.security import rate_limit, require_perm
 
 router = APIRouter(prefix="/api/v1/ai", tags=["ai"])
 
@@ -44,7 +44,9 @@ def status():
 
 
 @router.post("/summarize")
-def summarize(body: TextIn, _=Depends(rate_limit(60))):
+def summarize(body: TextIn, _=Depends(rate_limit(60)),
+              ident=Depends(require_perm("read"))):
+    _ = ident
     if not body.text.strip():
         return {"summary": "", "data_status": "ANALYZED"}
     out = ai().summarize(body.text, body.max_sentences)
@@ -53,7 +55,9 @@ def summarize(body: TextIn, _=Depends(rate_limit(60))):
 
 
 @router.post("/classify")
-def classify(body: TextIn, _=Depends(rate_limit(120))):
+def classify(body: TextIn, _=Depends(rate_limit(120)),
+             ident=Depends(require_perm("read"))):
+    _ = ident
     text = body.text.lower()
     hits = {k: sum(1 for w in words if w in text) for k, words in DISASTER_HINTS.items()}
     best = max(hits, key=lambda k: hits[k])

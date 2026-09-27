@@ -180,7 +180,7 @@ def test_road_blockage_validation():
 
 
 def test_response_bands_explainable():
-    j = client.post("/api/v1/response/prioritize", json={
+    j = client.post("/api/v1/response/prioritize", headers=AUTH, json={
         "lat": 1, "lon": 2, "probability": 0.9, "exposed_population": 3000,
         "road_access": 0.1, "severity": "critical"}).json()
     assert j["band"] in ("P1", "P2", "P3", "P4")
