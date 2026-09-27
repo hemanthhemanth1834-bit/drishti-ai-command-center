@@ -33,7 +33,7 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   if (token || identity || !requiresAuth(pathname)) return <>{children}</>;
   if (restoring) {
     return (
-      <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4" aria-label="Restoring session">
+      <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4" data-testid="auth-gate" aria-label="Restoring session">
         <p className="text-xs text-slate-400" role="status">Restoring session…</p>
       </main>
     );
