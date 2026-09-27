@@ -28,6 +28,25 @@ security = HTTPBearer(auto_error=False)
 JWT_SECRET = os.getenv("JWT_SECRET", "")
 JWT_ALG = "HS256"
 
+SESSION_COOKIE = "drishti_at"
+SESSION_TTL_MIN = 720
+
+
+def session_cookie_kwargs(remember: bool = True) -> Dict:
+    """httpOnly session cookie flags. SameSite=Lax is the CSRF defense for
+    cookie-authenticated POSTs (cross-site requests carry no cookie).
+    COOKIE_SECURE=false only for local plain-http dev; production stays Secure."""
+    kw: Dict = {
+        "key": SESSION_COOKIE,
+        "httponly": True,
+        "samesite": "lax",
+        "secure": os.getenv("COOKIE_SECURE", "true").lower() == "true",
+        "path": "/",
+    }
+    if remember:
+        kw["max_age"] = SESSION_TTL_MIN * 60
+    return kw
+
 ROLE_PERMS: Dict[str, List[str]] = {
     "citizen": ["report", "read"],
     "public_user": ["report", "read"],
@@ -81,17 +100,23 @@ def mint_token(sub: str, role: str = "citizen", ttl_min: int = 720) -> Optional[
 
 
 def current_identity(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
 ) -> Dict[str, str]:
-    if not credentials:
+    # Header Bearer wins; otherwise fall back to the httpOnly session cookie.
+    # Both carry the same JWT the server itself minted — no privilege change.
+    token = credentials.credentials if credentials else None
+    if not token and request is not None:
+        token = request.cookies.get(SESSION_COOKIE)
+    if not token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Missing Bearer credentials")
     if JWT_SECRET:
-        payload = decode_token(credentials.credentials)
+        payload = decode_token(token)
         if payload and "sub" in payload:
             return {"sub": str(payload["sub"]),
                     "role": str(payload.get("role", "citizen"))}
-    if credentials.credentials == DEV_GATEWAY_KEY:
+    if token == DEV_GATEWAY_KEY:
         return {"sub": "gateway-operator", "role": "district_admin"}
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                         detail="Invalid credentials")

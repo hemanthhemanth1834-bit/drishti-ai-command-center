@@ -23,13 +23,47 @@ export function useAuth(): AuthState {
   return useSyncExternalStore(subscribe, snap, snap);
 }
 
+let restorePromise: Promise<boolean> | null = null;
+
+/** Restore a persisted httpOnly-cookie session (refresh-safe).
+ * Never touches localStorage/sessionStorage with tokens. Returns true when
+ * the server recognizes the session cookie; false clears nothing (the server
+ * already rejected the cookie). Result is cached per page load. */
+export function restoreSession(): Promise<boolean> {
+  if (state.token || state.identity) return Promise.resolve(true);
+  if (!restorePromise) {
+    restorePromise = (async () => {
+      try {
+        const r = await fetch(`${API_BASE}/api/v1/auth/me`, { credentials: 'include' });
+        if (!r.ok) return false;
+        const j = await r.json();
+        state = {
+          token: null,
+          identity: {
+            sub: String(j.sub ?? '?'),
+            role: String(j.role ?? 'citizen'),
+            permissions: Array.isArray(j.permissions) ? j.permissions.map(String) : [],
+          },
+          rememberedId: state.rememberedId,
+        };
+        emit();
+        return true;
+      } catch {
+        return false;
+      }
+    })();
+  }
+  return restorePromise;
+}
+
 export async function signIn(username: string, secret: string, remember: boolean): Promise<{ ok: boolean; error?: string; identity?: Identity }> {
   try {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), 15000);
     const r = await fetch(`${API_BASE}/api/v1/auth/token`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, secret }), signal: ctrl.signal,
+      body: JSON.stringify({ username, secret, remember }), signal: ctrl.signal,
+      credentials: 'include',
     });
     clearTimeout(t);
     if (r.status === 503) return { ok: false, error: 'Sign-in is not configured on this server (demo build).' };
@@ -61,6 +95,7 @@ export async function signInPublic(): Promise<{ ok: boolean; error?: string }> {
     const r = await fetch(`${API_BASE}/api/v1/auth/public-token`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ device_id: 'web' }), signal: ctrl.signal,
+      credentials: 'include',
     });
     clearTimeout(t);
     if (r.status === 503) return { ok: false, error: 'Public access is not configured on this server.' };
@@ -82,13 +117,14 @@ export async function signInPublic(): Promise<{ ok: boolean; error?: string }> {
 
 export async function signOut(): Promise<void> {
   try {
-    if (state.token) {
-      await fetch(`${API_BASE}/api/v1/auth/logout`, {
-        method: 'POST', headers: { Authorization: `Bearer ${state.token}` },
-      });
-    }
-  } catch { /* server audit best-effort; client state clears regardless */ }
+    await fetch(`${API_BASE}/api/v1/auth/logout`, {
+      method: 'POST',
+      headers: state.token ? { Authorization: `Bearer ${state.token}` } : {},
+      credentials: 'include',
+    });
+  } catch { /* server audit/cookie-clear best-effort; client state clears regardless */ }
   state = { token: null, identity: null, rememberedId: state.rememberedId };
+  restorePromise = null;
   emit();
 }
 

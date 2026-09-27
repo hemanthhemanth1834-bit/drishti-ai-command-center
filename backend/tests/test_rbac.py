@@ -126,6 +126,84 @@ def test_safe_public_compute_open():
                        json={"lat": 1, "lon": 1}).status_code == 200
 
 
+def _clear_cookies():
+    try:
+        client.cookies.clear()
+    except Exception:
+        pass
+
+
+def test_cookie_session_lifecycle(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv("OPERATOR_KEYS", "op1:district_admin:s3cret")
+    # TestClient speaks plain http: Secure cookies would never round-trip.
+    monkeypatch.setenv("COOKIE_SECURE", "false")
+    _clear_cookies()
+    try:
+        r = client.post("/api/v1/auth/token",
+                        json={"username": "op1", "secret": "s3cret"})
+        assert r.status_code == 200
+        set_cookie = r.headers.get("set-cookie", "")
+        assert "drishti_at=" in set_cookie
+        assert "HttpOnly" in set_cookie
+        assert "test-secret-123" not in r.text
+        # cookie-only identity (no Authorization header)
+        me = client.get("/api/v1/auth/me")
+        assert me.status_code == 200 and me.json()["role"] == "district_admin"
+        # logout clears the cookie
+        lo = client.post("/api/v1/auth/logout")
+        assert lo.status_code == 200
+        assert "drishti_at=" in lo.headers.get("set-cookie", "")
+        assert client.get("/api/v1/auth/me").status_code == 401
+    finally:
+        _clear_cookies()
+
+
+def test_cookie_remember_flag(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv("OPERATOR_KEYS", "op1:district_admin:s3cret")
+    monkeypatch.setenv("COOKIE_SECURE", "false")
+    _clear_cookies()
+    try:
+        r = client.post("/api/v1/auth/token",
+                        json={"username": "op1", "secret": "s3cret", "remember": True})
+        assert "Max-Age" in r.headers.get("set-cookie", "")
+        _clear_cookies()
+        r = client.post("/api/v1/auth/token",
+                        json={"username": "op1", "secret": "s3cret", "remember": False})
+        assert "Max-Age" not in r.headers.get("set-cookie", "")
+    finally:
+        _clear_cookies()
+
+
+def test_cookie_invalid_rejected(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    _clear_cookies()
+    try:
+        client.cookies.set("drishti_at", "bogus")
+        assert client.get("/api/v1/auth/me").status_code == 401
+    finally:
+        _clear_cookies()
+
+
+def test_public_token_sets_cookie(monkeypatch):
+    import app.services.security as sec
+    monkeypatch.setattr(sec, "JWT_SECRET", "test-secret-123")
+    monkeypatch.setenv("COOKIE_SECURE", "false")
+    _clear_cookies()
+    try:
+        r = client.post("/api/v1/auth/public-token", json={})
+        assert r.status_code == 200
+        assert "drishti_at=" in r.headers.get("set-cookie", "")
+        me = client.get("/api/v1/auth/me")
+        assert me.status_code == 200 and me.json()["role"] == "public_user"
+    finally:
+        _clear_cookies()
+
+
 def test_public_token_session(_jwt):
     r = client.post("/api/v1/auth/public-token", json={"device_id": "t"})
     assert r.status_code == 200

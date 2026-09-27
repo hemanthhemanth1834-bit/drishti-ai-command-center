@@ -11,6 +11,7 @@
 | `DATABASE_URL` | Postgres URL (default SQLite file) | No | Backend | `postgresql+psycopg2://user:****@host/db` |
 | `GATEWAY_KEY` | Server gateway secret | Rotate in prod | Backend | *(generate)* |
 | `JWT_SECRET` / `OPERATOR_KEYS` | Auth signing + operator logins | Rotate in prod | Backend | *(generate)* |
+| `COOKIE_SECURE` | httpOnly session cookie Secure flag | `true` in prod; `false` only for local plain-http dev | Backend | `true` |
 | `CORS_ORIGINS` / `CORS_STRICT` | Allowed origins + strict mode | Recommended prod | Backend | `https://app.example.com` / `true` |
 | `WEATHER_PROVIDER` / `IMD_API_KEY` / `RAIN_*` / `WARN_PROB_*` | Weather chain config | No | Backend | documented defaults |
 | `SATELLITE_PROVIDER` / `COPERNICUS_USER` / `EARTHDATA_TOKEN` / `FIRMS_MAP_KEY` / `NASA_API_KEY` | Satellite/fire providers | No (NOT_CONFIGURED when empty) | Backend only | empty |

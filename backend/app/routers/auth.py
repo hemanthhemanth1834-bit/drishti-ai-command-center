@@ -12,7 +12,8 @@ import os
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -40,6 +41,7 @@ def _operator_map() -> dict:
 class TokenRequest(BaseModel):
     username: str = ""
     secret: str = ""
+    remember: bool = True
 
 
 class ForgotRequest(BaseModel):
@@ -84,9 +86,11 @@ def token(body: TokenRequest,
         db.commit()
     except Exception:
         pass
-    return {"access_token": tok, "token_type": "Bearer",
-            "role": identity["role"], "sub": identity["sub"],
-            "expires_min": 720, "method": method}
+    resp = JSONResponse({"access_token": tok, "token_type": "Bearer",
+                         "role": identity["role"], "sub": identity["sub"],
+                         "expires_min": 720, "method": method})
+    resp.set_cookie(value=tok, **sec.session_cookie_kwargs(body.remember))
+    return resp
 
 
 @router.get("/me")
@@ -144,12 +148,15 @@ def public_token(body: PublicTokenRequest,
         db.commit()
     except Exception:
         pass
-    return {"access_token": tok, "token_type": "Bearer", "role": "public_user",
-            "sub": sub, "expires_min": 720, "method": "public-session"}
+    resp = JSONResponse({"access_token": tok, "token_type": "Bearer", "role": "public_user",
+                         "sub": sub, "expires_min": 720, "method": "public-session"})
+    resp.set_cookie(value=tok, **sec.session_cookie_kwargs(True))
+    return resp
 
 
 @router.post("/logout")
-def logout(ident=Depends(sec.current_identity),
+def logout(response: Response,
+           ident=Depends(sec.current_identity),
            db: Session = Depends(get_db)):
     try:
         db.add(m.AuditLog(actor=ident.get("sub", "?"), action="auth-logout",
@@ -157,6 +164,7 @@ def logout(ident=Depends(sec.current_identity),
         db.commit()
     except Exception:
         pass
+    response.delete_cookie(sec.SESSION_COOKIE, path="/")
     return {"ok": True,
             "note": "Token is stateless JWT — client must discard it. "
                     "Short expiry (12h) bounds misuse."}

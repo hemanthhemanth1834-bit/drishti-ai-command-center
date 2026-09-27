@@ -10,19 +10,34 @@
  * emergency info must never sit behind sign-in. All data still loads
  * client-side after authentication; the backend denies unauthenticated calls.
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoginCard from './LoginCard';
-import { useAuth } from '@/store/authStore';
+import { restoreSession, useAuth } from '@/store/authStore';
 import { requiresAuth } from './gateRules';
 
 export default function AuthGate({ children }: { children: React.ReactNode }) {
-  const { token } = useAuth();
+  const { token, identity } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(true);
+  // Restore a persisted httpOnly-cookie session before deciding. While the
+  // restore is in flight we render a neutral splash — never the login gate
+  // (no flash) and never the app (no data leak).
+  const [restoring, setRestoring] = useState(() => !token && !identity);
+  useEffect(() => {
+    if (token || identity) { setRestoring(false); return; }
+    restoreSession().then(() => setRestoring(false));
+  }, [token, identity]);
 
-  if (token || !requiresAuth(pathname)) return <>{children}</>;
+  if (token || identity || !requiresAuth(pathname)) return <>{children}</>;
+  if (restoring) {
+    return (
+      <main className="min-h-screen text-slate-200 font-mono flex items-center justify-center p-4" aria-label="Restoring session">
+        <p className="text-xs text-slate-400" role="status">Restoring session…</p>
+      </main>
+    );
+  }
 
   if (!open) {
     return (
