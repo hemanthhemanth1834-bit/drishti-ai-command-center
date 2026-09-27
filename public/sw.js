@@ -1,5 +1,5 @@
 /* DRISHTI-X offline shell: cache-first same-origin GETs, network-first navigations. */
-const CACHE = 'drishti-v1';
+const CACHE = 'drishti-v2';
 const CORE = ['/safety', '/emergency', '/learn', '/manifest.json', '/icon.svg'];
 
 self.addEventListener('install', (event) => {
@@ -8,7 +8,14 @@ self.addEventListener('install', (event) => {
   );
 });
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  // Drop caches from previous app versions so returning visitors never run
+  // stale shells (e.g. pre-authentication-gate renders) from old caches.
+  event.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim())
+      .catch(() => {})
+  );
 });
 self.addEventListener('fetch', (event) => {
   const { request } = event;

@@ -4,7 +4,9 @@ import { OPEN_PATHS, requiresAuth } from '../gateRules';
 describe('AuthGate routing rules', () => {
   it('gates every application route by default', () => {
     for (const p of ['/', '/command', '/weather', '/satellite', '/events',
-      '/earthquakes', '/risk-map', '/admin', '/settings', '/ml', '/twin']) {
+      '/earthquakes', '/risk-map', '/admin', '/settings', '/ml', '/twin',
+      '/regions', '/location', '/incidents', '/resources', '/drones',
+      '/prediction', '/response', '/model-health', '/nesafe']) {
       expect(requiresAuth(p), p).toBe(true);
     }
     expect(requiresAuth(null)).toBe(true);
