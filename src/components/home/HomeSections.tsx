@@ -6,6 +6,7 @@
  */
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useEffect, useState } from 'react';
 import RealPhoto from '@/components/home/RealPhoto';
 import DisasterPhoto from '@/components/visuals/DisasterPhoto';
 import { getDisasterImage } from '@/data/disasterImages';
@@ -78,12 +79,54 @@ export function MissionSection() {
 }
 
 export function DataSourcesSection() {
-  const rows: [string, string, string, string][] = [
-    ['Open-Meteo', 'Weather + rainfall', 'LIVE', 'cyclone-nilam'],
-    ['SoilGrids', 'Soil texture', 'LIVE', 'soil-kerala-land'],
-    ['OpenStreetMap', 'Tiles + geocoding', 'LIVE', 'terrain-himalaya'],
-    ['NASA GIBS', 'Satellite composites', 'LIVE', 'cyclone-ilsa'],
-    ['IMD / Copernicus / SMS', 'Credential-gated feeds', 'NOT_CONFIGURED', 'storm-lightning-india'],
+  // Live provider state: Open-Meteo + soil chain via backend, tiles probed
+  // client-side (existing SystemHealth pattern). Statuses are measured, never
+  // hardcoded; IMD/Copernicus/SMS stay NOT_CONFIGURED without credentials.
+  const wx = usePlatform<{ data_status?: string; updated?: string }>('/api/v1/weather/current?lat=16.5&lon=80.6');
+  const soil = usePlatform<{ data_status?: string; updated?: string }>('/api/v1/soil/status?lat=16.5&lon=80.6');
+  const [osm, setOsm] = useState<{ state: string; at: string | null }>({ state: 'STALE', at: null });
+  const [gibs, setGibs] = useState<{ state: string; at: string | null }>({ state: 'STALE', at: null });
+  useEffect(() => {
+    let dead = false;
+    (async () => {
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 8000);
+        const r = await fetch('https://tile.openstreetmap.org/0/0/0.png', { method: 'HEAD', signal: ctrl.signal });
+        clearTimeout(t);
+        if (!dead) setOsm(r.ok
+          ? { state: 'LIVE', at: new Date().toISOString() }
+          : { state: 'OFFLINE', at: null });
+      } catch {
+        if (!dead) setOsm({ state: 'OFFLINE', at: null });
+      }
+    })();
+    (async () => {
+      try {
+        const { gibsTileUrl, latestNominalDate } = await import('@/data/engine/satellite');
+        const tpl = gibsTileUrl('VIIRS_SNPP_CorrectedReflectance_TrueColor', latestNominalDate());
+        if (!tpl) { if (!dead) setGibs({ state: 'OFFLINE', at: null }); return; }
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 10000);
+        const r = await fetch(tpl.replace('{z}', '0').replace('{y}', '0').replace('{x}', '0'), { signal: ctrl.signal });
+        clearTimeout(t);
+        if (!dead) setGibs(r.ok
+          ? { state: 'LATEST_AVAILABLE', at: new Date().toISOString() }
+          : { state: 'OFFLINE', at: null });
+      } catch {
+        if (!dead) setGibs({ state: 'OFFLINE', at: null });
+      }
+    })();
+    return () => { dead = true; };
+  }, []);
+  const fmtTime = (iso: string | null | undefined) =>
+    iso ? iso.slice(0, 16).replace('T', ' ') + ' UTC' : 'no successful check yet';
+  const rows: { name: string; use: string; status: string; at: string | null; photoId: string }[] = [
+    { name: 'Open-Meteo', use: 'Weather + rainfall', status: wx.data?.data_status ?? wx.status, at: wx.data?.updated ?? null, photoId: 'cyclone-nilam' },
+    { name: 'SoilGrids', use: 'Soil texture', status: soil.data?.data_status ?? soil.status, at: soil.data?.updated ?? null, photoId: 'soil-kerala-land' },
+    { name: 'OpenStreetMap', use: 'Tiles + geocoding', status: osm.state, at: osm.at, photoId: 'terrain-himalaya' },
+    { name: 'NASA GIBS', use: 'Satellite composites', status: gibs.state, at: gibs.at, photoId: 'cyclone-ilsa' },
+    { name: 'IMD / Copernicus / SMS', use: 'Credential-gated feeds', status: 'NOT_CONFIGURED', at: null, photoId: 'storm-lightning-india' },
   ];
   return (
     <Section id="home-data" kicker="MULTI-SOURCE DATA" title="Free-first data, honest provenance">
@@ -91,10 +134,10 @@ export function DataSourcesSection() {
         Keyless public feeds where possible; credential-gated sources stay NOT_CONFIGURED until configured — never synthesized.
       </p>
       <div className="home-grid home-grid-secondary">
-        {rows.map(([name, use, status, photoId]) => {
-          const photo = getDisasterImage(photoId);
+        {rows.map((r) => {
+          const photo = getDisasterImage(r.photoId);
           return (
-            <div key={name} className="home-mini">
+            <div key={r.name} className="home-mini">
               {photo && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -104,9 +147,10 @@ export function DataSourcesSection() {
                   onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                 />
               )}
-              <span className="home-mini-title">{name}</span>
-              <span className="home-mini-meta">{use}</span>
-              <span><StatusBadge status={status} small /></span>
+              <span className="home-mini-title">{r.name}</span>
+              <span className="home-mini-meta">{r.use}</span>
+              <span><StatusBadge status={r.status} small /></span>
+              <span className="home-mini-meta">Updated: {fmtTime(r.at)}</span>
             </div>
           );
         })}

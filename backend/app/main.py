@@ -17,6 +17,7 @@ from .routers.nesafe import router as nesafe_router
 from .routers.ml import router as ml_router
 from .routers.sensors import router as sensors_router
 from .routers.weather import router as weather_router
+from .routers.soil import router as soil_router
 from .routers.fire import router as fire_router
 from .routers.satellite import router as satellite_router
 from .routers.terrain import router as terrain_router
@@ -113,6 +114,7 @@ app.include_router(nesafe_router)
 app.include_router(ml_router)
 app.include_router(sensors_router)
 app.include_router(weather_router)
+app.include_router(soil_router)
 app.include_router(fire_router)
 app.include_router(satellite_router)
 app.include_router(terrain_router)
