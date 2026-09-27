@@ -47,7 +47,7 @@ describe('disasterImages registry', () => {
 
   it('covers every replaced disaster category', () => {
     for (const cat of ['cyclone', 'flood', 'landslide', 'wildfire', 'earthquake',
-      'drought', 'heatwave', 'terrain', 'response', 'command']) {
+      'drought', 'heatwave', 'terrain', 'response', 'command', 'satellite', 'drone']) {
       expect(disasterImageByCategory(cat), cat).not.toBeNull();
     }
   });

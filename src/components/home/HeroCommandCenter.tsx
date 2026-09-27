@@ -5,6 +5,8 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Activity, HeartPulse, Box, ChevronRight } from 'lucide-react';
 import { get } from '@/platform/api';
+import DisasterCardPhoto from '@/components/visuals/DisasterCardPhoto';
+import { getDisasterImage } from '@/data/disasterImages';
 import { StatusBadge } from '@/platform/provenance';
 
 const AiCoreScene = dynamic(() => import('@/components/cinematic/AiCoreScene'), {
@@ -92,8 +94,7 @@ export default function HeroCommandCenter() {
 
       <aside className="home-hero-side home-hero-left" aria-label="Field intelligence">
         <p className="home-side-kicker">FROM SPACE TO GROUND — FROM DATA TO LIVES</p>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/img/satellite.svg" alt="Illustrative observation satellite" className="home-side-visual" loading="lazy" decoding="async" />
+        <DisasterCardPhoto layout="side" photo={getDisasterImage('satellite-iss-canadarm')!} alt="The International Space Station with Canadarm2, photographed over blue and white Earth" />
         <p className="home-side-big">DISASTERS DON&rsquo;T WAIT.<br />BUT WE CAN BE READY.</p>
         <p className="home-side-small">Satellite passes, sensor meshes, and citizen eyes stream into one honest operational picture — every value labeled LIVE, FORECAST, DEMO, or OFFLINE.</p>
         <Link href="/intelligence" className="home-side-link">Open intelligence hub →</Link>
@@ -101,8 +102,7 @@ export default function HeroCommandCenter() {
 
       <aside className="home-hero-side home-hero-right" aria-label="Resilience">
         <p className="home-side-kicker">A SAFER TOMORROW — TOGETHER</p>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/img/drone.svg" alt="Illustrative survey drone" className="home-side-visual" loading="lazy" decoding="async" />
+        <DisasterCardPhoto layout="side" photo={getDisasterImage('drone-scan-eagle')!} alt="U.S. Navy Scan Eagle unmanned aerial vehicle in flight" />
         <ul className="home-side-phases">
           <li><strong>BEFORE</strong><span>PREPARE</span><Link href="/plan">Make a plan →</Link></li>
           <li><strong>DURING</strong><span>RESPOND</span><Link href="/emergency">Get help →</Link></li>
