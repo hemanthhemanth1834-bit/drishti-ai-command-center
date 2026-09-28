@@ -54,6 +54,11 @@ presented as live data.
 | cz-west-thar.jpg | Thar Desert dunes, western India | Wikimedia Commons `Thar Desert satellite.jpg` | Public domain (NASA) | NASA satellite imagery PD; remote HEAD 200 + JPEG magic verified |
 | cz-central-narmada.jpg | Narmada River valley, central India (shuttle IR) | Wikimedia Commons NASA STS-49 DPLA `S49-87-096 ...` | Public domain (NASA) | NASA mission imagery PD; remote HEAD 200 + JPEG magic verified |
 | cz-ne-brahmaputra.jpg | Brahmaputra River below the Himalayas, eastern India | Wikimedia Commons NASA ISS (iss072e397228) | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
+| fd-rain-krishna.jpg | Krishna river in flood, Andhra Pradesh | Wikimedia Commons `RIVER KRISHNA, ANDHRA PRADESH, INDIA.jpg` | CC BY-SA 4.0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
+| fd-slide-wayanad.jpg | 2024 Wayanad landslide scars, Western Ghats | Wikimedia Commons `Remnants of 2024 Wayanad landslides 02.jpg` | CC BY-SA 4.0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
+| fd-cyclone-fani.jpg | Cyclone Fani at peak intensity, Bay of Bengal | Wikimedia Commons `Fani 2019-05-02 0732Z.jpg` | Public domain (U.S. federal) | File page states US federal work; remote HEAD 200 + JPEG magic verified |
+| fd-flood-chennai.jpg | Flooded streets after monsoon rains, Chennai | Wikimedia Commons `India - Chennai - Monsoon - 10 (3058291559).jpg` | CC BY 2.0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
+| fd-report-volunteer.jpg | Citizen volunteer in Wayanad landslide field | Wikimedia Commons `White guard volunteer in Chooralmala ... 2024.jpg` | CC0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 

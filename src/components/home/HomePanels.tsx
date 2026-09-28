@@ -57,6 +57,26 @@ interface AlertItem {
   lat?: number; lon?: number; ts?: string; source?: string;
 }
 
+function FeedThumb({ photoId }: { photoId?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!photoId) return null;
+  const photo = getDisasterImage(photoId);
+  if (!photo || failed) return null;
+  const remote = photo.remoteUrl ?? photo.fallbackUrl;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={remote} alt={photo.alt}
+      loading="lazy" decoding="async" className="home-feed-thumb"
+      onError={(e) => {
+        const img = e.target as HTMLImageElement;
+        if (img.src !== photo.fallbackUrl && !img.src.endsWith(photo.fallbackUrl)) img.src = photo.fallbackUrl;
+        else setFailed(true);
+      }}
+    />
+  );
+}
+
 function levelTone(level: string): string {
   const l = level.toUpperCase();
   if (l.includes('CRIT') || l.includes('EMERG') || l.includes('SEVERE')) return 'critical';
@@ -171,12 +191,12 @@ export function RegionalStatus() {
 export function RealtimeFeed() {
   const feed = usePlatform<{ alerts?: AlertItem[] }>('/api/v1/alerts?limit=8', 30000);
   const live = !!feed.data;
-  const demo: AlertItem[] = [
-    { id: 'demo-1', level: 'WATCH', title: 'Heavy rainfall watch — Krishna basin (demo)', ts: 'demo', source: 'DEMO feed' },
-    { id: 'demo-2', level: 'ADVISORY', title: 'Landslide susceptibility elevated — ghat roads (demo)', ts: 'demo', source: 'DEMO feed' },
-    { id: 'demo-3', level: 'INFO', title: 'Cyclone outlook: Bay of Bengal monitoring (demo)', ts: 'demo', source: 'DEMO feed' },
-    { id: 'demo-4', level: 'WATCH', title: 'Road waterlogging reports — low-lying wards (demo)', ts: 'demo', source: 'DEMO feed' },
-    { id: 'demo-5', level: 'INFO', title: 'New citizen field report received (demo)', ts: 'demo', source: 'DEMO feed' },
+  const demo: (AlertItem & { photoId?: string })[] = [
+    { id: 'demo-1', level: 'WATCH', title: 'Heavy rainfall watch — Krishna basin (demo)', ts: 'demo', source: 'DEMO feed', photoId: 'fd-rain-krishna' },
+    { id: 'demo-2', level: 'ADVISORY', title: 'Landslide susceptibility elevated — ghat roads (demo)', ts: 'demo', source: 'DEMO feed', photoId: 'fd-slide-wayanad' },
+    { id: 'demo-3', level: 'INFO', title: 'Cyclone outlook: Bay of Bengal monitoring (demo)', ts: 'demo', source: 'DEMO feed', photoId: 'fd-cyclone-fani' },
+    { id: 'demo-4', level: 'WATCH', title: 'Road waterlogging reports — low-lying wards (demo)', ts: 'demo', source: 'DEMO feed', photoId: 'fd-flood-chennai' },
+    { id: 'demo-5', level: 'INFO', title: 'New citizen field report received (demo)', ts: 'demo', source: 'DEMO feed', photoId: 'fd-report-volunteer' },
   ];
   const items = live && feed.data?.alerts?.length ? feed.data.alerts.slice(0, 8) : demo;
 
@@ -195,6 +215,7 @@ export function RealtimeFeed() {
         {items.map((a, i) => (
           <li key={a.id ?? i} className="home-feed-item">
             <span className={`home-sev home-sev-${levelTone(a.level ?? a.severity ?? 'INFO')}`} aria-hidden="true" />
+            <FeedThumb photoId={'photoId' in a ? (a as { photoId?: string }).photoId : undefined} />
             <div>
               <p className="home-feed-title">{a.title ?? 'Untitled alert'}</p>
               <p className="home-feed-meta">
