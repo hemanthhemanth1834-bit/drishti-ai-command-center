@@ -92,7 +92,7 @@ export function DataSourcesSection() {
       try {
         const ctrl = new AbortController();
         const t = setTimeout(() => ctrl.abort(), 8000);
-        const r = await fetch('https://tile.openstreetmap.org/0/0/0.png', { method: 'HEAD', signal: ctrl.signal });
+        const r = await fetch('https://tile.openstreetmap.org/0/0/0.png', { signal: ctrl.signal });
         clearTimeout(t);
         if (!dead) setOsm(r.ok
           ? { state: 'LIVE', at: new Date().toISOString() }

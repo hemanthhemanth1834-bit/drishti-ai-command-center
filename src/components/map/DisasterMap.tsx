@@ -103,10 +103,14 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
       if (layers.includes('SATELLITE')) {
         L.tileLayer(GIBS_VIIRS, {
           attribution: 'NASA Worldview/GIBS (daily NRT)',
-          opacity: 0.85, maxZoom: 9,
+          opacity: 0.45, maxZoom: 9,
           errorTileUrl: 'data:image/gif;base64,R0lGODlhAQABAAAAACw=',
         }).addTo(map);
       }
+      // Persistent operations-focus marker: a real location is always visible on load.
+      L.marker([v.lat, v.lon], { title: 'Operations focus' }).bindPopup(
+        `<b>Operations focus</b> ${v.lat.toFixed(2)}, ${v.lon.toFixed(2)}<br/>Default view — drag to explore, scroll to zoom.`,
+      ).addTo(map);
       const api = await import('@/platform/api');
 
       if (layers.includes('RISK')) {
