@@ -100,15 +100,24 @@ export const SECONDARY_FEATURES: NavigationItem[] = [
 
 /** Operational / platform cards. href: string = navigate; action = real store state change. */
 export const OPERATIONAL_FEATURES: ActionCard[] = [
-  { label: 'Hospital Intelligence', href: '/resources', description: 'ICU status • Capacity. Resource view.', icon: Building2 },
-  { label: 'Shelter Management', href: '/shelter', description: 'Find & track shelters. Real-time status.', icon: Tent },
-  { label: 'Recovery Insights', href: '/recovery', description: 'Damage assessment. Rebuild smarter.', icon: BarChart3 },
-  { label: 'Multi-Language', href: '/welcome', description: 'English • తెలుగు • हिन्दी & more.', icon: Languages, action: 'cycle-lang' },
-  { label: 'Accessibility', href: '/welcome', description: 'Inclusive for everyone. Larger text, voice assist.', icon: Accessibility, action: 'large-text' },
-  { label: 'Voice Assistant', href: '/talk', description: 'Talk to DRISHTI. Get help instantly.', icon: Mic },
-  { label: 'Offline Mode', href: '/offline', description: 'Works even without internet. Stay prepared.', icon: WifiOff },
-  { label: 'Public Mode', href: '/safety', description: 'Simple. Clear. Actionable. For everyone.', icon: MonitorSmartphone, action: 'public-mode' },
-  { label: 'Command Mode', href: '/command', description: 'Advanced tools. For authorities.', icon: Gauge, action: 'command-mode' },
+  { label: 'Hospital Intelligence', href: '/resources', description: 'ICU status • Capacity. Resource view.', icon: Building2,
+    photoId: 'ops-hospital-triage' },
+  { label: 'Shelter Management', href: '/shelter', description: 'Find & track shelters. Real-time status.', icon: Tent,
+    photoId: 'ops-shelter-redcross' },
+  { label: 'Recovery Insights', href: '/recovery', description: 'Damage assessment. Rebuild smarter.', icon: BarChart3,
+    photoId: 'ops-recovery-home' },
+  { label: 'Multi-Language', href: '/welcome', description: 'English • తెలుగు • हिन्दी & more.', icon: Languages, action: 'cycle-lang',
+    photoId: 'ops-outreach-door' },
+  { label: 'Accessibility', href: '/welcome', description: 'Inclusive for everyone. Larger text, voice assist.', icon: Accessibility, action: 'large-text',
+    photoId: 'ops-access-medshelter' },
+  { label: 'Voice Assistant', href: '/talk', description: 'Talk to DRISHTI. Get help instantly.', icon: Mic,
+    photoId: 'ops-voice-eoc' },
+  { label: 'Offline Mode', href: '/offline', description: 'Works even without internet. Stay prepared.', icon: WifiOff,
+    photoId: 'ops-offline-kodiak' },
+  { label: 'Public Mode', href: '/safety', description: 'Simple. Clear. Actionable. For everyone.', icon: MonitorSmartphone, action: 'public-mode',
+    photoId: 'ops-public-drc' },
+  { label: 'Command Mode', href: '/command', description: 'Advanced tools. For authorities.', icon: Gauge, action: 'command-mode',
+    photoId: 'ops-command-eoc' },
 ];
 
 /** Disaster overview categories — statuses resolve live-or-DEMO at runtime. */

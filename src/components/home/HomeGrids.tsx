@@ -119,7 +119,11 @@ export function OperationalGrid() {
               className="home-card"
               aria-label={`${item.label}${item.description ? ` — ${item.description}` : ''}`}
             >
-              <span className="home-card-icon" aria-hidden="true"><Icon className="w-5 h-5" /></span>
+              {item.photoId ? (
+                <CardPhoto photoId={item.photoId} />
+              ) : (
+                <span className="home-card-icon" aria-hidden="true"><Icon className="w-5 h-5" /></span>
+              )}
               <span className="home-card-title">{item.label}</span>
               {item.description && <span className="home-card-desc">{item.description}</span>}
               {item.action === 'cycle-lang' && (
