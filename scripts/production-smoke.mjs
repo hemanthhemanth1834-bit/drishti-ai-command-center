@@ -96,6 +96,18 @@ async function checkHealth() {
   });
 }
 
+async function checkFrontendHealth() {
+  return withRetry('/api/health', async () => {
+    const r = await fetchOnce(`${BASE}/api/health`);
+    if (!r.ok) return { pass: false, detail: `HTTP ${r.status}`, failure: `connection/timeout: ${r.error || r.status}` };
+    if (r.status !== 200) return { pass: false, detail: `HTTP ${r.status}`, failure: `unexpected status ${r.status}` };
+    let j = null;
+    try { j = JSON.parse(r.body); } catch { /* fall through */ }
+    if (!j || j.ok !== true) return { pass: false, detail: 'HTTP 200', failure: 'frontend health JSON missing {ok:true}' };
+    return { pass: true, detail: `200 | HEALTHY | service=${j.service || '?'}` };
+  });
+}
+
 async function checkBackend401() {
   return withRetry('backend anonymous 401', async () => {
     const r = await fetchOnce(`${BASE}/api/backend/api/v1/auth/token`, {
@@ -189,6 +201,8 @@ for (const p of protectedRoutes) {
 }
 console.log('\nPUBLIC\n');
 await checkRoute('/emergency', 'public');
+console.log('\nFRONTEND\n');
+await checkFrontendHealth();
 console.log('\nBACKEND\n');
 await checkHealth();
 await checkBackend401();
