@@ -1018,6 +1018,21 @@ export const DISASTER_PHOTOS: DisasterPhotoAsset[] = [
     description: 'Field-report context only; a citizen volunteer on site, never a live report.',
     status: 'ARCHIVAL',
   },
+  {
+    id: 'twin-himalaya-nepal',
+    category: 'terrain',
+    remoteUrl: `${W}/The_Himalayas_separate_India_from_Tibet,_China_(iss074e0002506).jpg?width=1280`,
+    fallbackUrl: '/img/photos/twin-himalaya-nepal.jpg',
+    source: 'NASA via Wikimedia Commons',
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:The_Himalayas_separate_India_from_Tibet,_China_(iss074e0002506).jpg',
+    license: 'Public domain (NASA)',
+    attribution: 'NASA (ISS074-E-2506)',
+    date: '2025-12-13',
+    location: 'Himalayas above Nepal',
+    alt: 'Astronaut photograph of the Himalayan range separating India from Tibet, seen from above Nepal',
+    description: 'Geographic context only; the real terrain class the 3D model simulates, never live terrain.',
+    status: 'REFERENCE',
+  },
 ];
 
 export function getDisasterImage(id: string): DisasterPhotoAsset | null {

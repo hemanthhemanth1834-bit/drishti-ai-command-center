@@ -19,6 +19,8 @@ describe('section explanations', () => {
   it('twin section pairs simulation label with real-terrain context note', () => {
     expect(HOME).toContain('procedural simulation used for scenario exploration');
     expect(HOME).toContain('Simulation is always labeled');
+    expect(HOME).toContain("getDisasterImage('twin-himalaya-nepal')");
+    expect(HOME).not.toContain('/img/hero-scene.svg');
   });
 
   it('deformation panel explains measurement-vs-photograph distinction', () => {

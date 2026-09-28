@@ -249,7 +249,7 @@ export function TwinSection() {  return (
         In-browser WebGL with 2D and offline fallbacks — procedural simulation, never live terrain.
       </p>
       <div className="home-split">
-        <VizFigure src="/img/hero-scene.svg" alt="Command-center situation render" caption="R3F terrain · sensor masts · rain · WebGL fallback included" status="SIMULATION" />
+        <DisasterPhoto photo={getDisasterImage('twin-himalaya-nepal')!} caption="Real Himalayan terrain context (orbital photo, archival) · interactive 3D model is SIMULATION, not live terrain" status="SIMULATION" />
         <div>
           <p className="home-side-small">Procedural Himalayan-scale terrain with live-style sensor nodes, disaster scenario presets, and a global→slope drill-down globe. Simulation is always labeled — never live reality. Real terrain imagery provides geographic context, while the interactive 3D twin is a procedural simulation used for scenario exploration.</p>
           <CtaRow items={[{ href: '/twin', label: 'Open digital twin', primary: true }, { href: '/nesafe', label: 'NE-SAFE 3D center' }]} />
