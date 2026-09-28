@@ -7,11 +7,11 @@ const EXPECTED: [string, string][] = [
   ['Citizen Reporting', 'report-assessment-team'],
   ['Family Safety', 'family-preparedness-day'],
   ['Personal Plan', 'plan-eoc-texas'],
-  ['Emergency Kit', 'kit-supply'],
+  ['Emergency Kit', 'fix-kit-handover'],
   ['Disaster Education', 'learn-cert-rebuild'],
-  ['What-If Copilot', 'whatif-shakemap'],
+  ['What-If Copilot', 'fix-whatif-evacplan'],
   ['3D Digital Twin', 'twin-himalaya-iss'],
-  ['Drone SAR', 'drone-global-hawk'],
+  ['Drone SAR', 'fix-drone-ikhana'],
 ];
 
 describe('Intelligence Capabilities card photos', () => {

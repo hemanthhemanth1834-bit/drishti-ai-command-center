@@ -5,11 +5,11 @@ import { getDisasterImage } from '@/data/disasterImages';
 const EXPECTED: [string, string][] = [
   ['Hospital Intelligence', 'ops-hospital-triage'],
   ['Shelter Management', 'ops-shelter-redcross'],
-  ['Recovery Insights', 'ops-recovery-home'],
-  ['Multi-Language', 'ops-outreach-door'],
+  ['Recovery Insights', 'fix-recovery-inspector'],
+  ['Multi-Language', 'fix-lang-booth'],
   ['Accessibility', 'ops-access-medshelter'],
   ['Voice Assistant', 'ops-voice-eoc'],
-  ['Offline Mode', 'ops-offline-kodiak'],
+  ['Offline Mode', 'fix-offline-hotshots'],
   ['Public Mode', 'ops-public-drc'],
   ['Command Mode', 'ops-command-eoc'],
 ];

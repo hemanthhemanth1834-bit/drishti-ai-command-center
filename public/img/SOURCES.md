@@ -32,6 +32,12 @@ presented as live data.
 | ops-offline-kodiak.jpg | Coast Guard helicopter crew preparing for remote SAR launch, Kodiak AK | Wikimedia Commons USCG Kodiak SAR alarm photo (131218-G-FO900-048) | Public domain (USCG/US federal) | USCG source PD; remote HEAD 200 + JPEG magic verified |
 | ops-public-drc.jpg | Flood survivor briefed at Disaster Recovery Center, Nashville TN | Wikimedia Commons `FEMA - 44426 - ... at a Disaster Recovery Center in Tennessee.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
 | ops-command-eoc.jpg | Coordinators inside Bexar County EOC control room | Wikimedia Commons `FEMA - 38187 - Inside the Bexar County Emergency Operations Center in Texas.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| fix-offline-hotshots.jpg | Hotshot crews working deep in the backcountry, Eaton Fire | Wikimedia Commons `Hotshot Crews in the Back Country (54273197359).jpg` | Public domain (USFS/US federal) | File page confirms PD-US-USDA-FS; remote HEAD 200 + JPEG magic verified |
+| fix-whatif-evacplan.jpg | Officials conducting evacuation planning meeting for future hurricanes | Wikimedia Commons `FEMA - 23164 - ... in Louisiana.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| fix-kit-handover.jpg | FEMA officer handing a preparedness kit to a resident | Wikimedia Commons `FEMA - 24466 - ... in Louisiana.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| fix-drone-ikhana.jpg | NASA Ikhana UAV departing on live Southern California wildfire imaging mission | Wikimedia Commons NASA Ikhana (ED07-0243-36) | Public domain (NASA) | NASA Dryden source PD; remote HEAD 200 + JPEG magic verified |
+| fix-recovery-inspector.jpg | FEMA housing inspector assessing wildfire-destroyed home, Magnolia TX | Wikimedia Commons DPLA `Fire ^ Wildfire - Magnolia, Texas ...` (4c897651048aa55f90e216927b1b7349) | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| fix-lang-booth.jpg | FEMA multilingual officer at Spanish-speaking preparedness booth | Wikimedia Commons `FEMA - 24464 - ... in Louisiana.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 
