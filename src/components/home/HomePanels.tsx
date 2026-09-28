@@ -23,9 +23,10 @@ const CATEGORY_PHOTOS: Record<string, string> = {
   Wildfire: 'ov-wildfire-rim',
 };
 
-function MiniPhoto({ cat, fallback }: { cat: string; fallback: React.ReactNode }) {
+function MiniPhoto({ cat, photoId, fallback }: { cat?: string; photoId?: string; fallback: React.ReactNode }) {
   const [stage, setStage] = useState<0 | 1 | 2>(0);
-  const photo = getDisasterImage(CATEGORY_PHOTOS[cat] ?? '');
+  const id = photoId ?? (cat ? CATEGORY_PHOTOS[cat] : undefined) ?? '';
+  const photo = getDisasterImage(id);
   if (!photo || stage >= 2) return <>{fallback}</>;
   const src = stage === 0 ? photo.remoteUrl ?? photo.fallbackUrl : photo.fallbackUrl;
   return (
@@ -121,10 +122,10 @@ export function RegionalStatus() {
   const alerts = usePlatform<{ count?: number }>('/api/v1/alerts?limit=1');
   const live = !!states.data;
   const rows = [
-    { name: 'Andhra Pradesh', href: '/regions', meta: ap.data ? `${ap.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
-    { name: 'Telangana', href: '/regions', meta: tg.data ? `${tg.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
-    { name: 'India', href: '/regions', meta: live ? `${states.data?.count ?? '—'} states in registry · Country → GPS` : 'Country → State → District → City → GPS' },
-    { name: 'Global', href: '/regions', meta: 'US · UK · AU · JP ready; expansion without code changes' },
+    { name: 'Andhra Pradesh', href: '/regions', photoId: 'rg-ap-godavari', meta: ap.data ? `${ap.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
+    { name: 'Telangana', href: '/regions', photoId: 'rg-tg-hyderabad', meta: tg.data ? `${tg.data.count} districts · showcase region` : 'Registry unreachable — demo view' },
+    { name: 'India', href: '/regions', photoId: 'rg-india-iss', meta: live ? `${states.data?.count ?? '—'} states in registry · Country → GPS` : 'Country → State → District → City → GPS' },
+    { name: 'Global', href: '/regions', photoId: 'rg-earth-marble', meta: 'US · UK · AU · JP ready; expansion without code changes' },
   ];
   const alertNote = live && alerts.data ? `${alerts.data.count ?? 0} alerts tracked` : 'Alerts unreachable — demo view';
   // Static geographic coverage — context only, never risk claims.
@@ -144,13 +145,9 @@ export function RegionalStatus() {
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
       <div className="home-grid home-grid-regions">
-        <div className="home-mini home-region-map">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/img/india-schematic.svg" alt="Schematic India map, Andhra Pradesh and Telangana highlighted, not to scale" loading="lazy" decoding="async" />
-          <span className="home-mini-meta">Schematic — not to scale</span>
-        </div>
         {rows.map((r) => (
           <Link key={r.name} href={r.href} className="home-mini" aria-label={`Region: ${r.name}`}>
+            <MiniPhoto photoId={r.photoId} fallback={<span className="home-mini-title">{r.name}</span>} />
             <span className="home-mini-title">{r.name}</span>
             <span className="home-mini-meta">{r.meta}</span>
           </Link>

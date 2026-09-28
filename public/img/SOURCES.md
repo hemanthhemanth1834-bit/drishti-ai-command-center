@@ -44,6 +44,10 @@ presented as live data.
 | ov-heat-furnace.png | Extreme-heat thermometer display, Death Valley | Wikimedia Commons NPS Furnace Creek thermometer sign | Public domain (NPS/US federal) | NPS source PD; remote HEAD 200 + PNG magic verified |
 | ov-quake-northridge.jpg | Partially collapsed apartment building, 1994 Northridge quake | Wikimedia Commons `Partially collapsed apartment building, 1994 Northridge Earthquake.jpg` | Public domain (U.S. federal) | File page states US federal work; remote HEAD 200 + JPEG magic verified |
 | ov-wildfire-rim.jpg | Active Rim Fire, Stanislaus National Forest | Wikimedia Commons USFS `The Rim Fire ... -001.jpg` | Public domain (USFS/US federal) | File page confirms public domain; remote HEAD 200 + JPEG magic verified |
+| rg-ap-godavari.jpg | Godavari and Krishna deltas, Andhra Pradesh coast | Wikimedia Commons `Godavari satellite view.jpg` | Public domain (NASA) | File page confirms public domain; remote HEAD 200 + JPEG magic verified |
+| rg-tg-hyderabad.jpg | Hyderabad city lights from ISS | Wikimedia Commons `Iss066e154504.jpg` (ISS066-E-154504) | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
+| rg-india-iss.jpg | India view from ISS Expedition 23 | Wikimedia Commons `ISS023-E-40242 - View of India.jpg` | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
+| rg-earth-marble.jpg | Full-disk Earth, Apollo 17 | Wikimedia Commons `The Blue Marble (remastered).jpg` | Public domain (NASA) | NASA Apollo imagery PD; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 
