@@ -78,15 +78,24 @@ export const PRIMARY_ACTIONS: NavigationItem[] = [
 
 /** Secondary capability cards. */
 export const SECONDARY_FEATURES: NavigationItem[] = [
-  { label: 'Nearby Help', href: '/nearby', description: 'Hospitals, Shelters, Police, Fire & more.', icon: LifeBuoy },
-  { label: 'Citizen Reporting', href: '/report', description: 'Report incidents. Be the eyes on ground.', icon: FileWarning },
-  { label: 'Family Safety', href: '/family', description: 'Keep your loved ones safe.', icon: Users },
-  { label: 'Personal Plan', href: '/plan', description: 'Be prepared. Step by step.', icon: ClipboardList },
-  { label: 'Emergency Kit', href: '/kit', description: 'Essentials for any disaster.', icon: Backpack },
-  { label: 'Disaster Education', href: '/learn', description: 'Before • During • After. Learn & stay ready.', icon: BookOpen },
-  { label: 'What-If Copilot', href: '/simulation', description: 'Simulate scenarios. See possible impact.', icon: Cpu },
-  { label: '3D Digital Twin', href: '/twin', description: 'Explore realistic 3D environments.', icon: Box },
-  { label: 'Drone SAR', href: '/drones', description: 'Search • Locate • Assist. Save lives.', icon: Plane },
+  { label: 'Nearby Help', href: '/nearby', description: 'Hospitals, Shelters, Police, Fire & more.', icon: LifeBuoy,
+    photoId: 'nearby-hospital-dmat' },
+  { label: 'Citizen Reporting', href: '/report', description: 'Report incidents. Be the eyes on ground.', icon: FileWarning,
+    photoId: 'report-assessment-team' },
+  { label: 'Family Safety', href: '/family', description: 'Keep your loved ones safe.', icon: Users,
+    photoId: 'family-preparedness-day' },
+  { label: 'Personal Plan', href: '/plan', description: 'Be prepared. Step by step.', icon: ClipboardList,
+    photoId: 'plan-eoc-texas' },
+  { label: 'Emergency Kit', href: '/kit', description: 'Essentials for any disaster.', icon: Backpack,
+    photoId: 'kit-supply' },
+  { label: 'Disaster Education', href: '/learn', description: 'Before • During • After. Learn & stay ready.', icon: BookOpen,
+    photoId: 'learn-cert-rebuild' },
+  { label: 'What-If Copilot', href: '/simulation', description: 'Simulate scenarios. See possible impact.', icon: Cpu,
+    photoId: 'whatif-shakemap' },
+  { label: '3D Digital Twin', href: '/twin', description: 'Explore realistic 3D environments.', icon: Box,
+    photoId: 'twin-himalaya-iss' },
+  { label: 'Drone SAR', href: '/drones', description: 'Search • Locate • Assist. Save lives.', icon: Plane,
+    photoId: 'drone-global-hawk' },
 ];
 
 /** Operational / platform cards. href: string = navigate; action = real store state change. */
