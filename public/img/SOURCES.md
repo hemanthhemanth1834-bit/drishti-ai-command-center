@@ -38,6 +38,12 @@ presented as live data.
 | fix-drone-ikhana.jpg | NASA Ikhana UAV departing on live Southern California wildfire imaging mission | Wikimedia Commons NASA Ikhana (ED07-0243-36) | Public domain (NASA) | NASA Dryden source PD; remote HEAD 200 + JPEG magic verified |
 | fix-recovery-inspector.jpg | FEMA housing inspector assessing wildfire-destroyed home, Magnolia TX | Wikimedia Commons DPLA `Fire ^ Wildfire - Magnolia, Texas ...` (4c897651048aa55f90e216927b1b7349) | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
 | fix-lang-booth.jpg | FEMA multilingual officer at Spanish-speaking preparedness booth | Wikimedia Commons `FEMA - 24464 - ... in Louisiana.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| ov-cyclone-khanun.jpg | Typhoon Khanun true-color view, NASA MODIS | Wikimedia Commons `Typhoon Khanun (MODIS).jpg` | Public domain (NASA) | MODIS gallery source PD; remote HEAD 200 + JPEG magic verified |
+| ov-flood-astor.jpg | Flooded homes lining streets, Astor FL (Irma) | Wikimedia Commons `FEMA - DR4337 Homes are still flooded in parts of Astor, Florida.jpg` | Public domain (FEMA/US federal) | File page confirms PD-US-FEMA; remote HEAD 200 + JPEG magic verified |
+| ov-landslide-mameyes.jpg | Mameyes landslide scar, Ponce Puerto Rico | Wikimedia Commons USGS Jibson `Landslide in Mameyes ...` | Public domain (USGS/US federal) | USGS source PD; remote HEAD 200 + JPEG magic verified |
+| ov-heat-furnace.png | Extreme-heat thermometer display, Death Valley | Wikimedia Commons NPS Furnace Creek thermometer sign | Public domain (NPS/US federal) | NPS source PD; remote HEAD 200 + PNG magic verified |
+| ov-quake-northridge.jpg | Partially collapsed apartment building, 1994 Northridge quake | Wikimedia Commons `Partially collapsed apartment building, 1994 Northridge Earthquake.jpg` | Public domain (U.S. federal) | File page states US federal work; remote HEAD 200 + JPEG magic verified |
+| ov-wildfire-rim.jpg | Active Rim Fire, Stanislaus National Forest | Wikimedia Commons USFS `The Rim Fire ... -001.jpg` | Public domain (USFS/US federal) | File page confirms public domain; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 

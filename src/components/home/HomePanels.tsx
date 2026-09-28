@@ -1,8 +1,10 @@
 'use client';
 /** Live disaster overview — honest statuses, never fabricated live values. */
 import Link from 'next/link';
+import { useState } from 'react';
 import { CloudLightning, Waves, Mountain, Sun, Activity, Flame } from 'lucide-react';
 import { DISASTER_CATEGORIES } from '@/config/navigation';
+import { getDisasterImage } from '@/data/disasterImages';
 import { usePlatform } from '@/platform/usePlatform';
 import { StatusBadge } from '@/platform/provenance';
 
@@ -10,6 +12,32 @@ const CATEGORY_ICONS: Record<string, typeof Waves> = {
   Cyclone: CloudLightning, Flood: Waves, Landslide: Mountain,
   Heatwave: Sun, Earthquake: Activity, Wildfire: Flame,
 };
+
+/** Exact-disaster archival photo per category — visual context only, never a live feed. */
+const CATEGORY_PHOTOS: Record<string, string> = {
+  Cyclone: 'ov-cyclone-khanun',
+  Flood: 'ov-flood-astor',
+  Landslide: 'ov-landslide-mameyes',
+  Heatwave: 'ov-heat-furnace',
+  Earthquake: 'ov-quake-northridge',
+  Wildfire: 'ov-wildfire-rim',
+};
+
+function MiniPhoto({ cat, fallback }: { cat: string; fallback: React.ReactNode }) {
+  const [stage, setStage] = useState<0 | 1 | 2>(0);
+  const photo = getDisasterImage(CATEGORY_PHOTOS[cat] ?? '');
+  if (!photo || stage >= 2) return <>{fallback}</>;
+  const src = stage === 0 ? photo.remoteUrl ?? photo.fallbackUrl : photo.fallbackUrl;
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src} alt={photo.alt}
+      loading="lazy" decoding="async"
+      onError={() => setStage((s) => (s >= 1 ? 2 : 1) as 0 | 1 | 2)}
+      className="home-mini-photo"
+    />
+  );
+}
 
 function timeAgo(ts?: string): string {
   if (!ts || ts === 'demo') return 'demo';
@@ -70,7 +98,7 @@ export function DisasterOverview() {
           const Icon = CATEGORY_ICONS[c.cat] ?? Waves;
           return (
             <Link key={c.cat} href="/alerts" className="home-mini" aria-label={`${c.cat}: ${c.status}`}>
-              <span className="home-mini-icon" aria-hidden="true"><Icon className="w-4 h-4" /></span>
+              <MiniPhoto cat={c.cat} fallback={<span className="home-mini-icon" aria-hidden="true"><Icon className="w-4 h-4" /></span>} />
               <span className={`home-sev home-sev-${levelTone(c.status)}`} aria-hidden="true" />
               <span className="home-mini-title">{c.cat}</span>
               <span className="home-mini-status">{c.status}{live && c.count > 0 ? ` · ${c.count}` : ''}</span>
