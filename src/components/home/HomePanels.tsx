@@ -130,12 +130,12 @@ export function RegionalStatus() {
   const alertNote = live && alerts.data ? `${alerts.data.count ?? 0} alerts tracked` : 'Alerts unreachable — demo view';
   // Static geographic coverage — context only, never risk claims.
   const zones = [
-    { name: 'North India', desc: 'Himalayan slopes and northern plains; landslide and winter-hazard context.' },
-    { name: 'South India', desc: 'Peninsular plateau and long coasts; monsoon and cyclone context.' },
-    { name: 'East India', desc: 'Gangetic plains and Bay of Bengal coast; flood and cyclone context.' },
-    { name: 'West India', desc: 'Arid west, megacities and Arabian Sea coast; heat and urban-flood context.' },
-    { name: 'Central India', desc: 'Plateau, forests and farmland; heat and drought context.' },
-    { name: 'Northeast India', desc: 'High hills, great rivers, extreme rainfall; landslide and flood context.' },
+    { name: 'North India', desc: 'Himalayan slopes and northern plains; landslide and winter-hazard context.', photoId: 'cz-north-everest' },
+    { name: 'South India', desc: 'Peninsular plateau and long coasts; monsoon and cyclone context.', photoId: 'cz-south-ghats' },
+    { name: 'East India', desc: 'Gangetic plains and Bay of Bengal coast; flood and cyclone context.', photoId: 'cz-east-delta' },
+    { name: 'West India', desc: 'Arid west, megacities and Arabian Sea coast; heat and urban-flood context.', photoId: 'cz-west-thar' },
+    { name: 'Central India', desc: 'Plateau, forests and farmland; heat and drought context.', photoId: 'cz-central-narmada' },
+    { name: 'Northeast India', desc: 'High hills, great rivers, extreme rainfall; landslide and flood context.', photoId: 'cz-ne-brahmaputra' },
   ];
 
   return (
@@ -158,6 +158,7 @@ export function RegionalStatus() {
       <div className="home-grid home-grid-secondary" style={{ marginTop: 8 }}>
         {zones.map((z) => (
           <Link key={z.name} href="/regions" className="home-mini" aria-label={`Coverage zone: ${z.name}`}>
+            <MiniPhoto photoId={z.photoId} fallback={<span className="home-mini-title">{z.name}</span>} />
             <span className="home-mini-title">{z.name}</span>
             <span className="home-mini-meta">{z.desc}</span>
           </Link>

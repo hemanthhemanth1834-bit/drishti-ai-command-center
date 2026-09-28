@@ -48,6 +48,12 @@ presented as live data.
 | rg-tg-hyderabad.jpg | Hyderabad city lights from ISS | Wikimedia Commons `Iss066e154504.jpg` (ISS066-E-154504) | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
 | rg-india-iss.jpg | India view from ISS Expedition 23 | Wikimedia Commons `ISS023-E-40242 - View of India.jpg` | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
 | rg-earth-marble.jpg | Full-disk Earth, Apollo 17 | Wikimedia Commons `The Blue Marble (remastered).jpg` | Public domain (NASA) | NASA Apollo imagery PD; remote HEAD 200 + JPEG magic verified |
+| cz-north-everest.jpg | Mount Everest from ISS | Wikimedia Commons `Mount Everest ISS008-E-6150.JPG` | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
+| cz-south-ghats.jpg | South India with monsoon over Western Ghats | Wikimedia Commons `South India satellite.jpg` | Public domain (NASA) | File page confirms PD; remote HEAD 200 + JPEG magic verified |
+| cz-east-delta.jpg | Ganges Delta waters, Bay of Bengal | Wikimedia Commons `Ganges Delta ESA22274217.jpeg` | Licensed via ESA (Copernicus Sentinel) | ESA source stated; remote HEAD 200 + JPEG magic verified |
+| cz-west-thar.jpg | Thar Desert dunes, western India | Wikimedia Commons `Thar Desert satellite.jpg` | Public domain (NASA) | NASA satellite imagery PD; remote HEAD 200 + JPEG magic verified |
+| cz-central-narmada.jpg | Narmada River valley, central India (shuttle IR) | Wikimedia Commons NASA STS-49 DPLA `S49-87-096 ...` | Public domain (NASA) | NASA mission imagery PD; remote HEAD 200 + JPEG magic verified |
+| cz-ne-brahmaputra.jpg | Brahmaputra River below the Himalayas, eastern India | Wikimedia Commons NASA ISS (iss072e397228) | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 
