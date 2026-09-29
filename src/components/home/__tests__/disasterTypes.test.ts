@@ -9,14 +9,13 @@ const SRC = fs.readFileSync(
 const EXPECTED: [string, string][] = [
   ['Cyclone', 'cyclone-nilam'],
   ['Flood', 'flood-ganges'],
-  ['Wildfire', 'wildfire-ferguson'],
+  ['Heavy Rainfall', 'sih-rain-mumbai'],
+  ['Inundation', 'sih-inundation-sindh'],
   ['Landslide', 'landslide-debris-flow'],
-  ['Drought', 'drought-lake-mead'],
-  ['Heatwave', 'heatwave-hottest-spots'],
 ];
 
 describe('DisasterTypes homepage cards', () => {
-  it('references all six registry photos and no legacy SVG icons', () => {
+  it('references all five registry photos and no legacy SVG icons', () => {
     for (const [name, id] of EXPECTED) {
       expect(SRC.includes(`photoId: '${id}'`), name).toBe(true);
       const photo = getDisasterImage(id);
@@ -30,7 +29,7 @@ describe('DisasterTypes homepage cards', () => {
   });
 
   it('preserves card links', () => {
-    const links: [string, number][] = [['/risk-map', 2], ['/weather', 3], ['/terrain', 1]];
+    const links: [string, number][] = [['/risk-map', 2], ['/weather', 2], ['/terrain', 1]];
     for (const [href, count] of links) {
       const hits = SRC.split(`href: '${href}'`).length - 1;
       expect(hits, href).toBe(count);

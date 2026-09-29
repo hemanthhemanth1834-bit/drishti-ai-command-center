@@ -2,25 +2,24 @@
 /** Live disaster overview — honest statuses, never fabricated live values. */
 import Link from 'next/link';
 import { useState } from 'react';
-import { CloudLightning, Waves, Mountain, Sun, Activity, Flame } from 'lucide-react';
+import { CloudLightning, CloudRain, Droplets, Waves, Mountain } from 'lucide-react';
 import { DISASTER_CATEGORIES } from '@/config/navigation';
 import { getDisasterImage } from '@/data/disasterImages';
 import { usePlatform } from '@/platform/usePlatform';
 import { StatusBadge } from '@/platform/provenance';
 
 const CATEGORY_ICONS: Record<string, typeof Waves> = {
-  Cyclone: CloudLightning, Flood: Waves, Landslide: Mountain,
-  Heatwave: Sun, Earthquake: Activity, Wildfire: Flame,
+  Flood: Waves, 'Heavy Rainfall': CloudRain, Inundation: Droplets,
+  Cyclone: CloudLightning, Landslide: Mountain,
 };
 
-/** Exact-disaster archival photo per category — visual context only, never a live feed. */
+/** Exact-topic archival photo per category — visual context only, never a live feed. */
 const CATEGORY_PHOTOS: Record<string, string> = {
-  Cyclone: 'ov-cyclone-khanun',
   Flood: 'ov-flood-astor',
+  'Heavy Rainfall': 'sih-rain-mumbai',
+  Inundation: 'sih-inundation-sindh',
+  Cyclone: 'ov-cyclone-khanun',
   Landslide: 'ov-landslide-mameyes',
-  Heatwave: 'ov-heat-furnace',
-  Earthquake: 'ov-quake-northridge',
-  Wildfire: 'ov-wildfire-rim',
 };
 
 function MiniPhoto({ cat, photoId, fallback }: { cat?: string; photoId?: string; fallback: React.ReactNode }) {
@@ -111,7 +110,7 @@ export function DisasterOverview() {
         <StatusBadge status={live ? 'LIVE' : 'DEMO'} />
       </div>
       <p className="home-muted" style={{ marginTop: 6 }}>
-        Category watchboard fed by the operations alert pipeline — counts appear only when live data does.
+        Rainfall, flood and inundation watchboard fed by the operations alert pipeline — counts appear only when live data does.
       </p>
       {alerts.loading && <p className="home-muted" role="status">Loading overview…</p>}
       <div className="home-grid home-grid-overview">

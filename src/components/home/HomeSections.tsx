@@ -44,15 +44,15 @@ function CtaRow({ items }: { items: { href: string; label: string; primary?: boo
 
 export function MissionSection() {
   return (
-    <Section id="home-mission" kicker="MISSION" title="One platform, every signal, zero guesswork">
+    <Section id="home-mission" kicker="MISSION" title="Heavy rainfall early warning, inundation prediction">
       <p className="home-side-small" style={{ maxWidth: 720 }}>
-        <strong className="text-white">DRISHTI-X is an AI-powered disaster-intelligence platform</strong> for
-        real-time situational awareness — geo-spatial intelligence that watches hazards, predicts risk,
+        <strong className="text-white">DRISHTI-X is an AI/ML-based heavy-rainfall early-warning and inundation-prediction platform</strong> for
+        real-time situational awareness — geo-spatial intelligence that watches rainfall, predicts inundation,
         assesses impact, and supports emergency response.
       </p>
       <p className="home-side-small" style={{ maxWidth: 720 }}>
         Disasters don&apos;t wait for fragmented dashboards. DRISHTI-X fuses open Earth observation,
-        weather, terrain, sensors, and citizen reports into a single intelligence loop —
+        weather, rainfall, soil moisture, terrain, sensors, and citizen reports into a single early-warning loop —
         every value labeled <StatusBadge status="LIVE" small /> <StatusBadge status="DEMO" small /> or honestly in between.
       </p>
       <div className="home-split">
@@ -163,13 +163,13 @@ export function DataSourcesSection() {
 export function AiMlSection() {
   const health = usePlatform<{ status?: string; model_version?: string; data_kind?: string }>('/api/v1/model-health');
   const steps = [
-    { step: 'OBSERVE', title: 'Earth + sensors', desc: 'Satellite, weather and field signals enter the loop.', href: '/satellite' },
+    { step: 'OBSERVE', title: 'Earth + sensors', desc: 'Satellite, rainfall, soil and field signals enter the loop.', href: '/satellite' },
     { step: 'ANALYZE', title: 'Evidence first', desc: 'Contributing factors surfaced with every output.', href: '/intelligence' },
-    { step: 'PREDICT', title: 'RF risk models', desc: 'RandomForest probabilities, versioned and labeled.', href: '/prediction' },
+    { step: 'PREDICT', title: 'RF rainfall models', desc: 'RandomForest rainfall/inundation probabilities with confidence, versioned and labeled.', href: '/prediction' },
     { step: 'SUPPORT', title: 'Decide + act', desc: 'Triage and response workflows consume the scores.', href: '/response' },
   ];
   return (
-    <Section id="home-ai" kicker="AI / ML" title="Explainable risk, never a black box">
+    <Section id="home-ai" kicker="AI / ML" title="Explainable rainfall prediction, never a black box">
       <div className="home-split">
         <DisasterPhoto photo={getDisasterImage('landslide-debris-flow')!} caption="Real terrain, rainfall, soil and historical observations can provide features used by risk models such as Random Forest. Observed debris flow, archival — not a prediction." status="DEMO" />
         <div>
@@ -199,12 +199,12 @@ export function AiMlSection() {
 
 export function GisSection() {
   return (
-    <Section id="home-gis" kicker="GIS" title="Risk you can see on a map">
+    <Section id="home-gis" kicker="GIS" title="Rainfall and inundation you can see on a map">
       <div className="home-split">
         <div className="min-w-0">
           <HomeMiniMap height={300} />
           <p className="home-photo-cap">
-            Live operational layers — risk, evacuation, responders, satellite, quakes.{' '}
+            Live operational layers — rainfall, flood extent, evacuation, responders, satellite, quakes.{' '}
             <span className="home-photo-src">Tiles: OpenStreetMap · quakes: USGS (LIVE)</span>
           </p>
           <ul className="home-layer-chips" aria-label="Map layers available on the risk map">

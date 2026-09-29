@@ -9,9 +9,9 @@ import { MissionSection, DataSourcesSection, AiMlSection, GisSection, SatelliteS
 import HomeFooter from '@/components/home/HomeFooter';
 
 export const metadata: Metadata = {
-  title: 'DRISHTI-X | AI Disaster Intelligence Command Center',
+  title: 'DRISHTI-X | Heavy Rainfall Early Warning & Inundation Prediction',
   description:
-    'AI-powered disaster intelligence, risk mapping, early warning, GIS, satellite intelligence, emergency response and resilience platform.',
+    'AI/ML-based heavy rainfall early warning and inundation prediction: rainfall monitoring, forecasting, flood extent mapping, satellite and radar data, GIS, and emergency response.',
 };
 
 // DRISHTI-X index: reference-design landing wired to real routes (see src/config/navigation.ts).

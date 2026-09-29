@@ -60,6 +60,8 @@ presented as live data.
 | fd-flood-chennai.jpg | Flooded streets after monsoon rains, Chennai | Wikimedia Commons `India - Chennai - Monsoon - 10 (3058291559).jpg` | CC BY 2.0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
 | fd-report-volunteer.jpg | Citizen volunteer in Wayanad landslide field | Wikimedia Commons `White guard volunteer in Chooralmala ... 2024.jpg` | CC0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
 | twin-himalaya-nepal.jpg | Himalayan range above Nepal from ISS | Wikimedia Commons NASA (ISS074-E-2506) | Public domain (NASA) | NASA ISS imagery PD; remote HEAD 200 + JPEG magic verified |
+| sih-rain-mumbai.jpg | Heavy monsoon rains over a Mumbai street | Wikimedia Commons `Mumbai-rains.jpg` | CC BY-SA 2.0 | License verified on file page; remote HEAD 200 + JPEG magic verified |
+| sih-inundation-sindh.jpg | Widespread inundation across Sindh, NASA MODIS | Wikimedia Commons `Pakistan Floods (MODIS 2022-09-23).jpg` | Public domain (NASA) | NASA MODIS gallery PD; remote HEAD 200 + JPEG magic verified |
 
 ## Vendored NASA EO archive (`public/assets/drishti-x/real-world/`, registry `src/data/images/imageRegistry.ts`)
 

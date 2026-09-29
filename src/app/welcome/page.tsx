@@ -43,7 +43,7 @@ const DigitalTwin = dynamic(() => import("@/components/DigitalTwin"), {
 const ROW1 = [
   { icon: HeartPulse, title: "MY SAFETY", desc: "Check your risk. Stay informed.", href: "/safety" },
   { icon: MapPin, title: "LIVE LOCATION", desc: "Explore hazards. View risk layers.", href: "/location" },
-  { icon: Layers, title: "HAZARD MAPS", desc: "Flood, Cyclone, Earthquake, Fire & more.", href: "/location" },
+  { icon: Layers, title: "HAZARD MAPS", desc: "Rainfall, flood, inundation, cyclone & landslide.", href: "/location" },
   { icon: Bell, title: "ALERT CENTER", desc: "Real-time alerts. Know what to do.", href: "/alerts" },
   { icon: Siren, title: "EMERGENCY MODE", desc: "One tap for help. Contacts & navigation.", href: "/emergency" },
   { icon: RouteIcon, title: "SAFE EVACUATION", desc: "Find the safest route. Reach shelter.", href: "/evacuate" },

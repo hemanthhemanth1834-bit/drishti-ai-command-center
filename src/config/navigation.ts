@@ -62,7 +62,7 @@ export const PRIMARY_ACTIONS: NavigationItem[] = [
   { label: 'Live Location', href: '/location', description: 'Explore hazards. View risk layers.', icon: MapPin,
     photoId: 'storm-lightning-india',
     explainer: 'Location-aware hazard layers built from satellite and field observations.' },
-  { label: 'Hazard Maps', href: '/risk-map', description: 'Flood, Cyclone, Earthquake, Fire, Landslide & more.', icon: Layers,
+  { label: 'Hazard Maps', href: '/risk-map', description: 'Heavy rainfall, flood, inundation, cyclone & landslide layers.', icon: Layers,
     photoId: 'cyclone-ilsa',
     explainer: 'Satellite-observed hazards rendered as map layers for regional awareness.' },
   { label: 'Alert Center', href: '/alerts', description: 'Real-time alerts. Know what to do.', icon: Bell,
@@ -120,9 +120,9 @@ export const OPERATIONAL_FEATURES: ActionCard[] = [
     photoId: 'ops-command-eoc' },
 ];
 
-/** Disaster overview categories — statuses resolve live-or-DEMO at runtime. */
+/** Disaster overview categories — SIH 26071 focus: heavy rainfall + inundation first. */
 export const DISASTER_CATEGORIES = [
-  'Cyclone', 'Flood', 'Landslide', 'Heatwave', 'Earthquake', 'Wildfire',
+  'Flood', 'Heavy Rainfall', 'Inundation', 'Cyclone', 'Landslide',
 ] as const;
 
 /** Footer links — all verified routes/pages. */
