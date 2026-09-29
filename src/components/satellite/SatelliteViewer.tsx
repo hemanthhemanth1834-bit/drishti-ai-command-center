@@ -48,11 +48,11 @@ export default function SatelliteViewer() {
     [region.lat, region.lon, region.label],
   );
   const presetList = useMemo(() => (sharedPreset ? [sharedPreset, ...PRESETS] : PRESETS), [sharedPreset]);
+  const [presetId, setPresetId] = useState(sharedPreset ? 'shared-location' : 'india');
   const activePreset = presetList.find((p) => p.id === presetId) ?? PRESETS[0];
   const [layerId, setLayerId] = useState(GIBS_LAYERS[0].id);
   const [date, setDate] = useState(() => latestNominalDate());
   const [opacity, setOpacity] = useState(1);
-  const [presetId, setPresetId] = useState(sharedPreset ? 'shared-location' : 'india');
   const [tileState, setTileState] = useState<TileState>('PROBING');
   const [retrievedAt, setRetrievedAt] = useState<string | null>(null);
   const [isFull, setIsFull] = useState(false);
