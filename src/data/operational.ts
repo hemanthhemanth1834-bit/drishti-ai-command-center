@@ -37,8 +37,8 @@ export const DEMO_INCIDENTS: DemoIncident[] = [
   { id: 'DEMO-101', type: 'Flood', severity: 'HIGH', place: 'Krishna Basin Sector 04', lat: 17.385, lon: 78.4867, reportedAt: '2026-09-20T10:42:00Z', status: 'UNDER_REVIEW', summary: 'Riverine flooding reported near Ward 14 bund; field verification pending.' },
   { id: 'DEMO-102', type: 'Landslide', severity: 'CRITICAL', place: 'Wayanad Ghat Pass', lat: 11.68, lon: 76.13, reportedAt: '2026-09-21T04:15:00Z', status: 'UNVERIFIED', summary: 'Slope failure reported blocking ghat road; verify before dispatch.' },
   { id: 'DEMO-103', type: 'Cyclone', severity: 'MODERATE', place: 'Odisha Coast', lat: 20.3, lon: 85.8, reportedAt: '2026-09-19T16:00:00Z', status: 'VERIFIED', summary: 'Coastal wind damage watch; shelters on standby.' },
-  { id: 'DEMO-104', type: 'Heatwave', severity: 'MODERATE', place: 'Telangana Interior', lat: 17.9, lon: 79.6, reportedAt: '2026-09-18T09:30:00Z', status: 'VERIFIED', summary: 'Sustained high temperatures; health advisory active.' },
-  { id: 'DEMO-105', type: 'Wildfire', severity: 'LOW', place: 'Northeast Ridge', lat: 25.5, lon: 92.5, reportedAt: '2026-09-17T12:00:00Z', status: 'UNVERIFIED', summary: 'Smoke plume reported; satellite confirmation pending.' },
+  { id: 'DEMO-104', type: 'Heavy Rainfall', severity: 'MODERATE', place: 'Godavari Basin', lat: 17.9, lon: 79.6, reportedAt: '2026-09-18T09:30:00Z', status: 'VERIFIED', summary: 'Intense overnight rainfall; drains near capacity.' },
+  { id: 'DEMO-105', type: 'Flood', severity: 'LOW', place: 'Krishna Lowlands', lat: 25.5, lon: 92.5, reportedAt: '2026-09-17T12:00:00Z', status: 'UNVERIFIED', summary: 'Field bunds overtopping reported; shelter standby pending verification.' },
 ];
 
 export const DEMO_FACILITIES: DemoFacility[] = [

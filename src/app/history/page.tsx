@@ -52,9 +52,9 @@ export default function HistoryPage() {
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
-        <div className="dx-micro">HISTORICAL REFERENCE LIBRARY (DOCUMENTED CASES — NOT CURRENT EVENTS)</div>
+        <div className="dx-micro">HISTORICAL REFERENCE LIBRARY — RAINFALL / FLOOD VALIDATION CASES (DOCUMENTED — NOT CURRENT EVENTS)</div>
         <div className="nesafe-vizgrid mt-2">
-          {imagesByStatus('HISTORICAL').map((e) => (
+          {imagesByStatus('HISTORICAL').filter((e) => !['earthquake', 'wildfire', 'heatwave', 'drought'].includes(e.category)).map((e) => (
             <DisasterImage key={e.id} entry={e} />
           ))}
         </div>
