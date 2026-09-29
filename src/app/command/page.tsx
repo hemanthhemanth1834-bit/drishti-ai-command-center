@@ -475,7 +475,7 @@ export default function MasterCommandCenter() {
           </section>
         </div>
 
-        {/* Live operational map — 8-layer DisasterMap (position preserved) */}
+            {/* Live operational map — 6-layer DisasterMap (position preserved) */}
         <div className="px-4 pb-4">
           <div className="bg-[#051424]/80 border border-[#1b314b] rounded-xl p-4">
             <div className="flex items-center gap-2 pb-3 border-b border-[#1b314b] mb-3">

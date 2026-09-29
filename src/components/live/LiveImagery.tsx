@@ -9,7 +9,7 @@
  */
 import { useEffect, useState } from 'react';
 import { StatusBadge } from '@/platform/provenance';
-import { getWeather, getEarthquakes, gibsStatus, fireStatus, droneFleetStatus } from '@/lib/liveServices';
+import { getWeather, gibsStatus, droneFleetStatus } from '@/lib/liveServices';
 
 interface Panel {
   id: string;
@@ -49,15 +49,12 @@ export default function LiveImagery() {
     let dead = false;
     const ctrl = new AbortController();
     (async () => {
-      const [wx, qk] = await Promise.all([
+      const [wx] = await Promise.all([
         getWeather(CENTER.lat, CENTER.lon, ctrl.signal),
-        getEarthquakes(ctrl.signal),
       ]);
       if (dead) return;
       const gibs = gibsStatus();
-      const fire = fireStatus();
       const drone = droneFleetStatus();
-      const latestQuake = qk.data?.quakes[0];
       setPanels([
         {
           id: 'satellite', title: 'SATELLITE — TRUE COLOR',
@@ -74,22 +71,6 @@ export default function LiveImagery() {
           body: wx.data
             ? `${wx.data.current.tempC ?? '?'}°C · rain24h ${wx.data.current.rain24hMm ?? '?'}mm · wind ${wx.data.current.windKph ?? '?'} km/h`
             : (wx.note ?? 'Weather feed unavailable'),
-        },
-        {
-          id: 'earthquake', title: 'EARTHQUAKE — M2.5+ / 7 DAYS',
-          source: qk.source, location: latestQuake ? latestQuake.place : 'Global feed',
-          timestamp: latestQuake?.time ?? qk.updatedAt ?? 'unknown',
-          status: qk.state,
-          body: qk.data
-            ? `Latest: ${latestQuake ? `M${(latestQuake.mag ?? 0).toFixed(1)} — ${latestQuake.place}` : 'none'} · ${qk.data.countWeek} events this week`
-            : (qk.note ?? 'Earthquake feed unavailable'),
-        },
-        {
-          id: 'fire', title: 'FIRE / HOTSPOT',
-          source: fire.source, location: 'India',
-          timestamp: '—',
-          status: fire.state,
-          body: 'NO LIVE FEED AVAILABLE — FIRMS MAP_KEY not configured. Burn-scar context via MODIS 7-2-1 on the live map. Hotspots are never synthesized.',
         },
         {
           id: 'drone', title: 'DRONE / FLEET',
@@ -118,7 +99,7 @@ export default function LiveImagery() {
       <div className="dx-hud-head">
         <div>
           <div className="dx-micro">IMAGERY WALL · HONEST FEEDS ONLY</div>
-          <div className="dx-hud-title">Live Imagery (4 live-capable + 2 labeled gaps)</div>
+          <div className="dx-hud-title">Live Imagery (2 live-capable + 2 labeled gaps)</div>
         </div>
       </div>
       {loading && <p className="text-xs text-slate-400">Probing feeds…</p>}

@@ -3,14 +3,12 @@
  * DRISHTI-X DisasterMap (adapted from the Open Design `DisasterMap.js`
  * reference into this repo's Leaflet + eoLayers + platform/api conventions).
  *
- * Required layers: RISK · EVACUATION · RESPONDERS · INFRASTRUCTURE ·
- * SATELLITE · WEATHER · EARTHQUAKE · FIRE.
+ * Required layers (SIH 26071 focus): RISK · EVACUATION · RESPONDERS ·
+ * INFRASTRUCTURE · SATELLITE · WEATHER.
  *
  * Honesty rules:
  *  - SATELLITE: NASA GIBS tiles, per-tile LIVE measured at runtime.
  *  - WEATHER: Open-Meteo point readout (LIVE), no fake raster.
- *  - EARTHQUAKE: USGS GeoJSON (LIVE), markers link back to USGS.
- *  - FIRE: FIRMS needs a key → layer shows NOT_CONFIGURED, never fake points.
  *  - RISK/EVACUATION/RESPONDERS/INFRASTRUCTURE: backend registries first,
  *    DEMO fallback rows (labeled) when unreachable.
  * Map position (center/zoom) is preserved in localStorage across refreshes.

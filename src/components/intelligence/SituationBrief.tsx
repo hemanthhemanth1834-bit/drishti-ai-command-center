@@ -12,7 +12,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBadge } from '@/platform/provenance';
 import { get } from '@/platform/api';
-import { getWeather, getEarthquakes } from '@/lib/liveServices';
+import { getWeather } from '@/lib/liveServices';
 
 interface BriefRow {
   label: string;
@@ -42,9 +42,8 @@ export default function SituationBrief({ lat = 17.385, lon = 78.4867, place = 'H
     const ctrl = new AbortController();
     (async () => {
       setLoading(true);
-      const [wx, qk] = await Promise.all([
+      const [wx] = await Promise.all([
         getWeather(lat, lon, ctrl.signal),
-        getEarthquakes(ctrl.signal),
       ]);
       if (dead) return;
       const rows: BriefRow[] = [];
@@ -62,15 +61,6 @@ export default function SituationBrief({ lat = 17.385, lon = 78.4867, place = 'H
         });
       } else {
         rows.push({ label: 'Weather', value: wx.note ?? 'Unavailable', source: wx.source, state: wx.state });
-      }
-      if (qk.data) {
-        rows.push({
-          label: 'Earthquakes (M2.5+, 7d)',
-          value: `${qk.data.countWeek} worldwide · ${qk.data.indiaCount} in India region`,
-          source: qk.source, state: qk.state,
-        });
-      } else {
-        rows.push({ label: 'Earthquakes', value: qk.note ?? 'Unavailable', source: qk.source, state: qk.state });
       }
       setObserved(rows);
       const rain = wx.data?.current.rain24hMm ?? null;
@@ -137,7 +127,7 @@ export default function SituationBrief({ lat = 17.385, lon = 78.4867, place = 'H
       </ul>
       <div className="dx-micro mt-3">WHY (EVIDENCE CHAIN)</div>
       <p className="text-xs text-slate-300 mt-1">
-        Open-Meteo observed rainfall + USGS earthquake context + backend model health (see OBSERVED above)
+        Open-Meteo observed rainfall + backend model health (see OBSERVED above)
         combine into the posture score. No chatbot claims — every line above carries source + timestamp + status.
       </p>
       <p className="text-[10px] text-slate-500 mt-2">

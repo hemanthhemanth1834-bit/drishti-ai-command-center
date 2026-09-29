@@ -8,7 +8,7 @@
 import { useEffect, useState } from 'react';
 import { get } from '@/platform/api';
 import { getApiBase } from '@/utils/apiClient';
-import { getWeather, getEarthquakes, gibsStatus, fireStatus } from '@/lib/liveServices';
+import { getWeather, gibsStatus } from '@/lib/liveServices';
 
 interface Pill { label: string; state: string; detail: string; title: string }
 
@@ -26,14 +26,12 @@ export default function LiveStatusStrip() {
     let dead = false;
     const ctrl = new AbortController();
     (async () => {
-      const [wx, qk, be] = await Promise.all([
+      const [wx, be] = await Promise.all([
         getWeather(21.5, 79.0, ctrl.signal),
-        getEarthquakes(ctrl.signal),
         get<{ status?: string }>('/api/v1/ml/health').catch(() => ({ data: null as never, status: 'OFFLINE' as const })),
       ]);
       if (dead) return;
       const gibs = gibsStatus();
-      const fire = fireStatus();
       setPills([
         {
           label: 'BACKEND', state: be.data ? 'LIVE' : 'DEMO',
@@ -46,19 +44,9 @@ export default function LiveStatusStrip() {
           title: `SOURCE: ${wx.source} · ${wx.updatedAt ?? 'no timestamp'}`,
         },
         {
-          label: 'QUAKES', state: qk.state,
-          detail: qk.data ? `${qk.data.countWeek} M2.5+/wk · ${qk.data.indiaCount} India` : (qk.note ?? 'unavailable'),
-          title: `SOURCE: ${qk.source}`,
-        },
-        {
           label: 'SATELLITE', state: gibs.state,
           detail: 'VIIRS daily NRT',
           title: `SOURCE: ${gibs.source} · ${gibs.data?.latency ?? ''}`,
-        },
-        {
-          label: 'FIRE', state: fire.state,
-          detail: 'key required',
-          title: `SOURCE: ${fire.source} · ${fire.note ?? ''}`,
         },
       ]);
     })();

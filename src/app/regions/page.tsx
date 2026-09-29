@@ -111,9 +111,9 @@ export default function RegionsPage() {
           <DisasterPhoto photo={getDisasterImage('landslide-debris-flow')!} caption="Natural (observed debris flow, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('flood-ganges')!} caption="Urban (observed inundation, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('cyclone-nilam')!} caption="Coastal (observed cyclone, archival)" status="DEMO" />
-          <DisasterPhoto photo={getDisasterImage('wildfire-ferguson')!} caption="Industrial (observed wildfire, archival)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('satellite-kerala-after')!} caption="Industrial (observed inundation exposure, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('response-harvey-rescue')!} caption="Health (rescue operations, archival)" status="DEMO" />
-          <DisasterPhoto photo={getDisasterImage('drought-lake-mead')!} caption="Agriculture (drought context, archival)" status="DEMO" />
+          <DisasterPhoto photo={getDisasterImage('soil-kerala-land')!} caption="Agriculture (soil and vegetation context, archival)" status="DEMO" />
           <DisasterPhoto photo={getDisasterImage('road-hebgen-highway')!} caption="Transport (road damage, archival)" status="DEMO" />
         </div>
       </div>
