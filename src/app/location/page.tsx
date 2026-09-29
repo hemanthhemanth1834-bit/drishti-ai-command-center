@@ -77,7 +77,7 @@ export default function LocationPage() {
     dam: '#22d3ee',
     bridge: '#f59e0b',
   };
-  const HAZ_TYPES = ['flood', 'cyclone', 'fire', 'earthquake', 'landslide', 'heat', 'lightning', 'industrial', 'dam'];
+  const HAZ_TYPES = ['flood', 'cyclone', 'landslide', 'lightning', 'industrial', 'dam'];
   const FAC_KINDS = ['shelter', 'hospital', 'police', 'fire', 'relief', 'dam', 'bridge'];
 
   const layerCircles: MapCircle[] = useMemo(

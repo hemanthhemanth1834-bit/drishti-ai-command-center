@@ -15,7 +15,6 @@ import { getRegion, setRegion, useRegion } from '@/platform/regionStore';
 const LAYERS = [
   { href: '/weather', label: 'WEATHER' },
   { href: '/risk-map', label: 'RISK' },
-  { href: '/earthquakes', label: 'QUAKES' },
   { href: '/events', label: 'EVENTS' },
   { href: '/satellite', label: 'SATELLITE' },
   { href: '/response', label: 'RESPONSE' },

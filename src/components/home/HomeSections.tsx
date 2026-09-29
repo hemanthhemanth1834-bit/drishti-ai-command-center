@@ -204,11 +204,11 @@ export function GisSection() {
         <div className="min-w-0">
           <HomeMiniMap height={300} />
           <p className="home-photo-cap">
-            Live operational layers — rainfall, flood extent, evacuation, responders, satellite, quakes.{' '}
-            <span className="home-photo-src">Tiles: OpenStreetMap · quakes: USGS (LIVE)</span>
+            Live operational layers — rainfall, flood extent, evacuation, responders, satellite.{' '}
+            <span className="home-photo-src">Tiles: OpenStreetMap · satellite: NASA GIBS</span>
           </p>
           <ul className="home-layer-chips" aria-label="Map layers available on the risk map">
-            {['RISK', 'EVACUATION', 'RESPONDERS', 'INFRA', 'SATELLITE', 'WEATHER', 'QUAKE', 'FIRE'].map((l) => (
+            {['RISK', 'EVACUATION', 'RESPONDERS', 'INFRA', 'SATELLITE', 'WEATHER'].map((l) => (
               <li key={l}>
                 <Link href="/risk-map" className="home-layer-chip">{l}</Link>
               </li>
@@ -312,7 +312,7 @@ export function CommandSection() {
 
 export function EmergencySection() {
   const steps = [
-    { step: '1 · DETECT', title: 'Live hazard layers', desc: 'Risk grid, quakes, weather and satellite on one map.', href: '/risk-map' },
+    { step: '1 · DETECT', title: 'Live hazard layers', desc: 'Risk grid, rainfall, weather and satellite on one map.', href: '/risk-map' },
     { step: '2 · ASSESS', title: 'Observed → analysis', desc: 'Situation brief with evidence, never bare alarms.', href: '/intelligence' },
     { step: '3 · RESPOND', title: 'SOS + triage board', desc: 'One-tap SOS and a transparent P1–P4 queue.', href: '/emergency' },
   ];

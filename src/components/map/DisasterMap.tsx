@@ -18,12 +18,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { StatusBadge } from '@/platform/provenance';
 import { get } from '@/platform/api';
-import { getEarthquakes, type Quake } from '@/lib/liveServices';
 import { DEMO_FACILITIES, DEMO_INCIDENTS, DEMO_SOURCE } from '@/data/operational';
 
 export type LayerId =
   | 'RISK' | 'EVACUATION' | 'RESPONDERS' | 'INFRASTRUCTURE'
-  | 'SATELLITE' | 'WEATHER' | 'EARTHQUAKE' | 'FIRE';
+  | 'SATELLITE' | 'WEATHER';
 
 const ALL_LAYERS: { id: LayerId; hint: string }[] = [
   { id: 'RISK', hint: 'Backend risk grid (DEMO unless retrained)' },
@@ -32,8 +31,6 @@ const ALL_LAYERS: { id: LayerId; hint: string }[] = [
   { id: 'INFRASTRUCTURE', hint: 'Hospitals, roads, sensors' },
   { id: 'SATELLITE', hint: 'NASA GIBS VIIRS True Color (daily NRT)' },
   { id: 'WEATHER', hint: 'Open-Meteo point readout (LIVE)' },
-  { id: 'EARTHQUAKE', hint: 'USGS M2.5+ past 7 days (LIVE)' },
-  { id: 'FIRE', hint: 'FIRMS key required — NOT_CONFIGURED' },
 ];
 
 const VIEW_KEY = 'dx-map-view';
@@ -63,23 +60,15 @@ void OD_DARK; void OD_SAT;
 
 export default function DisasterMap({ height = 460 }: { height?: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [on, setOn] = useState<LayerId[]>(['RISK', 'SATELLITE', 'EARTHQUAKE', 'RESPONDERS', 'INFRASTRUCTURE']);
-  const [quakeState, setQuakeState] = useState('…');
-  const [quakeCount, setQuakeCount] = useState(0);
+  const [on, setOn] = useState<LayerId[]>(['RISK', 'SATELLITE', 'RESPONDERS', 'INFRASTRUCTURE']);
   const [regStatus, setRegStatus] = useState('DEMO');
   const onRef = useRef(on);
   onRef.current = on;
 
   useEffect(() => {
-    const ctrl = new AbortController();
-    getEarthquakes(ctrl.signal).then((r) => {
-      setQuakeState(r.state);
-      setQuakeCount(r.data?.countWeek ?? 0);
-    }).catch(() => setQuakeState('OFFLINE'));
     get<{ cells?: unknown[] }>('/api/v1/grid/risk-cells?step=1.0')
       .then((r) => setRegStatus(r.data ? 'LIVE' : 'DEMO'))
       .catch(() => setRegStatus('DEMO'));
-    return () => ctrl.abort();
   }, []);
 
   useEffect(() => {
@@ -194,26 +183,11 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
           }
         } catch { /* offline: demo markers already cover hospitals */ }
       }
-      if (layers.includes('EARTHQUAKE')) {
-        try {
-          const q = await getEarthquakes();
-          const qs: Quake[] = q.data?.quakes.slice(0, 80) ?? [];
-          for (const e of qs) {
-            const mag = e.mag ?? 0;
-            L.circleMarker([e.lat, e.lon], {
-              radius: Math.max(3, Math.min(10, mag * 1.6)),
-              color: mag >= 6 ? '#ff5470' : mag >= 5 ? '#fb923c' : '#fbbf24',
-              fillOpacity: 0.75,
-            }).bindPopup(`<b>M${mag.toFixed(1)}</b> ${e.place}<br/>${e.time.slice(0, 16).replace('T', ' ')} UTC · USGS (${q.state})<br/><a href="${e.url}" target="_blank" rel="noreferrer">USGS event page</a>`).addTo(map!);
-          }
-        } catch { /* USGS unreachable — badge reports OFFLINE */ }
-      }
       if (layers.includes('WEATHER')) {
         L.marker([21.5, 79.0]).bindPopup(
           'Weather is a point readout (Open-Meteo LIVE) — see the weather panel. No fake raster is drawn.',
         ).addTo(map!);
       }
-      // FIRE: intentionally no markers — FIRMS needs a key. The badge below says so.
     })();
     return () => { dead = true; map?.remove(); map = null; };
     // Rebuild on layer toggle; view is restored from localStorage so position is preserved.
@@ -239,9 +213,7 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
         ))}
       </div>
       <div className="flex gap-2 flex-wrap mb-2 text-[10px]">
-        <span>QUAKES <StatusBadge status={quakeState} small /> {quakeCount > 0 && `${quakeCount} M2.5+/wk`}</span>
         <span>REGISTRY <StatusBadge status={regStatus} small /></span>
-        <span>FIRE <StatusBadge status="NOT_CONFIGURED" small /></span>
         <span className="text-slate-500">Position auto-saved · survives refresh</span>
       </div>
       <div ref={ref} style={{ height }} className="rounded-xl border border-[#1b314b]" role="application" aria-label="Disaster intelligence map" />
@@ -250,9 +222,9 @@ export default function DisasterMap({ height = 460 }: { height?: number }) {
         <span><i style={{ background: '#fbbf24' }} className="inline-block w-2.5 h-2.5" /> MODERATE</span>
         <span><i style={{ background: '#fb923c' }} className="inline-block w-2.5 h-2.5" /> HIGH</span>
         <span><i style={{ background: '#ff5470' }} className="inline-block w-2.5 h-2.5" /> CRITICAL</span>
-        <span>▲ QUAKE (USGS LIVE) · ● SENSOR · ■ INCIDENT (verified=rose)</span>
+        <span>● SENSOR · ■ INCIDENT (verified=rose)</span>
       </div>
-      <p className="text-[10px] text-slate-500 mt-1">Fallback rows: {DEMO_SOURCE}. Fire layer renders no markers until a FIRMS key is configured.</p>
+      <p className="text-[10px] text-slate-500 mt-1">Fallback rows: {DEMO_SOURCE}.</p>
     </div>
   );
 }

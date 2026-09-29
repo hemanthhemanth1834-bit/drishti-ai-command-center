@@ -152,8 +152,8 @@ export function RegionalStatus() {
     { name: 'North India', desc: 'Himalayan slopes and northern plains; landslide and winter-hazard context.', photoId: 'cz-north-everest' },
     { name: 'South India', desc: 'Peninsular plateau and long coasts; monsoon and cyclone context.', photoId: 'cz-south-ghats' },
     { name: 'East India', desc: 'Gangetic plains and Bay of Bengal coast; flood and cyclone context.', photoId: 'cz-east-delta' },
-    { name: 'West India', desc: 'Arid west, megacities and Arabian Sea coast; heat and urban-flood context.', photoId: 'cz-west-thar' },
-    { name: 'Central India', desc: 'Plateau, forests and farmland; heat and drought context.', photoId: 'cz-central-narmada' },
+    { name: 'West India', desc: 'Arid west, megacities and Arabian Sea coast; monsoon and urban-flood context.', photoId: 'cz-west-thar' },
+    { name: 'Central India', desc: 'Plateau, forests and farmland; monsoon variability context.', photoId: 'cz-central-narmada' },
     { name: 'Northeast India', desc: 'High hills, great rivers, extreme rainfall; landslide and flood context.', photoId: 'cz-ne-brahmaputra' },
   ];
 

@@ -148,10 +148,9 @@ export default function RiskMapPage() {
 
       <div className="dx-hud">
         <div className="dx-hud-edge" />
-        <div className="dx-micro">OPERATIONAL OVERLAY — RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX · QUAKE · FIRE</div>
+        <div className="dx-micro">OPERATIONAL OVERLAY — RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX</div>
         <p className="text-[11px] text-slate-400 mt-1 mb-2">
-          Unified 8-layer view with live USGS earthquakes and position preserved across refresh.
-          Fire markers stay off until a FIRMS key is configured — hotspots are never synthesized.
+          Unified 6-layer view with rainfall, flood and satellite layers and position preserved across refresh.
         </p>
         <DisasterMap height={440} />
       </div>

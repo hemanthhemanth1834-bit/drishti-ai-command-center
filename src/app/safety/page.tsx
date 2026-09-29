@@ -14,10 +14,7 @@ import { HeartPulse, ChevronDown } from 'lucide-react';
 const TYPES: { type: HazardType; emoji: string; title: string }[] = [
   { type: 'flood', emoji: '🌊', title: 'Flood' },
   { type: 'cyclone', emoji: '🌀', title: 'Cyclone' },
-  { type: 'earthquake', emoji: '🏚️', title: 'Earthquake' },
-  { type: 'fire', emoji: '🔥', title: 'Fire' },
   { type: 'landslide', emoji: '⛰️', title: 'Landslide' },
-  { type: 'heat', emoji: '🌡️', title: 'Extreme Heat' },
   { type: 'lightning', emoji: '⚡', title: 'Lightning' },
   { type: 'industrial', emoji: '🏭', title: 'Industrial Risk' },
 ];
