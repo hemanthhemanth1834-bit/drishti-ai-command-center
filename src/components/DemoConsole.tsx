@@ -28,7 +28,7 @@ export default function DemoConsole() {
         🎬 FULL DEMO SCENARIO <TrustBadge kind="DEMO" source="drives map · risk · alerts · dashboard" />
       </div>
       <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
-        {(Object.keys(DEMO_META) as DemoId[]).map((id) => (
+        {(['flood', 'cyclone'] as DemoId[]).map((id) => (
           <button
             key={id}
             onClick={() => {
