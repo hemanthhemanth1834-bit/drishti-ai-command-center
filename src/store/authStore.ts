@@ -28,13 +28,19 @@ let restorePromise: Promise<boolean> | null = null;
 /** Restore a persisted httpOnly-cookie session (refresh-safe).
  * Never touches localStorage/sessionStorage with tokens. Returns true when
  * the server recognizes the session cookie; false clears nothing (the server
- * already rejected the cookie). Result is cached per page load. */
+ * already rejected the cookie). Result is cached per page load.
+ *
+ * The /me probe carries a hard timeout: a stalled request must never leave
+ * callers (e.g. AuthGate's "Restoring session…" splash) hanging forever.
+ * Failures reset the cache so a later attempt can retry. */
 export function restoreSession(): Promise<boolean> {
   if (state.token || state.identity) return Promise.resolve(true);
   if (!restorePromise) {
     restorePromise = (async () => {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 10000);
       try {
-        const r = await fetch(`${API_BASE}/api/v1/auth/me`, { credentials: 'include' });
+        const r = await fetch(`${API_BASE}/api/v1/auth/me`, { credentials: 'include', signal: ctrl.signal });
         if (!r.ok) return false;
         const j = await r.json();
         state = {
@@ -50,8 +56,12 @@ export function restoreSession(): Promise<boolean> {
         return true;
       } catch {
         return false;
+      } finally {
+        clearTimeout(t);
       }
     })();
+    // Never cache a failure/hang forever — a later attempt may retry.
+    restorePromise.then((ok) => { if (!ok) restorePromise = null; });
   }
   return restorePromise;
 }

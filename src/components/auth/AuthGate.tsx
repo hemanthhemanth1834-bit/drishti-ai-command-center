@@ -27,7 +27,14 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
   const [restoring, setRestoring] = useState(() => !token && !identity);
   useEffect(() => {
     if (token || identity) { setRestoring(false); return; }
-    restoreSession().then(() => setRestoring(false));
+    // Belt-and-braces: even if the restore promise never settles, the splash
+    // must fall through to the login UI instead of hanging forever.
+    let dead = false;
+    const t = setTimeout(() => { if (!dead) setRestoring(false); }, 12000);
+    restoreSession()
+      .then(() => { if (!dead) setRestoring(false); })
+      .catch(() => { if (!dead) setRestoring(false); });
+    return () => { dead = true; clearTimeout(t); };
   }, [token, identity]);
 
   if (token || identity || !requiresAuth(pathname)) return <>{children}</>;
