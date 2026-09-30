@@ -480,7 +480,7 @@ export default function MasterCommandCenter() {
           <div className="bg-[#051424]/80 border border-[#1b314b] rounded-xl p-4">
             <div className="flex items-center gap-2 pb-3 border-b border-[#1b314b] mb-3">
               <Compass className="w-4 h-4 text-[#00d2ff]" />
-              <span className="text-xs font-bold text-white tracking-wider">LIVE DISASTER MAP // RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX · QUAKE · FIRE</span>
+              <span className="text-xs font-bold text-white tracking-wider">LIVE DISASTER MAP // RISK · EVACUATION · RESPONDERS · INFRA · SAT · WX</span>
               <span className="ml-auto text-[10px] text-slate-400">POSITION PRESERVED ACROSS REFRESH</span>
             </div>
             <DisasterMap height={460} />
