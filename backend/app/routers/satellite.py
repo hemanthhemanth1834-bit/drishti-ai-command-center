@@ -27,21 +27,6 @@ class SatelliteProvider:
         raise NotImplementedError
 
 
-class DemoSatelliteProvider(SatelliteProvider):
-    name = "Simulated observation (demo)"
-
-    def latest(self, lat: float, lon: float) -> dict:
-        seed = abs(hash((round(lat, 2), round(lon, 2)))) % 1000
-        return {
-            "lat": lat, "lon": lon,
-            "change_pct": round(2 + (seed % 140) / 10, 2),
-            "vegetation_delta": round(-((seed % 60) / 10), 2),
-            "resolution_m": "30m", "data_type": "optical-demo",
-            "source": "SIMULATED", "data_status": "DEMO",
-            "captured_at": datetime.now(timezone.utc).isoformat(),
-        }
-
-
 class OpenTileProvider(SatelliteProvider):
     """EXTERNAL open tiles (Esri/OSM) for context — not tasking, not analysis."""
     name = "Open tile context (external)"
@@ -56,18 +41,20 @@ class OpenTileProvider(SatelliteProvider):
 class ObsIn(BaseModel):
     lat: float
     lon: float
-    change_pct: float = 0.0
-    vegetation_delta: float = 0.0
-    resolution_m: str = "30m"
-    data_type: str = "optical-demo"
-    source: str = "SIMULATED"
+    change_pct: float
+    vegetation_delta: float
+    resolution_m: str
+    data_type: str
+    source: str
 
 
 @router.get("/latest")
-def latest(lat: float, lon: float, provider: str = "demo"):
+def latest(lat: float, lon: float, provider: str = "external"):
     if provider == "external":
         return OpenTileProvider().latest(lat, lon)
-    return DemoSatelliteProvider().latest(lat, lon)
+    return {"lat": lat, "lon": lon, "source": "NONE",
+            "data_status": "NOT_CONFIGURED",
+            "note": "No simulated satellite observation is generated. Use NASA GIBS for imagery context."}
 
 
 @router.post("/observations")
@@ -103,10 +90,10 @@ def change(lat: float, lon: float, db: Session = Depends(get_db)):
     if len(near) < 2:
         return {"status": "INSUFFICIENT_DATA",
                 "note": "Need >=2 observations near this point.",
-                "data_status": "DEMO"}
+                "data_status": "INSUFFICIENT_DATA"}
     a, b = near[0], near[1]
     return {"status": "OK", "delta_change_pct": round(a.change_pct - b.change_pct, 2),
             "delta_vegetation": round(a.vegetation_delta - b.vegetation_delta, 2),
             "from": b.captured_at.isoformat() if b.captured_at else None,
             "to": a.captured_at.isoformat() if a.captured_at else None,
-            "data_status": "DEMO" if a.source == "SIMULATED" else a.source}
+            "data_status": a.source}
