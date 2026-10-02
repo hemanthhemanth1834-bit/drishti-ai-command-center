@@ -7,7 +7,6 @@
  * according to what their pages actually do:
  *  - reunion, recovery: no API calls anywhere -> SIMULATION
  *  - shelter: page states DEMO DATA -> DEMO
- *  - drones, twin, simulation: simulated links -> SIMULATION
  *  - location: works from keyless OSM + browser GPS, no permission
  *    required for search/map -> AVAILABLE (never a live-data claim)
  *  - satellite: GIBS daily NRT -> LATEST_AVAILABLE (definitionally true)
@@ -27,7 +26,6 @@ interface Module {
 }
 
 const MODULES: Module[] = [
-  { href: '/drones', label: 'DRONE SWARM & SAR', kind: 'sim' },
   { href: '/twin', label: '3D DIGITAL TWIN', kind: 'sim' },
   { href: '/location', label: 'LOCATION INTEL', kind: 'available' },
   { href: '/simulation', label: 'WHAT-IF COPILOT', kind: 'sim' },
@@ -37,7 +35,6 @@ const MODULES: Module[] = [
   { href: '/recovery', label: 'RECOVERY & AUDIT', kind: 'sim' },
   { href: '/weather', label: 'WEATHER INTEL', kind: 'weather' },
   { href: '/satellite', label: 'SATELLITE INTEL', kind: 'satellite' },
-  { href: '/sensors', label: 'SENSOR NETWORK', kind: 'probe', probe: '/api/v1/sensors/network' },
   { href: '/roads', label: 'ROAD INTEL', kind: 'probe', probe: '/api/v1/roads' },
   { href: '/response', label: 'RESPONSE BOARD', kind: 'probe', probe: '/api/v1/response/queue' },
   { href: '/alerts', label: 'ALERT CENTER', kind: 'probe', probe: '/api/v1/alerts?limit=1' },
