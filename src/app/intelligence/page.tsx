@@ -14,15 +14,11 @@ const DisasterGlobe = dynamic(
 );
 
 const MODULES = [
-  ['/prediction', 'Prediction', 'AI landslide probability + WHY'],
   ['/risk-map', 'Risk Map', 'NER GIS heatmap + layers'],
   ['/weather', 'Weather', 'Rainfall intelligence + thresholds'],
-  ['/sensors', 'Sensors', 'Soil-moisture network + ingest'],
   ['/satellite', 'Satellite', 'Change observation + provenance'],
   ['/terrain', 'Terrain', 'Slope/aspect + twin params'],
   ['/history', 'History', 'Incident DB + CSV import'],
-  ['/ml', 'ML Lab', 'Train/infer/explain pipeline'],
-  ['/model-health', 'Model Health', 'Metrics + drift (honest)'],
   ['/incidents', 'Incidents', 'Field reports + verify'],
   ['/roads', 'Roads', 'Blockage + impact'],
   ['/response', 'Response', 'P1..P4 priority queue'],
@@ -37,21 +33,19 @@ function Dot({ ok }: { ok: boolean }) {
 }
 
 export default function IntelligencePage() {
-  const ml = usePlatform<{ status: string; f1: unknown }>('/api/v1/ml/health');
   const wx = usePlatform<{ providers: { name: string; status: string }[] }>('/api/v1/weather/providers');
   const ch = usePlatform<{ channels: { channel: string; status: string }[] }>('/api/v1/notifications/channels');
   const sy = usePlatform<{ pending_verification: number }>('/api/v1/sync/status');
   return (
     <>
       <LocationContextBar />
-    <ModuleShell title="Intelligence Hub" sub="REAL/OPEN DATA → AI/ML → RISK → GIS → EARLY WARNING → RESPONSE → VERIFY → LEARN" status="LIVE" source="Platform APIs + open providers">
+    <ModuleShell title="Intelligence Hub" sub="REAL/OPEN DATA → RAINFALL → FLOOD RISK → GIS → EARLY WARNING → RESPONSE → VERIFY → LEARN" status="LIVE" source="Platform APIs + open providers">
       <SituationBrief />
       <DisasterGlobe height={320} />
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">SYSTEM STATUS</div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mt-2">
-          <div>ML model <Dot ok={ml.data?.status === 'HEALTHY'} /> {ml.loading ? '…' : String(ml.data?.status ?? ml.status)}</div>
           <div>Weather <Dot ok={!!wx.data} /> {wx.loading ? '…' : `${wx.data?.providers.length ?? 0} providers`}</div>
           <div>Notify <Dot ok={!!ch.data} /> {ch.loading ? '…' : `${ch.data?.channels.length ?? 0} channels`}</div>
           <div>Sync queue <Dot ok={(sy.data?.pending_verification ?? 0) === 0} /> {sy.loading ? '…' : `${sy.data?.pending_verification ?? '?'} pending`}</div>
@@ -60,7 +54,7 @@ export default function IntelligencePage() {
       <div className="dx-hud">
         <div className="dx-hud-edge" />
         <div className="dx-micro">PIPELINE</div>
-        <p className="text-xs text-slate-300 mt-1">FREE DATA (Open-Meteo · SoilGrids · OSM · open DEM) → INGEST → VALIDATE → FEATURES → OPEN-SOURCE ML → RISK → GIS HEATMAP → EARLY WARNING → WEB PUSH/APP → AUTHORITY + CITIZEN PWA → FIELD REPORT → IMAGE ANALYSIS → DATABASE → LEARN</p>
+        <p className="text-xs text-slate-300 mt-1">FREE DATA (Open-Meteo · NASA GIBS · OSM · open DEM) → INGEST → VALIDATE → RAINFALL FEATURES → FLOOD RISK → GIS → EARLY WARNING → AUTHORITY + CITIZEN RESPONSE</p>
       </div>
       <div className="dx-hud">
         <div className="dx-hud-edge" />
