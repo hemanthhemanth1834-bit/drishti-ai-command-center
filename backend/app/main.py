@@ -1,4 +1,4 @@
-"""DRISHTI-X FastAPI telemetry service — local dev only."""
+"""DRISHTI-X FastAPI backend for rainfall, flood and response intelligence."""
 import os
 
 from fastapi import FastAPI, HTTPException, Request
@@ -57,19 +57,7 @@ class BackendPrefixStripMiddleware:
                 scope["path"] = path[len(self.PREFIX):]
         await self.app(scope, receive, send)
 
-def verify_gateway_key(
-    credentials: HTTPAuthorizationCredentials | None = Depends(security),
-):
-    if not credentials or credentials.credentials != DEV_GATEWAY_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or missing gateway Bearer key",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return credentials.credentials
-
-
-app = FastAPI(title="DRISHTI-X Telemetry Mesh", version="0.1.0")
+app = FastAPI(title="DRISHTI-X Flood Intelligence Backend", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
