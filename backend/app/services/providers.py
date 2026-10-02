@@ -125,7 +125,7 @@ class NASAGPMPrecip(PrecipitationProvider):
             return {"error": "Provider not configured for bulk IMERG",
                     "detail": "Set EARTHDATA_TOKEN (free NASA Earthdata login) "
                               "or use Open-Meteo fallback. GIBS visualisation "
-                              "layers remain usable client-side.",
+                              "layers remain usable client-side."
                     "source": "NASA GPM", "data_status": "NOT_CONFIGURED"}
 
 
@@ -173,9 +173,9 @@ def precipitation(lat: float, lon: float) -> Dict:
         if "error" not in out:
             out["fallback_chain"] = chain
             return out
-    return {"rain_1h": 4.0, "rain_24h": 42.0, "source": "DEMO",
-            "data_status": "DEMO",
-            "fallback_chain": chain + ["DemoPrecipitation=DEMO"]}
+    return {"error": "No live precipitation provider available",
+            "source": "Open-Meteo/NASA GPM", "data_status": "UNAVAILABLE",
+            "fallback_chain": chain}
 
 
 # ---------------- Satellite ----------------
