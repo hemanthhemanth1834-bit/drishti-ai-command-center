@@ -90,8 +90,6 @@ async def safe_errors(request: Request, exc: Exception):
                         content={"detail": "Internal error (see server logs)",
                                  "path": str(request.url.path)})
 
-_current_scenario = "nominal"
-
 app.include_router(api_v1_router)
 app.include_router(nesafe_router)
 app.include_router(weather_router)
@@ -122,6 +120,6 @@ app.add_middleware(BackendPrefixStripMiddleware)
 
 @app.get("/api/health")
 def health():
-    return {"ok": True, "service": "drishti-telemetry", "scenario": _current_scenario}
+    return {"ok": True, "service": "drishti-x"}
 
 
