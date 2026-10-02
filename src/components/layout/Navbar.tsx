@@ -8,7 +8,6 @@ import { evaluateAlerts, incidentLevel, type IncidentTone } from '@/utils/alertR
 import {
   ShieldAlert,
   Activity,
-  Plane,
   Building2,
   Cpu,
   Users,
@@ -46,7 +45,6 @@ const COMMAND_ITEMS = [
   { href: '/ops', labelKey: 'nav_ops', icon: Gauge },
   { href: '/demo', labelKey: 'nav_demo', icon: Clapperboard },
   { href: '/sources', labelKey: 'nav_sources', icon: Database },
-  { href: '/drones', labelKey: 'nav_drones', icon: Plane },
   { href: '/twin', labelKey: 'nav_twin', icon: Box },
   { href: '/location', labelKey: 'nav_location', icon: MapPin },
   { href: '/simulation', labelKey: 'nav_sim', icon: Cpu },
@@ -87,8 +85,7 @@ export default function Navbar({
   wsConnected,
   incident,
 }: {
-  wsConnected: boolean;
-  /** Full telemetry-aware posture (homepage/simulation pass this). */
+  wsConnected?: boolean;
   incident?: { label: string; tone: IncidentTone };
 }) {
   const pathname = usePathname();
@@ -96,7 +93,8 @@ export default function Navbar({
   const ops = useOps();
   const tr = useT();
   const items = mode === 'public' ? PUBLIC_ITEMS : COMMAND_ITEMS;
-  // Fallback posture from shared ops state (scenario + spillway rules need no telemetry).
+  const backendOnline = wsConnected === true;
+  // Posture comes from the shared alert rules; no telemetry stream is required.
   const posture =
     incident ??
     incidentLevel(
@@ -176,11 +174,11 @@ export default function Navbar({
           <div className="hidden md:flex items-center gap-1.5 px-2 py-1 rounded bg-[#051424] border border-[#1b314b]">
             <span
               className={`w-2 h-2 rounded-full ${
-                wsConnected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
+                backendOnline ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'
               }`}
             />
-            <span className={wsConnected ? 'text-emerald-400' : 'text-rose-400'}>
-              {wsConnected ? 'LIVE 868MHz WS' : 'OFFLINE'}
+            <span className={backendOnline ? 'text-emerald-400' : 'text-rose-400'}>
+              {backendOnline ? 'BACKEND ONLINE' : 'BACKEND OFFLINE'}
             </span>
           </div>
           <div
