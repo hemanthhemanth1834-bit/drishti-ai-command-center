@@ -12,3 +12,6 @@ PyJWT==2.14.0
 # Optional: PostgreSQL driver. Only used when DATABASE_URL is set to a
 # postgresql:// URL; default remains local SQLite (no server needed).
 psycopg2-binary==2.9.13
+# Unified rainfall/inundation ML runtime
+numpy>=2.0
+joblib>=1.3
