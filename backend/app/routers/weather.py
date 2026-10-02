@@ -3,7 +3,7 @@
 - OpenMeteoProvider: FREE, no key, real observations (EXTERNAL/LIVE).
 - IMDProvider: official integration point. Without credentials it reports
   "not configured" — NO fake IMD API is invented.
-- FallbackDemoProvider: clearly-labelled simulation when offline/keyless.
+- No synthetic fallback: upstream failure is returned as UNAVAILABLE.
 """
 from __future__ import annotations
 
@@ -71,6 +71,22 @@ class IMDProvider(WeatherProvider):
                               "No IMD data is synthesized.",
                     "source": "IMD", "data_status": "NOT_CONFIGURED"}
         raise NotImplementedError("IMD API mapping pending credentials")
+
+
+def get_weather(lat: float, lon: float, provider: str = "auto") -> Dict:
+    if provider == "imd":
+        return IMDProvider().current(lat, lon)
+    if provider == "demo":
+        return {"error": "Demo weather provider removed", "source": "DEMO", "data_status": "REMOVED"}
+    try:
+        return OpenMeteoProvider().current(lat, lon)
+    except Exception as e:
+        return {
+            "error": "Open-Meteo unavailable",
+            "detail": f"No synthetic weather fallback is used ({type(e).__name__}).",
+            "source": "Open-Meteo",
+            "data_status": "UNAVAILABLE",
+        }
 
 
 def threshold_state(rain_24h: float) -> str:
