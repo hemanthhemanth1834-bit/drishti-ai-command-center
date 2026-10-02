@@ -55,7 +55,7 @@ def register(spec: ProviderSpec) -> ProviderSpec:
 def _specs() -> list[ProviderSpec]:
     """Load only providers retained by the unified application."""
     from app.services.providers import openmeteo
-    register(openmeteo.ProviderSpec if False else openmeteo.SPEC)
+    register(openmeteo.SPEC)
     return list(REGISTRY.values())
 
 def get_spec(source_id: str) -> ProviderSpec:
