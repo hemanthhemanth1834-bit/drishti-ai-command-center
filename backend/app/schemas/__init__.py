@@ -1,1 +1,0 @@
-"""DRISHTI-X schemas package."""
