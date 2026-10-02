@@ -1,8 +1,7 @@
 """Offline sync engine: field-device queue receiver + push subscriptions.
 
 Flow: Field Device (IndexedDB queue) -> POST /api/v1/sync/push ->
-server validates -> writes to incidents/sensor_readings -> returns receipt
-per item (never silently drops: every item gets accepted|rejected+reason).
+server validates -> writes verified incident reports -> returns a receipt per item.
 """
 from __future__ import annotations
 
@@ -58,14 +57,8 @@ def push(req: PushRequest, db: Session = Depends(get_db),
                 receipts.append({"client_id": item.client_id, "status": "accepted",
                                  "server_id": rid})
             elif item.kind == "reading":
-                p = item.payload
-                db.add(m.SensorReading(
-                    sensor_id=str(p.get("sensor_id", "unknown"))[:40],
-                    soil_moisture=float(p.get("soil_moisture", 0)),
-                    temperature=float(p.get("temperature", -273)),
-                    battery=float(p.get("battery", 100)),
-                    signal=float(p.get("signal", 100))))
-                receipts.append({"client_id": item.client_id, "status": "accepted"})
+                receipts.append({"client_id": item.client_id, "status": "rejected",
+                                 "reason": "sensor telemetry ingestion removed from the 26071-focused project"})
             else:
                 receipts.append({"client_id": item.client_id, "status": "rejected",
                                  "reason": f"unknown kind {item.kind}"})
