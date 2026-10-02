@@ -7,7 +7,7 @@ import Navbar from '@/components/layout/Navbar';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
-import { useOps, setOps, ackAlert } from '@/store/opsStore';
+import { useOps, ackAlert } from '@/store/opsStore';
 import { useIntel, pushEvent } from '@/store/intelStore';
 import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import { checkGeofenceBreach } from '@/utils/geofenceDetection';
