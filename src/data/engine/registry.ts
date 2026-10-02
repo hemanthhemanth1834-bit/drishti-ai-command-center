@@ -30,18 +30,6 @@ export const SOURCE_REGISTRY: SourceDefinition[] = [
     enabled: true,
   },
   {
-    id: 'nasa-firms', name: 'NASA FIRMS', category: 'fire',
-    baseUrl: 'https://firms.modaps.eosdis.nasa.gov/',
-    docsUrl: 'https://firms.modaps.eosdis.nasa.gov/api/',
-    dataTypes: ['active-fire'],
-    access: 'server-key', envVar: 'FIRMS_MAP_KEY',
-    rateLimitNotes: 'Free MAP_KEY signup; key lives ONLY in the backend proxy (/api/v1/fire); browser never sees it. Proxy 503s honestly when unset.',
-    attribution: 'Fire data: NASA FIRMS',
-    freshnessThresholdsMs: [3 * 3600 * 1000, 12 * 3600 * 1000],
-    adapter: 'FireDetectionAdapter (Step 24)',
-    enabled: true,
-  },
-  {
     id: 'nasa-eonet', name: 'NASA EONET', category: 'events',
     baseUrl: 'https://eonet.gsfc.nasa.gov/',
     docsUrl: 'https://eonet.gsfc.nasa.gov/docs/v3',
