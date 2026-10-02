@@ -20,12 +20,10 @@ import { Waveform } from '@/components/cinematic/AnimatedCounter';
 import CommandKpiRow from '@/components/command/CommandKpiRow';
 import ModuleStatusGrid from '@/components/command/ModuleStatusGrid';
 import SoundToggle from '@/components/cinematic/SoundToggle';
-import FloodTimeline from '@/components/three/FloodTimeline';
 import GeospatialIntelGallery from '@/components/cinematic/GeospatialIntelGallery';
 import LiveStatusStrip from '@/components/command/LiveStatusStrip';
 import SituationBrief from '@/components/intelligence/SituationBrief';
 import LiveImagery from '@/components/live/LiveImagery';
-import { soundSynth } from '@/utils/audioSynth';
 import { Compass, Satellite } from 'lucide-react';
 
 // Dynamic imports to prevent SSR window issues for Leaflet and Three.js
@@ -53,7 +51,6 @@ export default function MasterCommandCenter() {
   const intel = useIntel();
   const aiTone = intel.aiTone;
   const [posterOk, setPosterOk] = useState(true);
-  const [floodWater, setFloodWater] = useState(0);
   const [demoOpen, setDemoOpen] = useState(false);
 
   // Presentation Mode shortcut: P (guarded — never hijacks form fields).
@@ -177,8 +174,7 @@ export default function MasterCommandCenter() {
 
         {/* Flood forecast strip */}
         <div className="px-4">
-          <FloodTimeline onChange={(_h, w) => setFloodWater(w)} baseSurgeM={0} />
-        </div>
+          </div>
 
         {/* Main Command Workstation */}
         <div className="flex-1 p-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
