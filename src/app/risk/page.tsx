@@ -8,12 +8,10 @@ import RiskChecker, { type RiskPlace } from '@/components/RiskChecker';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import HudPanel from '@/components/cinematic/HudPanel';
 import RiskVisualizer from '@/components/cinematic/RiskVisualizer';
-import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useIntel, toneForScore } from '@/store/intelStore';
 import { Crosshair } from 'lucide-react';
 
 export default function RiskPage() {
-  const { connected } = useTelemetrySocket();
   const [place, setPlace] = useState<RiskPlace | null>(null);
   // Shared truth (V3): SOS anywhere turns this view's globe red; a completed
   // check tints it to the same tone COMMAND shows. No local tone duplicate.
@@ -25,7 +23,7 @@ export default function RiskPage() {
   return (
     <CinematicShell intensity={0.7} label="DRISHTI-X risk intelligence" tone={shellTone} focusKind={shellFocus}>
       <main className="min-h-screen text-slate-200 font-mono">
-        <Navbar wsConnected={connected} />
+        <Navbar />
         <div className="p-4 max-w-3xl mx-auto flex flex-col gap-3 pb-10">
           {sosActive && (
             <div className="dx-shared-sos" role="alert">
