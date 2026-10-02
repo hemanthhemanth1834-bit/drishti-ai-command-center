@@ -12,8 +12,8 @@ import joblib
 import numpy as np
 
 from ml.features.nowcast import intensity_category
+from ml.features.rainfall import MODEL_FEATURES
 from ml.registry import registry as registry_mod
-from ml.training.train_rainfall import MODEL_FEATURES
 
 
 def artifact_path(entry: dict) -> Path:
