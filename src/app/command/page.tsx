@@ -1,18 +1,16 @@
 // src/app/command/page.tsx — DRISHTI-X Master Command Center (cinematic upgrade)
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import LocationContextBar from '@/components/location/LocationContextBar';
 import GeofenceBreachModal from '@/components/alerts/GeofenceBreachModal';
 import AlertBanner from '@/components/alerts/AlertBanner';
-import { useTelemetrySocket } from '@/hooks/useTelemetrySocket';
 import { useOps, setOps, ackAlert } from '@/store/opsStore';
 import { useIntel, pushEvent } from '@/store/intelStore';
 import { evaluateAlerts, incidentLevel } from '@/utils/alertRules';
 import { checkGeofenceBreach } from '@/utils/geofenceDetection';
-import { setScenario } from '@/utils/apiClient';
 import CinematicShell from '@/components/cinematic/CinematicShell';
 import StatusHeader from '@/components/cinematic/StatusHeader';
 import HudPanel from '@/components/cinematic/HudPanel';
@@ -21,7 +19,6 @@ import DemoMode from '@/components/cinematic/DemoMode';
 import { Waveform } from '@/components/cinematic/AnimatedCounter';
 import CommandKpiRow from '@/components/command/CommandKpiRow';
 import ModuleStatusGrid from '@/components/command/ModuleStatusGrid';
-import RadarSweep from '@/components/cinematic/RadarSweep';
 import SoundToggle from '@/components/cinematic/SoundToggle';
 import FloodTimeline from '@/components/three/FloodTimeline';
 import GeospatialIntelGallery from '@/components/cinematic/GeospatialIntelGallery';
@@ -29,15 +26,11 @@ import LiveStatusStrip from '@/components/command/LiveStatusStrip';
 import SituationBrief from '@/components/intelligence/SituationBrief';
 import LiveImagery from '@/components/live/LiveImagery';
 import { soundSynth } from '@/utils/audioSynth';
-import { Activity, Radio, Compass, Satellite } from 'lucide-react';
+import { Compass, Satellite } from 'lucide-react';
 
 // Dynamic imports to prevent SSR window issues for Leaflet and Three.js
 const DigitalTwinCanvas = dynamic(
   () => import('@/components/3d/DigitalTwinCanvas'),
-  { ssr: false }
-);
-const DroneLeafletTracker = dynamic(
-  () => import('@/components/maps/DroneLeafletTracker'),
   { ssr: false }
 );
 const AiCoreScene = dynamic(
@@ -53,42 +46,13 @@ const DisasterMap = dynamic(
   { ssr: false, loading: () => <p className="text-xs text-slate-400">Loading live map…</p> }
 );
 
-const SCENARIOS = ['nominal', 'storm', 'swarm-surge', 'gps-denied'];
-
-/** Inference status ribbon: ANALYZING → INFERENCE COMPLETE (simulated rule output). */
-function AiInferenceStatus({ cycleKey }: { cycleKey: string }) {
-  const [stage, setStage] = useState<"analyzing" | "done">("analyzing");
-  useEffect(() => {
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      setStage("done");
-      return;
-    }
-    setStage("analyzing");
-    const t = window.setTimeout(() => setStage("done"), 1600);
-    return () => window.clearTimeout(t);
-  }, [cycleKey]);
-  return (
-    <div className="dx-ai-status" role="status" aria-live="polite">
-      {stage === "analyzing" ? (
-        <span>ANALYZING<span className="dx-dots" aria-hidden="true"><i>•</i><i>•</i><i>•</i></span></span>
-      ) : (
-        <span className="dx-ai-done">INFERENCE COMPLETE · RULE OUTPUT <span className="dx-sim">SIMULATION</span></span>
-      )}
-    </div>
-  );
-}
-
 export default function MasterCommandCenter() {
-  const { packets: telemetryLogs, live, connected: wsConnected } =
-    useTelemetrySocket();
   const ops = useOps();
   // Shared DRISHTI-X intelligence truth (V3): risk, SOS, focus, tone and
   // events are the same objects every route reads — one coherent system.
   const intel = useIntel();
   const aiTone = intel.aiTone;
-  const scenario = ops.scenario;
   const [activeTab, setActiveTab] = useState<'3D' | 'RADAR'>('3D');
-  const [notice, setNotice] = useState('');
   const [posterOk, setPosterOk] = useState(true);
   const [floodWater, setFloodWater] = useState(0);
   const [demoOpen, setDemoOpen] = useState(false);
@@ -108,83 +72,30 @@ export default function MasterCommandCenter() {
     return () => window.removeEventListener("keydown", onKey);
   }, [demoOpen]);
 
-  const lat = live?.lat ?? 17.385;
-  const lon = live?.lon ?? 78.4867;
-  const alt = live?.alt_m ?? 120;
-
+  const lat = 17.385;
+  const lon = 78.4867;
   const alerts = evaluateAlerts({
-    scenario,
-    spillwayK: ops.spillwayK,
-    batteryPct: live?.battery_pct,
-    signalPct: live?.signal_pct,
-    geofenceBreach: checkGeofenceBreach({ lat, lon }),
-    droneId: live?.drone_id,
+    scenario: 'nominal',
+    spillwayK: 0,
+    geofenceBreach: false,
   });
-
-  // Scenario drill numbers feed the simulation panels below (AI recommendation
-  // POP). Operational KPIs above read real backend APIs.
-  const tickerPeople =
-    ({ storm: 24860, 'swarm-surge': 5200, 'gps-denied': 800, nominal: 120 } as Record<string, number>)[scenario] ?? 120;
-
-  // Measured stream rate from real packet arrivals only (null = unmeasured).
-  const arrivalRef = useRef<number[]>([]);
-  const [measHz, setMeasHz] = useState<number | null>(null);
-  useEffect(() => {
-    if (!wsConnected || telemetryLogs.length === 0) {
-      arrivalRef.current = [];
-      setMeasHz(null);
-      return;
-    }
-    const now = Date.now();
-    arrivalRef.current = [...arrivalRef.current, now].slice(-10);
-    const a = arrivalRef.current;
-    if (a.length >= 3) {
-      const spanS = (a[a.length - 1] - a[0]) / 1000;
-      setMeasHz(spanS > 0 ? Math.round(((a.length - 1) / spanS) * 10) / 10 : null);
-    } else {
-      setMeasHz(null);
-    }
-  }, [telemetryLogs, wsConnected]);
-
-  async function changeScenario(s: string) {
-    setOps({ scenario: s, acked: [] });
-    soundSynth.scenarioChange();
-    pushEvent({
-      id: `scenario-${s}-${ops.spillwayK}`,
-      type: 'SYSTEM',
-      severity: s === 'storm' ? 'warning' : 'info',
-      title: `Scenario → ${s} (spillway ${ops.spillwayK}k cusecs)`,
-      source: 'command',
-    });
-    try {
-      await setScenario(s);
-      setNotice(`scenario → ${s}`);
-    } catch (e: unknown) {
-      setNotice(`WS live, REST needs backend: ${(e as Error).message}`);
-    }
-  }
 
   return (
     <CinematicShell label="DRISHTI-X command center" tone={aiTone} focusKind={intel.focus?.kind ?? null}>
-      {demoOpen && (
-        <DemoMode
-          onExit={() => setDemoOpen(false)}
-          live={live ? { drone_id: live.drone_id, lat: live.lat, lon: live.lon } : null}
-        />
-      )}
+      {demoOpen && <DemoMode onExit={() => setDemoOpen(false)} live={null} />}
       <main className="min-h-screen text-slate-200 flex flex-col font-mono">
-        <Navbar wsConnected={wsConnected} incident={incidentLevel(alerts)} />
+        <Navbar incident={incidentLevel(alerts)} />
         <LocationContextBar />
-        <GeofenceBreachModal lat={lat} lon={lon} droneId={live?.drone_id} />
+        <GeofenceBreachModal lat={lat} lon={lon} />
 
         {/* Command status strip — live values flow into shared ticker */}
         <StatusHeader
-          system={wsConnected ? 'ONLINE' : 'OFFLINE'}
-          network={wsConnected ? 'STABLE' : 'SIM LINK'}
+          system="READY"
+          network="PUBLIC DATA"
           aiConfidence={null}
           dronesActive={null}
-          dataHz={measHz}
-          wsConnected={wsConnected}
+          dataHz={null}
+          wsConnected={false}
           riskScore={intel.riskCheckScore}
           alertCount={alerts.length}
           sosActive={intel.sos.phase !== 'idle'}
@@ -294,40 +205,6 @@ export default function MasterCommandCenter() {
                     ▶ PRESENT
                   </button>
                   <SoundToggle />
-                  <select
-                    value={scenario}
-                    onChange={(e) => changeScenario(e.target.value)}
-                    className="bg-[#020b14] border border-[#1b314b] text-slate-300 text-xs rounded px-2 py-1"
-                    title="Telemetry scenario"
-                  >
-                    {SCENARIOS.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="flex items-center gap-1 bg-[#020b14] p-0.5 rounded border border-[#1b314b]">
-                    <button
-                      onClick={() => setActiveTab('3D')}
-                      className={`px-3 py-1 text-xs rounded transition-all ${
-                        activeTab === '3D'
-                          ? 'bg-[#00d2ff] text-black font-bold'
-                          : 'text-slate-400'
-                      }`}
-                    >
-                      3D Digital Twin
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('RADAR')}
-                      className={`px-3 py-1 text-xs rounded transition-all ${
-                        activeTab === 'RADAR'
-                          ? 'bg-[#00d2ff] text-black font-bold'
-                          : 'text-slate-400'
-                      }`}
-                    >
-                      Leaflet Radar
-                    </button>
-                  </div>
                 </div>
               </div>
               {/* Viewport Body */}
@@ -337,11 +214,8 @@ export default function MasterCommandCenter() {
                 ) : (
                   <DroneLeafletTracker lat={lat} lon={lon} />
                 )}
-                {/* Overlay telemetry watermark */}
                 <div className="absolute bottom-3 left-3 bg-[#030d17]/80 backdrop-blur border border-[#1b314b] p-2 rounded text-[11px] text-[#00d2ff] pointer-events-none">
-                  <span>STREAM: {wsConnected ? (measHz != null ? `${measHz.toFixed(1)} Hz WS MEASURED` : 'WS CONNECTING…') : 'SIM LINK · RATE N/A'}</span> •{' '}
-                  <span>ALT: {alt.toFixed(1)}m</span>
-                  {notice ? <span> • {notice}</span> : null}
+                  <span>3D FLOOD SCENARIO · SIMULATION</span> • <span>NO LIVE TELEMETRY</span>
                 </div>
               </div>
             </div>
@@ -349,26 +223,20 @@ export default function MasterCommandCenter() {
             {/* Live rule-driven hazard banner */}
             <AlertBanner alerts={alerts} acked={ops.acked} onAck={ackAlert} />
 
-            {/* Radar + incident timeline */}
+            {/* Verified data status */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <HudPanel micro="SENSOR FUSION" title="SAR RADAR SWEEP">
-                <RadarSweep />
+              <HudPanel micro="DATA STATUS" title="EARLY-WARNING INPUTS">
+                <div className="space-y-2 text-[11px] text-slate-300">
+                  <div className="p-2 rounded bg-[#081a2c] border border-[#132d4a]">WEATHER · Open-Meteo · LIVE when upstream is reachable</div>
+                  <div className="p-2 rounded bg-[#081a2c] border border-[#132d4a]">SATELLITE · NASA GIBS context imagery · NOT an analysis observation</div>
+                  <div className="p-2 rounded bg-[#081a2c] border border-[#132d4a]">RADAR · NOT CONNECTED · no synthetic radar field is generated</div>
+                  <div className="p-2 rounded bg-[#081a2c] border border-[#132d4a]">NWP · NOT CONNECTED · no NWP fusion is claimed</div>
+                </div>
               </HudPanel>
-              <HudPanel micro="RESPONSE LEDGER" title="INCIDENT TIMELINE" right={<span className="dx-sim">SIMULATION</span>}>
-                <div className="dx-timeline text-[11px]">
-                  {[
-                    ['10:42:18', 'Flood alert generated', 'AUTO · RULE ENGINE', 'DONE'],
-                    ['10:43:04', 'AI rule evaluation completed (no live score)', 'HYDRA-NET · LOCAL', 'DONE'],
-                    ['10:44:17', 'Drone DRX-07 dispatched', 'OPS · SIM', 'DONE'],
-                    ['10:47:31', 'Civilian thermal signature · Ward 14', 'FLIR · SIM', 'ACTIVE'],
-                    ['10:48:02', 'Rescue approval pending', 'COMMANDER', 'QUEUED'],
-                  ].map(([t, what, who, st]) => (
-                    <div key={t} className="dx-tl-item">
-                      <div className="text-[#00d2ff] font-bold">{t} · {st}</div>
-                      <div className="text-slate-200">{what}</div>
-                      <div className="text-slate-500">{who}</div>
-                    </div>
-                  ))}
+              <HudPanel micro="RESPONSE LEDGER" title="OPERATIONAL STATUS">
+                <div className="text-[11px] text-slate-300 space-y-2">
+                  <p>Alerts and response tools remain available for verified reports and live provider data.</p>
+                  <p className="text-slate-500">No fabricated dispatch, drone, population, or sensor telemetry is shown.</p>
                 </div>
               </HudPanel>
             </div>
@@ -376,53 +244,18 @@ export default function MasterCommandCenter() {
 
           {/* Right Column: Live Telemetry & AI Decision Recommendations (5 Cols) */}
           <section className="lg:col-span-5 flex flex-col gap-3">
-            {/* AI Decision Panel — upgraded */}
             <HudPanel
-              micro="HYDRA-NET · PREDICTIVE INFERENCE · LOCAL"
-              title="AI INTELLIGENCE PANEL"
+              micro="PROVENANCE-FIRST INTELLIGENCE"
+              title="FLOOD WARNING STATUS"
               tone={aiTone}
-              right={<span className="text-[10px] bg-[#00d2ff]/20 text-[#00d2ff] px-2 py-0.5 rounded border border-[#00d2ff]/40">RULE OUTPUT · NO LIVE SCORE</span>}
+              right={<span className="text-[10px] bg-[#00d2ff]/20 text-[#00d2ff] px-2 py-0.5 rounded border border-[#00d2ff]/40">NO FABRICATED SCORE</span>}
             >
-              <AiInferenceStatus cycleKey={`${scenario}-${ops.spillwayK}`} />
-              <AiCoreScene
-                tone={aiTone}
-                height={210}
-              />
-              <div className="dx-aicore-meta" aria-label="AI core status">
-                <span><i className="dx-dot dx-dot-ok dx-pulse" aria-hidden="true" />AI ONLINE</span>
-                <span>HEALTH N/A (SIM)</span>
-                <span>THREAT: {aiTone === 'critical' ? 'CRITICAL' : aiTone === 'warn' ? 'ELEVATED' : 'NOMINAL'}</span>
-                <span>NET: {wsConnected ? 'LIVE' : 'SIM'}</span>
-                {intel.risk && <span>RISK CHECK: {intel.risk.level.toUpperCase()} {intel.risk.score}</span>}
-              </div>
-              <Waveform />
-              <div className="mt-3 space-y-2 text-xs">
-                <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">
-                  <div className="text-slate-400 text-[10px]">RECOMMENDED INTERVENTION</div>
-                  <div className="text-[#00d2ff] font-bold mt-0.5">
-                    1. Dispatch NDRF Boat RB-07 to Ward 14 Bund Riverbed
-                  </div>
-                  <div className="text-slate-300 text-[11px] mt-1">
-                    REASON: thermal signature detected in Ward 14 · 3 civilians · water +{floodWater.toFixed(1)}m on T-forecast.
-                  </div>
-                  <div className="mt-2 grid grid-cols-3 gap-2 text-center text-[10px]">
-                    <div className="bg-[#020b14] rounded p-1.5 border border-[#1b314b]"><div className="text-slate-500">ETA</div><div className="text-white font-bold">04:48</div></div>
-                    <div className="bg-[#020b14] rounded p-1.5 border border-[#1b314b]"><div className="text-slate-500">RISK</div><div className="text-rose-400 font-bold">CRITICAL</div></div>
-                    <div className="bg-[#020b14] rounded p-1.5 border border-[#1b314b]"><div className="text-slate-500">POP.</div><div className="text-white font-bold">{tickerPeople.toLocaleString()}</div></div>
-                  </div>
-                  <div className="mt-2 text-[11px] text-slate-400">RESOURCES: 1 boat · 4 crew · 1 FLIR drone · ICU-03 standby</div>
-                  <button className="mt-2 w-full py-1.5 bg-[#00d2ff] hover:bg-[#00b0d6] text-black font-bold rounded transition-all">
-                    APPROVE DISPATCH ORDER
-                  </button>
-                </div>
-                <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">
-                  <div className="text-slate-400 text-[10px]">HOSPITAL BED RESERVATION</div>
-                  <div className="text-white font-bold mt-0.5">
-                    District General Hospital #07 (ICU-03 Cleaned &amp; Scrubbed)
-                  </div>
-                  <div className="text-slate-300 text-[11px] mt-1">
-                    Assigned to inbound critical hypothermia patient via Ambulance AMB-12.
-                  </div>
+              <div className="space-y-3 text-xs text-slate-300">
+                <p>DRISHTI-X only promotes a value to operational intelligence when its source and status are known.</p>
+                <div className="grid grid-cols-1 gap-2">
+                  <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">Rainfall: use the live provider status shown by the Weather/Rainfall modules.</div>
+                  <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">Inundation: modelled outputs must be labelled as modelled and uncalibrated until validated.</div>
+                  <div className="bg-[#091a2e] p-2.5 rounded border border-[#1b314b]">Uncertainty: not claimed when calibration data is unavailable.</div>
                 </div>
               </div>
             </HudPanel>
@@ -432,41 +265,6 @@ export default function MasterCommandCenter() {
 
             {/* AI situation brief: observed → analysis → recommendation */}
             <SituationBrief />
-
-            {/* Live Telemetry Feed Log */}
-            <div className="bg-[#051424]/85 backdrop-blur border border-[#1b314b] rounded-xl p-4 flex-1 flex flex-col">
-              <div className="flex items-center justify-between pb-2 border-b border-[#1b314b]">
-                <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <Radio className="w-4 h-4 text-emerald-400" />
-                  {wsConnected ? 'LIVE 868MHz LORA PACKET STREAM' : '868MHz PACKET STREAM · SIM LINK'}
-                </span>
-                <span className="text-[10px] text-slate-400">
-                  {live ? `${live.drone_id} • ${live.scenario}` : 'CYCLE: NO LIVE DATA'}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-slate-500 pt-1">
-                <Activity className="w-3.5 h-3.5 text-[#00d2ff]" /> TELEMETRY ACTIVITY
-              </div>
-              <div className="flex-1 overflow-y-auto max-h-[260px] mt-2 space-y-1 pr-1 font-mono text-[11px]">
-                {telemetryLogs.length === 0 ? (
-                  <div className="text-slate-500 py-6 text-center">
-                    Waiting for telemetry packets from FastAPI backend… <span className="dx-sim">SIM LINK READY</span>
-                  </div>
-                ) : (
-                  telemetryLogs.map((log) => (
-                    <div
-                      key={`${log.id}-${log.tick}`}
-                      className="p-1.5 rounded bg-[#081a2c] hover:bg-[#0e2740] border border-[#132d4a] flex items-center justify-between text-slate-300"
-                    >
-                      <span className="text-[#00d2ff] font-bold">{log.drone_id}</span>
-                      <span>Alt: {log.alt_m.toFixed(1)}m</span>
-                      <span>Bat: {log.battery_pct.toFixed(0)}%</span>
-                      <span className="text-emerald-400">{log.speed_ms.toFixed(1)} m/s</span>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
 
             {/* Module navigation with live per-module status */}
             <HudPanel micro="COMMAND MODULES" title="JUMP TO OPERATIONS">
