@@ -21,7 +21,6 @@ const ADAPTERS = [
   { name: 'NASA GIBS (visualisation)', use: 'context layers, keyless WMTS', status: 'EXTERNAL', note: 'Usable client-side now' },
   { name: 'NASA Earthdata (bulk)', use: 'IMERG/GPM download', status: 'NOT_CONFIGURED', note: 'Free login needed (EARTHDATA_TOKEN)' },
   { name: 'ISRO/Bhoonidhi', use: 'open data where available', status: 'NOT_CONFIGURED', note: 'Access varies by dataset' },
-  { name: 'Demo observation', use: 'pipeline development', status: 'DEMO', note: 'Clearly simulated' },
 ];
 
 export default function SatellitePage() {
@@ -29,7 +28,7 @@ export default function SatellitePage() {
   return (
     <>
       <LocationContextBar />
-    <ModuleShell title="Satellite Intelligence" sub="Imagery → preprocessing → change detection → risk engine. Gallery images are NEVER live observations." status="DEMO" source="SIMULATED + open tiles">
+    <ModuleShell title="Satellite Intelligence" sub="NASA GIBS imagery context with explicit provenance. No simulated satellite observations are generated." status="AVAILABLE" source="NASA GIBS / open imagery context">
       <LiveImagery />
       <SatelliteViewer />
       <div className="dx-hud">
