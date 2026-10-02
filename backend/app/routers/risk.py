@@ -1,89 +1,79 @@
-"""Transparent rule-based risk engine (deterministic, DEMO-labeled).
+"""Flood/heavy-rain risk screening.
 
-This is NOT the ML model — it is the auditable fallback/partner engine:
-fixed weights, no training, every output shows its arithmetic. The ML
-probability (when available) is reported alongside, never mixed silently.
+This endpoint is deterministic decision support, not a trained prediction model.
+It never fabricates rainfall, soil or ML values when an upstream provider is
+unavailable.
 """
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from ml.inference import REGISTRY, level_for  # noqa: E402
-from ml.schemas import LandslideFeatures  # noqa: E402
-
-from ..db import get_db
-from ..services.providers import soil_moisture
 from ..services.security import rate_limit
 from ..routers.terrain import analyze as terrain_analyze
 from ..routers.weather import get_weather
 
 router = APIRouter(prefix="/api/v1/risk", tags=["risk"])
 
-WEIGHTS = {"rainfall": 0.30, "soil": 0.25, "slope": 0.20,
-           "history": 0.10, "satellite": 0.10, "roads": 0.05}
+WEIGHTS = {"rainfall_24h": 0.60, "forecast_24h": 0.25, "low_slope_exposure": 0.15}
 
 
 class RiskRequest(BaseModel):
     lat: float
     lon: float
-    soil_moisture: float = 55.0
-    satellite_change: float = 2.0
-    history_count: int = 0
-    road_exposure: float = 0.5
+
+
+def _level(score: float) -> str:
+    if score >= 80:
+        return "CRITICAL"
+    if score >= 60:
+        return "WARNING"
+    if score >= 35:
+        return "WATCH"
+    return "NORMAL"
 
 
 @router.post("/assess")
-def assess(req: RiskRequest, _=Depends(rate_limit(120)),
-           db: Session = Depends(get_db)):
+def assess(req: RiskRequest, _=Depends(rate_limit(120))):
     wx = get_weather(req.lat, req.lon)
-    rain = float(wx.get("rain_24h", 0)) if "error" not in wx else 0.0
+    if "error" in wx:
+        return {
+            "score": None,
+            "probability": None,
+            "risk_level": "NOT_AVAILABLE",
+            "weights": WEIGHTS,
+            "parts": {},
+            "contributions": [],
+            "provenance": {"weather": wx.get("source", "Open-Meteo")},
+            "data_status": "UNAVAILABLE",
+            "note": "No synthetic rainfall or ML fallback is used.",
+        }
+
     terr = terrain_analyze(req.lat, req.lon)
-    soil = soil_moisture(req.lat, req.lon)
-    soil_pct = float(soil.get("soil_moisture_pct",
-                              req.soil_moisture if "error" in soil
-                              else req.soil_moisture))
+    rain24 = float(wx.get("rain_24h", 0.0))
+    forecast24 = float(wx.get("forecast_24h", 0.0))
+    slope = float(terr.get("slope_deg", 0.0))
+    low_slope = max(0.0, min(100.0, 100.0 - slope / 45.0 * 100.0))
     parts = {
-        "rainfall": min(1.0, rain / 250) * 100,
-        "soil": min(1.0, soil_pct / 100) * 100,
-        "slope": min(1.0, terr["slope_deg"] / 45) * 100,
-        "history": min(1.0, req.history_count / 5) * 100,
-        "satellite": min(1.0, req.satellite_change / 25) * 100,
-        "roads": req.road_exposure * 100,
+        "rainfall_24h": min(100.0, rain24 / 200.0 * 100.0),
+        "forecast_24h": min(100.0, forecast24 / 200.0 * 100.0),
+        "low_slope_exposure": low_slope,
     }
     score = round(sum(parts[k] * WEIGHTS[k] for k in parts), 1)
-    prob = round(score / 100, 4)
-    ml_prob = None
-    try:
-        feats = LandslideFeatures(rainfall_24h=rain, soil_moisture=soil_pct,
-                                  slope=terr["slope_deg"],
-                                  elevation=terr["elevation_m"],
-                                  satellite_change=req.satellite_change)
-        ml = REGISTRY.predict(req.lat, req.lon, feats)
-        ml_prob = {"probability": ml.landslide_probability,
-                   "model_version": ml.model_version,
-                   "simulated": ml.simulated}
-    except Exception:
-        pass
-    contribs = sorted(
-        ({"feature": k, "contribution_pct": round(parts[k] * WEIGHTS[k] / max(score, 0.01) * 100, 1)}
-         for k in parts), key=lambda c: c["contribution_pct"], reverse=True)
     return {
-        "score": score, "probability": prob, "risk_level": level_for(prob),
-        "weights": WEIGHTS, "parts": {k: round(v, 1) for k, v in parts.items()},
-        "contributions": contribs,
-        "ml alongside": ml_prob,
+        "score": score,
+        "probability": round(score / 100.0, 4),
+        "risk_level": _level(score),
+        "weights": WEIGHTS,
+        "parts": {k: round(v, 1) for k, v in parts.items()},
+        "contributions": [
+            {"feature": k, "contribution_pct": round(parts[k] * WEIGHTS[k] / max(score, 0.01) * 100.0, 1)}
+            for k in sorted(parts, key=parts.get, reverse=True)
+        ],
         "provenance": {
-            "rainfall": wx.get("source", "?"),
-            "soil": soil.get("source", "?"),
-            "terrain": terr.get("source", "?"),
+            "weather": wx.get("source", "Open-Meteo"),
+            "terrain": terr.get("source", "terrain"),
         },
-        "data_status": "DEMO",
-        "note": "Deterministic fallback engine — auditable arithmetic, "
-                "not a trained model.",
+        "data_status": wx.get("data_status", "UNKNOWN"),
+        "note": "Deterministic heavy-rain/flood screening score; not a validated ML probability.",
     }
