@@ -204,11 +204,7 @@ export default function MasterCommandCenter() {
               </div>
               {/* Viewport Body */}
               <div className="flex-1 relative bg-black min-h-0">
-                {activeTab === '3D' ? (
-                  <DigitalTwinCanvas alt={alt} />
-                ) : (
-                  <DroneLeafletTracker lat={lat} lon={lon} />
-                )}
+                <DigitalTwinCanvas alt={0} />
                 <div className="absolute bottom-3 left-3 bg-[#030d17]/80 backdrop-blur border border-[#1b314b] p-2 rounded text-[11px] text-[#00d2ff] pointer-events-none">
                   <span>3D FLOOD SCENARIO · SIMULATION</span> • <span>NO LIVE TELEMETRY</span>
                 </div>
