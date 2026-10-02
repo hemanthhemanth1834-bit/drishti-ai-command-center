@@ -1,18 +1,28 @@
-# DRISHTI-X known limitations (verified, honest)
+# DRISHTI-X Limitations
 
-- **Backend availability:** Railway trial expired 2026-09-26 → production backend OFFLINE. Frontend degrades honestly (OFFLINE/DEMO/STALE). Restore via any Docker host or funded Railway project; no code changes needed.
-- **FIRMS configuration:** no MAP_KEY → fire detections NOT_CONFIGURED; burn-scar context via MODIS 7-2-1 only.
-- **Copernicus/Sentinel configuration:** no credentials → NOT_CONFIGURED (live-probed 2026-09-26: catalog visible, no public imagery path). GIBS remains the operational satellite source.
-- **Synthetic ML data:** Landslide-RF-v1 trained on synthetic data (87% positive skew); metrics are demo-artifact values, immutable SYNTHETIC-DEMO label.
-- **Simulated Digital Twin scenarios:** procedural terrain/city/corridor/markers; corridor is not an official evacuation route.
-- **External API dependency:** Open-Meteo/USGS/GIBS/OSM/Nominatim/EONET subject to their quotas/policies; Nominatim 1 req/s throttled + cached in-app.
-- **Network dependency:** offline works from cache/IndexedDB queue; fresh data needs connectivity.
-- **Browser permissions:** geolocation behind user permission; WebGL required for full 3D (2D fallbacks included).
-- **WebGL/device limitations:** low-end devices use performance modes; pixel-ratio caps; reduced-motion support.
-- **Demo/simulation modules:** drones (no hardware fleet), shelter occupancy (DEMO rows), reunion/recovery flows (simulation aids, not dispatch systems).
-- **Data freshness limitations:** GIBS ~1-day NRT latency; EONET curation latency; USGS magnitudes revise; forecasts are model output.
-- **Auth/prototype caveats:** dev default gateway key, open CORS default, SQLite default, JWT without refresh rotation, no secret rotation automation.
-- **Data gaps:** sparse demo geography outside AP/Telangana showcases; duplicate incidents possible; no Background Sync; no bulk satellite ingestion.
-- **Screenshot QA:** no pixel-screenshot tooling in this environment; visual QA is structural (rendered-HTML) + responsive-class audit — stated, not oversold.
+DRISHTI-X is prototype decision-support software for SIH Problem Statement 26071. It is not a certified government early-warning system.
 
-None of these are disguised failures: each is an intentional architectural tradeoff or an external dependency with an honest UI state.
+## Current provider limitations
+
+- Open-Meteo weather/rainfall is live only when its upstream service is reachable.
+- NASA GIBS is used as imagery/context; GIBS imagery is not described as a tasked satellite observation or flood-analysis result.
+- Radar is not currently connected. No synthetic radar field is generated.
+- NWP fusion is not claimed until NWP variables are ingested and consumed by a model.
+- Official IMD feeds are not claimed unless a legitimate integration and credentials are configured.
+- Calibrated uncertainty is not claimed without a documented calibration implementation and validation dataset.
+
+## Removed synthetic/legacy behavior
+
+The 26071-focused build no longer exposes:
+
+- synthetic weather/rainfall fallbacks
+- simulated satellite observations
+- fake radar values
+- landslide ML prediction
+- generic soil/sensor telemetry
+- drone/fleet/swarm telemetry
+- fabricated operational dispatch/population values
+
+## Validation limitation
+
+Flood extent, flood depth, rainfall prediction, nowcasting and warning thresholds must be evaluated against documented real-world datasets before they can be described as validated operational predictions.
