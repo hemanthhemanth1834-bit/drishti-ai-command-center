@@ -1,39 +1,61 @@
-# DRISHTI-X final architecture
+# DRISHTI-X Final Architecture
 
-```mermaid
-flowchart TB
-    USER[Citizen / Responder / Operator]
-    ROUTES[Next.js 51 routes: home frozen + command + intelligence modules]
-    COMP[Components: home/ command/ map/ 3d/ fire/ earthquake/ weather/ events/ satellite/ model/ twin/]
-    ENGINE[Data Engine: client/cache/freshness/registry/adapters/health/provenance]
-    EXT[Free sources: Open-Meteo, USGS, GIBS, OSM/Nominatim/Overpass, EONET]
-    API[FastAPI 28 routers: ml, weather, rainfall, satellite, incidents, grid, risk, regions...]
-    ML[RF pipeline: schemas/train/inference/monitoring + artifacts]
-    DB[(SQLite dev file / Postgres-ready, 29 tables)]
-    ROUTES --> COMP
-    COMP --> ENGINE
-    COMP --> API
-    ENGINE --> EXT
-    API --> EXT
-    API --> ML
-    API --> DB
+## Scope
+
+DRISHTI-X is being consolidated around SIH 26071: heavy-rainfall early warning and inundation prediction.
+
+## Current application architecture
+
+```
+Next.js / React UI
+       |
+       v
+Provenance + data-status layer
+       |
+       +--> Open-Meteo weather / rainfall
+       +--> NASA GIBS imagery context
+       +--> OpenStreetMap GIS / routing
+       +--> Flood / river context providers where available
+       |
+       v
+Rainfall + flood screening
+       |
+       v
+Alerts / incidents / roads / resources / emergency response
 ```
 
-## Modules
+## Data truth
 
-- **Command Center** (`/command`): status header (truthful since patch), feed strip, KPI row, module status grid (per-endpoint probing), twin viewport, AI panels, telemetry, live map, imagery, globe, gallery. Docs: `COMMAND-CENTER.md`.
-- **Risk Map** (`/risk-map`): `RiskGridMap` + 8-layer `DisasterMap`, scale/coords/fullscreen, tile-liveness, inspect dialog.
-- **Satellite / EO** (`/satellite`): GIBS viewer (Step 23), `FirePanel` (Step 24, NOT_CONFIGURED), adapters list, reference renders, registry sources.
-- **Fire Intelligence**: `adaptFirmsFires` + `firms-fires` kind (disabled without key) + FirePanel.
-- **Earthquake Intelligence** (`/earthquakes`): engine `usgs-earthquakes-7d` + list/map/detail/timeline/provenance.
-- **Weather Intelligence** (`/weather`): backend chain panels + engine `openmeteo-current` (current/hourly/daily).
-- **Disaster Events** (`/events`): engine `eonet-events` + list/map/detail/timeline/filters.
-- **AI/ML** (`/model-health`, `/ml`, `/prediction`): SYNTHETIC-DEMO RF artifact, honest states. Docs: `AI-ML.md`, `MODEL-INTELLIGENCE.md`.
-- **Model Health**: metrics table, identity, calibration/drift honesty, inference availability, timeline.
-- **3D Digital Twin** (`/twin`, `/nesafe`): Three.js/R3F/MapLibre, layers, presets, SIMULATION labels. Docs: `3D-DIGITAL-TWIN.md`.
-- **Data Engine** (`src/data/engine/`): canonical normalized layer for Steps 22+. Docs: `DATA-ENGINE.md`.
-- **Provenance/status system** (`src/platform/provenance.tsx` + engine types): 11-state model on every value.
+Every provider should expose source, status and timing information. Missing inputs are not silently replaced with synthetic values.
 
-## Backend integrations
+## SIH 26071 expansion point
 
-28 FastAPI routers (admin, ai, alerts, api_v1, auth, grid, history, incidents, ml, model_health, nesafe, notifications, ops, rainfall, regions, resources, response, risk, roads, satellite, sectors, sensors, sync, terrain, vision, warnings, weather, ws_telemetry) + WebSocket telemetry + SQLite (29 tables) + seed demo/geo. **Currently OFFLINE** (Railway trial expired); frontend degrades honestly.
+The target multi-source pipeline is:
+
+```
+Satellite observations
+        +
+Radar rainfall
+        +
+Surface observations
+        +
+NWP forecasts
+        |
+        v
+Quality control / feature fusion
+        |
+        v
+Rainfall ML + nowcasting
+        |
+        v
+Inundation / flood-depth modelling
+        |
+        v
+Early warning + GIS + response
+```
+
+Only sources and model stages that are actually connected and validated may be presented as live or operational.
+
+## Deliberately removed
+
+The architecture no longer includes the legacy landslide ML stack, generic soil intelligence, fire-specific intelligence, drone/SAR simulation, sensor-network demo or generic telemetry stream.
