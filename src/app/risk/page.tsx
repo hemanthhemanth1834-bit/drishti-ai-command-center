@@ -37,13 +37,13 @@ export default function RiskPage() {
           <HudPanel
             micro="DRISHTI-X · RISK INTELLIGENCE"
             title="CHECK MY RISK"
-            right={<span className="dx-sim">SIMULATION</span>}
+            right={<span className="dx-sim">SCREENING · NOT A VALIDATED ML MODEL</span>}
           >
             <div className="flex items-center gap-2 text-[12px] text-slate-400 mb-3">
               <Crosshair className="w-4 h-4 text-[#00d2ff] shrink-0" />
               <p>
                 Uses your browser location <b>only after you tap the GPS button</b>. Nothing is
-                uploaded — the check runs on your device against labeled demo hazard cells.
+                uploaded — the check runs on your device using live weather inputs when available; unavailable inputs are not replaced with synthetic values.
                 Permission denied? Just search manually below.
               </p>
             </div>
