@@ -73,38 +73,6 @@ class IMDProvider(WeatherProvider):
         raise NotImplementedError("IMD API mapping pending credentials")
 
 
-class FallbackDemoProvider(WeatherProvider):
-    name = "Demo weather (simulated)"
-
-    def current(self, lat: float, lon: float) -> Dict:
-        _ = (lat, lon)
-        return {"temp_c": 24.0, "humidity": 88.0, "rain_1h": 6.0,
-                "rain_24h": 64.0, "rain_72h": 150.0, "wind_kmh": 14.0,
-                "forecast_24h": 72.0, "source": "DEMO",
-                "data_status": "DEMO"}
-
-
-def get_weather(lat: float, lon: float, provider: str = "auto") -> Dict:
-    if provider == "imd":
-        out = IMDProvider().current(lat, lon)
-        if "error" not in out:
-            return out
-        return out
-    if provider == "demo":
-        return FallbackDemoProvider().current(lat, lon)
-    try:
-        return OpenMeteoProvider().current(lat, lon)
-    except Exception as e:
-        try:
-            from .ops import record_provider_failure
-            record_provider_failure("Open-Meteo")
-        except Exception:
-            pass
-        out = FallbackDemoProvider().current(lat, lon)
-        out["fallback_reason"] = f"Open-Meteo unreachable: {type(e).__name__}"
-        return out
-
-
 def threshold_state(rain_24h: float) -> str:
     if rain_24h >= RAIN_CRIT_24H:
         return "CRITICAL"
@@ -152,5 +120,4 @@ def providers():
         {"name": IMDProvider.name,
          "status": "NOT_CONFIGURED" if "error" in imd else "READY",
          "key_required": True, "detail": imd.get("detail", "")},
-        {"name": FallbackDemoProvider.name, "status": "ALWAYS_AVAILABLE",
-         "key_required": False}]}
+        ]}
