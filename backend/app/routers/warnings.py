@@ -1,56 +1,40 @@
-"""Early Warning Engine: AI + weather + thresholds + soil + satellite +
-terrain + history + field reports -> WATCH | ALERT | WARNING | CRITICAL.
+"""Heavy-rainfall warning engine.
 
-Language is decision-support only ("Predicted risk", "Requires field
-verification") — never a deterministic disaster claim. Thresholds are
-configurable via environment.
+Deterministic screening only: live/forecast rainfall thresholds are evaluated
+and provenance is returned. No landslide model, soil fallback or synthetic
+probability is used.
 """
 from __future__ import annotations
 
-import os
-import sys
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-from ml.inference import REGISTRY  # noqa: E402
-from ml.schemas import LandslideFeatures  # noqa: E402
-
-from ..db import SessionLocal, get_db
+from ..db import get_db
 from ..models import platform as m
-from ..services import spatial
 from ..services.security import require_perm
-from .terrain import analyze as terrain_analyze
 from .weather import get_weather, threshold_state
 
 router = APIRouter(prefix="/api/v1/warnings", tags=["warnings"])
-
-W_PROB_CRIT = float(os.getenv("WARN_PROB_CRIT", "0.75"))
-W_PROB_WARN = float(os.getenv("WARN_PROB_WARN", "0.5"))
-W_PROB_ALERT = float(os.getenv("WARN_PROB_ALERT", "0.25"))
 
 
 class WarnRequest(BaseModel):
     lat: float = Field(..., ge=-90, le=90)
     lon: float = Field(..., ge=-180, le=180)
-    soil_moisture: float = 55.0
-    satellite_change: float = 2.0
-    field_reports: int = 0
+    field_reports: int = Field(default=0, ge=0)
 
 
-def _level(prob: float, rain_state: str, soil: float) -> str:
-    if prob >= W_PROB_CRIT or (prob >= W_PROB_WARN and rain_state == "CRITICAL"):
+def _level(rain_state: str, forecast_24h: float) -> str:
+    if rain_state == "CRITICAL" or forecast_24h >= 200:
         return "CRITICAL"
-    if prob >= W_PROB_WARN or rain_state == "CRITICAL" or soil >= 90:
+    if rain_state == "WARNING" or forecast_24h >= 120:
         return "WARNING"
-    if prob >= W_PROB_ALERT or rain_state == "WARNING":
-        return "ALERT"
-    return "WATCH"
+    if forecast_24h >= 60:
+        return "WATCH"
+    return "NORMAL"
 
 
 @router.post("/evaluate")
@@ -58,73 +42,51 @@ def evaluate(req: WarnRequest, db: Session = Depends(get_db),
              ident=Depends(require_perm("read"))):
     _ = ident
     wx = get_weather(req.lat, req.lon)
-    wx_live = "error" not in wx and wx.get("data_status") == "LIVE"
-    rain_state = threshold_state(float(wx.get("rain_24h", 0))) \
-        if "error" not in wx else "UNKNOWN"
-    terr = terrain_analyze(req.lat, req.lon)
-    feats = LandslideFeatures(
-        rainfall_24h=float(wx.get("rain_24h", 0)),
-        rainfall_72h=float(wx.get("rain_72h", 0)),
-        rainfall_1h=float(wx.get("rain_1h", 0)),
-        soil_moisture=req.soil_moisture, slope=terr["slope_deg"],
-        elevation=terr["elevation_m"], satellite_change=req.satellite_change,
-        hill_cutting_indicator=terr["hill_cutting"])
-    pred = REGISTRY.predict(req.lat, req.lon, feats)
-    places = [{"id": p.id, "kind": p.kind, "name": p.name, "lat": p.lat,
-               "lon": p.lon} for p in db.query(m.Place).all()]
-    roads = [{"id": r.id, "name": r.name, "lat": r.lat, "lon": r.lon,
-              "status": r.status} for r in db.query(m.Road).all()]
-    villages = spatial.within_radius(
-        [p for p in places if p["kind"] == "village"], req.lat, req.lon, 10)
-    roads_near = spatial.roads_in_zone(roads, req.lat, req.lon, 10)
-    level = _level(pred.landslide_probability, rain_state, req.soil_moisture)
+    if "error" in wx:
+        return {
+            "warning_id": None,
+            "level": "NOT_AVAILABLE",
+            "location": {"latitude": req.lat, "longitude": req.lon},
+            "risk_score": None,
+            "reasons": ["Live rainfall provider unavailable; no synthetic fallback is used."],
+            "source": wx.get("source", "Open-Meteo"),
+            "data_status": "UNAVAILABLE",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    rain24 = float(wx.get("rain_24h", 0.0))
+    forecast24 = float(wx.get("forecast_24h", 0.0))
+    rain_state = threshold_state(rain24)
+    level = _level(rain_state, forecast24)
+    score = round(min(100.0, max(rain24 / 200.0, forecast24 / 200.0) * 100.0), 1)
     wid = "wrn-" + uuid.uuid4().hex[:8]
+
     reasons = [
-        f"AI predicted risk {pred.landslide_probability:.0%} "
-        f"({pred.model_version}{' DEMO' if pred.simulated else ''})",
-        f"24h rainfall {wx.get('rain_24h', '?')}mm [{rain_state}] "
-        f"via {wx.get('source', '?')}",
-        f"Soil moisture {req.soil_moisture}% | slope {terr['slope_deg']}° "
-        f"| satellite Δ {req.satellite_change}%",
+        f"Observed/available 24h rainfall: {rain24:.1f} mm [{rain_state}] via {wx.get('source', '?')}",
+        f"Next-24h forecast rainfall: {forecast24:.1f} mm",
     ]
     if req.field_reports:
-        reasons.append(f"{req.field_reports} nearby field report(s) raise concern")
-    window = ("next 6-24h" if level in ("CRITICAL", "WARNING") else "next 24-72h")
-    actions = {"WATCH": "Routine monitoring.",
-               "ALERT": "Enhanced monitoring; verify sensors.",
-               "WARNING": "Restrict heavy vehicles; alert residents; field team.",
-               "CRITICAL": "Precautionary evacuation of exposed villages; "
-                           "close high-risk road segments."}[level]
+        reasons.append(f"{req.field_reports} nearby field report(s) require verification")
+
     try:
-        db.add(m.Alert(id=wid, level=level, title=f"{level}: predicted risk "
-                       f"near {req.lat:.2f},{req.lon:.2f}", lat=req.lat,
-                       lon=req.lon,
-                       source="DEMO" if pred.simulated else "MODEL"))
+        db.add(m.Alert(id=wid, level=level, title=f"{level}: heavy-rainfall screening",
+                       lat=req.lat, lon=req.lon, source="Open-Meteo"))
         db.commit()
     except Exception:
         pass
+
     return {
-        "warning_id": wid, "level": level,
+        "warning_id": wid,
+        "level": level,
         "location": {"latitude": req.lat, "longitude": req.lon},
-        "probability": pred.landslide_probability,
-        "confidence": pred.confidence,
-        "risk_level": pred.risk_level,
+        "risk_score": score,
+        "rain_24h_mm": rain24,
+        "forecast_24h_mm": forecast24,
         "reasons": reasons,
-        "expected_window": window + " (forecast window, not a fixed time)",
-        "affected_villages": villages,
-        "affected_roads": roads_near,
-        "infrastructure": spatial.within_radius(
-            [p for p in places if p["kind"] in ("hospital", "school", "bridge")],
-            req.lat, req.lon, 10),
-        "recommended_response": actions + " Requires field verification.",
-        "source": "EarlyWarningEngine",
-        "model_version": pred.model_version,
-        "simulated": pred.simulated,
-        "data_freshness": ("FRESH-LIVE" if wx_live and not pred.simulated
-                           else "STALE-OR-DEMO"),
+        "source": wx.get("source", "Open-Meteo"),
+        "data_status": wx.get("data_status", "UNKNOWN"),
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "disclaimer": "AI decision support — potential landslide, "
-                      "not a certain event.",
+        "disclaimer": "Deterministic heavy-rainfall screening; not an official government warning and not a validated ML probability.",
     }
 
 
@@ -139,7 +101,11 @@ def active(db: Session = Depends(get_db)):
 
 @router.get("/config")
 def config():
-    return {"prob_critical": W_PROB_CRIT, "prob_warning": W_PROB_WARN,
-            "prob_alert": W_PROB_ALERT,
-            "rain": "see /api/v1/weather/thresholds",
-            "note": "Override via WARN_PROB_* env vars."}
+    return {
+        "rain_24h_warn_mm": 120,
+        "rain_24h_critical_mm": 200,
+        "forecast_24h_watch_mm": 60,
+        "forecast_24h_warn_mm": 120,
+        "forecast_24h_critical_mm": 200,
+        "note": "Thresholds are screening values and are not official IMD warning classifications.",
+    }
