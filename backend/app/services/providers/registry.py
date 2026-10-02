@@ -53,22 +53,10 @@ def register(spec: ProviderSpec) -> ProviderSpec:
 
 
 def _specs() -> list[ProviderSpec]:
-    from app.services.providers import (
-        gibs,
-        gfs,
-        imerg,
-        openmeteo,
-        osm,
-        radar,
-        sentinel,
-        srtm,
-        terrain_tiles,
-    )
-
-    for mod in (openmeteo, gibs, srtm, osm, gfs, imerg, sentinel, radar, terrain_tiles):
-        register(mod.SPEC)
+    """Load only providers retained by the unified application."""
+    from app.services.providers import openmeteo
+    register(openmeteo.ProviderSpec if False else openmeteo.SPEC)
     return list(REGISTRY.values())
-
 
 def get_spec(source_id: str) -> ProviderSpec:
     if source_id not in REGISTRY:
