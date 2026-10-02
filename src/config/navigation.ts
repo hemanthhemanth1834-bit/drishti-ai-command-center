@@ -9,10 +9,10 @@ import type { LucideIcon } from 'lucide-react';
 import {
   HeartPulse, MapPin, Layers, Bell, Siren, Route as RouteIcon,
   LifeBuoy, FileWarning, Users, ClipboardList, Backpack, BookOpen,
-  Cpu, Box, Plane, Building2, Tent, BarChart3, Languages,
+  Cpu, Box, Building2, Tent, BarChart3, Languages,
   Accessibility, Mic, WifiOff, MonitorSmartphone, Gauge,
   Home, Crosshair, CloudSun, Satellite, Mountain, History,
-  AlertTriangle, Ambulance, Map, Database, ShieldAlert, Globe,
+  Ambulance, Map, Database, ShieldAlert, Globe,
 } from 'lucide-react';
 
 export interface NavigationItem {
