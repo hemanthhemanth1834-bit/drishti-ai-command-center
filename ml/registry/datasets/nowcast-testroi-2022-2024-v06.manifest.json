@@ -1,0 +1,67 @@
+{
+  "dataset_id": "nowcast-testroi-2022-2024-v06",
+  "schema_version": "nowcast-dataset@v0.6",
+  "scope": "TEST ROI (Delhi 2x2 grid) \u2014 not pilot, not national",
+  "points": [
+    {
+      "point_id": "delhi_nw",
+      "lat": 28.75,
+      "lon": 77.0
+    },
+    {
+      "point_id": "delhi_ne",
+      "lat": 28.75,
+      "lon": 77.25
+    },
+    {
+      "point_id": "delhi_sw",
+      "lat": 28.5,
+      "lon": 77.0
+    },
+    {
+      "point_id": "delhi_se",
+      "lat": 28.5,
+      "lon": 77.25
+    }
+  ],
+  "period": [
+    "2022-01-01",
+    "2024-12-31"
+  ],
+  "source": "open-meteo archive (ERA5-derived)",
+  "counts": {
+    "points": 4,
+    "candidate_T": 105096,
+    "dropped_target_unavailable": 24,
+    "dropped_history_unavailable": 96,
+    "dropped_split_boundary": 48,
+    "rows": 105048
+  },
+  "boundaries": {
+    "train_end": "2024-02-07T07:00:00+00:00",
+    "val_end": "2024-07-20T12:00:00+00:00",
+    "first": "2022-01-02T00:00:00+00:00",
+    "last": "2024-12-31T17:00:00+00:00"
+  },
+  "stats": {
+    "target_0-1h": {
+      "n": 105048,
+      "mean": 0.09718604828268981,
+      "max": 33.7,
+      "zeros_frac": 0.9045388774655395
+    },
+    "target_1-3h": {
+      "n": 105048,
+      "mean": 0.19437590434848778,
+      "max": 58.19999999999999,
+      "zeros_frac": 0.8531528444139822
+    },
+    "target_3-6h": {
+      "n": 105048,
+      "mean": 0.2915800396009449,
+      "max": 81.90000000000002,
+      "zeros_frac": 0.8008434239585713
+    }
+  },
+  "feature_schema_version": "nowcast-features@v0.6"
+}
