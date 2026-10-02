@@ -52,7 +52,6 @@ export default function MasterCommandCenter() {
   // events are the same objects every route reads — one coherent system.
   const intel = useIntel();
   const aiTone = intel.aiTone;
-  const [activeTab, setActiveTab] = useState<'3D' | 'RADAR'>('3D');
   const [posterOk, setPosterOk] = useState(true);
   const [floodWater, setFloodWater] = useState(0);
   const [demoOpen, setDemoOpen] = useState(false);
