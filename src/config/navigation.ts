@@ -10,7 +10,7 @@ import {
   HeartPulse, MapPin, Layers, Bell, Siren, Route as RouteIcon,
   LifeBuoy, FileWarning, Users, ClipboardList, Backpack, BookOpen,
   Cpu, Box, Plane, Building2, Tent, BarChart3, Languages,
-  Accessibility, Mic, WifiOff,   MonitorSmartphone, Gauge,
+  Accessibility, Mic, WifiOff, MonitorSmartphone, Gauge,
   Home, Crosshair, CloudSun, Satellite, Mountain, History,
   AlertTriangle, Ambulance, Map, Database, ShieldAlert, Globe,
 } from 'lucide-react';
@@ -35,11 +35,9 @@ export const HEADER_NAV: NavigationItem[] = [
   { label: 'Home', href: '/', icon: Home },
   { label: 'Command Center', href: '/command', icon: Gauge },
   { label: 'Intelligence', href: '/intelligence', icon: Crosshair },
-  { label: 'Prediction', href: '/prediction', icon: AlertTriangle },
   { label: 'Risk Map', href: '/risk-map', icon: Map },
   { label: 'Incidents', href: '/incidents', icon: FileWarning },
   { label: 'Resources', href: '/resources', icon: Building2 },
-  { label: 'Drones', href: '/drones', icon: Plane },
   { label: 'Weather', href: '/weather', icon: CloudSun },
   { label: 'Satellite', href: '/satellite', icon: Satellite },
   { label: 'Terrain', href: '/terrain', icon: Mountain },
@@ -62,7 +60,7 @@ export const PRIMARY_ACTIONS: NavigationItem[] = [
   { label: 'Live Location', href: '/location', description: 'Explore hazards. View risk layers.', icon: MapPin,
     photoId: 'storm-lightning-india',
     explainer: 'Location-aware hazard layers built from satellite and field observations.' },
-  { label: 'Hazard Maps', href: '/risk-map', description: 'Heavy rainfall, flood, inundation, cyclone & landslide layers.', icon: Layers,
+  { label: 'Hazard Maps', href: '/risk-map', description: 'Heavy rainfall, flood, inundation & cyclone layers.', icon: Layers,
     photoId: 'cyclone-ilsa',
     explainer: 'Satellite-observed hazards rendered as map layers for regional awareness.' },
   { label: 'Alert Center', href: '/alerts', description: 'Real-time alerts. Know what to do.', icon: Bell,
@@ -94,8 +92,6 @@ export const SECONDARY_FEATURES: NavigationItem[] = [
     photoId: 'fix-whatif-evacplan' },
   { label: '3D Digital Twin', href: '/twin', description: 'Explore realistic 3D environments.', icon: Box,
     photoId: 'twin-himalaya-iss' },
-  { label: 'Drone SAR', href: '/drones', description: 'Search • Locate • Assist. Save lives.', icon: Plane,
-    photoId: 'fix-drone-ikhana' },
 ];
 
 /** Operational / platform cards. href: string = navigate; action = real store state change. */
@@ -122,7 +118,7 @@ export const OPERATIONAL_FEATURES: ActionCard[] = [
 
 /** Disaster overview categories — SIH 26071 focus: heavy rainfall + inundation first. */
 export const DISASTER_CATEGORIES = [
-  'Flood', 'Heavy Rainfall', 'Inundation', 'Cyclone', 'Landslide',
+  'Flood', 'Heavy Rainfall', 'Inundation', 'Cyclone',
 ] as const;
 
 /** Footer links — all verified routes/pages. */
@@ -133,7 +129,7 @@ export const FOOTER_LINKS: NavigationItem[] = [
   { label: 'Data Sources', href: '/data-sources', icon: Database },
   { label: 'Accessibility', href: '/learn', icon: Accessibility },
   { label: 'Documentation', href: '/platform', icon: BookOpen },
-  { label: 'System Status', href: '/model-health', icon: Gauge },
+  { label: 'System Status', href: '/command', icon: Gauge },
   { label: 'Contact', href: '/contact', icon: Globe },
   { label: 'Privacy', href: '/privacy', icon: Globe },
   { label: 'Terms', href: '/terms', icon: Globe },
